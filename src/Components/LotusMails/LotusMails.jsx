@@ -1,18 +1,18 @@
 import React from 'react';
-import s from './Content.module.css';
+import s from './GovUaMails.module.css';
 import { connect } from 'react-redux';
 import { addGovUaMailsActionCreator } from '../../redux/gov-ua-reduser';
 
-class Content extends React.Component {
+class GovUAMails extends React.Component {
 
   async componentDidMount() {
     try {
-      const response = await fetch("http://localhost:5114/dovidniki");
+      const response = await fetch("http://localhost:5114/mails/lotus");
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      this.props.addGovUaMailsActionCreator(data);
+      this.props.addLotusMailsActionCreator(data);
       console.log(data);
     } catch (error) {
       console.error("Fetch error:", error);
@@ -24,18 +24,18 @@ class Content extends React.Component {
     return (
 
       <div className={s.content}>
-        <h2>Поштові скриньки Вінницької митниці <u>customs.gov.ua</u></h2>
+        <h2>Поштові скриньки Вінницької митниці <u>Lotus</u></h2>
         <table>
           <thead>
             <tr>
               <th>№ п/п </th>
-              <th>найменування скриньки</th>
-              <th>найменування підрозділу</th>
-              <th>відповідальна особа</th>
+              <th>Стара назва скриньки</th>
+              <th>Нова назва скриньки</th>
+              <th>Назва підрозділу</th>
             </tr>
           </thead>
           <tbody>
-            {this.props.govuamailsPage.govuamails.map((m) => (
+            {this.props.lotusmailsPage.lotusmails.map((m) => (
               <tr key={rowNumber}>
                 <td>{rowNumber++}</td>
                 <td>{m.mailName}</td>
@@ -52,11 +52,11 @@ class Content extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  govuamailsPage: state.govuamailsPage
+  govuamailsPage: state.lotusmailsPage
 });
 
 const mapDispatchToProps = {
-  addGovUaMailsActionCreator
+  addLotusMailsActionCreator
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Content);
+export default connect(mapStateToProps, mapDispatchToProps)(LotusMails);

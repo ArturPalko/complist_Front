@@ -1,1 +1,21 @@
 
+.nav{
+    text-decoration: none;
+    color:white;
+    
+
+}
+
+.item a{
+    color:white;
+    text-decoration: none;
+    font-size: 1.2em;
+}
+
+.item a:hover {
+    color: rgb(0, 229, 255); /* Цвет текста при наведении */
+}
+
+.item a.activeLink{
+    color:rgb(0, 229, 255);
+}
