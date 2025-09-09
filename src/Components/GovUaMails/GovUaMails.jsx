@@ -1,62 +1,23 @@
-import React from 'react';
-import s from './GovUaMails.module.css';
-import { connect } from 'react-redux';
-import { addGovUaMailsActionCreator } from '../../redux/gov-ua-reduser';
+import { connect } from "react-redux";
+import MailsTable from "../MalisTable/MailsTable";
+import { addMailsActionCreator } from "../../redux/mails-reducer";
 
-class GovUAMails extends React.Component {
+const GovUAPage = ({ mailsData, addMailsActionCreator }) => (
+  <MailsTable
+    fetchUrl="http://localhost:5114/mails/Gov-ua"
+    mailType="gov-ua"
+    addMailsActionCreator={addMailsActionCreator}
+    mailsData={mailsData}
+    columns={[
+      { key: "mailName", label: "найменування скриньки" },
+      { key: "departmentOrSection", label: "найменування підрозділу" },
+      { key: "userName", label: "відповідальна особа" },
+    ]}
+    title="Поштові скриньки Вінницької митниці customs.gov.ua"
+  />
+);
 
-  async componentDidMount() {
-    try {
-      const response = await fetch("http://localhost:5114/dovidniki");
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      this.props.addGovUaMailsActionCreator(data);
-      console.log(data);
-    } catch (error) {
-      console.error("Fetch error:", error);
-    }
-  }
+const mapStateToProps = (state) => ({ mailsData: state.mails.mails["gov-ua"] });
+const mapDispatchToProps = { addMailsActionCreator };
 
-  render() {   
-    let rowNumber = 1;
-    return (
-
-      <div className={s.content}>
-        <h2>Поштові скриньки Вінницької митниці <u>customs.gov.ua</u></h2>
-        <table>
-          <thead>
-            <tr>
-              <th>№ п/п </th>
-              <th>найменування скриньки</th>
-              <th>найменування підрозділу</th>
-              <th>відповідальна особа</th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.props.govuamailsPage.govuamails.map((m) => (
-              <tr key={rowNumber}>
-                <td>{rowNumber++}</td>
-                <td>{m.mailName}</td>
-                <td>{m.departmentOrSection}</td>
-                <td>{m.userName}</td>
-        
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    );
-  }
-}
-
-const mapStateToProps = (state) => ({
-  govuamailsPage: state.govuamailsPage
-});
-
-const mapDispatchToProps = {
-  addGovUaMailsActionCreator
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(GovUAMails);
+export default connect(mapStateToProps, mapDispatchToProps)(GovUAPage);

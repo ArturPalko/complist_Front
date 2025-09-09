@@ -9,14 +9,15 @@ class NavBar extends React.Component{
               <div className="nav">
                     <nav>
                         <div className={s.item}>
-                        <NavLink to="/" className={({ isActive }) => (isActive ? s.activeLink : undefined)}>GOV-UA скриньки</NavLink>
+                        <NavLink to="/mails/Gov-ua" className={({ isActive }) => (isActive ? s.activeLink : undefined)}>GOV-UA скриньки</NavLink>
                         </div>
                         <div className={s.item}>
-                            <NavLink to="/mails/lotus" className={({ isActive }) => (isActive ? s.activeLink : undefined)}>Lotus скриньки</NavLink>
+                            <NavLink to="/mails/Lotus" className={({ isActive }) => (isActive ? s.activeLink : undefined)}>Lotus скриньки</NavLink>
                         </div>
                         <div className={s.item}>
-                            <NavLink to="/tasks" className={({ isActive }) => (isActive ? s.activeLink : undefined)}>Завдання</NavLink>
+                            <NavLink to="/Phones" className={({ isActive }) => (isActive ? s.activeLink : undefined)}>Телфони</NavLink>
                         </div>
+                        
                     </nav>
                 </div>
         )

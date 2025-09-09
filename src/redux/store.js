@@ -1,11 +1,10 @@
 import { combineReducers, createStore } from "redux";
-import { govuamailsReducer } from "./gov-ua-reduser";
-import { lotusmailsReducer } from "./lotus-reduser";
+import { mailsReducer } from "./mails-reducer";
 
 
 let redusers = combineReducers({
-    "govuamailsPage": govuamailsReducer
-    "lotusmailsPage": lotusmailsPageReducer
+    "mails": mailsReducer,
+
 });
 
 let store = createStore(redusers);
