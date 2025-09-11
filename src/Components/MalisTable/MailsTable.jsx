@@ -10,6 +10,7 @@ const MailsTable = ({ fetchUrl, mailType, addMailsActionCreator, mailsData, colu
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
         addMailsActionCreator(mailType, data);
+
       } catch (error) {
         console.error("Fetch error:", error);
       }

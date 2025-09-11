@@ -4,6 +4,7 @@ import NavBar from './Components/NavBar/NavBar';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import GovUaMails from './Components/GovUaMails/GovUaMails';
 import LotusMails from './Components/LotusMails/LotusMails';
+import Phones from './Components/Phones/Phones';
 
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
         <NavBar />
     <div className="app-wrapper-content">
       <Routes>
+      <Route path='/phones' element={<Phones/>}/>
       <Route path="/mails">
                 <Route path="Gov-ua" element={<GovUaMails />} />
                 <Route path="Lotus"  element={<LotusMails />} />

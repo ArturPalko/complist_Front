@@ -15,7 +15,7 @@ class NavBar extends React.Component{
                             <NavLink to="/mails/Lotus" className={({ isActive }) => (isActive ? s.activeLink : undefined)}>Lotus скриньки</NavLink>
                         </div>
                         <div className={s.item}>
-                            <NavLink to="/Phones" className={({ isActive }) => (isActive ? s.activeLink : undefined)}>Телфони</NavLink>
+                            <NavLink to="/phones" className={({ isActive }) => (isActive ? s.activeLink : undefined)}>Телфони</NavLink>
                         </div>
                         
                     </nav>

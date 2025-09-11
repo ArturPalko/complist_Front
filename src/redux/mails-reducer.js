@@ -1,5 +1,6 @@
 const ADD_MAILS = "ADD_MAILS"
 
+
 const initialState = {
     mails: {}
 };
