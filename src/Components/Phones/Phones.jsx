@@ -11,7 +11,12 @@ const PhonesPage = ({ phonesData, addPhonesActionCreator }) => (
     columns={[
       { key: "userPosition", label: "Назва посади" },
       { key: "userName", label: "Прізвище, ім'я по батькові" },
-      { key: "userName", label: "Телефон" },
+      { key: "phones", label: "Телефон",  subLabels: [
+      { key: "landline", label: "Міський" },
+      { key: "extension", label: "Внутрішній" },
+      { key: "cisco", label: "IP (Cisco)" }
+  ]
+}
     ]}
     title="Телефонний довідник Вінницької митниці"
   />

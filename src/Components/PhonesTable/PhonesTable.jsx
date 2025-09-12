@@ -1,23 +1,17 @@
 import React, { useEffect } from "react";
 import s from "../MalisTable/MailsTable.module.css";
 
-
-
-const PhonesTable = ({ fetchUrl, addPhonesActionCreator, phonesData, columns, title}) => {
+const PhonesTable = ({ fetchUrl, addPhonesActionCreator, phonesData, columns, title }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch(fetchUrl);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
-        addPhonesActionCreator(data);  
-        
-      console.log("Fetched data type:", Array.isArray(data)); // перевіряємо чи це масив
-      console.log("Fetched data content:", data);         
-    
+        addPhonesActionCreator(data);
 
-        
-
+        console.log("Fetched data type:", Array.isArray(data));
+        console.log("Fetched data content:", data);
       } catch (error) {
         console.error("Fetch error:", error);
       }
@@ -27,71 +21,86 @@ const PhonesTable = ({ fetchUrl, addPhonesActionCreator, phonesData, columns, ti
   }, [fetchUrl, addPhonesActionCreator]);
 
   let rowNumber = 1;
-
-
+  const phoneColumns = columns.find((c) => c.key === "phones")?.subLabels.length || 0;
 
   return (
-    
     <div className={s.content}>
       <h2>{title}</h2>
-      <table>
-<thead>
-  <tr>
-    <th>№ п/п</th>
-    {columns.map((col) =>
-      col.label === "Телефони" ? (
-        <th key={col.key}>
-          <table border="1" style={{ width: "100%", borderCollapse: "collapse" }}>
-            <thead>
-              <tr>
-                <th colSpan="3">Телефон</th>
-              </tr>
-              <tr>
-                <th>Міський</th>
-                <th>Внутрішній</th>
-                <th>IP</th>
-              </tr>
-            </thead>
-          </table>
-        </th>
-      ) : (
-        <th key={col.key}>{col.label}</th>
-      )
-    )}
-  </tr>
-</thead>
+      <table border="1" style={{ width: "100%", borderCollapse: "collapse" }}>
+        <thead>
+          <tr>
+            <th rowSpan="2">№ п/п</th>
+            {columns.map((col) =>
+              col.key === "phones" ? (
+                <th key={col.key} data-key={col.key} colSpan={col.subLabels.length}>
+                  {col.label}
+                </th>
+              ) : (
+                <th key={col.key} data-key={col.key} rowSpan="2">
+                  {col.label}
+                </th>
+              )
+            )}
+          </tr>
+          <tr>
+            {columns
+              .filter((col) => col.key === "phones")
+              .flatMap((col) =>
+                col.subLabels.map((phone) => <th key={phone.key}>{phone.label}</th>)
+              )}
+          </tr>
+        </thead>
 
-    <tbody>
-        {phonesData?.map((dept) => (
+        <tbody>
+          {phonesData?.map((dept) => (
             <React.Fragment key={dept.departmentId}>
-            {/* Рядок із назвою департаменту */}
-            <tr>
-                <td colSpan={3} style={{ fontWeight: "bold" }}>
-                {dept.departmentName}
+              {/* Рядок із назвою департаменту */}
+              <tr>
+                <td colSpan={3 + phoneColumns} style={{ fontWeight: "bold" }}>
+                  {dept.departmentName}
                 </td>
-            </tr>
+              </tr>
 
-            {/* Рядки користувачів */}
-            {dept.users.map((user) => (
+              {/* Рядки користувачів департаменту */}
+              {dept.users.map((user) => (
                 <tr key={user.userId}>
-                <td>{rowNumber++}</td>
-                <td>{user.userPosition}</td>
-                <td>{user.userName}</td>
-                <td>{user.phones.map((p) => p.phoneName).join(", ")}</td>
+                  <td>{rowNumber++}</td>
+                  <td>{user.userPosition}</td>
+                  <td>{user.userName}</td>
+                  {columns.find((c) => c.key === "phones")?.subLabels.map((sub) => {
+                    const phone = user.phones.find((p) => p.phoneType === sub.label);
+                    return <td key={sub.key}>{phone ? phone.phoneName : ""}</td>;
+                  })}
                 </tr>
-            ))}
+              ))}
+
+              {/* Рядки секцій */}
+              {dept.sections?.map((section) => (
+                <React.Fragment key={section.id}>
+                  {/* Рядок секції */}
+                  <tr>
+                    <td colSpan={3 + phoneColumns} style={{ fontWeight: "bold" }}>
+                      {section.sectionName}
+                    </td>
+                  </tr>
+
+                  {/* Користувачі секції */}
+                  {section.users.map((user) => (
+                    <tr key={user.userId}>
+                      <td>{rowNumber++}</td>
+                      <td>{user.userPosition}</td>
+                      <td>{user.userName}</td>
+                      {columns.find((c) => c.key === "phones")?.subLabels.map((sub) => {
+                        const phone = user.phones.find((p) => p.phoneType === sub.label);
+                        return <td key={sub.key}>{phone ? phone.phoneName : ""}</td>;
+                      })}
+                    </tr>
+                  ))}
+                </React.Fragment>
+              ))}
             </React.Fragment>
-        ))}
-</tbody>
-
-
-
-
-
-
-
-
-            
+          ))}
+        </tbody>
       </table>
     </div>
   );

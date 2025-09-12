@@ -74,3 +74,8 @@ td:first-child {
   text-align: center; /* для нумерації */
   width: 50px;
 }
+
+
+thead{
+  text-align: center;
+}
