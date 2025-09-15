@@ -1,7 +1,9 @@
-import React, { useEffect } from "react";
-import s from "../MalisTable/MailsTable.module.css";
+import React, { useEffect, useRef } from "react";
+import s from "./PhonesTable.module.css";
 
 const PhonesTable = ({ fetchUrl, addPhonesActionCreator, phonesData, columns, title }) => {
+  const rowNumber = useRef(1); // глобальний лічильник для всієї таблиці
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -20,8 +22,36 @@ const PhonesTable = ({ fetchUrl, addPhonesActionCreator, phonesData, columns, ti
     fetchData();
   }, [fetchUrl, addPhonesActionCreator]);
 
-  let rowNumber = 1;
   const phoneColumns = columns.find((c) => c.key === "phones")?.subLabels.length || 0;
+    if (phonesData) {
+        rowNumber.current = 1;
+      }
+  // Функція для рендеру рядків користувачів
+  const formatedRenderUsers = (area) => {
+    return area.users.map((user) => (
+      <tr key={user.userId}>
+        <td>{rowNumber.current++}</td>
+
+        {user.userType !== 1 ? (
+          <>
+            <td>{user.userName}</td>
+            <td></td>
+          </>
+        ) : (
+          <>
+            <td>{user.userPosition}</td>
+            <td>{user.userName}</td>
+          </>
+        )}
+
+        {/* Колонки з телефонами */}
+        {columns.find((c) => c.key === "phones")?.subLabels.map((sub) => {
+          const phone = user.phones.find((p) => p.phoneType === sub.label);
+          return <td key={sub.key}>{phone ? phone.phoneName : ""}</td>;
+        })}
+      </tr>
+    ));
+  };
 
   return (
     <div className={s.content}>
@@ -32,11 +62,11 @@ const PhonesTable = ({ fetchUrl, addPhonesActionCreator, phonesData, columns, ti
             <th rowSpan="2">№ п/п</th>
             {columns.map((col) =>
               col.key === "phones" ? (
-                <th key={col.key} data-key={col.key} colSpan={col.subLabels.length}>
+                <th key={col.key} colSpan={col.subLabels.length}>
                   {col.label}
                 </th>
               ) : (
-                <th key={col.key} data-key={col.key} rowSpan="2">
+                <th key={col.key} rowSpan="2">
                   {col.label}
                 </th>
               )
@@ -56,46 +86,33 @@ const PhonesTable = ({ fetchUrl, addPhonesActionCreator, phonesData, columns, ti
             <React.Fragment key={dept.departmentId}>
               {/* Рядок із назвою департаменту */}
               <tr>
-                <td colSpan={3 + phoneColumns} style={{ fontWeight: "bold" }}>
-                  {dept.departmentName}
+                <td
+                  className={s.mainDepartment}
+                  colSpan={columns.length + phoneColumns}
+                  style={{ fontWeight: "bold" }}
+                >
+                  {dept.departmentName ?? dept.users[0]?.departmentName}
                 </td>
               </tr>
 
               {/* Рядки користувачів департаменту */}
-              {dept.users.map((user) => (
-                <tr key={user.userId}>
-                  <td>{rowNumber++}</td>
-                  <td>{user.userPosition}</td>
-                  <td>{user.userName}</td>
-                  {columns.find((c) => c.key === "phones")?.subLabels.map((sub) => {
-                    const phone = user.phones.find((p) => p.phoneType === sub.label);
-                    return <td key={sub.key}>{phone ? phone.phoneName : ""}</td>;
-                  })}
-                </tr>
-              ))}
+              {formatedRenderUsers(dept)}
 
               {/* Рядки секцій */}
               {dept.sections?.map((section) => (
                 <React.Fragment key={section.id}>
-                  {/* Рядок секції */}
                   <tr>
-                    <td colSpan={3 + phoneColumns} style={{ fontWeight: "bold" }}>
+                    <td
+                      className={s.section}
+                      colSpan={columns.length + phoneColumns}
+                      style={{ fontWeight: "bold" }}
+                    >
                       {section.sectionName}
                     </td>
                   </tr>
 
                   {/* Користувачі секції */}
-                  {section.users.map((user) => (
-                    <tr key={user.userId}>
-                      <td>{rowNumber++}</td>
-                      <td>{user.userPosition}</td>
-                      <td>{user.userName}</td>
-                      {columns.find((c) => c.key === "phones")?.subLabels.map((sub) => {
-                        const phone = user.phones.find((p) => p.phoneType === sub.label);
-                        return <td key={sub.key}>{phone ? phone.phoneName : ""}</td>;
-                      })}
-                    </tr>
-                  ))}
+                  {formatedRenderUsers(section)}
                 </React.Fragment>
               ))}
             </React.Fragment>

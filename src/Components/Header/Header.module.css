@@ -1,0 +1,31 @@
+.singIn {
+  display: flex;
+  justify-content: flex-end; /* вирівнюємо кнопку вправо */
+  align-items: center;
+  height: 100%;
+  padding-right: 20px;
+}
+
+/* стиль кнопки */
+.button {
+  background: linear-gradient(135deg, #00e5ff, #0099cc);
+  border: none;
+  padding: 8px 18px;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+}
+
+.button:hover {
+  background: linear-gradient(135deg, #00c0d6, #007a99);
+  transform: scale(1.03);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+}
+
+.button:active {
+  transform: scale(0.97);
+}

@@ -1,21 +1,57 @@
-
-.nav{
-    text-decoration: none;
-    color:white;
-    
-
+nav {
+  text-decoration: none;
+  color: white;
+  padding-top: 50px;
+  padding-left: 20px;
 }
 
-.item a{
-    color:white;
-    text-decoration: none;
-    font-size: 1.2em;
+.item {
+  margin-bottom: 10px;
+}
+
+/* Кнопка "Довідники" */
+.dropdownBtn {
+  background: none;
+  border: none;
+  font-size: 1.7em;
+  cursor: pointer;
+  color: white;
+  text-align: left;
+  padding: 0;
+}
+
+.dropdownBtn:hover {
+  color: rgb(0, 229, 255);
+}
+
+.dropdownContent {
+  display: flex;
+  flex-direction: column;
+  margin-left: 20px;
+  margin-top: 5px;
+}
+
+.dropdownContent a {
+  color: white;
+  text-decoration: none;
+  font-size: 1.5em;
+  margin: 3px 0;
+}
+
+.dropdownContent a:hover {
+  color: rgb(0, 229, 255);
+}
+
+.item a {
+  color: white;
+  text-decoration: none;
+  font-size: 1.7em;
 }
 
 .item a:hover {
-    color: rgb(0, 229, 255); /* Цвет текста при наведении */
+  color: rgb(0, 229, 255);
 }
 
-.item a.activeLink{
-    color:rgb(0, 229, 255);
+.item a.activeLink {
+  color: rgb(0, 229, 255);
 }
