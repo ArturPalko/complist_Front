@@ -26,34 +26,10 @@ const PhonesTable = ({ fetchUrl, addPhonesActionCreator, phonesData, columns, ti
     if (phonesData) {
         rowNumber.current = 1;
       }
-  // Функція для рендеру рядків користувачів
-  const formatedRenderUsers = (area) => {
-    return area.users.map((user) => (
-      <tr key={user.userId}>
-        <td>{rowNumber.current++}</td>
 
-        {user.userType !== 1 ? (
-          <>
-            <td>{user.userName}</td>
-            <td></td>
-          </>
-        ) : (
-          <>
-            <td>{user.userPosition}</td>
-            <td>{user.userName}</td>
-          </>
-        )}
-
-        {/* Колонки з телефонами */}
-        {columns.find((c) => c.key === "phones")?.subLabels.map((sub) => {
-          const phone = user.phones.find((p) => p.phoneType === sub.label);
-          return <td key={sub.key}>{phone ? phone.phoneName : ""}</td>;
-        })}
-      </tr>
-    ));
-  };
 
   return (
+
     <div className={s.content}>
       <h2>{title}</h2>
       <table border="1" style={{ width: "100%", borderCollapse: "collapse" }}>
@@ -81,43 +57,45 @@ const PhonesTable = ({ fetchUrl, addPhonesActionCreator, phonesData, columns, ti
           </tr>
         </thead>
 
-        <tbody>
-          {phonesData?.map((dept) => (
-            <React.Fragment key={dept.departmentId}>
-              {/* Рядок із назвою департаменту */}
-              <tr>
-                <td
-                  className={s.mainDepartment}
-                  colSpan={columns.length + phoneColumns}
-                  style={{ fontWeight: "bold" }}
-                >
-                  {dept.departmentName ?? dept.users[0]?.departmentName}
-                </td>
-              </tr>
+       <tbody>
+         {phonesData[0]?.rows?.map((row) => {
+              switch(row.type) {
+                case "department":
+                  return <tr key={`dep-${row.departmentId}`}><td className={s.mainDepartment} colSpan={columns.length + phoneColumns}>{row.departmentName}</td></tr>;
+                case "section":
+                  return <tr key={`sec-${row.sectionId}`}><td className={s.section} colSpan={columns.length + phoneColumns}>{row.sectionName}</td></tr>;
+                case "user":
+                  return (
+                    <tr key={`user-${row.userId}`}>
+                    <td>{rowNumber.current++}</td>
 
-              {/* Рядки користувачів департаменту */}
-              {formatedRenderUsers(dept)}
+                    {row.userType !== 1 ? (
+                      <>
+                        <td>{row.userName}</td>
+                        <td></td>
+                      </>
+                    ) : (
+                      <>
+                        <td>{row.userPosition}</td>
+                        <td>{row.userName}</td>
+                      </>
+                    )}
 
-              {/* Рядки секцій */}
-              {dept.sections?.map((section) => (
-                <React.Fragment key={section.id}>
-                  <tr>
-                    <td
-                      className={s.section}
-                      colSpan={columns.length + phoneColumns}
-                      style={{ fontWeight: "bold" }}
-                    >
-                      {section.sectionName}
-                    </td>
-                  </tr>
+                      {columns.find(c => c.key === "phones")?.subLabels.map(sub => {
+                        const phone = row.phones?.find(p => p.phoneType === sub.label); // <=== тут
+                        return <td key={sub.key}>{phone ? phone.phoneName : ""}</td>;
+                      })}
+                    </tr>
+                  );
+                default:
+                  return null;
+              }
+            })}
 
-                  {/* Користувачі секції */}
-                  {formatedRenderUsers(section)}
-                </React.Fragment>
-              ))}
-            </React.Fragment>
-          ))}
+
         </tbody>
+
+
       </table>
     </div>
   );
