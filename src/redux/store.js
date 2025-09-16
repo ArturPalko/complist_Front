@@ -6,9 +6,12 @@ import { phonesReducer } from "./phones-reducer";
 let redusers = combineReducers({
     "mails": mailsReducer,
     "phones": phonesReducer
+    
 
 });
 
 let store = createStore(redusers);
 
 export default store;
+
+window.store = store;

@@ -23,7 +23,7 @@ const PhonesPage = ({ phonesData, addPhonesActionCreator }) => (
 );
 
 const mapStateToProps = (state) => ({
-  phonesData: state.phones.phones // <- беремо саме масив
+  phonesData: state.phones.phones// <- беремо саме масив
 });
 const mapDispatchToProps = { addPhonesActionCreator };
 

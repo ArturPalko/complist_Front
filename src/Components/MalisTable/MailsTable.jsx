@@ -1,8 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import s from "./MailsTable.module.css";
 
 
-const MailsTable = ({ fetchUrl, mailType, addMailsActionCreator, mailsData, columns, title}) => {
+const MailsTable = ({ fetchUrl, mailType, addMailsActionCreator, mailsData, columns, title,handleTogglePasswords, showPasswords, passwordsMap}) => {
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -19,31 +20,46 @@ const MailsTable = ({ fetchUrl, mailType, addMailsActionCreator, mailsData, colu
     fetchData();
   }, [fetchUrl, addMailsActionCreator]);
 
-  let rowNumber = 1;
+  //let rowNumber = 1;
+  
+
 
   return (
     <div className={s.content}>
-      <h2>{title}</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>№ п/п</th>
-            {columns.map((col) => (
-              <th key={col.key}>{col.label}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {mailsData?.map((item) => (
-            <tr key={rowNumber}>
-              <td>{rowNumber++}</td>
-              {columns.map((col) => (
-                <td key={col.key}>{item[col.key]}</td>
-              ))}
+      <div className={s.headerPanel}>
+        <h2>{title}</h2>
+        <div className={s.switchWrapper}>
+          <div>
+            <label className={s.switch} >
+              <input type="checkbox"  onChange={handleTogglePasswords}/>
+              <span className={s.slider}></span>
+            </label>
+          </div>
+          <div className={s.sliderDesc}>
+              <span>Показати паролі</span>
+          </div>
+        </div>
+      </div>
+        
+        <table>
+          <thead>
+            <tr>
+              <th>№ п/п</th>
+              {columns.map((col) => <th key={col.key}>{col.label}</th>)}
+              {showPasswords && <th>Пароль</th>}
             </tr>
-          ))}
-        </tbody>
+          </thead>
+          <tbody>
+            {mailsData?.map((item, index) => (
+              <tr key={item.id || index}>
+                <td>{index + 1}</td>
+                {columns.map(col => <td key={col.key}>{item[col.key]}</td>)}
+                {showPasswords && <td>{passwordsMap[item.id] || "—"}</td>}
+              </tr>
+            ))}
+          </tbody>
       </table>
+
     </div>
   );
 };
