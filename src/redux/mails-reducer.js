@@ -42,3 +42,4 @@ export const addMailsActionCreator = (mailType, data) => ({
     mailType,
     data
 });
+

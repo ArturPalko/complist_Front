@@ -14,6 +14,7 @@ const MailsTable = ({
   passwordsMap
 }) => {
 
+  // Завантаження даних при зміні fetchUrl або функції додавання
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -27,7 +28,8 @@ const MailsTable = ({
     };
 
     fetchData();
-  }, [fetchUrl, addMailsActionCreator]);
+  }, [fetchUrl, addMailsActionCreator, mailType]);
+
 
   const pageData = mailsData?.[pageNumber - 1]?.rows || [];
 
@@ -35,24 +37,29 @@ const MailsTable = ({
     <div className={s.content}>
       <div className={s.headerPanel}>
         <h2>{title}</h2>
-        <div className={s.switchWrapper}>
-          <div>
-            <label className={s.switch}>
-              <input type="checkbox" onChange={handleTogglePasswords}/>
-              <span className={s.slider}></span>
-            </label>
+
+        {mailType === "lotus" && (
+          <div className={s.switchWrapper}>
+            <div>
+              <label className={s.switch}>
+                <input type="checkbox" onChange={handleTogglePasswords} />
+                <span className={s.slider}></span>
+              </label>
+            </div>
+            <div className={s.sliderDesc}>
+              <span>Показати паролі</span>
+            </div>
           </div>
-          <div className={s.sliderDesc}>
-            <span>Показати паролі</span>
-          </div>
-        </div>
+        )}
       </div>
 
       <table>
         <thead>
           <tr>
             <th>№ п/п</th>
-            {columns.map(col => <th key={col.key}>{col.label}</th>)}
+            {columns.map(col => (
+              <th key={col.key}>{col.label}</th>
+            ))}
             {showPasswords && <th>Пароль</th>}
           </tr>
         </thead>
@@ -60,7 +67,9 @@ const MailsTable = ({
           {pageData.map((item, index) => (
             <tr key={item.id || index}>
               <td>{index + 1}</td>
-              {columns.map(col => <td key={col.key}>{item[col.key]}</td>)}
+              {columns.map(col => (
+                <td key={col.key}>{item[col.key]}</td>
+              ))}
               {showPasswords && <td>{passwordsMap[item.id] || "—"}</td>}
             </tr>
           ))}

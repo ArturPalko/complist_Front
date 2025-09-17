@@ -17,7 +17,7 @@ function App() {
       <Route path='/phones/:pageNumber' element={<Phones/>}/>
       <Route path="/mails">
                 <Route path="Gov-ua/:pageNumber" element={<GovUaMails />} />
-                <Route path="Lotus/:pageNumbe"  element={<LotusMails />} />
+                <Route path="Lotus/:pageNumber"  element={<LotusMails />} />
       </Route>
       </Routes>
      

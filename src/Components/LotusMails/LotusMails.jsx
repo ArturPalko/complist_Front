@@ -1,14 +1,17 @@
 import { connect } from "react-redux";
 import MailsTable from "../MalisTable/MailsTable";
 import { addMailsActionCreator } from "../../redux/mails-reducer";
-import { useState} from "react";
+import { useState, useEffect} from "react";
 import { useParams } from "react-router-dom";
 
 const LotusPage = ({ mailsData, addMailsActionCreator }) => {
   const [showPasswords, setShowPasswords] = useState(false);
   const [passwordsMap, setPasswordsMap] = useState({});
   const params = useParams();
-   const pageNumber = Number(params.pageNumber) || 1;
+  const pageNumber = Number(params.pageNumber) || 1;
+    useEffect(() => {
+    console.log("Поточна сторінка змінилася:", pageNumber);
+  }, [pageNumber]);
 
   const handleTogglePasswords = async (e) => {
     const checked = e.target.checked;

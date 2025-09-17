@@ -6,19 +6,15 @@ import { useParams, useLocation } from "react-router-dom";
 
 function NavBar() {
   const [showDropdown, setShowDropdown] = useState(true);
-  const [showPhonePagesNavigation, setshowPhonePagesNavigation] = useState(true);
+  const [showPagesNavigation, setshowPagesNavigation] = useState(true);
 
   const toggleDropdown = () => {
     setShowDropdown(prev => !prev);
   };
 
   const togglePagesNavigation = () => {
-    setshowPhonePagesNavigation(prev => !prev);
+    showPagesNavigation(prev => !prev);
   }
-  const params = useParams();
-  const pageNumber = Number(params.pageNumber) || 1
-  const pathState = useLocation();
-  const currentPath = pathState.
 
   return (
     <div>
@@ -31,28 +27,28 @@ function NavBar() {
             {showDropdown && (
               <div className={s.dropdownContent}>
                 <NavLink
-                  to="/mails/Gov-ua"
+                  to="/mails/Gov-ua/1"
                   className={({ isActive }) => (isActive ? s.activeLink : undefined)}
                 >
                   GOV-UA скриньки
                 </NavLink>
                 <NavLink
-                  to="/mails/Lotus"
+                  to="/mails/Lotus/1"
                   className={({ isActive }) => (isActive ? s.activeLink : undefined)}
                 >
                   Lotus скриньки
                 </NavLink>
                 <NavLink
-                  to="/phones"
+                  to="/phones/1"
                   className={({ isActive }) => (isActive ? s.activeLink : undefined)}
-                  onClick={togglePagesNavigation} 
+                  
                 >
                   Телефони
                 </NavLink>
               </div>
             )}
           </div>
-          {showPhonePagesNavigation && <PagesNavBar />}
+          {showPagesNavigation && <PagesNavBar />}
         </nav>
       </div>
     </div>
