@@ -1,8 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import s from "./MailsTable.module.css";
 
-
-const MailsTable = ({ fetchUrl, mailType, addMailsActionCreator, mailsData, columns, title,handleTogglePasswords, showPasswords, passwordsMap}) => {
+const MailsTable = ({
+  fetchUrl,
+  mailType,
+  pageNumber,
+  addMailsActionCreator,
+  mailsData = [], 
+  columns,
+  title,
+  handleTogglePasswords,
+  showPasswords,
+  passwordsMap
+}) => {
 
   useEffect(() => {
     const fetchData = async () => {
@@ -11,7 +21,6 @@ const MailsTable = ({ fetchUrl, mailType, addMailsActionCreator, mailsData, colu
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
         addMailsActionCreator(mailType, data);
-
       } catch (error) {
         console.error("Fetch error:", error);
       }
@@ -20,9 +29,7 @@ const MailsTable = ({ fetchUrl, mailType, addMailsActionCreator, mailsData, colu
     fetchData();
   }, [fetchUrl, addMailsActionCreator]);
 
-  //let rowNumber = 1;
-  
-
+  const pageData = mailsData?.[pageNumber - 1]?.rows || [];
 
   return (
     <div className={s.content}>
@@ -30,36 +37,35 @@ const MailsTable = ({ fetchUrl, mailType, addMailsActionCreator, mailsData, colu
         <h2>{title}</h2>
         <div className={s.switchWrapper}>
           <div>
-            <label className={s.switch} >
-              <input type="checkbox"  onChange={handleTogglePasswords}/>
+            <label className={s.switch}>
+              <input type="checkbox" onChange={handleTogglePasswords}/>
               <span className={s.slider}></span>
             </label>
           </div>
           <div className={s.sliderDesc}>
-              <span>Показати паролі</span>
+            <span>Показати паролі</span>
           </div>
         </div>
       </div>
-        
-        <table>
-          <thead>
-            <tr>
-              <th>№ п/п</th>
-              {columns.map((col) => <th key={col.key}>{col.label}</th>)}
-              {showPasswords && <th>Пароль</th>}
-            </tr>
-          </thead>
-          <tbody>
-            {mailsData?.map((item, index) => (
-              <tr key={item.id || index}>
-                <td>{index + 1}</td>
-                {columns.map(col => <td key={col.key}>{item[col.key]}</td>)}
-                {showPasswords && <td>{passwordsMap[item.id] || "—"}</td>}
-              </tr>
-            ))}
-          </tbody>
-      </table>
 
+      <table>
+        <thead>
+          <tr>
+            <th>№ п/п</th>
+            {columns.map(col => <th key={col.key}>{col.label}</th>)}
+            {showPasswords && <th>Пароль</th>}
+          </tr>
+        </thead>
+        <tbody>
+          {pageData.map((item, index) => (
+            <tr key={item.id || index}>
+              <td>{index + 1}</td>
+              {columns.map(col => <td key={col.key}>{item[col.key]}</td>)}
+              {showPasswords && <td>{passwordsMap[item.id] || "—"}</td>}
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };

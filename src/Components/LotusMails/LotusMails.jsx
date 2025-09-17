@@ -1,11 +1,14 @@
 import { connect } from "react-redux";
 import MailsTable from "../MalisTable/MailsTable";
 import { addMailsActionCreator } from "../../redux/mails-reducer";
-import { useState } from "react";
+import { useState} from "react";
+import { useParams } from "react-router-dom";
 
 const LotusPage = ({ mailsData, addMailsActionCreator }) => {
   const [showPasswords, setShowPasswords] = useState(false);
   const [passwordsMap, setPasswordsMap] = useState({});
+  const params = useParams();
+   const pageNumber = Number(params.pageNumber) || 1;
 
   const handleTogglePasswords = async (e) => {
     const checked = e.target.checked;
@@ -33,6 +36,7 @@ const LotusPage = ({ mailsData, addMailsActionCreator }) => {
     <MailsTable
       fetchUrl="http://localhost:5114/mails/Lotus"
       mailType="lotus"
+      pageNumber={pageNumber}
       addMailsActionCreator={addMailsActionCreator}
       mailsData={mailsData}
       columns={[
@@ -48,7 +52,7 @@ const LotusPage = ({ mailsData, addMailsActionCreator }) => {
   );
 };
 
-const mapStateToProps = (state) => ({ mailsData: state.mails.mails["lotus"] });
+const mapStateToProps = (state) => ({ mailsData: state.mails.mails.lotus });
 const mapDispatchToProps = { addMailsActionCreator };
 
 export default connect(mapStateToProps, mapDispatchToProps)(LotusPage);

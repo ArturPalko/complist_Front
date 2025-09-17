@@ -14,10 +14,10 @@ function App() {
         <NavBar />
     <div className="app-wrapper-content">
       <Routes>
-      <Route path='/phones' element={<Phones/>}/>
+      <Route path='/phones/:pageNumber' element={<Phones/>}/>
       <Route path="/mails">
-                <Route path="Gov-ua" element={<GovUaMails />} />
-                <Route path="Lotus"  element={<LotusMails />} />
+                <Route path="Gov-ua/:pageNumber" element={<GovUaMails />} />
+                <Route path="Lotus/:pageNumbe"  element={<LotusMails />} />
       </Route>
       </Routes>
      

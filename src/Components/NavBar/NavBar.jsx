@@ -1,28 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 import s from './NavBar.module.css';
 import { NavLink } from 'react-router-dom';
+import PagesNavBar from './PagesNavBar/PagesNavBar';
+import { useParams, useLocation } from "react-router-dom";
 
-class NavBar extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      showDropdown: true, 
-    };
-  }
+function NavBar() {
+  const [showDropdown, setShowDropdown] = useState(true);
+  const [showPhonePagesNavigation, setshowPhonePagesNavigation] = useState(true);
 
-  toggleDropdown = () => {
-    this.setState((prev) => ({ showDropdown: !prev.showDropdown }));
+  const toggleDropdown = () => {
+    setShowDropdown(prev => !prev);
   };
 
-  render() {
-    return (
+  const togglePagesNavigation = () => {
+    setshowPhonePagesNavigation(prev => !prev);
+  }
+  const params = useParams();
+  const pageNumber = Number(params.pageNumber) || 1
+  const pathState = useLocation();
+  const currentPath = pathState.
+
+  return (
+    <div>
       <div className="nav">
         <nav>
           <div className={s.item}>
-            <button onClick={this.toggleDropdown} className={s.dropdownBtn}>
-              Довідники {this.state.showDropdown ? "▲" : "▼"}
+            <button onClick={toggleDropdown} className={s.dropdownBtn}>
+              Довідники {showDropdown ? "▲" : "▼"}
             </button>
-            {this.state.showDropdown && (
+            {showDropdown && (
               <div className={s.dropdownContent}>
                 <NavLink
                   to="/mails/Gov-ua"
@@ -39,16 +45,18 @@ class NavBar extends React.Component {
                 <NavLink
                   to="/phones"
                   className={({ isActive }) => (isActive ? s.activeLink : undefined)}
+                  onClick={togglePagesNavigation} 
                 >
                   Телефони
                 </NavLink>
               </div>
             )}
           </div>
+          {showPhonePagesNavigation && <PagesNavBar />}
         </nav>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default NavBar;

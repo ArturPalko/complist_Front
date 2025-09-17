@@ -1,26 +1,31 @@
 import React, { useEffect, useRef } from "react";
 import s from "./PhonesTable.module.css";
+import { NavLink } from 'react-router-dom';
 
-const PhonesTable = ({ fetchUrl, addPhonesActionCreator, phonesData, columns, title }) => {
+const PhonesTable = ({ fetchUrl, addPhonesActionCreator, phonesData, columns, title,pageNumber }) => {
   const rowNumber = useRef(1); // глобальний лічильник для всієї таблиці
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(fetchUrl);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        const data = await response.json();
-        addPhonesActionCreator(data);
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const response = await fetch(fetchUrl);
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      const data = await response.json();
 
-        console.log("Fetched data type:", Array.isArray(data));
-        console.log("Fetched data content:", data);
-      } catch (error) {
-        console.error("Fetch error:", error);
-      }
-    };
+      // Передаємо дані у Redux
+      addPhonesActionCreator(data);
 
-    fetchData();
-  }, [fetchUrl, addPhonesActionCreator]);
+      console.log("Fetched data type:", Array.isArray(data));
+      console.log("Fetched data content:", data);
+      console.log("Тепер показуємо сторінку:", pageNumber);
+    } catch (error) {
+      console.error("Fetch error:", error);
+    }
+  };
+
+  fetchData();
+}, [fetchUrl, addPhonesActionCreator, pageNumber]); // додали залежність pageNumber
+
 
   const phoneColumns = columns.find((c) => c.key === "phones")?.subLabels.length || 0;
     if (phonesData) {
@@ -58,7 +63,7 @@ const PhonesTable = ({ fetchUrl, addPhonesActionCreator, phonesData, columns, ti
         </thead>
 
        <tbody>
-         {phonesData[0]?.rows?.map((row) => {
+         {phonesData[pageNumber-1]?.rows?.map((row) => {
               switch(row.type) {
                 case "department":
                   return <tr key={`dep-${row.departmentId}`}><td className={s.mainDepartment} colSpan={columns.length + phoneColumns}>{row.departmentName}</td></tr>;
@@ -82,7 +87,7 @@ const PhonesTable = ({ fetchUrl, addPhonesActionCreator, phonesData, columns, ti
                     )}
 
                       {columns.find(c => c.key === "phones")?.subLabels.map(sub => {
-                        const phone = row.phones?.find(p => p.phoneType === sub.label); // <=== тут
+                        const phone = row.phones?.find(p => p.phoneType === sub.label); 
                         return <td key={sub.key}>{phone ? phone.phoneName : ""}</td>;
                       })}
                     </tr>
@@ -91,11 +96,7 @@ const PhonesTable = ({ fetchUrl, addPhonesActionCreator, phonesData, columns, ti
                   return null;
               }
             })}
-
-
         </tbody>
-
-
       </table>
     </div>
   );
