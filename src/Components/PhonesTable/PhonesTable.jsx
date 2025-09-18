@@ -1,38 +1,16 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import s from "./PhonesTable.module.css";
 import { NavLink } from 'react-router-dom';
+import { useParams } from "react-router-dom"
 
-const PhonesTable = ({ fetchUrl, addPhonesActionCreator, phonesData, columns, title,pageNumber }) => {
-  const rowNumber = useRef(1); // глобальний лічильник для всієї таблиці
-
-useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const response = await fetch(fetchUrl);
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      const data = await response.json();
-
-      // Передаємо дані у Redux
-      addPhonesActionCreator(data);
-
-      console.log("Fetched data type:", Array.isArray(data));
-      console.log("Fetched data content:", data);
-      console.log("Тепер показуємо сторінку:", pageNumber);
-    } catch (error) {
-      console.error("Fetch error:", error);
-    }
-  };
-
-  fetchData();
-}, [fetchUrl, addPhonesActionCreator, pageNumber]); // додали залежність pageNumber
+const PhonesTable = ({phonesData, columns, title,pageNumber,rowsPerPage }) => {
+  
 
 
   const phoneColumns = columns.find((c) => c.key === "phones")?.subLabels.length || 0;
-    if (phonesData) {
-        rowNumber.current = 1;
-      }
 
-
+useEffect(() => {
+}, [pageNumber]); // додали залежність pageNumber
   return (
 
     <div className={s.content}>
@@ -62,17 +40,36 @@ useEffect(() => {
           </tr>
         </thead>
 
-       <tbody>
-         {phonesData[pageNumber-1]?.rows?.map((row) => {
-              switch(row.type) {
-                case "department":
-                  return <tr key={`dep-${row.departmentId}`}><td className={s.mainDepartment} colSpan={columns.length + phoneColumns}>{row.departmentName}</td></tr>;
-                case "section":
-                  return <tr key={`sec-${row.sectionId}`}><td className={s.section} colSpan={columns.length + phoneColumns}>{row.sectionName}</td></tr>;
-                case "user":
-                  return (
-                    <tr key={`user-${row.userId}`}>
-                    <td>{rowNumber.current++}</td>
+      <tbody>
+          {(phonesData?.[pageNumber - 1]?.rows || []).map((row, index) => {
+            switch (row.type) {
+              case "department":
+                return (
+                  <tr key={`dep-${row.departmentId}`}>
+                    <td
+                      className={s.mainDepartment}
+                      colSpan={columns.length + phoneColumns}
+                    >
+                      {row.departmentName}
+                    </td>
+                  </tr>
+                );
+              case "section":
+                return (
+                  <tr key={`sec-${row.sectionId}`}>
+                    <td
+                      className={s.section}
+                      colSpan={columns.length + phoneColumns}
+                    >
+                      {row.sectionName}
+                    </td>
+                  </tr>
+                );
+              case "user":
+                return (
+                  <tr key={`user-${row.userId}`}>
+                    {/* Формула для глобальної нумерації */}
+                    <td>{(pageNumber - 1) * rowsPerPage + index + 1}</td>
 
                     {row.userType !== 1 ? (
                       <>
@@ -86,17 +83,19 @@ useEffect(() => {
                       </>
                     )}
 
-                      {columns.find(c => c.key === "phones")?.subLabels.map(sub => {
-                        const phone = row.phones?.find(p => p.phoneType === sub.label); 
-                        return <td key={sub.key}>{phone ? phone.phoneName : ""}</td>;
-                      })}
-                    </tr>
-                  );
-                default:
-                  return null;
-              }
-            })}
+                    {columns.find(c => c.key === "phones")?.subLabels.map(sub => {
+                      const phone = row.phones?.find(p => p.phoneType === sub.label);
+                      return <td key={sub.key}>{phone ? phone.phoneName : ""}</td>;
+                    })}
+                  </tr>
+                );
+              default:
+                return null;
+            }
+          })}
         </tbody>
+
+
       </table>
     </div>
   );

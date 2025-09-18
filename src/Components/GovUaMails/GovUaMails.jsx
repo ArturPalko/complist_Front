@@ -3,10 +3,12 @@ import MailsTable from "../MalisTable/MailsTable";
 import { addMailsActionCreator } from "../../redux/mails-reducer";
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
+import { getGovUaMails } from "../../redux/selectors/selector";
 
 const GovUAPage = ({ mailsData, addMailsActionCreator }) => {
     const params = useParams();
     const pageNumber = Number(params.pageNumber) || 1;
+    const rowsPerPage = 18;
       useEffect(() => {
       console.log("Поточна сторінка змінилася:", pageNumber);
     }, [pageNumber]);
@@ -24,6 +26,7 @@ const GovUAPage = ({ mailsData, addMailsActionCreator }) => {
               { key: "userName", label: "відповідальна особа" },
             ]}
             title="Поштові скриньки Вінницької митниці customs.gov.ua"
+            rowsPerPage={rowsPerPage}
           />
     )
   
@@ -31,7 +34,7 @@ const GovUAPage = ({ mailsData, addMailsActionCreator }) => {
 }
   
 
-const mapStateToProps = (state) => ({ mailsData: state.mails.mails["gov-ua"] });
+const mapStateToProps = (state) => ({ mailsData: getGovUaMails(state) });
 const mapDispatchToProps = { addMailsActionCreator };
 
 export default connect(mapStateToProps, mapDispatchToProps)(GovUAPage);

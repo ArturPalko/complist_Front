@@ -11,7 +11,8 @@ const MailsTable = ({
   title,
   handleTogglePasswords,
   showPasswords,
-  passwordsMap
+  passwordsMap,
+  rowsPerPage
 }) => {
 
   // Завантаження даних при зміні fetchUrl або функції додавання
@@ -66,7 +67,7 @@ const MailsTable = ({
         <tbody>
           {pageData.map((item, index) => (
             <tr key={item.id || index}>
-              <td>{index + 1}</td>
+              <td>{(pageNumber - 1) * rowsPerPage + index+1}</td>
               {columns.map(col => (
                 <td key={col.key}>{item[col.key]}</td>
               ))}

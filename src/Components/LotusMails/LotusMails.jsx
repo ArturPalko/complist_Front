@@ -3,12 +3,14 @@ import MailsTable from "../MalisTable/MailsTable";
 import { addMailsActionCreator } from "../../redux/mails-reducer";
 import { useState, useEffect} from "react";
 import { useParams } from "react-router-dom";
+import { getLotusMails } from "../../redux/selectors/selector";
 
 const LotusPage = ({ mailsData, addMailsActionCreator }) => {
   const [showPasswords, setShowPasswords] = useState(false);
   const [passwordsMap, setPasswordsMap] = useState({});
   const params = useParams();
   const pageNumber = Number(params.pageNumber) || 1;
+  const rowsPerPage = 18;
     useEffect(() => {
     console.log("Поточна сторінка змінилася:", pageNumber);
   }, [pageNumber]);
@@ -51,11 +53,12 @@ const LotusPage = ({ mailsData, addMailsActionCreator }) => {
       handleTogglePasswords={handleTogglePasswords}
       showPasswords={showPasswords}
       passwordsMap={passwordsMap}
+      rowsPerPage={rowsPerPage}
     />
   );
 };
 
-const mapStateToProps = (state) => ({ mailsData: state.mails.mails.lotus });
+const mapStateToProps = (state) => ({ mailsData: getLotusMails(state) });
 const mapDispatchToProps = { addMailsActionCreator };
 
 export default connect(mapStateToProps, mapDispatchToProps)(LotusPage);

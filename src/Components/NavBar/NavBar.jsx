@@ -10,36 +10,35 @@ function NavBar() {
 
   const toggleDropdown = () => {
     setShowDropdown(prev => !prev);
+    setshowPagesNavigation(prev => !prev);
   };
 
-  const togglePagesNavigation = () => {
-    showPagesNavigation(prev => !prev);
-  }
 
   return (
     <div>
       <div className="nav">
         <nav>
           <div className={s.item}>
-            <button onClick={toggleDropdown} className={s.dropdownBtn}>
+            <button onClick={toggleDropdown}
+            className={s.dropdownBtn}>
               Довідники {showDropdown ? "▲" : "▼"}
             </button>
             {showDropdown && (
               <div className={s.dropdownContent}>
                 <NavLink
-                  to="/mails/Gov-ua/1"
+                  to="/mails/Gov-ua/"
                   className={({ isActive }) => (isActive ? s.activeLink : undefined)}
                 >
                   GOV-UA скриньки
                 </NavLink>
                 <NavLink
-                  to="/mails/Lotus/1"
+                  to="/mails/Lotus/"
                   className={({ isActive }) => (isActive ? s.activeLink : undefined)}
                 >
                   Lotus скриньки
                 </NavLink>
                 <NavLink
-                  to="/phones/1"
+                  to="/phones/"
                   className={({ isActive }) => (isActive ? s.activeLink : undefined)}
                   
                 >

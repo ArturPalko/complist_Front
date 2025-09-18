@@ -2,7 +2,7 @@ const ADD_MAILS = "ADD_MAILS"
 
 
 const initialState = {
-    mails: {}
+    lotus:[], ["gov-ua"]:[]
 };
 
 export const mailsReducer = (state = initialState, action) => {
@@ -26,14 +26,11 @@ export const mailsReducer = (state = initialState, action) => {
 
                 }
             return {
-                ...state,
-                mails: {
-                    ...state.mails,
+                    ...state,
                     [action.mailType]: pages
-                }
-            };
-        default:
-            return state;
+                };
+            default:
+                return state;
     }
 };
 

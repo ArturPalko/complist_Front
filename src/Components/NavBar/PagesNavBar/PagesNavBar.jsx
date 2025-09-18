@@ -2,16 +2,14 @@ import React from 'react';
 import s from './PagesNavBar.module.css';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useSelector } from "react-redux";
+import { connect } from "react-redux";
+import {govUaCount, lotusCount, phonesCount} from  "../../../redux/selectors/selector";
 
-const PagesNavBar = () => {
+
+const PagesNavBar = ({govUaCount, lotusCount, phonesCount}) => {
   const location = useLocation();
   const pathParts = location.pathname.split("/").filter(Boolean); // ['phones','2'] або ['mails','Lotus','3']
-
-// Безпечні селектори
-  const phonesCount = useSelector((state) => state.phones?.phones?.length || 0);
-  const lotusCount = useSelector((state) => state.mails?.mails?.lotus?.length || 0);
-  const govUaCount = useSelector((state) => state.mails?.mails?.["gov-ua"]?.length || 0);
-
+  console.log("phones count" + phonesCount)
   let countOfPages = 0;
   let basePath = "";
 
@@ -47,5 +45,8 @@ const PagesNavBar = () => {
     </div>
   );
 };
+const mapStateToProps = (state) => ({ phonesCount:phonesCount(state),lotusCount:lotusCount(state),govUaCount:govUaCount(state) });
+const mapDispatchToProps = {  };
 
-export default PagesNavBar;
+export default connect(mapStateToProps, mapDispatchToProps)(PagesNavBar);
+

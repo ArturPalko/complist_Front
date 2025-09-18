@@ -1,16 +1,17 @@
-import { combineReducers, createStore } from "redux";
+import { combineReducers, createStore, applyMiddleware } from "redux";
 import { mailsReducer } from "./mails-reducer";
 import { phonesReducer } from "./phones-reducer";
+import { thunk } from "redux-thunk";
 
 
-let redusers = combineReducers({
+
+let reducers = combineReducers({
     "mails": mailsReducer,
     "phones": phonesReducer
     
 
 });
-
-let store = createStore(redusers);
+const store = createStore(reducers, applyMiddleware(thunk));
 
 export default store;
 

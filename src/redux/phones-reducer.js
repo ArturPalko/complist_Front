@@ -1,8 +1,13 @@
-const ADD_PHONES = "ADD_PHONES";
+import { getPhones } from "./selectors/selector";
+import { createFetchThunk } from "./fetchDataThunkCreator";
 
-const initialState = {
-  phones: []
-};
+
+const ADD_PHONES = "ADD_PHONES";
+const fetchUrl="http://localhost:5114/phones";
+
+const initialState = {};
+
+
 
 export const phonesReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -52,10 +57,7 @@ export const phonesReducer = (state = initialState, action) => {
         pages.push(page);
       }
 
-      return {
-        ...state,
-        phones: pages
-      };
+       return { ...state, pages};
     }
 
     default:
@@ -67,3 +69,7 @@ export const addPhonesActionCreator = (data) => ({
   type: ADD_PHONES,
   data
 });
+
+
+export const getPh = () =>
+  createFetchThunk(fetchUrl, addPhonesActionCreator);
