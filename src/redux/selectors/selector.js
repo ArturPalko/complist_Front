@@ -1,4 +1,4 @@
-export const rowsPerPage = () => 18;
+export const rowsPerPage = 18;
 
 export const getLotusMails = (state) => {
     return state.mails.lotus 

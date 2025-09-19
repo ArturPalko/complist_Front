@@ -2,35 +2,17 @@ import React, { useEffect } from "react";
 import s from "./MailsTable.module.css";
 
 const MailsTable = ({
-  fetchUrl,
   mailType,
-  pageNumber,
-  addMailsActionCreator,
   mailsData = [], 
   columns,
   title,
   handleTogglePasswords,
   showPasswords,
   passwordsMap,
-  rowsPerPage
+  rowsPerPage,
+  pageNumber
+  
 }) => {
-
-  // Завантаження даних при зміні fetchUrl або функції додавання
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(fetchUrl);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        const data = await response.json();
-        addMailsActionCreator(mailType, data);
-      } catch (error) {
-        console.error("Fetch error:", error);
-      }
-    };
-
-    fetchData();
-  }, [fetchUrl, addMailsActionCreator, mailType]);
-
 
   const pageData = mailsData?.[pageNumber - 1]?.rows || [];
 

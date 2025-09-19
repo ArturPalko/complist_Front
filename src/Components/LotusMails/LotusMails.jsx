@@ -1,19 +1,21 @@
 import { connect } from "react-redux";
 import MailsTable from "../MalisTable/MailsTable";
-import { addMailsActionCreator } from "../../redux/mails-reducer";
 import { useState, useEffect} from "react";
-import { useParams } from "react-router-dom";
 import { getLotusMails } from "../../redux/selectors/selector";
+import { getMailsData } from "../../redux/mails-reducer";
+import { usePageNumber } from "../../redux/hooks/hooks";
+import { rowsPerPage } from "../../redux/selectors/selector";
 
-const LotusPage = ({ mailsData, addMailsActionCreator }) => {
+const LotusPage = ({ mailsData, getMailsData }) => {
   const [showPasswords, setShowPasswords] = useState(false);
   const [passwordsMap, setPasswordsMap] = useState({});
-  const params = useParams();
-  const pageNumber = Number(params.pageNumber) || 1;
-  const rowsPerPage = 18;
-    useEffect(() => {
-    console.log("Поточна сторінка змінилася:", pageNumber);
-  }, [pageNumber]);
+
+
+   useEffect(() => {
+      getMailsData("lotus"); 
+      console.log("виконано запит за лотус")
+    }, []);
+
 
   const handleTogglePasswords = async (e) => {
     const checked = e.target.checked;
@@ -39,10 +41,7 @@ const LotusPage = ({ mailsData, addMailsActionCreator }) => {
 
   return (
     <MailsTable
-      fetchUrl="http://localhost:5114/mails/Lotus"
       mailType="lotus"
-      pageNumber={pageNumber}
-      addMailsActionCreator={addMailsActionCreator}
       mailsData={mailsData}
       columns={[
         { key: "previousName", label: "Стара назва скриньки" },
@@ -54,12 +53,13 @@ const LotusPage = ({ mailsData, addMailsActionCreator }) => {
       showPasswords={showPasswords}
       passwordsMap={passwordsMap}
       rowsPerPage={rowsPerPage}
+      pageNumber={usePageNumber()}
     />
   );
 };
 
 const mapStateToProps = (state) => ({ mailsData: getLotusMails(state) });
-const mapDispatchToProps = { addMailsActionCreator };
+const mapDispatchToProps = { getMailsData };
 
 export default connect(mapStateToProps, mapDispatchToProps)(LotusPage);
 

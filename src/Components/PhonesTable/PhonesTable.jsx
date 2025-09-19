@@ -5,12 +5,11 @@ import { useParams } from "react-router-dom"
 
 const PhonesTable = ({phonesData, columns, title,pageNumber,rowsPerPage }) => {
   
+  var indexDecrement = 0;
 
 
   const phoneColumns = columns.find((c) => c.key === "phones")?.subLabels.length || 0;
 
-useEffect(() => {
-}, [pageNumber]); // додали залежність pageNumber
   return (
 
     <div className={s.content}>
@@ -44,6 +43,7 @@ useEffect(() => {
           {(phonesData?.[pageNumber - 1]?.rows || []).map((row, index) => {
             switch (row.type) {
               case "department":
+                 indexDecrement++;
                 return (
                   <tr key={`dep-${row.departmentId}`}>
                     <td
@@ -55,6 +55,7 @@ useEffect(() => {
                   </tr>
                 );
               case "section":
+                indexDecrement++;
                 return (
                   <tr key={`sec-${row.sectionId}`}>
                     <td
@@ -69,7 +70,7 @@ useEffect(() => {
                 return (
                   <tr key={`user-${row.userId}`}>
                     {/* Формула для глобальної нумерації */}
-                    <td>{(pageNumber - 1) * rowsPerPage + index + 1}</td>
+                    <td>{(pageNumber - 1) * rowsPerPage + index + 1-indexDecrement}</td>
 
                     {row.userType !== 1 ? (
                       <>

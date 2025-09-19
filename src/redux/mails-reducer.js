@@ -1,5 +1,21 @@
-const ADD_MAILS = "ADD_MAILS"
 
+import { getGovUaMails, getLotusMails } from "./selectors/selector";
+import { createFetchThunk } from "./fetchDataThunkCreator";
+
+
+const ADD_MAILS = "ADD_MAILS"
+const fetchUrlLotus="http://localhost:5114/mails/Lotus";
+const fetchUrlGovUa="http://localhost:5114/mails/Gov-ua";
+let fetchUrl = '';
+
+function switchFetchUrl(mailType){
+    switch(mailType){
+        case "lotus":
+            return fetchUrlLotus
+        case "gov-ua":
+            return fetchUrlGovUa
+    }
+}
 
 const initialState = {
     lotus:[], ["gov-ua"]:[]
@@ -40,3 +56,5 @@ export const addMailsActionCreator = (mailType, data) => ({
     data
 });
 
+export const getMailsData = (mailType) =>
+  createFetchThunk(switchFetchUrl(mailType), addMailsActionCreator,mailType);

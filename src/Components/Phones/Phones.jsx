@@ -4,16 +4,16 @@ import PhonesTable from "../PhonesTable/PhonesTable"; // правильний ш
 
 import { compose } from "redux";
 import { getPhones,rowsPerPage } from "../../redux/selectors/selector";
-import { getPh } from "../../redux/phones-reducer";
+import { getPhonesData } from "../../redux/phones-reducer";
 import { useParams } from "react-router-dom"
 import { usePageNumber } from "../../redux/hooks/hooks";
 
-const PhonesPage = ({ phonesData, getPh }) => {
+const PhonesPage = ({ phonesData, getPhonesData }) => {
 
   useEffect(() => {
-    getPh(); 
+    getPhonesData(); 
     console.log("виконано запит за телефонами")
-  }, [getPh]);
+  }, []);
 
   return (
     <PhonesTable
@@ -40,8 +40,9 @@ const PhonesPage = ({ phonesData, getPh }) => {
 
 const mapStateToProps = (state) => ({
   phonesData: getPhones(state),
+  rowsPerPage:rowsPerPage
 });
 
 export default compose(
-  connect(mapStateToProps, { getPh })
+  connect(mapStateToProps, { getPhonesData })
 )(PhonesPage);
