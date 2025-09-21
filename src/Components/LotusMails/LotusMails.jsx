@@ -1,18 +1,15 @@
-import { connect } from "react-redux";
-import MailsTable from "../MalisTable/MailsTable";
-import { useState, useEffect} from "react";
+import { usePageNumber, rowsPerPage, connect, useState, useEffect } from "../CommonInjection/Dependencies/ComponentImports";
 import { getLotusMails } from "../../redux/selectors/selector";
 import { getMailsData } from "../../redux/mails-reducer";
-import { usePageNumber } from "../../redux/hooks/hooks";
-import { rowsPerPage } from "../../redux/selectors/selector";
+import MailsTable from "../MalisTable/MailsTable";
 
-const LotusPage = ({ mailsData, getMailsData }) => {
+const LotusPage = (props) => {
   const [showPasswords, setShowPasswords] = useState(false);
   const [passwordsMap, setPasswordsMap] = useState({});
 
 
    useEffect(() => {
-      getMailsData("lotus"); 
+      props.getMailsData("lotus"); 
       console.log("виконано запит за лотус")
     }, []);
 
@@ -42,13 +39,13 @@ const LotusPage = ({ mailsData, getMailsData }) => {
   return (
     <MailsTable
       mailType="lotus"
-      mailsData={mailsData}
+      mailsData={props.mailsData}
       columns={[
         { key: "previousName", label: "Стара назва скриньки" },
         { key: "name", label: "Нова назва скриньки" },
         { key: "owner", label: "Назва підрозділу" },
       ]}
-      title="Поштові скриньки Вінницької митниці Lotus"
+      title="Поштові скриньки Lotus"
       handleTogglePasswords={handleTogglePasswords}
       showPasswords={showPasswords}
       passwordsMap={passwordsMap}

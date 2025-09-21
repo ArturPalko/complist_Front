@@ -1,23 +1,18 @@
-import React, { useEffect } from "react";
-import { connect } from "react-redux";
-import PhonesTable from "../PhonesTable/PhonesTable"; // правильний шлях
-
-import { compose } from "redux";
-import { getPhones,rowsPerPage } from "../../redux/selectors/selector";
+import { usePageNumber, rowsPerPage, connect, useState, useEffect } from "../CommonInjection/Dependencies/ComponentImports";
+import PhonesTable from "../PhonesTable/PhonesTable";
+import { getPhones} from "../../redux/selectors/selector";
 import { getPhonesData } from "../../redux/phones-reducer";
-import { useParams } from "react-router-dom"
-import { usePageNumber } from "../../redux/hooks/hooks";
 
-const PhonesPage = ({ phonesData, getPhonesData }) => {
+const PhonesPage = (props) => {
 
   useEffect(() => {
-    getPhonesData(); 
+    props.getPhonesData(); 
     console.log("виконано запит за телефонами")
   }, []);
 
   return (
     <PhonesTable
-      phonesData={phonesData}
+      phonesData={props.phonesData}
       columns={[
         { key: "userPosition", label: "Назва посади" },
         { key: "userName", label: "Прізвище, ім'я по батькові" },
@@ -43,6 +38,4 @@ const mapStateToProps = (state) => ({
   rowsPerPage:rowsPerPage
 });
 
-export default compose(
-  connect(mapStateToProps, { getPhonesData })
-)(PhonesPage);
+export default connect(mapStateToProps, { getPhonesData })(PhonesPage);

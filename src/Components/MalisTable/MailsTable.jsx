@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
-import s from "./MailsTable.module.css";
+import s from "../LotusMails/LotusMails.module.css"
+import "./MailsTable.css"
 
 const MailsTable = ({
   mailType,

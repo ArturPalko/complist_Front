@@ -1,7 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
 import s from "./PhonesTable.module.css";
-import { NavLink } from 'react-router-dom';
-import { useParams } from "react-router-dom"
+
 
 const PhonesTable = ({phonesData, columns, title,pageNumber,rowsPerPage }) => {
   
@@ -14,7 +12,7 @@ const PhonesTable = ({phonesData, columns, title,pageNumber,rowsPerPage }) => {
 
     <div className={s.content}>
       <h2>{title}</h2>
-      <table border="1" style={{ width: "100%", borderCollapse: "collapse" }}>
+      <table>
         <thead>
           <tr>
             <th rowSpan="2">№ п/п</th>

@@ -1,26 +1,22 @@
-import { connect } from "react-redux";
+import { usePageNumber, rowsPerPage, connect, useState, useEffect } from "../CommonInjection/Dependencies/ComponentImports";
 import MailsTable from "../MalisTable/MailsTable";
-import { useParams } from "react-router-dom";
-import { useEffect } from "react";
 import { getGovUaMails } from "../../redux/selectors/selector";
-import { rowsPerPage } from "../../redux/selectors/selector";
 import { getMailsData } from "../../redux/mails-reducer";
-import { usePageNumber } from "../../redux/hooks/hooks";
 
-const GovUAPage = ({ mailsData, getMailsData }) => {
+const GovUAPage = (props) => {
     useEffect(() => {
-      getMailsData("gov-ua"); 
+      props.getMailsData("gov-ua"); 
       console.log("виконано запит за гов-юа")
     }, []);
 
     return(
         <MailsTable
             mailType="gov-ua"
-            mailsData={mailsData}
+            mailsData={props.mailsData}
             columns={[
               { key: "mailName", label: "найменування скриньки" },
               { key: "departmentOrSection", label: "найменування підрозділу" },
-              { key: "userName", label: "відповідальна особа" },
+              { key: "usersName", label: "відповідальна особа" },
             ]}
             title="Поштові скриньки Вінницької митниці customs.gov.ua"
             rowsPerPage={rowsPerPage}

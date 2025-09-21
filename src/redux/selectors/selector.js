@@ -21,3 +21,10 @@ export const phonesCount = (state) => {
  export const govUaCount = (state) =>{
     return state.mails?.["gov-ua"]?.length || 0;
   } 
+  
+export const GovUaCurrentPage = (state) => state.currentPageNumber["Gov-ua"];
+export const lotusCurrentPage = (state) => state.currentPageNumber.Lotus;
+export const phonesCurrentPage = (state) => state.currentPageNumber.phones;
+
+
+
