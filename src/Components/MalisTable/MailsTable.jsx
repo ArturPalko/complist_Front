@@ -1,10 +1,12 @@
-import React, { useEffect } from "react";
-import s from "../LotusMails/LotusMails.module.css"
-import "./MailsTable.css"
+import React from "react";
+import s from "../LotusMails/LotusMails.module.css";
+import "./MailsTable.css";
+import Preloader from "../Preloader/Preloader";
 
 const MailsTable = ({
   mailType,
-  mailsData = [], 
+  mailsData = [],
+  isDataLoaded,
   columns,
   title,
   handleTogglePasswords,
@@ -12,11 +14,21 @@ const MailsTable = ({
   passwordsMap,
   rowsPerPage,
   pageNumber
-  
 }) => {
-
   const pageData = mailsData?.[pageNumber - 1]?.rows || [];
 
+  if (!isDataLoaded) {
+    return <Preloader />;
+  }
+
+  if (isDataLoaded && (!mailsData || mailsData.length === 0)) {
+    return (
+      <div className={s.content}>
+        <h2>{title}</h2>
+        <p>Дані відсутні</p>
+      </div>
+    );
+  }
   return (
     <div className={s.content}>
       <div className={s.headerPanel}>
@@ -41,7 +53,7 @@ const MailsTable = ({
         <thead>
           <tr>
             <th>№ п/п</th>
-            {columns.map(col => (
+            {columns.map((col) => (
               <th key={col.key}>{col.label}</th>
             ))}
             {showPasswords && <th>Пароль</th>}
@@ -50,8 +62,8 @@ const MailsTable = ({
         <tbody>
           {pageData.map((item, index) => (
             <tr key={item.id || index}>
-              <td>{(pageNumber - 1) * rowsPerPage + index+1}</td>
-              {columns.map(col => (
+              <td>{(pageNumber - 1) * rowsPerPage + index + 1}</td>
+              {columns.map((col) => (
                 <td key={col.key}>{item[col.key]}</td>
               ))}
               {showPasswords && <td>{passwordsMap[item.id] || "—"}</td>}

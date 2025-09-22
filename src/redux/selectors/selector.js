@@ -26,5 +26,17 @@ export const GovUaCurrentPage = (state) => state.currentPageNumber["Gov-ua"];
 export const lotusCurrentPage = (state) => state.currentPageNumber.Lotus;
 export const phonesCurrentPage = (state) => state.currentPageNumber.phones;
 
+export const isLotusDataLoaded = (state) =>{
+        return state.dataState.lotus.dataIsLoaded
+}
+
+export const isGovUaDataLoaded = (state) =>{
+        return state.dataState["gov-ua"].dataIsLoaded
+}
+
+export const isPhonesDataLoaded = (state) =>{
+        return state.dataState.dataIsLoaded
+}
+
 
 

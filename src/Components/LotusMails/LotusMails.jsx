@@ -1,18 +1,12 @@
-import { usePageNumber, rowsPerPage, connect, useState, useEffect } from "../CommonInjection/Dependencies/ComponentImports";
-import { getLotusMails } from "../../redux/selectors/selector";
+import { usePageNumber, rowsPerPage, useState, setDataIsLoadedActionCreator } from "../CommonInjection/Dependencies/ComponentImports";
+import { getLotusMails, isLotusDataLoaded } from "../../redux/selectors/selector";
 import { getMailsData } from "../../redux/mails-reducer";
 import MailsTable from "../MalisTable/MailsTable";
+import withDataLoader from "../../redux/hocs/withDataLoader";
 
 const LotusPage = (props) => {
   const [showPasswords, setShowPasswords] = useState(false);
   const [passwordsMap, setPasswordsMap] = useState({});
-
-
-   useEffect(() => {
-      props.getMailsData("lotus"); 
-      console.log("виконано запит за лотус")
-    }, []);
-
 
   const handleTogglePasswords = async (e) => {
     const checked = e.target.checked;
@@ -22,7 +16,7 @@ const LotusPage = (props) => {
       try {
         const response = await fetch(`http://localhost:5114/mails/Lotus/passwords`);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        const data = await response.json(); // [{email, password}, ...]
+        const data = await response.json();
 
         const map = {};
         data.forEach(item => {
@@ -39,7 +33,8 @@ const LotusPage = (props) => {
   return (
     <MailsTable
       mailType="lotus"
-      mailsData={props.mailsData}
+      mailsData={props.data}
+      isDataLoaded={props.isDataLoaded}
       columns={[
         { key: "previousName", label: "Стара назва скриньки" },
         { key: "name", label: "Нова назва скриньки" },
@@ -55,8 +50,11 @@ const LotusPage = (props) => {
   );
 };
 
-const mapStateToProps = (state) => ({ mailsData: getLotusMails(state) });
-const mapDispatchToProps = { getMailsData };
 
-export default connect(mapStateToProps, mapDispatchToProps)(LotusPage);
-
+export default withDataLoader(
+  isLotusDataLoaded,   
+  getLotusMails,      
+  getMailsData,              
+  setDataIsLoadedActionCreator, 
+  "lotus"                    
+)(LotusPage);

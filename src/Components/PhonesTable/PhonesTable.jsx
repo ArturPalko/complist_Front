@@ -1,7 +1,7 @@
 import s from "./PhonesTable.module.css";
 
 
-const PhonesTable = ({phonesData, columns, title,pageNumber,rowsPerPage }) => {
+const PhonesTable = ({phonesData, isDataLoaded, columns, title,pageNumber,rowsPerPage }) => {
   
   var indexDecrement = 0;
 
