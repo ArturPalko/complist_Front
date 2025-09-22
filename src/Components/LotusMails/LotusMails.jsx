@@ -1,5 +1,5 @@
 import { usePageNumber, rowsPerPage, useState, setDataIsLoadedActionCreator } from "../CommonInjection/Dependencies/ComponentImports";
-import { getLotusMails, isLotusDataLoaded } from "../../redux/selectors/selector";
+import { getLotusMails, isLotusDataFetching, isLotusDataLoaded } from "../../redux/selectors/selector";
 import { getMailsData } from "../../redux/mails-reducer";
 import MailsTable from "../MalisTable/MailsTable";
 import withDataLoader from "../../redux/hocs/withDataLoader";
@@ -34,7 +34,7 @@ const LotusPage = (props) => {
     <MailsTable
       mailType="lotus"
       mailsData={props.data}
-      isDataLoaded={props.isDataLoaded}
+      isDataFetching={props.isDataFetching}
       columns={[
         { key: "previousName", label: "Стара назва скриньки" },
         { key: "name", label: "Нова назва скриньки" },
@@ -52,9 +52,9 @@ const LotusPage = (props) => {
 
 
 export default withDataLoader(
-  isLotusDataLoaded,   
+  isLotusDataLoaded,
+  isLotusDataFetching,   
   getLotusMails,      
-  getMailsData,              
-  setDataIsLoadedActionCreator, 
-  "lotus"                    
+  getMailsData,           
+    "lotus"                    
 )(LotusPage);

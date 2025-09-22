@@ -1,6 +1,6 @@
 import { usePageNumber, rowsPerPage, useEffect,withDataLoader,setDataIsLoadedActionCreator } from "../CommonInjection/Dependencies/ComponentImports";
 import PhonesTable from "../PhonesTable/PhonesTable";
-import { getPhones, isPhonesDataLoaded} from "../../redux/selectors/selector";
+import { getPhones, isDataFetching, isPhonesDataLoaded, isPhonesDataFetching} from "../../redux/selectors/selector";
 import { getPhonesData } from "../../redux/phones-reducer";
 
 const PhonesPage = (props) => {
@@ -8,7 +8,7 @@ const PhonesPage = (props) => {
   return (
     <PhonesTable
       phonesData={props.data}
-      isDataLoaded={props.isDataLoaded}
+      isDataFetching={props.isDataFetching}
       columns={[
         { key: "userPosition", label: "Назва посади" },
         { key: "userName", label: "Прізвище, ім'я по батькові" },
@@ -30,7 +30,8 @@ const PhonesPage = (props) => {
 };
 
 export default withDataLoader(
-  isPhonesDataLoaded,   
+  isPhonesDataLoaded,
+  isPhonesDataFetching,   
   getPhones,      
   getPhonesData,              
   setDataIsLoadedActionCreator, 

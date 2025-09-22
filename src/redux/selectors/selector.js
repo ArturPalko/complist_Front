@@ -35,8 +35,18 @@ export const isGovUaDataLoaded = (state) =>{
 }
 
 export const isPhonesDataLoaded = (state) =>{
-        return state.dataState.dataIsLoaded
+        return state.dataState.phones.dataIsLoaded
 }
+
+export const isLotusDataFetching = (state) => {
+  return state.dataState.lotus.dataIsFetching;
+};
+export const isGovUaDataFetching = (state) => {
+  return state.dataState["gov-ua"].dataIsFetching;
+};
+export const isPhonesDataFetching = (state) => {
+  return state.dataState.phones.dataIsFetching;
+};
 
 
 

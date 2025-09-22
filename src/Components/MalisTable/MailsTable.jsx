@@ -6,7 +6,7 @@ import Preloader from "../Preloader/Preloader";
 const MailsTable = ({
   mailType,
   mailsData = [],
-  isDataLoaded,
+  isDataFetching,
   columns,
   title,
   handleTogglePasswords,
@@ -17,19 +17,9 @@ const MailsTable = ({
 }) => {
   const pageData = mailsData?.[pageNumber - 1]?.rows || [];
 
-  if (!isDataLoaded) {
-    return <Preloader />;
-  }
-
-  if (isDataLoaded && (!mailsData || mailsData.length === 0)) {
-    return (
-      <div className={s.content}>
-        <h2>{title}</h2>
-        <p>Дані відсутні</p>
-      </div>
-    );
-  }
-  return (
+  return isDataFetching ? (
+    <Preloader />
+  )  : (
     <div className={s.content}>
       <div className={s.headerPanel}>
         <h2>{title}</h2>
@@ -74,5 +64,4 @@ const MailsTable = ({
     </div>
   );
 };
-
 export default MailsTable;

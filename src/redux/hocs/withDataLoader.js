@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { getLotusMails,isLotusDataLoaded, isGovUaDataLoaded } from "../selectors/selector";
 
-const withDataLoader = (isDataLoadedselector, dataSelector, fetchAction, setLoadedAction, type) => (WrappedComponent) => {
+const withDataLoader = (isDataLoadedselector,isDataFetchingselector, dataSelector, fetchAction, type) => (WrappedComponent) => {
   const HOC = (props) => {
    React.useEffect(() => {
   if (!props.isDataLoaded) {
@@ -13,9 +13,8 @@ const withDataLoader = (isDataLoadedselector, dataSelector, fetchAction, setLoad
       props.fetchAction(type);
     }
     console.log(`Виконано запит за ${type}`);
-    props.setLoadedAction(true, type);
   }
-}, [props.isDataLoaded, props.fetchAction, props.setLoadedAction, type]);
+}, [props.isDataLoaded, props.fetchAction,  type]);
 
 
     return <WrappedComponent {...props} />;
@@ -23,12 +22,12 @@ const withDataLoader = (isDataLoadedselector, dataSelector, fetchAction, setLoad
 
   const mapStateToProps = (state) => ({
     isDataLoaded: isDataLoadedselector(state),
+    isDataFetching: isDataFetchingselector(state,type),
      data: dataSelector(state),
   });
 
   const mapDispatchToProps = {
-    fetchAction: fetchAction,
-    setLoadedAction: setLoadedAction,
+    fetchAction: fetchAction
   };
 
   return connect(mapStateToProps, mapDispatchToProps)(HOC);

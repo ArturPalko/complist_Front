@@ -72,4 +72,4 @@ export const addPhonesActionCreator = (data) => ({
 
 
 export const getPhonesData = () =>
-  createFetchThunk(fetchUrl, addPhonesActionCreator);
+  createFetchThunk(fetchUrl, addPhonesActionCreator, "phones");

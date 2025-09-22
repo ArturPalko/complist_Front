@@ -1,6 +1,6 @@
 import { usePageNumber, rowsPerPage, connect, useState, useEffect, withDataLoader,setDataIsLoadedActionCreator} from "../CommonInjection/Dependencies/ComponentImports";
 import MailsTable from "../MalisTable/MailsTable";
-import { getGovUaMails, isGovUaDataLoaded } from "../../redux/selectors/selector";
+import { getGovUaMails, isGovUaDataFetching, isGovUaDataLoaded } from "../../redux/selectors/selector";
 import { getMailsData } from "../../redux/mails-reducer";
 
 
@@ -26,8 +26,8 @@ const GovUAPage = (props) => {
   
 export default withDataLoader(
   isGovUaDataLoaded,   
+  isGovUaDataFetching,
   getGovUaMails,      
-  getMailsData,              
-  setDataIsLoadedActionCreator, 
+  getMailsData,          
   "gov-ua"                    
 )(GovUAPage);
