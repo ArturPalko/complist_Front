@@ -1,23 +1,42 @@
 import { toggleDataIsFetchingActionCreator } from "./app-reducer";
 import {setDataIsLoadedActionCreator} from "./app-reducer";
 
-export const createFetchThunk = (fetchUrl, actionCreator,type) => {
+export const createFetchThunk = (fetchUrl, actionCreator, type) => {
   return async (dispatch) => {
-    try {
-      dispatch(toggleDataIsFetchingActionCreator(true,type));
-      const response = await fetch(fetchUrl);
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      const data = await response.json();
-      dispatch(toggleDataIsFetchingActionCreator(false,type));
-      if(type!="phones"){
-        dispatch(actionCreator(type,data));
+    dispatch(toggleDataIsFetchingActionCreator(true, type));
+
+    const startTime = Date.now();
+    const timeout = 10000; 
+    let data = null;
+    let success = false;
+
+    while (Date.now() - startTime < timeout && !success) {
+      try {
+        const response = await fetch(fetchUrl);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+        data = await response.json();
+        success = true; 
+        break;
+      } catch (error) {
+        await new Promise(res => setTimeout(res, 500));
       }
-      else{
-           dispatch(actionCreator(data));
-      }
-      dispatch(setDataIsLoadedActionCreator(true,type))
-    } catch (error) {
-      console.error("Fetch error:", error);
     }
+
+    dispatch(toggleDataIsFetchingActionCreator(false, type));
+
+    if (success) {
+      if (type !== "phones") {
+        dispatch(actionCreator(type, data));
+      } else {
+        dispatch(actionCreator(data));
+      }
+      dispatch(setDataIsLoadedActionCreator(true, type));
+    
+    }
+    if (!success) {
+      throw new Error("Перевищено час очікування даних від сервера");
+}
+
   };
 };

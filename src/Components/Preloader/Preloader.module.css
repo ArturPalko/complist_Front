@@ -1,0 +1,17 @@
+.preloader{
+width: 50vh;
+  height: 50vh;
+  position: fixed;   
+  top: 10%;          
+  left: 50%;
+}
+
+.timer {
+  margin-top: 10px;
+  font-size: 4rem;
+  color: #333;
+}
+.time{
+    display: inline-block;
+    background-color: beige;
+}

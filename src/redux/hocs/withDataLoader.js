@@ -1,34 +1,72 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { getLotusMails,isLotusDataLoaded, isGovUaDataLoaded } from "../selectors/selector";
+import { useNavigate } from "react-router-dom";
+import Preloader from "../../Components/Preloader/Preloader";
 
-const withDataLoader = (isDataLoadedselector,isDataFetchingselector, dataSelector, fetchAction, type) => (WrappedComponent) => {
+const withDataLoader = (
+  isDataLoadedselector,
+  isDataFetchingselector,
+  dataSelector,
+  fetchAction,
+  type,
+  fetchUrl,
+  actionCreator
+) => (WrappedComponent) => {
   const HOC = (props) => {
-   React.useEffect(() => {
-  if (!props.isDataLoaded) {
-    if (type == "phones"){
-      props.fetchAction();
-    }
-    else{
-      props.fetchAction(type);
-    }
-    console.log(`Виконано запит за ${type}`);
-  }
-}, [props.isDataLoaded, props.fetchAction,  type]);
+    const navigate = useNavigate();
+    const [count, setCount] = useState(10);
+    const [showPreloader, setShowPreloader] = useState(false);
 
+    useEffect(() => {
+      if (!showPreloader) return;
 
-    return <WrappedComponent {...props} />;
+      const timerId = setInterval(() => {
+        setCount((prev) => {
+          if (prev <= 1) {
+            clearInterval(timerId);
+            setShowPreloader(false);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      return () => clearInterval(timerId);
+    }, [showPreloader]);
+
+    useEffect(() => {
+      if (props.isDataLoaded) return;
+
+      setShowPreloader(true);
+      setCount(10);
+
+      const doFetch = async () => {
+        try {
+          await props.fetchAction(type);
+        } catch (error) {
+          navigate("/error", { state: { message: error.message } });
+
+        }
+        finally{
+          setShowPreloader(false);
+        }
+      };
+
+      doFetch();
+
+  
+    }, [props.isDataLoaded, props.fetchAction, fetchUrl, actionCreator, type]);
+
+    return showPreloader ? <Preloader count={count} /> : <WrappedComponent {...props} />;
   };
 
   const mapStateToProps = (state) => ({
     isDataLoaded: isDataLoadedselector(state),
-    isDataFetching: isDataFetchingselector(state,type),
-     data: dataSelector(state),
+    isDataFetching: isDataFetchingselector(state, type),
+    data: dataSelector(state),
   });
 
-  const mapDispatchToProps = {
-    fetchAction: fetchAction
-  };
+  const mapDispatchToProps = { fetchAction };
 
   return connect(mapStateToProps, mapDispatchToProps)(HOC);
 };

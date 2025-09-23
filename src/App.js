@@ -7,6 +7,7 @@ import LotusMails from './Components/LotusMails/LotusMails';
 import Phones from './Components/Phones/Phones';
 import RedirectToCurrentPage from './Components/RedirectToCurrentPage';
 import { phonesCurrentPage, GovUaCurrentPage, lotusCurrentPage } from "./redux/selectors/selector";
+import Error from './Components/Error/Error';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
       <NavBar />
       <div className="app-wrapper-content">
         <Routes>
+          <Route path ="/error" element={<Error/>}/>
           {/* Головний редірект на Gov-ua */}
           <Route path="/" element={
             <RedirectToCurrentPage selector={GovUaCurrentPage} buildPath={(page) => `/mails/Gov-ua/${page}`} />

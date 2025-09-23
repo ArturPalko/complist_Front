@@ -7,10 +7,8 @@ const PhonesTable = ({ phonesData, isDataFetching, columns, title, pageNumber, r
   let indexDecrement = 0;
   const phoneColumns = columns.find((c) => c.key === "phones")?.subLabels.length || 0;
 
-  return isDataFetching ? (
-    <Preloader />
-  ) : (
-    <div className={s.content}>
+  return (   
+     <div className={s.content}>
       <h2>{title}</h2>
         <table>
           <thead>
@@ -84,9 +82,10 @@ const PhonesTable = ({ phonesData, isDataFetching, columns, title, pageNumber, r
             })}
           </tbody>
         </table>
-      )}
     </div>
-  );
-};
+
+  )
+}
+
 
 export default PhonesTable;
