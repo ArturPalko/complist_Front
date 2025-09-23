@@ -16,6 +16,7 @@ export const createFetchThunk = (fetchUrl, actionCreator, type) => {
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
         data = await response.json();
+        
         success = true; 
         break;
       } catch (error) {

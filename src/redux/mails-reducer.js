@@ -41,6 +41,9 @@ export const mailsReducer = (state = initialState, action) => {
                     if (countRows >= limitRows) savePage();
 
                 }
+                if (page.rows.length > 0) {
+                    pages.push(page);
+      }
             return {
                     ...state,
                     [action.mailType]: pages

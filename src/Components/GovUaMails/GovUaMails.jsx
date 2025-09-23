@@ -13,7 +13,7 @@ const GovUAPage = (props) => {
             columns={[
               { key: "mailName", label: "найменування скриньки" },
               { key: "departmentOrSection", label: "найменування підрозділу" },
-              { key: "usersName", label: "відповідальна особа" },
+              { key: "userName", label: "відповідальна особа" },
             ]}
             title="Поштові скриньки Вінницької митниці customs.gov.ua"
             rowsPerPage={rowsPerPage}
