@@ -19,7 +19,7 @@ const Error = () => {
         <h1 className={s.title}>Oops!</h1>
         <p className={s.message}>{message}</p>
         <button className={s.button} onClick={handleBack}>
-          Назад
+          Спробувати ще раз
         </button>
       </div>
     </div>

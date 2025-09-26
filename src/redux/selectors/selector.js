@@ -48,5 +48,20 @@ export const isPhonesDataFetching = (state) => {
   return state.dataState.phones.dataIsFetching;
 };
 
+export const isPresentedSearchFieldOnGovUA = (state) =>{
+  return state.toggledElements.searchField["gov-ua"].isPresented
+}
 
+export const isPresentedSearchFieldOnLotus = (state) =>{
+  return state.toggledElements.searchField.lotus.isPresented;
+}
+
+export const isPresentedSearchFieldOnPhones = (state) =>{
+  return state.toggledElements.searchField.phones.isPresented
+}
+
+export const isCheckboxShowSearchField=(state)=>{
+
+  return state.ckecboxesOfToggle.showSearchField.isActive;
+}
 

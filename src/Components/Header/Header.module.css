@@ -1,10 +1,16 @@
 .singIn {
-  display: flex;
-  justify-content: flex-end; /* вирівнюємо кнопку вправо */
+  margin-left: auto;
   align-items: center;
   height: 100%;
   padding-right: 20px;
+  margin-top:  30px;
 }
+
+.searchBar{
+  margin: 0 auto;
+
+}
+
 
 /* стиль кнопки */
 .button {
@@ -29,3 +35,5 @@
 .button:active {
   transform: scale(0.97);
 }
+
+

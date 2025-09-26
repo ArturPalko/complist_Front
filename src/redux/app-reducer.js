@@ -18,7 +18,7 @@ export const appReducer = (state = initialState, action) => {
         }
       };
 
-    case TOGGLE_DATA_IS_FETCHING: // ❌ було без двокрапки
+    case TOGGLE_DATA_IS_FETCHING: 
       return {
         ...state,
         [action.page]: {

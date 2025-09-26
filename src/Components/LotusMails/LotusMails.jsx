@@ -1,8 +1,9 @@
 import { usePageNumber, rowsPerPage, useState, setDataIsLoadedActionCreator } from "../CommonInjection/Dependencies/ComponentImports";
-import { getLotusMails, isLotusDataFetching, isLotusDataLoaded } from "../../redux/selectors/selector";
+import { getLotusMails, isLotusDataFetching, isLotusDataLoaded, isCheckboxShowSearchField } from "../../redux/selectors/selector";
 import { getMailsData } from "../../redux/mails-reducer";
 import MailsTable from "../MalisTable/MailsTable";
 import withDataLoader from "../../redux/hocs/withDataLoader";
+import TopTableBar from "../TopTableBar/TopTableBar";
 
 const LotusPage = (props) => {
   const [showPasswords, setShowPasswords] = useState(false);
@@ -31,29 +32,39 @@ const LotusPage = (props) => {
   };
 
   return (
-    <MailsTable
-      mailType="lotus"
-      mailsData={props.data}
-      isDataFetching={props.isDataFetching}
-      columns={[
-        { key: "previousName", label: "Стара назва скриньки" },
-        { key: "name", label: "Нова назва скриньки" },
-        { key: "owner", label: "Назва підрозділу" },
-      ]}
+    <>
+      <TopTableBar
       title="Поштові скриньки Lotus"
+      mailType="lotus"
+      valueOfSearchCheckBox = {props.isCheckboxShowSearchField}
+      rememberCkeckboxState = {() => props.rememberCkeckboxState("showSearchField")}
+      handleToggleSearchField={() => props.handleToggleSearchField("lotus")}
       handleTogglePasswords={handleTogglePasswords}
-      showPasswords={showPasswords}
-      passwordsMap={passwordsMap}
-      rowsPerPage={rowsPerPage}
-      pageNumber={usePageNumber()}
-    />
+      />
+      <MailsTable
+        mailType="lotus"
+        mailsData={props.data}
+        isDataFetching={props.isDataFetching}
+        columns={[
+          { key: "previousName", label: "Стара назва скриньки" },
+          { key: "name", label: "Нова назва скриньки" },
+          { key: "owner", label: "Назва підрозділу" },
+        ]}
+        showPasswords={showPasswords}
+        passwordsMap={passwordsMap}
+        rowsPerPage={rowsPerPage}
+        pageNumber={usePageNumber()}
+      />
+    </>
   );
+
 };
 
 
 export default withDataLoader(
   isLotusDataLoaded,
-  isLotusDataFetching,   
+  isLotusDataFetching, 
+  //isCheckboxShowSearchField,  
   getLotusMails,      
   getMailsData,           
     "lotus"                    

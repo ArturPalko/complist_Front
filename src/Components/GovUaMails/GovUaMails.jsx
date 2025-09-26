@@ -2,11 +2,16 @@ import { usePageNumber, rowsPerPage, connect, useState, useEffect, withDataLoade
 import MailsTable from "../MalisTable/MailsTable";
 import { getGovUaMails, isGovUaDataFetching, isGovUaDataLoaded } from "../../redux/selectors/selector";
 import { getMailsData } from "../../redux/mails-reducer";
-
+import TopTableBar from "../TopTableBar/TopTableBar";
 
 const GovUAPage = (props) => {
 
     return(
+      <>
+      <TopTableBar
+      title="Поштові скриньки Gov-ua"
+      mailType="gov-ua"
+      />
         <MailsTable
             mailType="gov-ua"
             mailsData={props.data}
@@ -19,8 +24,9 @@ const GovUAPage = (props) => {
             rowsPerPage={rowsPerPage}
             pageNumber={usePageNumber()}
           />
-    )
-  
+      </>
+
+          )
 
 }
   

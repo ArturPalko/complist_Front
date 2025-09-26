@@ -34,6 +34,6 @@ export default withDataLoader(
   isPhonesDataFetching,   
   getPhones,      
   getPhonesData,              
-  setDataIsLoadedActionCreator, 
+  //setDataIsLoadedActionCreator, 
   "phones"                    
 )(PhonesPage);

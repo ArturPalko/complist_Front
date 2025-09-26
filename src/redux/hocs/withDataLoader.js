@@ -2,10 +2,14 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Preloader from "../../Components/Preloader/Preloader";
+import { toggleSearchFieldActionCreator } from "../toggledElements-reducer";
+import { toggleChecboxActionCreator } from "../topTable-reducer";
+
 
 const withDataLoader = (
   isDataLoadedselector,
   isDataFetchingselector,
+ // isCheckboxShowSearchField,
   dataSelector,
   fetchAction,
   type,
@@ -39,6 +43,7 @@ const withDataLoader = (
 
       setShowPreloader(true);
       setCount(10);
+      console.log("Викона запит за:",type)
 
       const doFetch = async () => {
         try {
@@ -64,9 +69,13 @@ const withDataLoader = (
     isDataLoaded: isDataLoadedselector(state),
     isDataFetching: isDataFetchingselector(state, type),
     data: dataSelector(state),
+   // isCheckboxShowSearchField: isCheckboxShowSearchField(state)
   });
 
-  const mapDispatchToProps = { fetchAction };
+  const mapDispatchToProps = { 
+    fetchAction,
+     handleToggleSearchField:toggleSearchFieldActionCreator,
+     rememberCkeckboxState: toggleChecboxActionCreator}
 
   return connect(mapStateToProps, mapDispatchToProps)(HOC);
 };
