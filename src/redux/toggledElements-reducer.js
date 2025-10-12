@@ -1,27 +1,43 @@
 const TOGGLE_SEARCH_FIELD_ELEMENT ="TOGGLE_SEARCH_FIELD_ELEMENT";
+const TOGGLE_PASSWORD_FIELD_ELEMENT ="TOGGLE_PASSWORD_FIELD_ELEMENT";
 
 const initialState = {
+  showPasswords: { isActive: false },
+  showSearchField: { isActive: true },
   searchField: {
-    "gov-ua": { isPresented: false, searchValue: "", foundResults: { pageIndex: null, rows: [] } },
-    "lotus": { isPresented: false, searchValue: "", foundResults: { pageIndex: null, rows: [] } },
-    "phones": { isPresented: false, searchValue: "", foundResults: { pageIndex: null, rows: [] } }
-  }
-
+    "gov-ua": { searchValue: "", foundResults: { pageIndex: null, rows: [] } },
+    "lotus": { searchValue: "", foundResults: { pageIndex: null, rows: [] } },
+    "phones": { searchValue: "", foundResults: { pageIndex: null, rows: [] } },
+  },
+  passwords:[]
 };
 
 
 
 export const toggledElemetsReducer = (state = initialState, action) => {
   switch (action.type) {
-    case "TOGGLE_SEARCH_FIELD_ELEMENT":
+    // Тоглити показ поля пошуку для всього showSearchField
+    case TOGGLE_SEARCH_FIELD_ELEMENT :
       return {
         ...state,
-        searchField: {
-          ...state.searchField,
-          [action.pageType]: {
-            ...state.searchField[action.pageType],
-            isPresented: action.value !== undefined ? action.value : !state.searchField[action.pageType].isPresented
-          }
+        showSearchField: {
+          ...state.showSearchField,
+          isActive:
+            action.value !== undefined
+              ? action.value
+              : !state.showSearchField.isActive
+        }
+      };
+
+    case TOGGLE_PASSWORD_FIELD_ELEMENT:
+      return {
+        ...state,
+        showPasswords: {
+          ...state.showPasswords,
+          isActive:
+            action.value !== undefined
+              ? action.value
+              : !state.showPasswords.isActive
         }
       };
 
@@ -31,10 +47,14 @@ export const toggledElemetsReducer = (state = initialState, action) => {
   }
 };
 
-export const toggleSearchFieldActionCreator = (pageType) => ({
-  type: TOGGLE_SEARCH_FIELD_ELEMENT,
-  pageType
-})
+export const toggleSearchFieldActionCreator = (value) => {
+  console.log("toggle запущено", value);
+  return {
+    type: "TOGGLE_SEARCH_FIELD_ELEMENT",
+    value      
+  };
+};
+
 
 
 

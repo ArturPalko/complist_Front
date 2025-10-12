@@ -2,14 +2,12 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Preloader from "../../Components/Preloader/Preloader";
-import { toggleSearchFieldActionCreator } from "../toggledElements-reducer";
-import { toggleChecboxActionCreator } from "../topTable-reducer";
+
 
 
 const withDataLoader = (
   isDataLoadedselector,
   isDataFetchingselector,
- // isCheckboxShowSearchField,
   dataSelector,
   fetchAction,
   type,
@@ -68,14 +66,10 @@ const withDataLoader = (
   const mapStateToProps = (state) => ({
     isDataLoaded: isDataLoadedselector(state),
     isDataFetching: isDataFetchingselector(state, type),
-    data: dataSelector(state),
-   // isCheckboxShowSearchField: isCheckboxShowSearchField(state)
+    data: dataSelector(state)
   });
 
-  const mapDispatchToProps = { 
-    fetchAction,
-     handleToggleSearchField:toggleSearchFieldActionCreator,
-     rememberCkeckboxState: toggleChecboxActionCreator}
+  const mapDispatchToProps = { fetchAction}
 
   return connect(mapStateToProps, mapDispatchToProps)(HOC);
 };

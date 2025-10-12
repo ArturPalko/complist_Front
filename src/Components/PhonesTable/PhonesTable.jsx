@@ -2,14 +2,13 @@ import s from "./PhonesTable.module.css";
 import Preloader from "../Preloader/Preloader"
 
 
-const PhonesTable = ({ phonesData, isDataFetching, columns, title, pageNumber, rowsPerPage }) => {
+const PhonesTable = ({ phonesData, isDataFetching, columns, pageNumber, rowsPerPage }) => {
   const pageData = phonesData?.[pageNumber - 1]?.rows || [];
   let indexDecrement = 0;
   const phoneColumns = columns.find((c) => c.key === "phones")?.subLabels.length || 0;
 
   return (   
      <div className={s.content}>
-      <h2>{title}</h2>
         <table>
           <thead>
             <tr>

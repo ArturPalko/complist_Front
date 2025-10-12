@@ -1,9 +1,10 @@
-import { usePageNumber, rowsPerPage, useState, setDataIsLoadedActionCreator } from "../CommonInjection/Dependencies/ComponentImports";
-import { getLotusMails, isLotusDataFetching, isLotusDataLoaded, isCheckboxShowSearchField } from "../../redux/selectors/selector";
+import { usePageNumber, rowsPerPage, useState, compose } from "../CommonInjection/Dependencies/ComponentImports";
+import { getLotusMails, isLotusDataFetching, isLotusDataLoaded } from "../../redux/selectors/selector";
 import { getMailsData } from "../../redux/mails-reducer";
 import MailsTable from "../MalisTable/MailsTable";
 import withDataLoader from "../../redux/hocs/withDataLoader";
 import TopTableBar from "../TopTableBar/TopTableBar";
+import withToggleElements from "../../redux/hocs/withToggleElements";
 
 const LotusPage = (props) => {
   const [showPasswords, setShowPasswords] = useState(false);
@@ -12,34 +13,16 @@ const LotusPage = (props) => {
   const handleTogglePasswords = async (e) => {
     const checked = e.target.checked;
     setShowPasswords(checked);
-
-    if (checked) {
-      try {
-        const response = await fetch(`http://localhost:5114/mails/Lotus/passwords`);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        const data = await response.json();
-
-        const map = {};
-        data.forEach(item => {
-          map[item.id] = item.password;
-        });
-        setPasswordsMap(map);
-
-      } catch (error) {
-        console.error("Fetch passwords error:", error);
-      }
-    }
-  };
+    props.togglePasswords(checked,setPasswordsMap);}
 
   return (
     <>
       <TopTableBar
-      title="Поштові скриньки Lotus"
-      mailType="lotus"
-      valueOfSearchCheckBox = {props.isCheckboxShowSearchField}
-      rememberCkeckboxState = {() => props.rememberCkeckboxState("showSearchField")}
-      handleToggleSearchField={() => props.handleToggleSearchField("lotus")}
-      handleTogglePasswords={handleTogglePasswords}
+        title="Поштові скриньки Lotus"
+        mailType="lotus"
+        valueOfSearchCheckBox={props.isPresentedSearchField}
+        handleToggleSearchField={props.handleToggleSearchField} 
+        handleTogglePasswords={handleTogglePasswords}
       />
       <MailsTable
         mailType="lotus"
@@ -57,15 +40,15 @@ const LotusPage = (props) => {
       />
     </>
   );
-
 };
 
-
-export default withDataLoader(
-  isLotusDataLoaded,
-  isLotusDataFetching, 
-  //isCheckboxShowSearchField,  
-  getLotusMails,      
-  getMailsData,           
-    "lotus"                    
+export default compose(
+  withDataLoader(
+    isLotusDataLoaded,
+    isLotusDataFetching,
+    getLotusMails,
+    getMailsData,
+    "lotus"
+  ),
+  withToggleElements
 )(LotusPage);

@@ -1,11 +1,19 @@
-import { usePageNumber, rowsPerPage, useEffect,withDataLoader,setDataIsLoadedActionCreator } from "../CommonInjection/Dependencies/ComponentImports";
+import { usePageNumber, rowsPerPage, useEffect,withDataLoader,setDataIsLoadedActionCreator,compose } from "../CommonInjection/Dependencies/ComponentImports";
 import PhonesTable from "../PhonesTable/PhonesTable";
 import { getPhones, isDataFetching, isPhonesDataLoaded, isPhonesDataFetching} from "../../redux/selectors/selector";
 import { getPhonesData } from "../../redux/phones-reducer";
+import TopTableBar from "../TopTableBar/TopTableBar";
+import withToggleElements from "../../redux/hocs/withToggleElements";
 
 const PhonesPage = (props) => {
-
   return (
+    <>
+    <TopTableBar
+      title="Поштові скриньки Gov-ua"
+      mailType="gov-ua"
+      valueOfSearchCheckBox={props.isPresentedSearchField}
+      handleToggleSearchField={props.handleToggleSearchField} 
+      />
     <PhonesTable
       phonesData={props.data}
       isDataFetching={props.isDataFetching}
@@ -23,17 +31,19 @@ const PhonesPage = (props) => {
         },
       ]}
       pageNumber={usePageNumber()}
-      title="Телефонний довідник"
       rowsPerPage={rowsPerPage}
     />
-  );
-};
+    </>
+  )
+}
+    
 
-export default withDataLoader(
+export default compose(
+  withDataLoader(
   isPhonesDataLoaded,
   isPhonesDataFetching,   
   getPhones,      
   getPhonesData,              
-  //setDataIsLoadedActionCreator, 
-  "phones"                    
+  "phones"),
+  withToggleElements                    
 )(PhonesPage);

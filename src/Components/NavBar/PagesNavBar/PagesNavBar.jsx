@@ -33,9 +33,12 @@ const PagesNavBar = (props) => {
     }
   }
 
-  useEffect(() => {
+ useEffect(() => {
+  if (pageName) {
     props.rememberCurrentPage(pageName, pageFromURL);
-  }, [location.pathname, pageName, pageFromURL]);
+  }
+}, [location.pathname, pageName, pageFromURL]);
+
 
   return (
     <div className={s.navigationOfPage}>

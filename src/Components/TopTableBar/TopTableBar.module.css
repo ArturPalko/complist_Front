@@ -1,4 +1,6 @@
-
+.headerPanel{
+  padding-right: 20px;
+}
 .slider {
   position: absolute;
   cursor: pointer;

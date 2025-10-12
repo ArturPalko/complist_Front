@@ -1,14 +1,15 @@
 import { connect } from "react-redux";
 import s from "./Search.module.css";
-import { isPresentedSearchFieldOnLotus } from "../../../redux/selectors/selector";
+import { isPresentedSearchField } from "../../../redux/selectors/selector";
 
 const Search = (props) => {
-  return <SearchForm isPresentedSearchFieldOnLotus={props.isPresentedSearchFieldOnLotus} />;
+  return <SearchForm isPresentedSearchField={props.isPresentedSearchField} />;
 };
 
-const SearchForm = ({ isPresentedSearchFieldOnLotus }) => {
+const SearchForm = (props) => {
+  console.log("в поушуку")
   return (
-    isPresentedSearchFieldOnLotus && (
+    props.isPresentedSearchField && (
       <form className={s.form}>
         <input className={s.searchInput} placeholder="Ввести значення пошуку" />
         <button className={s.searchButton} type="submit">Пошук</button>
@@ -18,7 +19,7 @@ const SearchForm = ({ isPresentedSearchFieldOnLotus }) => {
 };
 
 const mapStateToProps = (state) => ({
-  isPresentedSearchFieldOnLotus: isPresentedSearchFieldOnLotus(state),
+  isPresentedSearchField: isPresentedSearchField(state),
 });
 
 export default connect(mapStateToProps)(Search);

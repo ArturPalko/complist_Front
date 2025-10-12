@@ -1,8 +1,9 @@
-import { usePageNumber, rowsPerPage, connect, useState, useEffect, withDataLoader,setDataIsLoadedActionCreator} from "../CommonInjection/Dependencies/ComponentImports";
+import { usePageNumber, rowsPerPage, connect, useState, useEffect, withDataLoader,setDataIsLoadedActionCreator,compose} from "../CommonInjection/Dependencies/ComponentImports";
 import MailsTable from "../MalisTable/MailsTable";
 import { getGovUaMails, isGovUaDataFetching, isGovUaDataLoaded } from "../../redux/selectors/selector";
 import { getMailsData } from "../../redux/mails-reducer";
 import TopTableBar from "../TopTableBar/TopTableBar";
+import withToggleElements from "../../redux/hocs/withToggleElements";
 
 const GovUAPage = (props) => {
 
@@ -11,6 +12,8 @@ const GovUAPage = (props) => {
       <TopTableBar
       title="Поштові скриньки Gov-ua"
       mailType="gov-ua"
+      valueOfSearchCheckBox={props.isPresentedSearchField}
+      handleToggleSearchField={props.handleToggleSearchField} 
       />
         <MailsTable
             mailType="gov-ua"
@@ -30,10 +33,12 @@ const GovUAPage = (props) => {
 
 }
   
-export default withDataLoader(
+export default compose(
+  withDataLoader(
   isGovUaDataLoaded,   
   isGovUaDataFetching,
   getGovUaMails,      
   getMailsData,          
-  "gov-ua"                    
+  "gov-ua"),
+  withToggleElements    
 )(GovUAPage);
