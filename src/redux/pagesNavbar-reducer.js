@@ -12,7 +12,7 @@ export const pagesNavbarReducer = (state = initialState, action) => {
         case REMEMBER_CURRENT_PAGE_NUMBER:
             return {
                 ...state,
-                activeMemu:action.pageName,
+                activeMenu:action.pageName,
                 [action.pageName]: action.pageNumber
             };
         default:

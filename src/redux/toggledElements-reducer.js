@@ -1,23 +1,18 @@
-const TOGGLE_SEARCH_FIELD_ELEMENT ="TOGGLE_SEARCH_FIELD_ELEMENT";
-const TOGGLE_PASSWORD_FIELD_ELEMENT ="TOGGLE_PASSWORD_FIELD_ELEMENT";
+const TOGGLE_SEARCH_FIELD_ELEMENT = "TOGGLE_SEARCH_FIELD_ELEMENT";
+const ADD_FOUND_ITEMS = "ADD_FOUND_ITEMS";
 
 const initialState = {
-  showPasswords: { isActive: false },
-  showSearchField: { isActive: true },
+  showSearchField: { isActive: false },
   searchField: {
-    "gov-ua": { searchValue: "", foundResults: { pageIndex: null, rows: [] } },
-    "lotus": { searchValue: "", foundResults: { pageIndex: null, rows: [] } },
-    "phones": { searchValue: "", foundResults: { pageIndex: null, rows: [] } },
-  },
-  passwords:[]
+    "gov-ua": { searchValue: "", foundResults: [] },
+    lotus: { searchValue: "", foundResults: [] },
+    phones: { searchValue: "", foundResults: [] }
+  }
 };
-
-
 
 export const toggledElemetsReducer = (state = initialState, action) => {
   switch (action.type) {
-    // Тоглити показ поля пошуку для всього showSearchField
-    case TOGGLE_SEARCH_FIELD_ELEMENT :
+    case TOGGLE_SEARCH_FIELD_ELEMENT:
       return {
         ...state,
         showSearchField: {
@@ -29,32 +24,35 @@ export const toggledElemetsReducer = (state = initialState, action) => {
         }
       };
 
-    case TOGGLE_PASSWORD_FIELD_ELEMENT:
+    case ADD_FOUND_ITEMS:
+       console.log("activeMenu type:", typeof action.activeMenu, "value:", action.activeMenu);
       return {
         ...state,
-        showPasswords: {
-          ...state.showPasswords,
-          isActive:
-            action.value !== undefined
-              ? action.value
-              : !state.showPasswords.isActive
+        searchField: {
+          ...state.searchField,
+          [action.activeMenu]: {
+            ...state.searchField[action.activeMenu],
+            searchValue: action.searchValue || "",
+            foundResults: action.foundResults || []
+            
+          }
         }
       };
 
-      default:
-        return state;
-    
+    default:
+      return state;
   }
 };
 
-export const toggleSearchFieldActionCreator = (value) => {
-  console.log("toggle запущено", value);
-  return {
-    type: "TOGGLE_SEARCH_FIELD_ELEMENT",
-    value      
-  };
-};
+export const toggleSearchFieldActionCreator = (value) => ({
+  type: TOGGLE_SEARCH_FIELD_ELEMENT,
+  value
+});
 
-
-
+export const addFoundItems = (activeMenu, searchValue, foundResults) => ({
+  type: ADD_FOUND_ITEMS,
+  activeMenu,
+  searchValue,
+  foundResults
+});
 

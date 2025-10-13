@@ -53,4 +53,11 @@ export const isPresentedSearchField = (state) =>{
   
 }
 
+export const activeMenu = (state) => state.currentPageNumber.activeMenu;
+export const searchFieldValue = (state, menu) => {
+  return state.toggledElements.searchField[menu]?.searchValue || "";
+};
+
+
+
 
