@@ -1,13 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import s from './PagesNavBar.module.css';
 import { NavLink, useLocation } from 'react-router-dom';
 import { connect } from "react-redux";
 import { govUaCount, lotusCount, phonesCount } from "../../../redux/selectors/selector";
 import { rememberCurrentPagesActionCreator } from "../../../redux/pagesNavbar-reducer";
 
+
 const PagesNavBar = (props) => {
   const location = useLocation();
   const pathParts = location.pathname.split("/").filter(Boolean);
+  const [showFoundResultPage, setShowFoundResultsPage]= useState(false);
 
   let countOfPages = 0;
   let basePath = "";
@@ -19,17 +21,20 @@ const PagesNavBar = (props) => {
     basePath = "/phones/";
     pageName = "phones";
     pageFromURL = pathParts[1];
+
   } else if (pathParts[0] === "mails") {
     if (pathParts[1] === "Lotus") {
       countOfPages = props.lotusCount;
       basePath = "/mails/Lotus/";
       pageName = "Lotus";
       pageFromURL = pathParts[2];
+
     } else if (pathParts[1] === "Gov-ua") {
       countOfPages = props.govUaCount;
       basePath = "/mails/Gov-ua/";
       pageName = "Gov-ua";
       pageFromURL = pathParts[2];
+
     }
   }
 
@@ -39,9 +44,29 @@ const PagesNavBar = (props) => {
   }
 }, [location.pathname, pageName, pageFromURL]);
 
+ useEffect(() => {
+    if (true/*props.isPhonesSearchValueFounded || props.isLotusSearchValueFounded || props.isGovUaSearchValueFounded*/) {
+      setShowFoundResultsPage(true);
+      console.log("Значення для відображення:", showFoundResultPage);
+    } else {
+      setShowFoundResultsPage(false);
+    }
+  }, [props.isPhonesSearchValueFounded, props.isLotusSearchValueFounded, props.isGovUaSearchValueFounded]);
 
   return (
     <div className={s.navigationOfPage}>
+      {showFoundResultPage && (
+            <NavLink
+              to={`${basePath}foundResults`}
+              className={({ isActive }) =>
+                `${s.pageNavigator} ${s.foundResultsPage} ${isActive ? s.activeLink : ""}`
+              }
+            >
+              R
+            </NavLink>
+          )}
+
+
       {Array.from({ length: countOfPages }, (_, i) => {
         const pageNumber = i + 1;
         return (
@@ -63,7 +88,9 @@ const PagesNavBar = (props) => {
 const mapStateToProps = (state) => ({
   phonesCount: phonesCount(state),
   lotusCount: lotusCount(state),
-  govUaCount: govUaCount(state)
+  govUaCount: govUaCount(state),
+
+  
 });
 
 const mapDispatchToProps = { rememberCurrentPage: rememberCurrentPagesActionCreator };

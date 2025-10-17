@@ -1,7 +1,7 @@
 const REMEMBER_CURRENT_PAGE_NUMBER = "REMEMBER_CURRENT_PAGE_NUMBER";
 
 const initialState = {
-    activeMemu: "",
+    activeMenu: "",
     Lotus: 1,
     "Gov-ua": 1,
     phones: 1

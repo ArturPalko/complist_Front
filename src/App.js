@@ -8,6 +8,7 @@ import Phones from './Components/Phones/Phones';
 import RedirectToCurrentPage from './Components/RedirectToCurrentPage';
 import { phonesCurrentPage, GovUaCurrentPage, lotusCurrentPage } from "./redux/selectors/selector";
 import Error from './Components/Error/Error';
+import FoundResults from './Components/FoundResults/FoundResults';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
 
           {/* Phones */}
           <Route path="/phones">
+            <Route path='foundResults' element={<FoundResults/>}/>
             <Route path=":pageNumber" element={<Phones />} />
             <Route index element={
               <RedirectToCurrentPage selector={phonesCurrentPage} buildPath={(page) => `/phones/${page}`} />

@@ -58,6 +58,20 @@ export const searchFieldValue = (state, menu) => {
   return state.toggledElements.searchField[menu]?.searchValue || "";
 };
 
+export const isGovUaSearchValueFounded = (state) => 
+ true;
+
+export const isLotusSearchValueFounded = (state) => 
+  Boolean(state.toggledElements["lotus"]?.foundResults);
+
+export const foundSearchValueOfPhonesPage = (state) => 
+   state.toggledElements.searchField["phones"];
+
+
+
+
+
+
 
 
 

@@ -25,7 +25,6 @@ export const toggledElemetsReducer = (state = initialState, action) => {
       };
 
     case ADD_FOUND_ITEMS:
-       console.log("activeMenu type:", typeof action.activeMenu, "value:", action.activeMenu);
       return {
         ...state,
         searchField: {

@@ -9,8 +9,7 @@ const PhonesPage = (props) => {
   return (
     <>
     <TopTableBar
-      title="Поштові скриньки Gov-ua"
-      mailType="gov-ua"
+      title="Телефони"
       valueOfSearchCheckBox={props.isPresentedSearchField}
       handleToggleSearchField={props.handleToggleSearchField} 
       />

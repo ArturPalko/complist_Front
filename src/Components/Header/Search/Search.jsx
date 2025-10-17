@@ -40,6 +40,7 @@ const Search = (props) => {
 
     // Якщо є дані для пошуку
     if (searchArea.length) {
+      console.log(`Шукаємо тут ${searchArea}`)
       searchArea.forEach((element) => {
         Object.keys(element).forEach((key) => {
           if (key === "rows" && Array.isArray(element[key])) {
@@ -47,8 +48,9 @@ const Search = (props) => {
             element[key].forEach((rowElement, rowIndex) => {
               index = rowIndex + 1;
               Object.entries(rowElement).forEach(([dataKey, dataValue]) => {
-                if (String(dataValue).toLowerCase().includes(searchValue)) {
+                if (String(dataValue).toLowerCase().includes(searchValue.toLowerCase())) {
                   foundResults.push({ dataKey, dataValue, currentPage, index });
+                  console.log( `Знайдено на сторінці ${currentPage}, стрічка ${index}, стовпець ${dataKey}, значення ${dataValue}`);
                 }
               });
             });
