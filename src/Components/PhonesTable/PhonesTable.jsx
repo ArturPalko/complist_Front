@@ -2,8 +2,18 @@ import s from "./PhonesTable.module.css";
 import Preloader from "../Preloader/Preloader"
 
 
-const PhonesTable = ({ phonesData, isDataFetching, columns, pageNumber, rowsPerPage }) => {
-  const pageData = phonesData?.[pageNumber - 1]?.rows || [];
+const PhonesTable = ({foundResults, phonesData, isDataFetching, columns, pageNumber, rowsPerPage }) => {
+  //const pageData = phonesData?.[pageNumber - 1]?.rows || [];
+  let pageData =[];
+  if (foundResults!==undefined){
+    pageData = foundResults;
+  }
+  else{
+    pageData = phonesData?.[pageNumber - 1]?.rows || [];
+  }
+ // const pageData = phonesData?.[pageNumber - 1]?.rows || [];
+  //debugger;
+
   let indexDecrement = 0;
   const phoneColumns = columns.find((c) => c.key === "phones")?.subLabels.length || 0;
 
@@ -58,7 +68,7 @@ const PhonesTable = ({ phonesData, isDataFetching, columns, pageNumber, rowsPerP
                   return (
                     <tr key={`user-${row.userId}`}>
                       <td>{(pageNumber - 1) * rowsPerPage + index + 1 - indexDecrement}</td>
-                      {row.userType !== 1 ? (
+                      {row.userTypeId !== 1 ? (
                         <>
                           <td>{row.userName}</td>
                           <td></td>

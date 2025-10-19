@@ -14,6 +14,7 @@ const PhonesPage = (props) => {
       handleToggleSearchField={props.handleToggleSearchField} 
       />
     <PhonesTable
+      foundResults = {props.rowech}
       phonesData={props.data}
       isDataFetching={props.isDataFetching}
       columns={[

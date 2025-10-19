@@ -38,30 +38,57 @@ const Search = (props) => {
         searchArea = [];
     }
 
-    // Якщо є дані для пошуку
-    if (searchArea.length) {
-      console.log(`Шукаємо тут ${searchArea}`)
-      searchArea.forEach((element) => {
-        Object.keys(element).forEach((key) => {
-          if (key === "rows" && Array.isArray(element[key])) {
-            currentPage++;
-            element[key].forEach((rowElement, rowIndex) => {
-              index = rowIndex + 1;
-              Object.entries(rowElement).forEach(([dataKey, dataValue]) => {
-                if (String(dataValue).toLowerCase().includes(searchValue.toLowerCase())) {
-                  foundResults.push({ dataKey, dataValue, currentPage, index });
-                  console.log( `Знайдено на сторінці ${currentPage}, стрічка ${index}, стовпець ${dataKey}, значення ${dataValue}`);
-                }
-              });
+if (searchArea.length) {
+  console.log("Шукаємо тут", searchArea);
+
+  searchArea.forEach((element) => {
+    if (!element || !element.rows) return;
+
+    element.rows.forEach((rowElement, rowIndex) => {
+      if (!rowElement) return;
+
+      const index = rowIndex + 1;
+      let foundInRow = false;
+
+      Object.entries(rowElement).forEach(([dataKey, dataValue]) => {
+        if (
+          typeof dataValue === "string" &&
+          dataValue.toLowerCase().includes(searchValue.toLowerCase())
+        ) {
+          foundResults.push({ dataKey, dataValue, currentPage: element.pageIndex, index });
+          foundInRow = true;
+          console.log(
+            `Знайдено на верхньому рівні: сторінка ${element.pageIndex}, рядок ${index}, ${dataKey}: ${dataValue}`
+          );
+        }
+      });
+
+      if (!foundInRow && Array.isArray(rowElement.phones)) {
+        rowElement.phones.forEach((phoneObj) => {
+          if (
+            phoneObj?.phoneName &&
+            phoneObj.phoneName.toLowerCase().includes(searchValue.toLowerCase())
+          ) {
+            foundResults.push({
+              dataKey: "phoneName",
+              dataValue: phoneObj.phoneName,
+              currentPage: element.pageIndex,
+              index
             });
+            console.log(
+              `Знайдено у phones: сторінка ${element.pageIndex}, рядок ${index}, значення: ${phoneObj.phoneName}`
+            );
           }
         });
-      });
-    }
+      }
+    });
+  });
+}
 
-    if (!foundResults.length) {
-      console.log("Не знайдено результатів");
-    }
+if (!foundResults.length) {
+  console.log("Не знайдено результатів");
+}
+
 
     props.addFoundItems(activeMenuStr, searchValue, foundResults);
   };
