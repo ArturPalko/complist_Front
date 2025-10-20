@@ -7,11 +7,21 @@ import PhonesPage from "../Phones/Phones";
 
 const FoundResults = (props) => {
      const [rowech, setRowsToPresent] = useState([]);
+     const [filtered, setFiltered] = useState([]);
+     const keysToKeep = ["currentPage", "index"];
     useEffect(() => {
        console.log ("Rowech!!!!!!!:",rowech);
         const phones = props.getPhones || [];
-        const foundData = props.foundSearchValueOfPhonesPage;
-        
+        const foundData = props.foundSearchValueOfPhonesPage; 
+        let foundResults= props.foundSearchValueOfPhonesPage.foundResults;
+        console.log("FoundResults::::::",foundResults)
+        const filtered = foundResults.map(result =>
+                                    Object.fromEntries(
+                                        Object.entries(result).filter(([key]) => keysToKeep.includes(key))
+                                    )
+                                    );
+        console.log("Filtered::::::",filtered)
+        setFiltered(filtered);
   
         
        // if (!foundData?.foundResults) return;
@@ -51,7 +61,7 @@ const rowsToPresent = phones.flatMap(phonesData =>
     }, [rowech]);
 
     return (
-     <PhonesPage rowech={rowech}/>)
+     <PhonesPage rowech={rowech} filtered={filtered} />)
 };
 
 const mapStateToProps = (state) => ({

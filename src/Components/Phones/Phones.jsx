@@ -6,6 +6,8 @@ import TopTableBar from "../TopTableBar/TopTableBar";
 import withToggleElements from "../../redux/hocs/withToggleElements";
 
 const PhonesPage = (props) => {
+ /*  const [showWhereFound, setShowWhereFound] = useState(false);
+   if(props.rowech!==undefined) setShowWhereFound(true);*/
   return (
     <>
     <TopTableBar
@@ -32,6 +34,8 @@ const PhonesPage = (props) => {
       ]}
       pageNumber={usePageNumber()}
       rowsPerPage={rowsPerPage}
+      filtered={props.filtered}
+      //showWhereFound={showWhereFound}
     />
     </>
   )

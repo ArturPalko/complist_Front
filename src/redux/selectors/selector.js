@@ -64,9 +64,12 @@ export const isGovUaSearchValueFounded = (state) =>
 export const isLotusSearchValueFounded = (state) => 
   Boolean(state.toggledElements["lotus"]?.foundResults);
 
+export const isPhonesSearchValueFound = (state) => 
+   state.toggledElements.searchField["phones"].foundResults.length > 0;
+
+
 export const foundSearchValueOfPhonesPage = (state) => 
    state.toggledElements.searchField["phones"];
-
 
 
 

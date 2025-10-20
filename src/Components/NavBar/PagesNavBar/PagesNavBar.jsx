@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import s from './PagesNavBar.module.css';
 import { NavLink, useLocation } from 'react-router-dom';
 import { connect } from "react-redux";
-import { govUaCount, lotusCount, phonesCount } from "../../../redux/selectors/selector";
+import { govUaCount, lotusCount, phonesCount, isPhonesSearchValueFound } from "../../../redux/selectors/selector";
 import { rememberCurrentPagesActionCreator } from "../../../redux/pagesNavbar-reducer";
 
 
@@ -45,13 +45,14 @@ const PagesNavBar = (props) => {
 }, [location.pathname, pageName, pageFromURL]);
 
  useEffect(() => {
-    if (true/*props.isPhonesSearchValueFounded || props.isLotusSearchValueFounded || props.isGovUaSearchValueFounded*/) {
+  console.log("ак-к-к",props.isPhonesSearchValueFound);
+    if (props.isPhonesSearchValueFound /*|| props.isLotusSearchValueFounded || props.isGovUaSearchValueFounded*/) {
       setShowFoundResultsPage(true);
       console.log("Значення для відображення:", showFoundResultPage);
     } else {
       setShowFoundResultsPage(false);
     }
-  }, [props.isPhonesSearchValueFounded, props.isLotusSearchValueFounded, props.isGovUaSearchValueFounded]);
+  }, [props.isPhonesSearchValueFound, props.isLotusSearchValueFounded, props.isGovUaSearchValueFounded]);
 
   return (
     <div className={s.navigationOfPage}>
@@ -89,6 +90,7 @@ const mapStateToProps = (state) => ({
   phonesCount: phonesCount(state),
   lotusCount: lotusCount(state),
   govUaCount: govUaCount(state),
+  isPhonesSearchValueFound:isPhonesSearchValueFound(state)
 
   
 });
