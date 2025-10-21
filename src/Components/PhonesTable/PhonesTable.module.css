@@ -69,5 +69,5 @@ tr{
 
 
 .searchedRow{
-  background-color: blueviolet;
+  background-color: blueviolet !important;
 }

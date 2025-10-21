@@ -83,7 +83,8 @@ const PhonesTable = ({
         </thead>
         <tbody>
           {pageData.map((row, index) => {
-            const rowClass = results?.includes(index) ? s.searchedRow : "";
+            const rowClass = results?.includes(index+1) ? s.searchedRow : "";
+
 
             switch (row.type) {
               case "department":
@@ -95,6 +96,7 @@ const PhonesTable = ({
                     onMouseLeave={() => setHoveredRow(null)}
                     onClick={() => handleClick(index)}
                     className={rowClass}
+                    data-index={index}
                   >
                     <td className={s.mainDepartment} colSpan={columns.length + phoneColumns}>
                       {row.departmentName}
@@ -112,6 +114,7 @@ const PhonesTable = ({
                     onMouseLeave={() => setHoveredRow(null)}
                     onClick={() => handleClick(index)}
                     className={rowClass}
+                     data-index={index}
                   >
                     <td className={s.section} colSpan={columns.length + phoneColumns}>
                       {row.sectionName}
@@ -128,6 +131,7 @@ const PhonesTable = ({
                     onMouseLeave={() => setHoveredRow(null)}
                     onClick={() => handleClick(index)}
                     className={rowClass}
+                     data-index={index}
                   >
                     <td>{(pageNumber - 1) * rowsPerPage + index + 1 - indexDecrement}</td>
                     {row.userTypeId !== 1 ? (

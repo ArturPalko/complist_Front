@@ -29,28 +29,34 @@ const PhonesPage = (props) => {
   let highlight = [];
   let pageNumber = usePageNumber();
 
-  useEffect(() => {
-  const foundResults = props.foundSearchValueOfPhonesPage.foundResults;
+useEffect(() => {
+  const foundResults = props.foundSearchValueOfPhonesPage?.foundResults || [];
 
-  const indexes = foundResults.map(result =>
-    Object.fromEntries(
-      Object.entries(result).filter(([key]) => ["currentPage", "index"].includes(key))
+  // Формуємо масив підмасивів [currentPage, index]
+  const indexes = foundResults
+    .map(result =>
+      Object.fromEntries(
+        Object.entries(result).filter(([key]) =>
+          ["currentPage", "index"].includes(key)
+        )
+      )
     )
-  ).map(obj => Object.values(obj));
+    .map(obj => Object.values(obj));
 
-  
   setIndexes(indexes);
-  // Беремо лише ті, що потрапляють на поточну сторінку
- 
-const result = indexes
-  .filter(([foundPage, rowIndex]) => foundPage === pageNumber) // тільки поточна сторінка
-  .slice(1, 2); // бере другий елемент (індекс 1) і повертає як масив з одного елемента
+  console.log("Індекси:", indexes);
 
-console.log("Дивись:", result);
+  // Фільтруємо по поточній сторінці
+  const filtered = indexes.filter(arr => arr[0] === pageNumber);
 
+  // Беремо другі елементи підмасивів (тобто index)
+  const result = filtered.map(arr => arr[1]);
+
+  console.log("Результат для поточної сторінки:", result);
 
   setResult(result);
 }, [props.foundSearchValueOfPhonesPage, pageNumber]);
+
 
 
   return (
