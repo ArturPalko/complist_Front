@@ -67,3 +67,7 @@ tr{
   transform: translate(calc(500% - 20px), -50%);
 }
 
+
+.searchedRow{
+  background-color: blueviolet;
+}

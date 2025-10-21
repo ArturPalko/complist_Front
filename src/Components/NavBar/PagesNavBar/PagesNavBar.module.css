@@ -56,3 +56,6 @@
  background-color: red;
 }
 
+.containsSearchedValues{
+  border: 4px solid yellow;
+}

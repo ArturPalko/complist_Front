@@ -4,7 +4,16 @@ import redArrow from '../../assets/red_arrow.png';
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
-const PhonesTable = ({ foundResults, phonesData, isDataFetching, columns, pageNumber, rowsPerPage, filtered }) => {
+const PhonesTable = ({
+  foundResults,
+  phonesData,
+  isDataFetching,
+  columns,
+  pageNumber,
+  rowsPerPage,
+  filtered,
+  results
+}) => {
   const [hoveredRow, setHoveredRow] = useState(null);
   const [clickedRow, setClickedRow] = useState(null);
   const navigate = useNavigate();
@@ -16,11 +25,10 @@ const PhonesTable = ({ foundResults, phonesData, isDataFetching, columns, pageNu
 
   const handleClick = (index) => {
     setClickedRow(index);
-
     const arrow = rowRefs.current[index];
     if (arrow) {
       const onTransitionEnd = () => {
-      navigate(`/phones/${filtered[index].currentPage}`);
+        navigate(`/phones/${filtered[index].currentPage}`);
         arrow.removeEventListener("transitionend", onTransitionEnd);
       };
       arrow.addEventListener("transitionend", onTransitionEnd);
@@ -29,6 +37,7 @@ const PhonesTable = ({ foundResults, phonesData, isDataFetching, columns, pageNu
 
   const renderIndexCell = (index) => {
     if (!filtered) return null;
+
     return (
       <td
         className={s.cell}
@@ -57,26 +66,25 @@ const PhonesTable = ({ foundResults, phonesData, isDataFetching, columns, pageNu
             <th rowSpan="2">№ п/п</th>
             {columns.map((col) =>
               col.key === "phones" ? (
-                <th key={col.key} colSpan={col.subLabels.length}>
-                  {col.label}
-                </th>
+                <th key={col.key} colSpan={col.subLabels.length}>{col.label}</th>
               ) : (
                 <th key={col.key} rowSpan="2">{col.label}</th>
               )
             )}
-            {filtered && <th rowSpan="2">Іднекси</th>}
+            {filtered && <th rowSpan="2">Індекси</th>}
           </tr>
           <tr>
             {columns
               .filter(c => c.key === "phones")
               .flatMap(col =>
                 col.subLabels.map(sub => <th key={sub.key}>{sub.label}</th>)
-              )
-            }
+              )}
           </tr>
         </thead>
         <tbody>
           {pageData.map((row, index) => {
+            const rowClass = results?.includes(index) ? s.searchedRow : "";
+
             switch (row.type) {
               case "department":
                 indexDecrement++;
@@ -86,6 +94,7 @@ const PhonesTable = ({ foundResults, phonesData, isDataFetching, columns, pageNu
                     onMouseEnter={() => setHoveredRow(index)}
                     onMouseLeave={() => setHoveredRow(null)}
                     onClick={() => handleClick(index)}
+                    className={rowClass}
                   >
                     <td className={s.mainDepartment} colSpan={columns.length + phoneColumns}>
                       {row.departmentName}
@@ -93,6 +102,7 @@ const PhonesTable = ({ foundResults, phonesData, isDataFetching, columns, pageNu
                     {renderIndexCell(index)}
                   </tr>
                 );
+
               case "section":
                 indexDecrement++;
                 return (
@@ -101,6 +111,7 @@ const PhonesTable = ({ foundResults, phonesData, isDataFetching, columns, pageNu
                     onMouseEnter={() => setHoveredRow(index)}
                     onMouseLeave={() => setHoveredRow(null)}
                     onClick={() => handleClick(index)}
+                    className={rowClass}
                   >
                     <td className={s.section} colSpan={columns.length + phoneColumns}>
                       {row.sectionName}
@@ -108,6 +119,7 @@ const PhonesTable = ({ foundResults, phonesData, isDataFetching, columns, pageNu
                     {renderIndexCell(index)}
                   </tr>
                 );
+
               case "user":
                 return (
                   <tr
@@ -115,6 +127,7 @@ const PhonesTable = ({ foundResults, phonesData, isDataFetching, columns, pageNu
                     onMouseEnter={() => setHoveredRow(index)}
                     onMouseLeave={() => setHoveredRow(null)}
                     onClick={() => handleClick(index)}
+                    className={rowClass}
                   >
                     <td>{(pageNumber - 1) * rowsPerPage + index + 1 - indexDecrement}</td>
                     {row.userTypeId !== 1 ? (
@@ -135,6 +148,7 @@ const PhonesTable = ({ foundResults, phonesData, isDataFetching, columns, pageNu
                     {renderIndexCell(index)}
                   </tr>
                 );
+
               default:
                 return null;
             }

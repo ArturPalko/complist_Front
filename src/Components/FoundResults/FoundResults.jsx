@@ -20,8 +20,10 @@ const FoundResults = (props) => {
                                         Object.entries(result).filter(([key]) => keysToKeep.includes(key))
                                     )
                                     );
-        console.log("Filtered::::::",filtered)
+        console.log ("FILTERD:", filtered);
+
         setFiltered(filtered);
+        
   
         
        // if (!foundData?.foundResults) return;
@@ -61,7 +63,7 @@ const rowsToPresent = phones.flatMap(phonesData =>
     }, [rowech]);
 
     return (
-     <PhonesPage rowech={rowech} filtered={filtered} />)
+     <PhonesPage rowech={rowech} filtered={filtered}  />)
 };
 
 const mapStateToProps = (state) => ({

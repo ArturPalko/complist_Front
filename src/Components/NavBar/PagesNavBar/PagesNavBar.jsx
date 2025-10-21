@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import s from './PagesNavBar.module.css';
 import { NavLink, useLocation } from 'react-router-dom';
 import { connect } from "react-redux";
-import { govUaCount, lotusCount, phonesCount, isPhonesSearchValueFound } from "../../../redux/selectors/selector";
+import { govUaCount, lotusCount, phonesCount, isPhonesSearchValueFound, foundSearchValueOfPhonesPage } from "../../../redux/selectors/selector";
 import { rememberCurrentPagesActionCreator } from "../../../redux/pagesNavbar-reducer";
 
 
@@ -10,6 +10,9 @@ const PagesNavBar = (props) => {
   const location = useLocation();
   const pathParts = location.pathname.split("/").filter(Boolean);
   const [showFoundResultPage, setShowFoundResultsPage]= useState(false);
+  const keysToKeep = ["currentPage"];
+  const [indexes, setIndexes] = useState([]);
+  
 
   let countOfPages = 0;
   let basePath = "";
@@ -49,10 +52,21 @@ const PagesNavBar = (props) => {
     if (props.isPhonesSearchValueFound /*|| props.isLotusSearchValueFounded || props.isGovUaSearchValueFounded*/) {
       setShowFoundResultsPage(true);
       console.log("Значення для відображення:", showFoundResultPage);
+      
+      let foundResults= props.foundSearchValueOfPhonesPage.foundResults;
+        console.log("FoundResults::::::",foundResults)
+        const index = foundResults.map(result =>
+                                    Object.fromEntries(
+                                        Object.entries(result).filter(([key]) => keysToKeep.includes(key))
+                                    )
+                                    );
+        const indexes = Object.values(index).map(obj => Object.values(obj));
+        console.log("Indexes::::::", indexes);
+        setIndexes(indexes);
     } else {
       setShowFoundResultsPage(false);
     }
-  }, [props.isPhonesSearchValueFound, props.isLotusSearchValueFounded, props.isGovUaSearchValueFounded]);
+  }, [props.isPhonesSearchValueFound, props.isLotusSearchValueFounded, props.isGovUaSearchValueFounded, props.foundSearchValueOfPhonesPage]);
 
   return (
     <div className={s.navigationOfPage}>
@@ -74,9 +88,13 @@ const PagesNavBar = (props) => {
           <NavLink
             key={i}
             to={`${basePath}${pageNumber}`}
-            className={({ isActive }) =>
-              `${s.pageNavigator} ${isActive ? s.activeLink : ""}`
-            }
+                        className={({ isActive }) => `
+              ${s.pageNavigator}
+              ${isActive ? ` ${s.activeLink}` : ""}
+              ${indexes.some(page => page.includes(i + 1)) ? ` ${s.containsSearchedValues}` : ""}
+            `}
+
+            
           >
             {pageNumber}
           </NavLink>
@@ -90,7 +108,8 @@ const mapStateToProps = (state) => ({
   phonesCount: phonesCount(state),
   lotusCount: lotusCount(state),
   govUaCount: govUaCount(state),
-  isPhonesSearchValueFound:isPhonesSearchValueFound(state)
+  isPhonesSearchValueFound:isPhonesSearchValueFound(state),
+  foundSearchValueOfPhonesPage: foundSearchValueOfPhonesPage(state)
 
   
 });
