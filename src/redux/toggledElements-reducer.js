@@ -1,8 +1,10 @@
 const TOGGLE_SEARCH_FIELD_ELEMENT = "TOGGLE_SEARCH_FIELD_ELEMENT";
+const TOGGLE_PAGES_NAVBAR_LINK = "TOGGLE_PAGES_NAVBAR_LINK";
 const ADD_FOUND_ITEMS = "ADD_FOUND_ITEMS";
 
 const initialState = {
   showSearchField: { isActive: false },
+  pagesNavbarLinkElementOnCurrentPage: {isPressed:false},
   searchField: {
     "gov-ua": { searchValue: "", foundResults: [] },
     lotus: { searchValue: "", foundResults: [] },
@@ -23,6 +25,16 @@ export const toggledElemetsReducer = (state = initialState, action) => {
               : !state.showSearchField.isActive
         }
       };
+
+      case TOGGLE_PAGES_NAVBAR_LINK:
+        return {
+          ...state,
+          pagesNavbarLinkElementOnCurrentPage :{
+            ...state.pagesNavbarLinkElementOnCurrentPage,
+            isPressed:!state.pagesNavbarLinkElementOnCurrentPage.isPressed
+
+          }
+        }
 
     case ADD_FOUND_ITEMS:
       return {
@@ -47,6 +59,10 @@ export const toggleSearchFieldActionCreator = (value) => ({
   type: TOGGLE_SEARCH_FIELD_ELEMENT,
   value
 });
+
+export const togglepagesNavbarLinkElementOnCurrentPage= ()=>({
+  type:TOGGLE_PAGES_NAVBAR_LINK
+})
 
 export const addFoundItems = (activeMenu, searchValue, foundResults) => ({
   type: ADD_FOUND_ITEMS,

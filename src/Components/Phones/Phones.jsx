@@ -12,7 +12,8 @@ import {
   getPhones,
   isDataFetching,
   isPhonesDataLoaded,
-  isPhonesDataFetching
+  isPhonesDataFetching,
+  getPhonesCurrentPageNumber
 } from "../../redux/selectors/selector";
 import { getPhonesData } from "../../redux/phones-reducer";
 import TopTableBar from "../TopTableBar/TopTableBar";
@@ -20,42 +21,25 @@ import withToggleElements from "../../redux/hocs/withToggleElements";
 import { useState } from "../CommonInjection/Dependencies/ComponentImports";
 
 const PhonesPage = (props) => {
-  // const [showWhereFound, setShowWhereFound] = useState(false);
-  // if (props.rowech !== undefined) setShowWhereFound(true);
 
-  const keysToKeep = ["currentPage", "index"];
-  const [indexes, setIndexes] = useState([]);
-  const [result, setResult] = useState([]);
-  let highlight = [];
+  const [indexesOfFoundResultsForCurrentPage, setindexesOfFoundResultsForCurrentPage] = useState([]);
   let pageNumber = usePageNumber();
 
-useEffect(() => {
-  const foundResults = props.foundSearchValueOfPhonesPage?.foundResults || [];
+    useEffect(() => {
+      let pageNumber = props.getPhonesCurrentPageNumber;
+      const data = props.getPhonesPageIndexDataOfFoundResults ?? []; 
+      const filtered = data
+        .filter(item => item.currentPage == pageNumber)
+        .map(item => item.index); // масив індексів
 
-  // Формуємо масив підмасивів [currentPage, index]
-  const indexes = foundResults
-    .map(result =>
-      Object.fromEntries(
-        Object.entries(result).filter(([key]) =>
-          ["currentPage", "index"].includes(key)
-        )
-      )
-    )
-    .map(obj => Object.values(obj));
+              console.log ("DATA для Filtred:", data)
+              console.log ("Фільтред:", filtered)
+            
 
-  setIndexes(indexes);
-  console.log("Індекси:", indexes);
+      setindexesOfFoundResultsForCurrentPage(filtered);
+      //debugger;
 
-  // Фільтруємо по поточній сторінці
-  const filtered = indexes.filter(arr => arr[0] === pageNumber);
-
-  // Беремо другі елементи підмасивів (тобто index)
-  const result = filtered.map(arr => arr[1]);
-
-  console.log("Результат для поточної сторінки:", result);
-
-  setResult(result);
-}, [props.foundSearchValueOfPhonesPage, pageNumber]);
+    }, [props.foundSearchValueOfPhonesPage, props.indexDataOfFoundResults,props.getPhonesCurrentPageNumber]);
 
 
 
@@ -68,7 +52,7 @@ useEffect(() => {
       />
 
       <PhonesTable
-        foundResults={props.rowech}
+        foundResults={props.foundResults}
         phonesData={props.data}
         isDataFetching={props.isDataFetching}
         columns={[
@@ -86,10 +70,9 @@ useEffect(() => {
         ]}
         pageNumber={pageNumber}
         rowsPerPage={rowsPerPage}
-        filtered={props.filtered}
+        indexDataOfFoundResultsForFoundResultsPage={props.indexDataOfFoundResultsForFoundResultsPage}
         found={props.foundSearchValueOfPhonesPage}
-        results={result}
-        // showWhereFound={showWhereFound}
+        indexesOfFoundResultsForCurrentPage={indexesOfFoundResultsForCurrentPage}
       />
     </>
   );

@@ -11,8 +11,8 @@ const PhonesTable = ({
   columns,
   pageNumber,
   rowsPerPage,
-  filtered,
-  results
+  indexDataOfFoundResultsForFoundResultsPage,
+  indexesOfFoundResultsForCurrentPage
 }) => {
   const [hoveredRow, setHoveredRow] = useState(null);
   const [clickedRow, setClickedRow] = useState(null);
@@ -28,7 +28,7 @@ const PhonesTable = ({
     const arrow = rowRefs.current[index];
     if (arrow) {
       const onTransitionEnd = () => {
-        navigate(`/phones/${filtered[index].currentPage}`);
+        navigate(`/phones/${indexDataOfFoundResultsForFoundResultsPage[index].currentPage}`);
         arrow.removeEventListener("transitionend", onTransitionEnd);
       };
       arrow.addEventListener("transitionend", onTransitionEnd);
@@ -36,7 +36,8 @@ const PhonesTable = ({
   };
 
   const renderIndexCell = (index) => {
-    if (!filtered) return null;
+    if (!indexDataOfFoundResultsForFoundResultsPage) return null;
+
 
     return (
       <td
@@ -46,7 +47,7 @@ const PhonesTable = ({
         onClick={() => handleClick(index)}
       >
         <span className={`${s.text} ${hoveredRow === index ? s.hideText : ""}`}>
-          Сторінка: {filtered[index].currentPage}, Стрічка: {filtered[index].index}
+          Сторінка: {indexDataOfFoundResultsForFoundResultsPage[index].currentPage}, Стрічка: {indexDataOfFoundResultsForFoundResultsPage[index].index}
         </span>
         <img
           ref={(el) => (rowRefs.current[index] = el)}
@@ -71,7 +72,7 @@ const PhonesTable = ({
                 <th key={col.key} rowSpan="2">{col.label}</th>
               )
             )}
-            {filtered && <th rowSpan="2">Індекси</th>}
+            {indexDataOfFoundResultsForFoundResultsPage && <th rowSpan="2">Індекси</th>}
           </tr>
           <tr>
             {columns
@@ -83,8 +84,9 @@ const PhonesTable = ({
         </thead>
         <tbody>
           {pageData.map((row, index) => {
-            const rowClass = results?.includes(index+1) ? s.searchedRow : "";
-
+            const rowClass = indexesOfFoundResultsForCurrentPage?.includes(index+1) ? s.searchedRow : "";
+            const hideClass = indexesOfFoundResultsForCurrentPage.length >1 ? s.hideBright: "";
+            //debugger;
 
             switch (row.type) {
               case "department":
@@ -95,10 +97,9 @@ const PhonesTable = ({
                     onMouseEnter={() => setHoveredRow(index)}
                     onMouseLeave={() => setHoveredRow(null)}
                     onClick={() => handleClick(index)}
-                    className={rowClass}
-                    data-index={index}
+                    
                   >
-                    <td className={s.mainDepartment} colSpan={columns.length + phoneColumns}>
+                      <td className={`${s.mainDepartment} ${hideClass}`} colSpan={columns.length + phoneColumns}>
                       {row.departmentName}
                     </td>
                     {renderIndexCell(index)}
@@ -113,10 +114,10 @@ const PhonesTable = ({
                     onMouseEnter={() => setHoveredRow(index)}
                     onMouseLeave={() => setHoveredRow(null)}
                     onClick={() => handleClick(index)}
-                    className={rowClass}
+                
                      data-index={index}
                   >
-                    <td className={s.section} colSpan={columns.length + phoneColumns}>
+                    <td className={`${s.section} ${hideClass}`} colSpan={columns.length + phoneColumns}>
                       {row.sectionName}
                     </td>
                     {renderIndexCell(index)}

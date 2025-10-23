@@ -71,7 +71,18 @@ export const isPhonesSearchValueFound = (state) =>
 export const foundSearchValueOfPhonesPage = (state) => 
    state.toggledElements.searchField["phones"];
 
+export const getPhonesPageIndexDataOfFoundResults = (state) => {
+          const keysToKeep = ["currentPage", "index"];
+         return (foundSearchValueOfPhonesPage(state).foundResults.map(result =>
+                                    Object.fromEntries(
+                                        Object.entries(result).filter(([key]) => keysToKeep.includes(key))
+                                    )
+                                  ));
+  
+}
 
+export const getPhonesCurrentPageNumber = (state) =>
+  state.currentPageNumber.phones ;
 
 
 
