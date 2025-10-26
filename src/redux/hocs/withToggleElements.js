@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import { toggleSearchFieldActionCreator } from "../toggledElements-reducer";
-import { isPresentedSearchField } from "../../redux/selectors/selector";
+import { isPresentedSearchField, isPagesNavbarLinkElementOnCurrentPagePressed} from "../../redux/selectors/selector";
 
 const withToggleElements = (WrappedComponent) => {
   const HOC = (props) => {
@@ -40,6 +40,8 @@ const withToggleElements = (WrappedComponent) => {
 
   const mapStateToProps = (state) => ({
     isPresentedSearchField: !!isPresentedSearchField(state),
+    isPagesNavbarLinkElementOnCurrentPagePressed:isPagesNavbarLinkElementOnCurrentPagePressed(state)
+    
   });
 
   const mapDispatchToProps = {

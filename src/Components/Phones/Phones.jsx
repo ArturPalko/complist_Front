@@ -34,8 +34,7 @@ const PhonesPage = (props) => {
 
               console.log ("DATA для Filtred:", data)
               console.log ("Фільтред:", filtered)
-            
-
+          
       setindexesOfFoundResultsForCurrentPage(filtered);
       //debugger;
 
@@ -73,6 +72,7 @@ const PhonesPage = (props) => {
         indexDataOfFoundResultsForFoundResultsPage={props.indexDataOfFoundResultsForFoundResultsPage}
         found={props.foundSearchValueOfPhonesPage}
         indexesOfFoundResultsForCurrentPage={indexesOfFoundResultsForCurrentPage}
+        isPagesNavbarLinkElementOnCurrentPagePressed={props.isPagesNavbarLinkElementOnCurrentPagePressed}
       />
     </>
   );

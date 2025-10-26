@@ -85,6 +85,9 @@ export const getPhonesCurrentPageNumber = (state) =>
   state.currentPageNumber.phones ;
 
 
+export const isPagesNavbarLinkElementOnCurrentPagePressed = (state) =>
+  state.toggledElements.pagesNavbarLinkElementOnCurrentPage.isPressed;
+
 
 
 

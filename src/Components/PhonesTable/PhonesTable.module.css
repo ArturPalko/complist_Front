@@ -99,25 +99,10 @@ tr{
 }
 
 
-.tableWrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 2px; /* невеликий проміжок між рядками */
+.focusOnsearchedResultsWhenPagesLinkOnCurrentPagePressed{
+  background-color: #b2ebf2 !important;
 }
 
-.rowWrapper {
-  display: flex;
-  align-items: center;
-}
-
-.leftIndex {
-  width: 25px;
-  margin-right: 5px; /* відступ від таблиці */
-  font-weight: bold;
-  text-align: right;
-}
-
-.innerTable {
-  flex: 1; /* займає весь залишок простору */
-  border-collapse: collapse;
+.hideBrightWhenPagesLinkOnCurrentPagePressed{
+   background-color: #d6ddde;
 }

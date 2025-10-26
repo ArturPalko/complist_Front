@@ -3,7 +3,7 @@ import Preloader from "../Preloader/Preloader";
 import redArrow from '../../assets/red_arrow.png';
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { useEffect } from "react";
 const PhonesTable = ({
   foundResults,
   phonesData,
@@ -12,12 +12,26 @@ const PhonesTable = ({
   pageNumber,
   rowsPerPage,
   indexDataOfFoundResultsForFoundResultsPage,
-  indexesOfFoundResultsForCurrentPage
+  indexesOfFoundResultsForCurrentPage,
+  isPagesNavbarLinkElementOnCurrentPagePressed
+
 }) => {
   const [hoveredRow, setHoveredRow] = useState(null);
   const [clickedRow, setClickedRow] = useState(null);
   const navigate = useNavigate();
   const rowRefs = useRef({});
+   /*useEffect(() => {
+      if (isPagesNavbarLinkElementOnCurrentPagePressed) {
+        document.querySelectorAll(`.${s.searchedRow}`).forEach(el => {
+          el.classList.remove(s.searchedRow); // якщо клас у CSS Modules
+          el.classList.add(s.focusOnsearchedResults); // теж через модуль
+          debugger;
+        });
+      }
+}, [isPagesNavbarLinkElementOnCurrentPagePressed]);*/
+
+
+//console.log ("isPagesNavbarLinkElementOnCurrentPagePressed", isPagesNavbarLinkElementOnCurrentPagePressed);
 
   let pageData = foundResults ?? phonesData?.[pageNumber - 1]?.rows ?? [];
   let indexDecrement = 0;
@@ -35,10 +49,10 @@ const PhonesTable = ({
     }
   };
 
+ 
+
   const renderIndexCell = (index) => {
     if (!indexDataOfFoundResultsForFoundResultsPage) return null;
-
-
     return (
       <td
         className={s.cell}
@@ -99,7 +113,8 @@ const PhonesTable = ({
                     onClick={() => handleClick(index)}
                     
                   >
-                      <td className={`${s.mainDepartment} ${hideClass}`} colSpan={columns.length + phoneColumns}>
+                      <td className={`${s.mainDepartment} ${hideClass} ${hideClass && isPagesNavbarLinkElementOnCurrentPagePressed ? s.hideBrightWhenPagesLinkOnCurrentPagePressed : ''}`} 
+                      colSpan={columns.length + phoneColumns}>
                       {row.departmentName}
                     </td>
                     {renderIndexCell(index)}
@@ -117,7 +132,8 @@ const PhonesTable = ({
                 
                      data-index={index}
                   >
-                    <td className={`${s.section} ${hideClass}`} colSpan={columns.length + phoneColumns}>
+                    <td className={`${s.section} ${hideClass} ${hideClass && isPagesNavbarLinkElementOnCurrentPagePressed ? s.hideBrightWhenPagesLinkOnCurrentPagePressed : ''}`}
+                      colSpan={columns.length + phoneColumns}>
                       {row.sectionName}
                     </td>
                     {renderIndexCell(index)}
@@ -131,7 +147,8 @@ const PhonesTable = ({
                     onMouseEnter={() => setHoveredRow(index)}
                     onMouseLeave={() => setHoveredRow(null)}
                     onClick={() => handleClick(index)}
-                    className={rowClass}
+                  className={`${rowClass} ${rowClass && isPagesNavbarLinkElementOnCurrentPagePressed ? s.focusOnsearchedResultsWhenPagesLinkOnCurrentPagePressed : ''}`}
+
                      data-index={index}
                   >
                     <td>{(pageNumber - 1) * rowsPerPage + index + 1 - indexDecrement}</td>

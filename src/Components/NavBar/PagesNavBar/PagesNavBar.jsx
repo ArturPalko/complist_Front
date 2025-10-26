@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useRef } from "react";
 import s from './PagesNavBar.module.css';
 import { NavLink, useLocation } from 'react-router-dom';
 import { connect } from "react-redux";
-import { govUaCount, lotusCount, phonesCount, isPhonesSearchValueFound, foundSearchValueOfPhonesPage } from "../../../redux/selectors/selector";
-import { rememberCurrentPagesActionCreator } from "../../../redux/pagesNavbar-reducer";
+import { govUaCount, lotusCount, phonesCount, isPhonesSearchValueFound, foundSearchValueOfPhonesPage} from "../../../redux/selectors/selector";
+import { rememberCurrentPagesActionCreator, } from "../../../redux/pagesNavbar-reducer";
+import { togglepagesNavbarLinkElementOnCurrentPage } from "../../../redux/toggledElements-reducer";
 
 
 const PagesNavBar = (props) => {
@@ -12,6 +13,9 @@ const PagesNavBar = (props) => {
   const [showFoundResultPage, setShowFoundResultsPage]= useState(false);
   const keysToKeep = ["currentPage"];
   const [indexes, setIndexes] = useState([]);
+  const pressTimer = useRef(null);
+  const isPressed = useRef(false); 
+  const delay = 100;
   
 
   let countOfPages = 0;
@@ -41,6 +45,25 @@ const PagesNavBar = (props) => {
     }
   }
 
+
+function handleNavLinkPressed(e) {
+  if (pageFromURL == e.currentTarget.textContent) {
+    pressTimer.current = setTimeout(() => {
+      props.togglepagesNavbarLinkElementOnCurrentPage();
+      isPressed.current = true;
+      //debugger;
+    }, delay);
+  }
+}
+
+function handleNavLinkUnpressed() {
+  clearTimeout(pressTimer.current);
+  if (isPressed.current) {
+    props.togglepagesNavbarLinkElementOnCurrentPage();
+  }
+}
+
+  
  useEffect(() => {
   if (pageName) {
     props.rememberCurrentPage(pageName, pageFromURL);
@@ -86,6 +109,8 @@ const PagesNavBar = (props) => {
         const pageNumber = i + 1;
         return (
           <NavLink
+            onMouseDown={handleNavLinkPressed}
+            onMouseUp={handleNavLinkUnpressed}
             key={i}
             to={`${basePath}${pageNumber}`}
                         className={({ isActive }) => `
@@ -114,6 +139,6 @@ const mapStateToProps = (state) => ({
   
 });
 
-const mapDispatchToProps = { rememberCurrentPage: rememberCurrentPagesActionCreator };
+const mapDispatchToProps = { rememberCurrentPage: rememberCurrentPagesActionCreator, togglepagesNavbarLinkElementOnCurrentPage:togglepagesNavbarLinkElementOnCurrentPage };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PagesNavBar);
