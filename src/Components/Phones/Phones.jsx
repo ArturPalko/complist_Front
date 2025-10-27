@@ -73,6 +73,7 @@ const PhonesPage = (props) => {
         found={props.foundSearchValueOfPhonesPage}
         indexesOfFoundResultsForCurrentPage={indexesOfFoundResultsForCurrentPage}
         isPagesNavbarLinkElementOnCurrentPagePressed={props.isPagesNavbarLinkElementOnCurrentPagePressed}
+        isRenderFromFoundResultsPage={props.isRenderFromSearchPage}
       />
     </>
   );

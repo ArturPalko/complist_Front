@@ -13,7 +13,8 @@ const PhonesTable = ({
   rowsPerPage,
   indexDataOfFoundResultsForFoundResultsPage,
   indexesOfFoundResultsForCurrentPage,
-  isPagesNavbarLinkElementOnCurrentPagePressed
+  isPagesNavbarLinkElementOnCurrentPagePressed,
+  isRenderFromFoundResultsPage
 
 }) => {
   const [hoveredRow, setHoveredRow] = useState(null);
@@ -75,108 +76,116 @@ const PhonesTable = ({
 
   return (
     <div className={s.content}>
-      <table>
-        <thead>
-          <tr>
-            <th rowSpan="2">№ п/п</th>
-            {columns.map((col) =>
-              col.key === "phones" ? (
-                <th key={col.key} colSpan={col.subLabels.length}>{col.label}</th>
-              ) : (
-                <th key={col.key} rowSpan="2">{col.label}</th>
-              )
-            )}
-            {indexDataOfFoundResultsForFoundResultsPage && <th rowSpan="2">Індекси</th>}
-          </tr>
-          <tr>
-            {columns
-              .filter(c => c.key === "phones")
-              .flatMap(col =>
-                col.subLabels.map(sub => <th key={sub.key}>{sub.label}</th>)
-              )}
-          </tr>
-        </thead>
-        <tbody>
-          {pageData.map((row, index) => {
-            const rowClass = indexesOfFoundResultsForCurrentPage?.includes(index+1) ? s.searchedRow : "";
-            const hideClass = indexesOfFoundResultsForCurrentPage.length >1 ? s.hideBright: "";
-            //debugger;
+        <div className={s.tableWrapper}>
+         {isRenderFromFoundResultsPage && <div className={s.colNumbers}>
+            {Array.from({ length: rowsPerPage}, (_, i) => (
+              <div key={i}>{i+1}</div>
+            ))}
+         </div>}
+  
+          <table>
+            <thead>
+              <tr>
+                <th rowSpan="2">№ п/п</th>
+                {columns.map((col) =>
+                  col.key === "phones" ? (
+                    <th key={col.key} colSpan={col.subLabels.length}>{col.label}</th>
+                  ) : (
+                    <th key={col.key} rowSpan="2">{col.label}</th>
+                  )
+                )}
+                {indexDataOfFoundResultsForFoundResultsPage && <th rowSpan="2">Індекси</th>}
+              </tr>
+              <tr>
+                {columns
+                  .filter(c => c.key === "phones")
+                  .flatMap(col =>
+                    col.subLabels.map(sub => <th key={sub.key}>{sub.label}</th>)
+                  )}
+              </tr>
+            </thead>
+            <tbody>
+              {pageData.map((row, index) => {
+                const rowClass = indexesOfFoundResultsForCurrentPage?.includes(index+1) ? s.searchedRow : "";
+                const hideClass = indexesOfFoundResultsForCurrentPage.length >1 ? s.hideBright: "";
+                //debugger;
 
-            switch (row.type) {
-              case "department":
-                indexDecrement++;
-                return (
-                  <tr
-                    key={`dep-${row.departmentId}`}
-                    onMouseEnter={() => setHoveredRow(index)}
-                    onMouseLeave={() => setHoveredRow(null)}
-                    onClick={() => handleClick(index)}
+                switch (row.type) {
+                  case "department":
+                    indexDecrement++;
+                    return (
+                      <tr
+                        key={`dep-${row.departmentId}`}
+                        onMouseEnter={() => setHoveredRow(index)}
+                        onMouseLeave={() => setHoveredRow(null)}
+                        onClick={() => handleClick(index)}
+                        
+                      >
+                          <td className={`${s.mainDepartment} ${hideClass} ${hideClass && isPagesNavbarLinkElementOnCurrentPagePressed ? s.hideBrightWhenPagesLinkOnCurrentPagePressed : ''}`} 
+                          colSpan={columns.length + phoneColumns}>
+                          {row.departmentName}
+                        </td>
+                        {renderIndexCell(index)}
+                      </tr>
+                    );
+
+                  case "section":
+                    indexDecrement++;
+                    return (
+                      <tr
+                        key={`sec-${row.sectionId}`}
+                        onMouseEnter={() => setHoveredRow(index)}
+                        onMouseLeave={() => setHoveredRow(null)}
+                        onClick={() => handleClick(index)}
                     
-                  >
-                      <td className={`${s.mainDepartment} ${hideClass} ${hideClass && isPagesNavbarLinkElementOnCurrentPagePressed ? s.hideBrightWhenPagesLinkOnCurrentPagePressed : ''}`} 
-                      colSpan={columns.length + phoneColumns}>
-                      {row.departmentName}
-                    </td>
-                    {renderIndexCell(index)}
-                  </tr>
-                );
+                        data-index={index}
+                      >
+                        <td className={`${s.section} ${hideClass} ${hideClass && isPagesNavbarLinkElementOnCurrentPagePressed ? s.hideBrightWhenPagesLinkOnCurrentPagePressed : ''}`}
+                          colSpan={columns.length + phoneColumns}>
+                          {row.sectionName}
+                        </td>
+                        {renderIndexCell(index)}
+                      </tr>
+                    );
 
-              case "section":
-                indexDecrement++;
-                return (
-                  <tr
-                    key={`sec-${row.sectionId}`}
-                    onMouseEnter={() => setHoveredRow(index)}
-                    onMouseLeave={() => setHoveredRow(null)}
-                    onClick={() => handleClick(index)}
-                
-                     data-index={index}
-                  >
-                    <td className={`${s.section} ${hideClass} ${hideClass && isPagesNavbarLinkElementOnCurrentPagePressed ? s.hideBrightWhenPagesLinkOnCurrentPagePressed : ''}`}
-                      colSpan={columns.length + phoneColumns}>
-                      {row.sectionName}
-                    </td>
-                    {renderIndexCell(index)}
-                  </tr>
-                );
+                  case "user":
+                    return (
+                      <tr
+                        key={`user-${row.userId}`}
+                        onMouseEnter={() => setHoveredRow(index)}
+                        onMouseLeave={() => setHoveredRow(null)}
+                        onClick={() => handleClick(index)}
+                      className={`${rowClass} ${rowClass && isPagesNavbarLinkElementOnCurrentPagePressed ? s.focusOnsearchedResultsWhenPagesLinkOnCurrentPagePressed : ''}`}
 
-              case "user":
-                return (
-                  <tr
-                    key={`user-${row.userId}`}
-                    onMouseEnter={() => setHoveredRow(index)}
-                    onMouseLeave={() => setHoveredRow(null)}
-                    onClick={() => handleClick(index)}
-                  className={`${rowClass} ${rowClass && isPagesNavbarLinkElementOnCurrentPagePressed ? s.focusOnsearchedResultsWhenPagesLinkOnCurrentPagePressed : ''}`}
+                        data-index={index}
+                      >
+                        <td>{(pageNumber - 1) * rowsPerPage + index + 1 - indexDecrement}</td>
+                        {row.userTypeId !== 1 ? (
+                          <>
+                            <td>{row.userName}</td>
+                            <td></td>
+                          </>
+                        ) : (
+                          <>
+                            <td>{row.userPosition}</td>
+                            <td>{row.userName}</td>
+                          </>
+                        )}
+                        {columns.find(c => c.key === "phones")?.subLabels.map(sub => {
+                          const phone = row.phones?.find(p => p.phoneType === sub.label);
+                          return <td key={sub.key}>{phone ? phone.phoneName : ""}</td>;
+                        })}
+                        {renderIndexCell(index)}
+                      </tr>
+                    );
 
-                     data-index={index}
-                  >
-                    <td>{(pageNumber - 1) * rowsPerPage + index + 1 - indexDecrement}</td>
-                    {row.userTypeId !== 1 ? (
-                      <>
-                        <td>{row.userName}</td>
-                        <td></td>
-                      </>
-                    ) : (
-                      <>
-                        <td>{row.userPosition}</td>
-                        <td>{row.userName}</td>
-                      </>
-                    )}
-                    {columns.find(c => c.key === "phones")?.subLabels.map(sub => {
-                      const phone = row.phones?.find(p => p.phoneType === sub.label);
-                      return <td key={sub.key}>{phone ? phone.phoneName : ""}</td>;
-                    })}
-                    {renderIndexCell(index)}
-                  </tr>
-                );
-
-              default:
-                return null;
-            }
-          })}
-        </tbody>
-      </table>
+                  default:
+                    return null;
+                }
+              })}
+            </tbody>
+          </table>
+      </div>
     </div>
   );
 };

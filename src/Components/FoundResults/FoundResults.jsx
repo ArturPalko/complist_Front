@@ -43,7 +43,7 @@ const FoundResults = (props) => {
     }, [rowsToPresent]);
 
     return (
-     <PhonesPage foundResults={rowsToPresent} indexDataOfFoundResultsForFoundResultsPage={indexDataOfFoundResultsForFoundResultsPage}  />)
+     <PhonesPage foundResults={rowsToPresent} indexDataOfFoundResultsForFoundResultsPage={indexDataOfFoundResultsForFoundResultsPage} isRenderFromFoundResultsPage={true}  />)
 };
 
 const mapStateToProps = (state) => ({

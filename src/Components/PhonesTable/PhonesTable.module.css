@@ -68,20 +68,33 @@ tr{
 }
 
 
-@keyframes highlight {
+@keyframes highlight-even {
   0% {
-    background-color: #b2ebf2
-
+    background-color: #b2ebf2;
   }
   100% {
-    background-color: inherit; 
+    background-color: #f9f9f9; /* кінцевий колір для парних рядків */
   }
 }
 
-
-.searchedRow {
-  animation: highlight 5s ease-out forwards; 
+@keyframes highlight-odd {
+  0% {
+    background-color: #b2ebf2;
+  }
+  100% {
+    background-color: #ffffff; /* кінцевий колір для непарних рядків */
+  }
 }
+
+/* клас для підсвічування рядка */
+.searchedRow.even {
+  animation: highlight-even 5s ease-out forwards;
+}
+
+.searchedRow.odd {
+  animation: highlight-odd 5s ease-out forwards;
+}
+
 
 
 
@@ -105,4 +118,23 @@ tr{
 
 .hideBrightWhenPagesLinkOnCurrentPagePressed{
    background-color: #d6ddde;
+}
+
+.tableWrapper {
+  display: flex;
+  align-items: flex-start;
+}
+
+.colNumbers {
+  display: flex;
+  flex-direction: column;
+  margin-right: 8px;
+  text-align: right;
+  font-weight: bold;
+  margin-top:90px;
+}
+
+.colNumbers div {
+  height: 40px; /* вирівняти з висотою рядка таблиці */
+  color:red
 }
