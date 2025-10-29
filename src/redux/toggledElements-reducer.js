@@ -1,6 +1,7 @@
 const TOGGLE_SEARCH_FIELD_ELEMENT = "TOGGLE_SEARCH_FIELD_ELEMENT";
 const TOGGLE_PAGES_NAVBAR_LINK = "TOGGLE_PAGES_NAVBAR_LINK";
 const ADD_FOUND_ITEMS = "ADD_FOUND_ITEMS";
+const CLEAR_SEARCH_FORM = "CLEAR_SEARCH_FORM";
 
 const initialState = {
   showSearchField: { isActive: false },
@@ -50,6 +51,21 @@ export const toggledElemetsReducer = (state = initialState, action) => {
         }
       };
 
+   case CLEAR_SEARCH_FORM:
+      return {
+        ...state,
+        searchField: {
+          ...state.searchField,
+          [action.activeMenu]: {
+            ...state.searchField[action.activeMenu],
+            searchValue: "",
+            foundResults: [],
+          },
+        },
+      };
+
+    
+
     default:
       return state;
   }
@@ -71,3 +87,8 @@ export const addFoundItems = (activeMenu, searchValue, foundResults) => ({
   foundResults
 });
 
+
+export const clearSearchForm = (activeMenu) => ({
+  type: CLEAR_SEARCH_FORM,
+  activeMenu
+});

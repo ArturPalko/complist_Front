@@ -17,22 +17,22 @@ const PhonesTable = ({
   isRenderFromFoundResultsPage
 
 }) => {
+  
   const [hoveredRow, setHoveredRow] = useState(null);
   const [clickedRow, setClickedRow] = useState(null);
   const navigate = useNavigate();
   const rowRefs = useRef({});
-   /*useEffect(() => {
+   useEffect(() => {
       if (isPagesNavbarLinkElementOnCurrentPagePressed) {
         document.querySelectorAll(`.${s.searchedRow}`).forEach(el => {
           el.classList.remove(s.searchedRow); // якщо клас у CSS Modules
           el.classList.add(s.focusOnsearchedResults); // теж через модуль
-          debugger;
         });
       }
-}, [isPagesNavbarLinkElementOnCurrentPagePressed]);*/
+}, [isPagesNavbarLinkElementOnCurrentPagePressed]);
 
 
-//console.log ("isPagesNavbarLinkElementOnCurrentPagePressed", isPagesNavbarLinkElementOnCurrentPagePressed);
+console.log ("isPagesNavbarLinkElementOnCurrentPagePressed", isPagesNavbarLinkElementOnCurrentPagePressed);
 
   let pageData = foundResults ?? phonesData?.[pageNumber - 1]?.rows ?? [];
   let indexDecrement = 0;
@@ -78,7 +78,7 @@ const PhonesTable = ({
     <div className={s.content}>
         <div className={s.tableWrapper}>
          {isRenderFromFoundResultsPage && <div className={s.colNumbers}>
-            {Array.from({ length: rowsPerPage}, (_, i) => (
+            {Array.from({ length: pageData.length}, (_, i) => (
               <div key={i}>{i+1}</div>
             ))}
          </div>}
@@ -106,8 +106,13 @@ const PhonesTable = ({
             </thead>
             <tbody>
               {pageData.map((row, index) => {
-                const rowClass = indexesOfFoundResultsForCurrentPage?.includes(index+1) ? s.searchedRow : "";
-                const hideClass = indexesOfFoundResultsForCurrentPage.length >1 ? s.hideBright: "";
+            const rowClass = indexesOfFoundResultsForCurrentPage?.includes(index + 1)
+              ? `${s.searchedRow} ${(index + 1) % 2 === 0 ? s.even : s.odd}`
+              : "";
+
+
+                const hideClass = indexesOfFoundResultsForCurrentPage.length !== 0 ? s.hideBright : "";
+
                 //debugger;
 
                 switch (row.type) {

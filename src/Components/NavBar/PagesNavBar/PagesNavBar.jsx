@@ -15,7 +15,7 @@ const PagesNavBar = (props) => {
   const [indexes, setIndexes] = useState([]);
   const pressTimer = useRef(null);
   const isPressed = useRef(false); 
-  const delay = 100;
+  const delay = 200;
   
 
   let countOfPages = 0;

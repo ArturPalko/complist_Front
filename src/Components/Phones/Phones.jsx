@@ -38,6 +38,7 @@ const PhonesPage = (props) => {
       setindexesOfFoundResultsForCurrentPage(filtered);
       //debugger;
 
+
     }, [props.foundSearchValueOfPhonesPage, props.indexDataOfFoundResults,props.getPhonesCurrentPageNumber]);
 
 
@@ -73,7 +74,7 @@ const PhonesPage = (props) => {
         found={props.foundSearchValueOfPhonesPage}
         indexesOfFoundResultsForCurrentPage={indexesOfFoundResultsForCurrentPage}
         isPagesNavbarLinkElementOnCurrentPagePressed={props.isPagesNavbarLinkElementOnCurrentPagePressed}
-        isRenderFromFoundResultsPage={props.isRenderFromSearchPage}
+        isRenderFromFoundResultsPage={props.isRenderFromFoundResultsPage ?? true}
       />
     </>
   );

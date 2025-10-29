@@ -1,7 +1,7 @@
 import s from "./SearchForm.module.css";
 import cross from "../../../../assets/cross.png";
 
-const SearchForm = ({ inputValue, setInputValue, handleOnSearchButtonClick, isPresentedSearchField }) => {
+const SearchForm = ({ inputValue, setInputValue, isPresentedSearchField, handleOnSearchButtonClick, handleOnClearSearchFormButtonClick }) => {
   if (!isPresentedSearchField) return null;
 
   return (
@@ -12,7 +12,7 @@ const SearchForm = ({ inputValue, setInputValue, handleOnSearchButtonClick, isPr
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
       />
-      <img src={cross}/>
+      <img src={cross} onClick={handleOnClearSearchFormButtonClick}/>
       <button className={s.searchButton} type="submit" onClick={handleOnSearchButtonClick}>
         Пошук
       </button>

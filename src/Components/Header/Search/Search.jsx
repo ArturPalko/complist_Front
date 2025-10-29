@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import { activeMenu, isPresentedSearchField, getGovUaMails, getLotusMails,getPhones } from "../../../redux/selectors/selector";
-import { addFoundItems } from "../../../redux/toggledElements-reducer";
+import { addFoundItems, clearSearchForm } from "../../../redux/toggledElements-reducer";
 import { useState, useEffect } from "react";
 import SearchForm from "./SearchForm/SearchForm";
 
@@ -14,9 +14,14 @@ const Search = (props) => {
     setInputValue(initialValue || "");
   }, [activeMenuStr, props.searchFieldValue]);
 
+  const handleOnClearSearchFormButtonClick = () =>{
+    props.clearSearchForm(props.activeMenu);
+    
+  }
+
   const handleOnSearchButtonClick = (e) => {
     e.preventDefault();
-    const searchValue = inputValue;
+    const searchValue = inputValue.trim();
     console.log("Пошуковий запит:", searchValue);
     console.log("Ми шукаємо на сторінці:", activeMenuStr);
 
@@ -39,10 +44,12 @@ const Search = (props) => {
     }
 
 if (searchArea.length) {
-  console.log("Шукаємо тут", searchArea);
+  console.log("Шукаємо тут+++++++++++++", searchArea);
 
   searchArea.forEach((element) => {
     if (!element || !element.rows) return;
+    if (searchValue === "") return;
+
 
     element.rows.forEach((rowElement, rowIndex) => {
       if (!rowElement) return;
@@ -68,6 +75,7 @@ if (searchArea.length) {
           if (
             phoneObj?.phoneName &&
             phoneObj.phoneName.toLowerCase().includes(searchValue.toLowerCase())
+            
           ) {
             foundResults.push({
               dataKey: "phoneName",
@@ -99,6 +107,7 @@ if (!foundResults.length) {
       inputValue={inputValue}
       setInputValue={setInputValue}
       handleOnSearchButtonClick={handleOnSearchButtonClick}
+      handleOnClearSearchFormButtonClick={handleOnClearSearchFormButtonClick}
     />
   );
 };
@@ -113,6 +122,6 @@ const mapStateToProps = (state) => ({
   searchFieldValue: (menu) => state.toggledElements.searchField[menu]?.searchValue || "",
 });
 
-const mapDispatchToProps = { addFoundItems };
+const mapDispatchToProps = { addFoundItems, clearSearchForm };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Search);

@@ -24,6 +24,7 @@ thead th {
 
 
 
+
 @keyframes slideToEnd {
   from {
     left: 0;
@@ -88,11 +89,12 @@ tr{
 
 /* клас для підсвічування рядка */
 .searchedRow.even {
-  animation: highlight-even 5s ease-out forwards;
+  animation: highlight-even 3s step-end forwards;
 }
 
 .searchedRow.odd {
-  animation: highlight-odd 5s ease-out forwards;
+  animation: highlight-odd 3s step-end forwards;
+  
 }
 
 
@@ -108,7 +110,7 @@ tr{
 }
 
 .hideBright {
-  animation: light 5s ease-out ;
+  animation: light 3s step-end ;
 }
 
 
@@ -136,5 +138,6 @@ tr{
 
 .colNumbers div {
   height: 40px; /* вирівняти з висотою рядка таблиці */
-  color:red
+  color:red;
+  font-weight:bolder;
 }
