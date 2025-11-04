@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import { toggleSearchFieldActionCreator } from "../toggledElements-reducer";
+import { togglepagesNavbarLinkElementOnCurrentPage, toggleSearchFieldActionCreator } from "../toggledElements-reducer";
 import { isPresentedSearchField, isPagesNavbarLinkElementOnCurrentPagePressed} from "../../redux/selectors/selector";
 
 const withToggleElements = (WrappedComponent) => {
@@ -45,7 +45,8 @@ const withToggleElements = (WrappedComponent) => {
   });
 
   const mapDispatchToProps = {
-    toggleSearchField: toggleSearchFieldActionCreator
+    toggleSearchField: toggleSearchFieldActionCreator,
+    //togglepagesNavbarLinkElementOnCurrentPage:togglepagesNavbarLinkElementOnCurrentPage
   };
 
   return connect(mapStateToProps, mapDispatchToProps)(HOC);

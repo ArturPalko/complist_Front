@@ -4,6 +4,7 @@ import redArrow from '../../assets/red_arrow.png';
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+
 const PhonesTable = ({
   foundResults,
   phonesData,
@@ -14,25 +15,17 @@ const PhonesTable = ({
   indexDataOfFoundResultsForFoundResultsPage,
   indexesOfFoundResultsForCurrentPage,
   isPagesNavbarLinkElementOnCurrentPagePressed,
-  isRenderFromFoundResultsPage
-
+  isRenderFromFoundResultsPage,
+  isPreviousPageWasFoundResult
 }) => {
-  
   const [hoveredRow, setHoveredRow] = useState(null);
   const [clickedRow, setClickedRow] = useState(null);
   const navigate = useNavigate();
   const rowRefs = useRef({});
-   useEffect(() => {
-      if (isPagesNavbarLinkElementOnCurrentPagePressed) {
-        document.querySelectorAll(`.${s.searchedRow}`).forEach(el => {
-          el.classList.remove(s.searchedRow); // якщо клас у CSS Modules
-          el.classList.add(s.focusOnsearchedResults); // теж через модуль
-        });
-      }
-}, [isPagesNavbarLinkElementOnCurrentPagePressed]);
 
 
-console.log ("isPagesNavbarLinkElementOnCurrentPagePressed", isPagesNavbarLinkElementOnCurrentPagePressed);
+
+//console.log ("isPagesNavbarLinkElementOnCurrentPagePressed", isPagesNavbarLinkElementOnCurrentPagePressed);
 
   let pageData = foundResults ?? phonesData?.[pageNumber - 1]?.rows ?? [];
   let indexDecrement = 0;
@@ -50,36 +43,41 @@ console.log ("isPagesNavbarLinkElementOnCurrentPagePressed", isPagesNavbarLinkEl
     }
   };
 
- 
+ console.log("indexDataOf:",indexDataOfFoundResultsForFoundResultsPage);
 
-  const renderIndexCell = (index) => {
-    if (!indexDataOfFoundResultsForFoundResultsPage) return null;
-    return (
-      <td
-        className={s.cell}
-        onMouseEnter={() => setHoveredRow(index)}
-        onMouseLeave={() => setHoveredRow(null)}
-        onClick={() => handleClick(index)}
-      >
-        <span className={`${s.text} ${hoveredRow === index ? s.hideText : ""}`}>
-          Сторінка: {indexDataOfFoundResultsForFoundResultsPage[index].currentPage}, Стрічка: {indexDataOfFoundResultsForFoundResultsPage[index].index}
-        </span>
-        <img
-          ref={(el) => (rowRefs.current[index] = el)}
-          src={redArrow}
-          alt="arrow"
-          className={`${s.arrow} ${hoveredRow === index ? s.showArrow : ""} ${clickedRow === index ? s.moveRight : ""}`}
-        />
-      </td>
-    );
-  };
-
+     const renderIndexCell = (index) => {
+       if (!indexDataOfFoundResultsForFoundResultsPage) return null;
+        return (
+         <td
+           className={s.cell}
+           onMouseEnter={() => setHoveredRow(index)}
+           onMouseLeave={() => setHoveredRow(null)}
+           onClick={() => handleClick(index)}
+         >
+           <span className={`${s.text} ${hoveredRow === index ? s.hideText : ""}`}>
+             Сторінка: {indexDataOfFoundResultsForFoundResultsPage[index].currentPage}, Стрічка: {indexDataOfFoundResultsForFoundResultsPage[index].index}
+           </span>
+           <img
+             ref={(el) => (rowRefs.current[index] = el)}
+             src={redArrow}
+             alt="arrow"
+             className={`${s.arrow} ${hoveredRow === index ? s.showArrow : ""} ${clickedRow === index ? s.moveRight : ""}`}
+           />
+         </td>
+       );
+     };
+const showDigitsFromPressed =
+  indexesOfFoundResultsForCurrentPage.length !== 0 &&
+  isPagesNavbarLinkElementOnCurrentPagePressed
+    ? s.showColnumbersWhenPagesLinkOnCurrentPagePressed
+    : "";
   return (
+ 
     <div className={s.content}>
-        <div className={s.tableWrapper}>
-         {isRenderFromFoundResultsPage && <div className={s.colNumbers}>
+        <div className={s.tableWrapper + " " + showDigitsFromPressed}>
+         {((isPreviousPageWasFoundResult || isPagesNavbarLinkElementOnCurrentPagePressed )&& indexesOfFoundResultsForCurrentPage.length !== 0) && <div className={s.colNumbers}>
             {Array.from({ length: pageData.length}, (_, i) => (
-              <div key={i}>{i+1}</div>
+              <div  key={i}>{i+1}</div>
             ))}
          </div>}
   
@@ -106,12 +104,15 @@ console.log ("isPagesNavbarLinkElementOnCurrentPagePressed", isPagesNavbarLinkEl
             </thead>
             <tbody>
               {pageData.map((row, index) => {
-            const rowClass = indexesOfFoundResultsForCurrentPage?.includes(index + 1)
+            const rowClass = indexesOfFoundResultsForCurrentPage?.includes(index + 1) && isPreviousPageWasFoundResult
               ? `${s.searchedRow} ${(index + 1) % 2 === 0 ? s.even : s.odd}`
               : "";
+              const rowClassFronPressed = indexesOfFoundResultsForCurrentPage?.includes(index + 1) && isPagesNavbarLinkElementOnCurrentPagePressed ? s.focusOnsearchedResultsWhenPagesLinkOnCurrentPagePressed : '';
 
 
-                const hideClass = indexesOfFoundResultsForCurrentPage.length !== 0 ? s.hideBright : "";
+                const hideClass = indexesOfFoundResultsForCurrentPage.length !== 0 && isPreviousPageWasFoundResult ? s.hideBright : "";
+                const hideClassFromPressed =indexesOfFoundResultsForCurrentPage.length !== 0 && isPagesNavbarLinkElementOnCurrentPagePressed ? s.hideBrightWhenPagesLinkOnCurrentPagePressed: '';
+                
 
                 //debugger;
 
@@ -126,7 +127,7 @@ console.log ("isPagesNavbarLinkElementOnCurrentPagePressed", isPagesNavbarLinkEl
                         onClick={() => handleClick(index)}
                         
                       >
-                          <td className={`${s.mainDepartment} ${hideClass} ${hideClass && isPagesNavbarLinkElementOnCurrentPagePressed ? s.hideBrightWhenPagesLinkOnCurrentPagePressed : ''}`} 
+                          <td className={`${s.mainDepartment}  ${hideClass} ${hideClassFromPressed}`} 
                           colSpan={columns.length + phoneColumns}>
                           {row.departmentName}
                         </td>
@@ -145,11 +146,11 @@ console.log ("isPagesNavbarLinkElementOnCurrentPagePressed", isPagesNavbarLinkEl
                     
                         data-index={index}
                       >
-                        <td className={`${s.section} ${hideClass} ${hideClass && isPagesNavbarLinkElementOnCurrentPagePressed ? s.hideBrightWhenPagesLinkOnCurrentPagePressed : ''}`}
+                        <td className={`${s.section} ${hideClass} ${ hideClassFromPressed}`}
                           colSpan={columns.length + phoneColumns}>
                           {row.sectionName}
                         </td>
-                        {renderIndexCell(index)}
+                         {renderIndexCell(index)} 
                       </tr>
                     );
 
@@ -160,7 +161,7 @@ console.log ("isPagesNavbarLinkElementOnCurrentPagePressed", isPagesNavbarLinkEl
                         onMouseEnter={() => setHoveredRow(index)}
                         onMouseLeave={() => setHoveredRow(null)}
                         onClick={() => handleClick(index)}
-                      className={`${rowClass} ${rowClass && isPagesNavbarLinkElementOnCurrentPagePressed ? s.focusOnsearchedResultsWhenPagesLinkOnCurrentPagePressed : ''}`}
+                      className={`${rowClass} ${rowClassFronPressed}`}
 
                         data-index={index}
                       >
@@ -180,7 +181,7 @@ console.log ("isPagesNavbarLinkElementOnCurrentPagePressed", isPagesNavbarLinkEl
                           const phone = row.phones?.find(p => p.phoneType === sub.label);
                           return <td key={sub.key}>{phone ? phone.phoneName : ""}</td>;
                         })}
-                        {renderIndexCell(index)}
+                         {renderIndexCell(index)} 
                       </tr>
                     );
 

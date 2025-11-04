@@ -32,7 +32,7 @@ export const toggledElemetsReducer = (state = initialState, action) => {
           ...state,
           pagesNavbarLinkElementOnCurrentPage :{
             ...state.pagesNavbarLinkElementOnCurrentPage,
-            isPressed:!state.pagesNavbarLinkElementOnCurrentPage.isPressed
+            isPressed:action.value
 
           }
         }
@@ -76,8 +76,9 @@ export const toggleSearchFieldActionCreator = (value) => ({
   value
 });
 
-export const togglepagesNavbarLinkElementOnCurrentPage= ()=>({
-  type:TOGGLE_PAGES_NAVBAR_LINK
+export const togglepagesNavbarLinkElementOnCurrentPage= (value)=>({
+  type:TOGGLE_PAGES_NAVBAR_LINK,
+  value
 })
 
 export const addFoundItems = (activeMenu, searchValue, foundResults) => ({

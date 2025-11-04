@@ -71,6 +71,25 @@ export const isPhonesSearchValueFound = (state) =>
 export const foundSearchValueOfPhonesPage = (state) => 
    state.toggledElements.searchField["phones"];
 
+/*export const getPhonesPageIndexDataOfFoundResults = (state) => {
+  const keysToKeep = ["currentPage", "index"];
+
+  const mapped = foundSearchValueOfPhonesPage(state).foundResults.map(result =>
+    Object.fromEntries(
+      Object.entries(result).filter(([key]) => keysToKeep.includes(key))
+    )
+  );
+
+  // Залишаємо тільки унікальні пари { currentPage, index }
+  const unique = mapped.filter(
+    (value, index, self) =>
+      index === self.findIndex(
+        t => t.currentPage === value.currentPage && t.index === value.index
+      )
+  );
+
+  return unique;
+};*/
 export const getPhonesPageIndexDataOfFoundResults = (state) => {
           const keysToKeep = ["currentPage", "index"];
          return (foundSearchValueOfPhonesPage(state).foundResults.map(result =>
@@ -81,6 +100,7 @@ export const getPhonesPageIndexDataOfFoundResults = (state) => {
   
 }
 
+
 export const getPhonesCurrentPageNumber = (state) =>
   state.currentPageNumber.phones ;
 
@@ -88,6 +108,8 @@ export const getPhonesCurrentPageNumber = (state) =>
 export const isPagesNavbarLinkElementOnCurrentPagePressed = (state) =>
   state.toggledElements.pagesNavbarLinkElementOnCurrentPage.isPressed;
 
+export const isPreviousPageWasFoundResult = (state)=>
+  state.currentPageNumber.previousLocation == "/phones/foundResults";
 
 
 

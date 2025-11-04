@@ -136,8 +136,24 @@ tr{
   margin-top:90px;
 }
 
-.colNumbers div {
-  height: 40px; /* вирівняти з висотою рядка таблиці */
-  color:red;
-  font-weight:bolder;
+
+@keyframes hideDigits {
+
+  100% {
+    
+    display: none;
+  }
 }
+
+.colNumbers div {  
+  height: 40px;
+  color: red;
+  font-weight: bolder;
+  animation: hideDigits 3s step-end forwards; 
+}
+
+.showColnumbersWhenPagesLinkOnCurrentPagePressed{
+   opacity: 1;
+  visibility: visible;
+} 
+

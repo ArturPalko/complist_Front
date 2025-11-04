@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Preloader from "../../Components/Preloader/Preloader";
-import { foundSearchValueOfPhonesPage , getPhonesPageIndexDataOfFoundResults, getPhonesCurrentPageNumber } from "../selectors/selector";
+import { foundSearchValueOfPhonesPage , getPhonesPageIndexDataOfFoundResults, getPhonesCurrentPageNumber, isPreviousPageWasFoundResult } from "../selectors/selector";
 
 
 
@@ -70,7 +70,8 @@ const withDataLoader = (
     data: dataSelector(state),
     foundSearchValueOfPhonesPage:foundSearchValueOfPhonesPage(state),
     getPhonesPageIndexDataOfFoundResults:getPhonesPageIndexDataOfFoundResults(state),
-    getPhonesCurrentPageNumber:getPhonesCurrentPageNumber(state)
+    getPhonesCurrentPageNumber:getPhonesCurrentPageNumber(state),
+    isPreviousPageWasFoundResult:isPreviousPageWasFoundResult(state)
   });
 
   const mapDispatchToProps = { fetchAction}

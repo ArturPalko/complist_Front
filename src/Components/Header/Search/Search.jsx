@@ -8,7 +8,6 @@ const Search = (props) => {
   const activeMenuStr = props.activeMenu ? props.activeMenu.toLowerCase() : "";
   const [inputValue, setInputValue] = useState("");
 
-  // Підставляємо значення із глобального стейту при зміні меню
   useEffect(() => {
     const initialValue = props.searchFieldValue ? props.searchFieldValue(activeMenuStr) : "";
     setInputValue(initialValue || "");
@@ -29,7 +28,12 @@ const Search = (props) => {
     let currentPage = 0;
     let index = 0;
     let foundResults = [];
+    const excludedSearchKeys =["type", "userId", "userTypeId","userTypePriority",
 
+    "userPositionPriority", "departmentId", "departmentPriority", "sectionId", "sectionPriority"
+  ]
+
+  
     switch(activeMenuStr) {
       case "gov-ua":
         searchArea = props.getGovUaMails;
@@ -45,30 +49,39 @@ const Search = (props) => {
 
 if (searchArea.length) {
   console.log("Шукаємо тут+++++++++++++", searchArea);
+  
 
   searchArea.forEach((element) => {
     if (!element || !element.rows) return;
-    if (searchValue === "") return;
+        if (searchValue === ""|| searchValue.length < 3 ) return;
 
 
     element.rows.forEach((rowElement, rowIndex) => {
+      debugger;
+     
       if (!rowElement) return;
 
       const index = rowIndex + 1;
       let foundInRow = false;
-
-      Object.entries(rowElement).forEach(([dataKey, dataValue]) => {
+     //debugger;
+     for (const [dataKey,dataValue] of Object.entries(rowElement))  {
         if (
+         !excludedSearchKeys.includes(dataKey)&&
           typeof dataValue === "string" &&
           dataValue.toLowerCase().includes(searchValue.toLowerCase())
         ) {
           foundResults.push({ dataKey, dataValue, currentPage: element.pageIndex, index });
+          //debugger;
+          
           foundInRow = true;
           console.log(
             `Знайдено на верхньому рівні: сторінка ${element.pageIndex}, рядок ${index}, ${dataKey}: ${dataValue}`
-          );
+          ); 
+
+          break;
+        
         }
-      });
+      };
 
       if (!foundInRow && Array.isArray(rowElement.phones)) {
         rowElement.phones.forEach((phoneObj) => {
@@ -88,6 +101,7 @@ if (searchArea.length) {
             );
           }
         });
+        
       }
     });
   });

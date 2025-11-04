@@ -13,7 +13,6 @@ import {
   isDataFetching,
   isPhonesDataLoaded,
   isPhonesDataFetching,
-  getPhonesCurrentPageNumber
 } from "../../redux/selectors/selector";
 import { getPhonesData } from "../../redux/phones-reducer";
 import TopTableBar from "../TopTableBar/TopTableBar";
@@ -28,12 +27,18 @@ const PhonesPage = (props) => {
     useEffect(() => {
       let pageNumber = props.getPhonesCurrentPageNumber;
       const data = props.getPhonesPageIndexDataOfFoundResults ?? []; 
+
+    //  debugger;
       const filtered = data
         .filter(item => item.currentPage == pageNumber)
         .map(item => item.index); // масив індексів
+        
+
 
               console.log ("DATA для Filtred:", data)
               console.log ("Фільтред:", filtered)
+              console.log("CurrentPage", pageNumber)
+              console.log ("phonesCurrentPage", props.getPhonesCurrentPageNumber)
           
       setindexesOfFoundResultsForCurrentPage(filtered);
       //debugger;
@@ -74,7 +79,8 @@ const PhonesPage = (props) => {
         found={props.foundSearchValueOfPhonesPage}
         indexesOfFoundResultsForCurrentPage={indexesOfFoundResultsForCurrentPage}
         isPagesNavbarLinkElementOnCurrentPagePressed={props.isPagesNavbarLinkElementOnCurrentPagePressed}
-        isRenderFromFoundResultsPage={props.isRenderFromFoundResultsPage ?? true}
+       // isRenderFromFoundResultsPage={props.isRenderFromFoundResultsPage ?? true}
+        isPreviousPageWasFoundResult={props.isPreviousPageWasFoundResult}
       />
     </>
   );

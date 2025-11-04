@@ -2,10 +2,9 @@ import React, { useEffect, useState,useRef } from "react";
 import s from './PagesNavBar.module.css';
 import { NavLink, useLocation } from 'react-router-dom';
 import { connect } from "react-redux";
-import { govUaCount, lotusCount, phonesCount, isPhonesSearchValueFound, foundSearchValueOfPhonesPage} from "../../../redux/selectors/selector";
+import { govUaCount, lotusCount, phonesCount, isPhonesSearchValueFound, foundSearchValueOfPhonesPage, getPhones, getPhonesCurrentPageNumber} from "../../../redux/selectors/selector";
 import { rememberCurrentPagesActionCreator, } from "../../../redux/pagesNavbar-reducer";
 import { togglepagesNavbarLinkElementOnCurrentPage } from "../../../redux/toggledElements-reducer";
-
 
 const PagesNavBar = (props) => {
   const location = useLocation();
@@ -15,7 +14,7 @@ const PagesNavBar = (props) => {
   const [indexes, setIndexes] = useState([]);
   const pressTimer = useRef(null);
   const isPressed = useRef(false); 
-  const delay = 200;
+  const delay = 1000;
   
 
   let countOfPages = 0;
@@ -49,7 +48,7 @@ const PagesNavBar = (props) => {
 function handleNavLinkPressed(e) {
   if (pageFromURL == e.currentTarget.textContent) {
     pressTimer.current = setTimeout(() => {
-      props.togglepagesNavbarLinkElementOnCurrentPage();
+      props.togglepagesNavbarLinkElementOnCurrentPage(true);
       isPressed.current = true;
       //debugger;
     }, delay);
@@ -59,19 +58,25 @@ function handleNavLinkPressed(e) {
 function handleNavLinkUnpressed() {
   clearTimeout(pressTimer.current);
   if (isPressed.current) {
-    props.togglepagesNavbarLinkElementOnCurrentPage();
+    props.togglepagesNavbarLinkElementOnCurrentPage(false);
   }
 }
 
   
  useEffect(() => {
+
   if (pageName) {
     props.rememberCurrentPage(pageName, pageFromURL);
   }
 }, [location.pathname, pageName, pageFromURL]);
 
+/*useEffect(() => {
+  isPressed.current = false;
+}, [location.pathname]);
+*/
+
  useEffect(() => {
-  console.log("ак-к-к",props.isPhonesSearchValueFound);
+  //console.log("ак-к-к",props.isPhonesSearchValueFound);
     if (props.isPhonesSearchValueFound /*|| props.isLotusSearchValueFounded || props.isGovUaSearchValueFounded*/) {
       setShowFoundResultsPage(true);
       console.log("Значення для відображення:", showFoundResultPage);
@@ -88,6 +93,7 @@ function handleNavLinkUnpressed() {
         setIndexes(indexes);
     } else {
       setShowFoundResultsPage(false);
+      setIndexes([]);
     }
   }, [props.isPhonesSearchValueFound, props.isLotusSearchValueFounded, props.isGovUaSearchValueFounded, props.foundSearchValueOfPhonesPage]);
 
@@ -109,7 +115,7 @@ function handleNavLinkUnpressed() {
         const pageNumber = i + 1;
         return (
           <NavLink
-            onMouseDown={handleNavLinkPressed}
+           onMouseDown={handleNavLinkPressed}
             onMouseUp={handleNavLinkUnpressed}
             key={i}
             to={`${basePath}${pageNumber}`}
@@ -134,7 +140,8 @@ const mapStateToProps = (state) => ({
   lotusCount: lotusCount(state),
   govUaCount: govUaCount(state),
   isPhonesSearchValueFound:isPhonesSearchValueFound(state),
-  foundSearchValueOfPhonesPage: foundSearchValueOfPhonesPage(state)
+  foundSearchValueOfPhonesPage: foundSearchValueOfPhonesPage(state),
+  getPhonesCurrentPageNumber:getPhonesCurrentPageNumber(state)
 
   
 });
