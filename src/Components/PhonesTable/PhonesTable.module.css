@@ -157,3 +157,42 @@ tr{
   visibility: visible;
 } 
 
+.cellContent {
+  position: relative;       
+  padding: 8px 15px;
+  width: 100%;
+  will-change: opacity, transform; /* підказка браузеру для плавних анімацій */
+}
+
+.text {
+  transition: opacity 0.3s ease;
+}
+
+.hideText {
+  opacity: 0;
+}
+
+.arrow {
+  will-change: opacity, transform;
+  position: absolute;
+  top: 50%;
+  right: 10px;             
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  width: 16px;
+  height: 16px;
+}
+
+.showArrow {
+  opacity: 1;
+}
+
+.moveRight {
+  transform: translateX(50px) translateY(-50%);
+}
+
+
+tr {
+  cursor: pointer;
+}

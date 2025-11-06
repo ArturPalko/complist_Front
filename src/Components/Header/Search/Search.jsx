@@ -14,7 +14,7 @@ const Search = (props) => {
   }, [activeMenuStr, props.searchFieldValue]);
 
   const handleOnClearSearchFormButtonClick = () =>{
-    props.clearSearchForm(props.activeMenu);
+    props.clearSearchForm(props.activeMenu.toLowerCase());
     
   }
 
@@ -57,7 +57,7 @@ if (searchArea.length) {
 
 
     element.rows.forEach((rowElement, rowIndex) => {
-      debugger;
+
      
       if (!rowElement) return;
 

@@ -5,6 +5,8 @@ import MailsTable from "../MalisTable/MailsTable";
 import withDataLoader from "../../redux/hocs/withDataLoader";
 import TopTableBar from "../TopTableBar/TopTableBar";
 import withToggleElements from "../../redux/hocs/withToggleElements";
+import { useEffect } from "../CommonInjection/Dependencies/ComponentImports";
+import { useIndexesForPage } from "../../redux/hooks/hooks";
 
 const LotusPage = (props) => {
   const [showPasswords, setShowPasswords] = useState(false);
@@ -14,6 +16,11 @@ const LotusPage = (props) => {
     const checked = e.target.checked;
     setShowPasswords(checked);
     props.togglePasswords(checked,setPasswordsMap);}
+
+      const pageName = "Lotus"; 
+      const indexesOfFoundResultsForCurrentPage = useIndexesForPage(pageName);
+
+
 
   return (
     <>
@@ -25,7 +32,8 @@ const LotusPage = (props) => {
         handleTogglePasswords={handleTogglePasswords}
       />
       <MailsTable
-        mailType="lotus"
+        mailType="Lotus"
+        foundResults = {props.foundResults}
         mailsData={props.data}
         isDataFetching={props.isDataFetching}
         columns={[
@@ -37,6 +45,10 @@ const LotusPage = (props) => {
         passwordsMap={passwordsMap}
         rowsPerPage={rowsPerPage}
         pageNumber={usePageNumber()}
+        indexDataOfFoundResultsForFoundResultsPage={props.indexDataOfFoundResultsForFoundResultsPage}
+        indexesOfFoundResultsForCurrentPage={indexesOfFoundResultsForCurrentPage}
+        isPreviousPageWasFoundResult={props.isPreviousPageWasFoundResult}
+        isPagesNavbarLinkElementOnCurrentPagePressed={props.isPagesNavbarLinkElementOnCurrentPagePressed}
       />
     </>
   );

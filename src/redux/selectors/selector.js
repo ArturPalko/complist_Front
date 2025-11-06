@@ -59,10 +59,10 @@ export const searchFieldValue = (state, menu) => {
 };
 
 export const isGovUaSearchValueFounded = (state) => 
- true;
+   state.toggledElements.searchField["gov-ua"]?.foundResults.length > 0;
 
 export const isLotusSearchValueFounded = (state) => 
-  Boolean(state.toggledElements["lotus"]?.foundResults);
+    state.toggledElements.searchField["lotus"]?.foundResults.length > 0;
 
 export const isPhonesSearchValueFound = (state) => 
    state.toggledElements.searchField["phones"].foundResults.length > 0;
@@ -71,25 +71,13 @@ export const isPhonesSearchValueFound = (state) =>
 export const foundSearchValueOfPhonesPage = (state) => 
    state.toggledElements.searchField["phones"];
 
-/*export const getPhonesPageIndexDataOfFoundResults = (state) => {
-  const keysToKeep = ["currentPage", "index"];
+export const foundSearchValueOfLotusMailsPage = (state) => 
+   state.toggledElements.searchField["lotus"];
 
-  const mapped = foundSearchValueOfPhonesPage(state).foundResults.map(result =>
-    Object.fromEntries(
-      Object.entries(result).filter(([key]) => keysToKeep.includes(key))
-    )
-  );
+export const foundSearchValueOfGovUaPage = (state) => 
+   state.toggledElements.searchField["gov-ua"];
 
-  // Залишаємо тільки унікальні пари { currentPage, index }
-  const unique = mapped.filter(
-    (value, index, self) =>
-      index === self.findIndex(
-        t => t.currentPage === value.currentPage && t.index === value.index
-      )
-  );
 
-  return unique;
-};*/
 export const getPhonesPageIndexDataOfFoundResults = (state) => {
           const keysToKeep = ["currentPage", "index"];
          return (foundSearchValueOfPhonesPage(state).foundResults.map(result =>
@@ -100,17 +88,87 @@ export const getPhonesPageIndexDataOfFoundResults = (state) => {
   
 }
 
+export const getLotusMailsPageIndexDataOfFoundResults = (state) => {
+          const keysToKeep = ["currentPage", "index"];
+         return (foundSearchValueOfLotusMailsPage(state).foundResults.map(result =>
+                                    Object.fromEntries(
+                                        Object.entries(result).filter(([key]) => keysToKeep.includes(key))
+                                    )
+                                  ));
+  
+}
+
+export const getGovUaMailsPageIndexDataOfFoundResults = (state) => {
+          const keysToKeep = ["currentPage", "index"];
+         return (foundSearchValueOfGovUaPage(state).foundResults.map(result =>
+                                    Object.fromEntries(
+                                        Object.entries(result).filter(([key]) => keysToKeep.includes(key))
+                                    )
+                                  ));
+  
+}
+
+export const getCurrentPageNumberByKey = (key) => (state) => state.currentPageNumber[key];
+export const getPageIndexDataOfFoundResultsByKey = (key) => (state) => {
+  const keysToKeep = ["currentPage", "index"];
+  const foundResults = state.toggledElements.searchField[key].foundResults || [];
+  return foundResults.map(result =>
+    Object.fromEntries(Object.entries(result).filter(([k]) => keysToKeep.includes(k)))
+  );
+};
+
+
+// Селектор для будь-якої сторінки
+export const getPageIndexDataOfFoundResultsByPage = (pageName) => (state) => {
+  const keysToKeep = ["currentPage", "index"];
+  
+  // Визначаємо який foundSearchValue використовувати
+  const foundSearchValueOfPage = state.toggledElements.searchField[pageName];
+
+  // Якщо даних немає, повертаємо порожній масив
+  if (!foundSearchValueOfPage || !foundSearchValueOfPage.foundResults) return [];
+
+  // Фільтруємо тільки потрібні ключі
+  return foundSearchValueOfPage.foundResults.map(result =>
+    Object.fromEntries(
+      Object.entries(result).filter(([key]) => keysToKeep.includes(key))
+    )
+  );
+};
+
 
 export const getPhonesCurrentPageNumber = (state) =>
   state.currentPageNumber.phones ;
+
+export const getLotusMailsCurretPageNumber = (state) =>
+  state.currentPageNumber.Lotus;
+
+export const getGovMailsCurretPageNumber = (state) =>
+  state.currentPageNumber["Gov-ua"];
+
 
 
 export const isPagesNavbarLinkElementOnCurrentPagePressed = (state) =>
   state.toggledElements.pagesNavbarLinkElementOnCurrentPage.isPressed;
 
-export const isPreviousPageWasFoundResult = (state)=>
-  state.currentPageNumber.previousLocation == "/phones/foundResults";
+export const isPreviousPageWasFoundResult = (state)=>{
+  let page = activeMenu(state);
+  let baseLink;
+  switch(page){
+    case "Lotus":
+          baseLink = "/mails/Lotus"
+    break;
+    case "Gov-ua":
+          baseLink = "/mails/Gov-ua"
+    break;
+    case "phones":
+        baseLink = "/phones"  
+  }
+  debugger;
+  return state.currentPageNumber.previousLocation ==  `${baseLink}/foundResults`;
 
+}
+ 
 
 
 

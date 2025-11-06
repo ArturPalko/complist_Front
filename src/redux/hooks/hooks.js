@@ -1,9 +1,14 @@
 import { useParams } from "react-router-dom";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { rememberPreviousLocationActionCreator } from "../pagesNavbar-reducer";
-
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { getPhonesPageIndexDataOfFoundResults, getGovUaMailsPageIndexDataOfFoundResults,
+  getLotusMailsPageIndexDataOfFoundResults, getCurrentPageNumberByKey, getPageIndexDataOfFoundResultsByKey
+ } from "../selectors/selector";
+import redArrow from "../../../src/assets/red_arrow.png";
 export const usePageNumber = () => {
   const params = useParams();
   return Number(params.pageNumber) || 1;
@@ -21,4 +26,91 @@ export const useTrackLocation = () => {
     }
     prevPathRef.current = location.pathname;
   }, [location, dispatch]);
+};
+
+export const useCurrentPageIndexData = (activeMenu) => {
+  const phonesData = useSelector(getPhonesPageIndexDataOfFoundResults);
+  const lotusData = useSelector(getLotusMailsPageIndexDataOfFoundResults);
+  const govUaData = useSelector(getGovUaMailsPageIndexDataOfFoundResults);
+
+
+  switch(activeMenu) {
+    case "phones":
+      return phonesData || [];
+    case "Lotus":
+      return lotusData || [];
+    case "Gov-ua":
+      return govUaData || [];
+    default:
+      return [];
+  }
+};
+
+export const useIndexesForPage = (pageKey) => {
+  const pageNumber = useSelector(state => getCurrentPageNumberByKey(pageKey)(state));
+  const data = useSelector(state => getPageIndexDataOfFoundResultsByKey(pageKey.toLowerCase())(state)) || [];
+
+  const indexes = data
+     .filter(item => Number(item.currentPage) === Number(pageNumber))
+    .map(item => item.index);
+  return indexes;
+};
+
+
+export const useRowHighlighting = (
+  indexDataOfFoundResultsForFoundResultsPage,
+  s,
+  baseRoute,
+  ro
+) => {
+  const [hoveredRow, setHoveredRow] = useState(null);
+  const [clickedRow, setClickedRow] = useState(null);
+  const navigate = useNavigate();
+  const rowRefs = ro;
+  //debugger
+
+  const handleClick = (index) => {
+    setClickedRow(index);
+    const arrow = rowRefs.current[index];
+    if (arrow) {
+      const onTransitionEnd = () => {
+        const targetPage =
+          indexDataOfFoundResultsForFoundResultsPage[index]?.currentPage;
+          //debugger;
+        if (targetPage) navigate(`/${baseRoute}/${targetPage}`);
+        arrow.removeEventListener("transitionend", onTransitionEnd);
+      };
+      arrow.addEventListener("transitionend", onTransitionEnd);
+    }
+  };
+
+ const renderIndexCell = (index) => {
+  if (!indexDataOfFoundResultsForFoundResultsPage) return null;
+
+  return (
+    <td
+      className={s.cell}
+      onMouseEnter={() => setHoveredRow(index)}
+      onMouseLeave={() => setHoveredRow(null)}
+      onClick={() => handleClick(index)}
+    >
+      <div className={s.cellContent}>
+        <span className={`${s.text} ${hoveredRow === index ? s.hideText : ""}`}>
+          Сторінка: {indexDataOfFoundResultsForFoundResultsPage[index].currentPage}, 
+          Стрічка: {indexDataOfFoundResultsForFoundResultsPage[index].index}
+        </span>
+        <img
+          ref={(el) => (rowRefs.current[index] = el)}
+          src={redArrow}
+          alt="arrow"
+          className={`${s.arrow} ${hoveredRow === index ? s.showArrow : ""} ${clickedRow === index ? s.moveRight : ""}`}
+        />
+      </div>
+    </td>
+  );
+};
+
+
+
+  return { renderIndexCell };
 };

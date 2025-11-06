@@ -2,7 +2,11 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Preloader from "../../Components/Preloader/Preloader";
-import { foundSearchValueOfPhonesPage , getPhonesPageIndexDataOfFoundResults, getPhonesCurrentPageNumber, isPreviousPageWasFoundResult } from "../selectors/selector";
+import { foundSearchValueOfPhonesPage , getPhonesPageIndexDataOfFoundResults,
+   getPhonesCurrentPageNumber, isPreviousPageWasFoundResult, foundSearchValueOfLotusMailsPage,
+    foundSearchValueOfGovUaPage, getLotusMails, getLotusMailsCurretPageNumber,
+     getLotusMailsPageIndexDataOfFoundResults, getGovUaMails,
+      getGovUaMailsPageIndexDataOfFoundResults,getGovMailsCurretPageNumber } from "../selectors/selector";
 
 
 
@@ -69,8 +73,14 @@ const withDataLoader = (
     isDataFetching: isDataFetchingselector(state, type),
     data: dataSelector(state),
     foundSearchValueOfPhonesPage:foundSearchValueOfPhonesPage(state),
+    foundSearchValueOfLotusMailsPage: foundSearchValueOfLotusMailsPage(state),
+    foundSearchValueOfGovUaPage:foundSearchValueOfGovUaPage(state),
     getPhonesPageIndexDataOfFoundResults:getPhonesPageIndexDataOfFoundResults(state),
     getPhonesCurrentPageNumber:getPhonesCurrentPageNumber(state),
+    getLotusMailsCurretPage: getLotusMailsCurretPageNumber(state),
+    getGovMailsCurretPageNumber: getGovMailsCurretPageNumber(state),
+    getLotusMailsPageIndexDataOfFoundResults: getLotusMailsPageIndexDataOfFoundResults(state),
+    getGovUaMailsPageIndexDataOfFoundResults:getGovUaMailsPageIndexDataOfFoundResults(state),
     isPreviousPageWasFoundResult:isPreviousPageWasFoundResult(state)
   });
 

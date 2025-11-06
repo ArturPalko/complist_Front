@@ -1,0 +1,81 @@
+.headerPanel{
+  padding-right: 20px;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider.blue {
+  background-color: #2196f3;
+}
+input:checked + .slider.blue:before {
+  transform: translateX(26px);
+}
+
+
+input:checked + .slider.green {
+  background-color: #4caf50;
+}
+input:checked + .slider.green:before {
+  transform: translateX(26px);
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+  margin-bottom: 8px;
+}
+
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.switchWrapper {
+  display: flex;
+  align-items: center;
+}
+
+.sliderDesc {
+  margin-left: 10px;
+  padding-bottom: 5px;
+}
+
+
+.headerPanel{
+  display:flex;
+  justify-content: space-between;
+  padding-left: 20px;
+  padding-top: 20px;
+}
+
+.buttonsBar{
+  display:flex;
+  justify-content: flex-end;  
+  gap: 30px;
+  align-items: center;
+}

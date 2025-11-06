@@ -4,8 +4,12 @@ import { getGovUaMails, isGovUaDataFetching, isGovUaDataLoaded } from "../../red
 import { getMailsData } from "../../redux/mails-reducer";
 import TopTableBar from "../TopTableBar/TopTableBar";
 import withToggleElements from "../../redux/hocs/withToggleElements";
+import { useIndexesForPage } from "../../redux/hooks/hooks";
 
 const GovUAPage = (props) => {
+
+  const pageName = "Gov-ua"; 
+  const indexesOfFoundResultsForCurrentPage = useIndexesForPage(pageName);
 
     return(
       <>
@@ -16,7 +20,8 @@ const GovUAPage = (props) => {
       handleToggleSearchField={props.handleToggleSearchField} 
       />
         <MailsTable
-            mailType="gov-ua"
+            mailType="Gov-ua"
+            foundResults = {props.foundResults}
             mailsData={props.data}
             columns={[
               { key: "mailName", label: "найменування скриньки" },
@@ -26,6 +31,10 @@ const GovUAPage = (props) => {
             title="Поштові скриньки Вінницької митниці customs.gov.ua"
             rowsPerPage={rowsPerPage}
             pageNumber={usePageNumber()}
+            indexDataOfFoundResultsForFoundResultsPage={props.indexDataOfFoundResultsForFoundResultsPage}
+            indexesOfFoundResultsForCurrentPage={indexesOfFoundResultsForCurrentPage}
+            isPreviousPageWasFoundResult={props.isPreviousPageWasFoundResult}
+            isPagesNavbarLinkElementOnCurrentPagePressed={props.isPagesNavbarLinkElementOnCurrentPagePressed}
           />
       </>
 

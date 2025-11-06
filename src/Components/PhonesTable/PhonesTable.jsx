@@ -4,6 +4,7 @@ import redArrow from '../../assets/red_arrow.png';
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { useRowHighlighting } from "../../redux/hooks/hooks";
 
 const PhonesTable = ({
   foundResults,
@@ -18,54 +19,20 @@ const PhonesTable = ({
   isRenderFromFoundResultsPage,
   isPreviousPageWasFoundResult
 }) => {
-  const [hoveredRow, setHoveredRow] = useState(null);
-  const [clickedRow, setClickedRow] = useState(null);
-  const navigate = useNavigate();
+
   const rowRefs = useRef({});
 
-
-
-//console.log ("isPagesNavbarLinkElementOnCurrentPagePressed", isPagesNavbarLinkElementOnCurrentPagePressed);
+const { renderIndexCell } = useRowHighlighting(
+    indexDataOfFoundResultsForFoundResultsPage,
+    s,      
+    "phones", 
+     rowRefs 
+  );
 
   let pageData = foundResults ?? phonesData?.[pageNumber - 1]?.rows ?? [];
   let indexDecrement = 0;
   const phoneColumns = columns.find(c => c.key === "phones")?.subLabels.length || 0;
 
-  const handleClick = (index) => {
-    setClickedRow(index);
-    const arrow = rowRefs.current[index];
-    if (arrow) {
-      const onTransitionEnd = () => {
-        navigate(`/phones/${indexDataOfFoundResultsForFoundResultsPage[index].currentPage}`);
-        arrow.removeEventListener("transitionend", onTransitionEnd);
-      };
-      arrow.addEventListener("transitionend", onTransitionEnd);
-    }
-  };
-
- console.log("indexDataOf:",indexDataOfFoundResultsForFoundResultsPage);
-
-     const renderIndexCell = (index) => {
-       if (!indexDataOfFoundResultsForFoundResultsPage) return null;
-        return (
-         <td
-           className={s.cell}
-           onMouseEnter={() => setHoveredRow(index)}
-           onMouseLeave={() => setHoveredRow(null)}
-           onClick={() => handleClick(index)}
-         >
-           <span className={`${s.text} ${hoveredRow === index ? s.hideText : ""}`}>
-             Сторінка: {indexDataOfFoundResultsForFoundResultsPage[index].currentPage}, Стрічка: {indexDataOfFoundResultsForFoundResultsPage[index].index}
-           </span>
-           <img
-             ref={(el) => (rowRefs.current[index] = el)}
-             src={redArrow}
-             alt="arrow"
-             className={`${s.arrow} ${hoveredRow === index ? s.showArrow : ""} ${clickedRow === index ? s.moveRight : ""}`}
-           />
-         </td>
-       );
-     };
 const showDigitsFromPressed =
   indexesOfFoundResultsForCurrentPage.length !== 0 &&
   isPagesNavbarLinkElementOnCurrentPagePressed
@@ -84,6 +51,7 @@ const showDigitsFromPressed =
           <table>
             <thead>
               <tr>
+                
                 <th rowSpan="2">№ п/п</th>
                 {columns.map((col) =>
                   col.key === "phones" ? (
@@ -122,9 +90,9 @@ const showDigitsFromPressed =
                     return (
                       <tr
                         key={`dep-${row.departmentId}`}
-                        onMouseEnter={() => setHoveredRow(index)}
-                        onMouseLeave={() => setHoveredRow(null)}
-                        onClick={() => handleClick(index)}
+                      //  onMouseEnter={() => setHoveredRow(index)}
+                   //     onMouseLeave={() => setHoveredRow(null)}
+                       // onClick={() => handleClick(index)}
                         
                       >
                           <td className={`${s.mainDepartment}  ${hideClass} ${hideClassFromPressed}`} 
@@ -140,9 +108,9 @@ const showDigitsFromPressed =
                     return (
                       <tr
                         key={`sec-${row.sectionId}`}
-                        onMouseEnter={() => setHoveredRow(index)}
-                        onMouseLeave={() => setHoveredRow(null)}
-                        onClick={() => handleClick(index)}
+                     //   onMouseEnter={() => setHoveredRow(index)}
+                    //    onMouseLeave={() => setHoveredRow(null)}
+                      //  onClick={() => handleClick(index)}
                     
                         data-index={index}
                       >
@@ -158,9 +126,9 @@ const showDigitsFromPressed =
                     return (
                       <tr
                         key={`user-${row.userId}`}
-                        onMouseEnter={() => setHoveredRow(index)}
-                        onMouseLeave={() => setHoveredRow(null)}
-                        onClick={() => handleClick(index)}
+                    //    onMouseEnter={() => setHoveredRow(index)}
+                   //     onMouseLeave={() => setHoveredRow(null)}
+                 //       onClick={() => handleClick(index)}
                       className={`${rowClass} ${rowClassFronPressed}`}
 
                         data-index={index}

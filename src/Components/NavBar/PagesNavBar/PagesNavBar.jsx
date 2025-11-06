@@ -2,7 +2,7 @@ import React, { useEffect, useState,useRef } from "react";
 import s from './PagesNavBar.module.css';
 import { NavLink, useLocation } from 'react-router-dom';
 import { connect } from "react-redux";
-import { govUaCount, lotusCount, phonesCount, isPhonesSearchValueFound, foundSearchValueOfPhonesPage, getPhones, getPhonesCurrentPageNumber} from "../../../redux/selectors/selector";
+import { govUaCount, lotusCount, phonesCount, isPhonesSearchValueFound, foundSearchValueOfPhonesPage, getPhones, getPhonesCurrentPageNumber, activeMenu, isGovUaSearchValueFounded, isLotusSearchValueFounded, foundSearchValueOfLotusMailsPage, foundSearchValueOfGovUaPage} from "../../../redux/selectors/selector";
 import { rememberCurrentPagesActionCreator, } from "../../../redux/pagesNavbar-reducer";
 import { togglepagesNavbarLinkElementOnCurrentPage } from "../../../redux/toggledElements-reducer";
 
@@ -50,7 +50,6 @@ function handleNavLinkPressed(e) {
     pressTimer.current = setTimeout(() => {
       props.togglepagesNavbarLinkElementOnCurrentPage(true);
       isPressed.current = true;
-      //debugger;
     }, delay);
   }
 }
@@ -74,14 +73,29 @@ function handleNavLinkUnpressed() {
   isPressed.current = false;
 }, [location.pathname]);
 */
-
+  let activeMenu =props.activeMenu;
+  
  useEffect(() => {
   //console.log("ак-к-к",props.isPhonesSearchValueFound);
-    if (props.isPhonesSearchValueFound /*|| props.isLotusSearchValueFounded || props.isGovUaSearchValueFounded*/) {
+    if (activeMenu == "phones" && props.isPhonesSearchValueFound || (activeMenu == "Lotus" && props.isLotusSearchValueFounded)
+    || (activeMenu="Gov-ua") && props.isGovUaSearchValueFounded)/*|| props.isLotusSearchValueFounded || props.isGovUaSearchValueFounded)*/ {
       setShowFoundResultsPage(true);
       console.log("Значення для відображення:", showFoundResultPage);
+      let foundResults;
+
+      switch(activeMenu){
+        case "phones":
+          foundResults = props.foundSearchValueOfPhonesPage.foundResults;
+        break;
+        case "Lotus":
+          foundResults = props.foundSearchValueOfLotusMailsPage.foundResults;
+        break;
+        case "Gov-ua":
+          foundResults=props.foundSearchValueOfGovUaPage.foundResults;
+          
+      }
       
-      let foundResults= props.foundSearchValueOfPhonesPage.foundResults;
+      //let foundResults= props.foundSearchValueOfPhonesPage.foundResults;
         console.log("FoundResults::::::",foundResults)
         const index = foundResults.map(result =>
                                     Object.fromEntries(
@@ -91,11 +105,14 @@ function handleNavLinkUnpressed() {
         const indexes = Object.values(index).map(obj => Object.values(obj));
         console.log("Indexes::::::", indexes);
         setIndexes(indexes);
+
     } else {
       setShowFoundResultsPage(false);
       setIndexes([]);
     }
-  }, [props.isPhonesSearchValueFound, props.isLotusSearchValueFounded, props.isGovUaSearchValueFounded, props.foundSearchValueOfPhonesPage]);
+  }, [props.activeMenu,props.isPhonesSearchValueFound, props.isLotusSearchValueFounded, props.isGovUaSearchValueFounded, props.foundSearchValueOfPhonesPage,
+    props.foundSearchValueOfGovUaPage, props.foundSearchValueOfLotusMailsPage
+  ]);
 
   return (
     <div className={s.navigationOfPage}>
@@ -136,11 +153,16 @@ function handleNavLinkUnpressed() {
 };
 
 const mapStateToProps = (state) => ({
+  activeMenu:activeMenu(state),
   phonesCount: phonesCount(state),
   lotusCount: lotusCount(state),
   govUaCount: govUaCount(state),
   isPhonesSearchValueFound:isPhonesSearchValueFound(state),
+  isGovUaSearchValueFounded:isGovUaSearchValueFounded(state),
+  isLotusSearchValueFounded:isLotusSearchValueFounded(state),
   foundSearchValueOfPhonesPage: foundSearchValueOfPhonesPage(state),
+  foundSearchValueOfLotusMailsPage:foundSearchValueOfLotusMailsPage(state),
+  foundSearchValueOfGovUaPage:foundSearchValueOfGovUaPage(state),
   getPhonesCurrentPageNumber:getPhonesCurrentPageNumber(state)
 
   
