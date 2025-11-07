@@ -1,10 +1,13 @@
 import { connect } from "react-redux";
+import { createContext } from "react";
 import { togglepagesNavbarLinkElementOnCurrentPage, toggleSearchFieldActionCreator } from "../toggledElements-reducer";
 import { isPresentedSearchField, isPagesNavbarLinkElementOnCurrentPagePressed} from "../../redux/selectors/selector";
 
+
+export const ToggleElementsContext = createContext(null);
 const withToggleElements = (WrappedComponent) => {
   const HOC = (props) => {
-    const handleToggleSearch = (e) => {
+    const handleToggleSearchField = (e) => {
       const checked = e?.target?.checked ?? false;
       props.toggleSearchField(checked); 
     };
@@ -30,11 +33,18 @@ const withToggleElements = (WrappedComponent) => {
 
 
     return (
-      <WrappedComponent
-        {...props}
-        handleToggleSearchField={handleToggleSearch}
-        togglePasswords={togglePasswords}
-      />
+        <ToggleElementsContext.Provider
+        value={{
+          handleToggleSearchField, 
+          valueOfSearchCheckBox: props.isPresentedSearchField, 
+          isPagesNavbarLinkElementOnCurrentPagePressed:props.isPagesNavbarLinkElementOnCurrentPagePressed,
+      togglePasswords
+  }}
+>
+  <WrappedComponent />
+</ToggleElementsContext.Provider>
+
+    
     );
   };
 

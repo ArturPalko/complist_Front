@@ -1,4 +1,4 @@
-import { usePageNumber, rowsPerPage, useState, compose } from "../CommonInjection/Dependencies/ComponentImports";
+import { usePageNumber, rowsPerPage, useState/*, compose */} from "../CommonInjection/Dependencies/ComponentImports";
 import { getLotusMails, isLotusDataFetching, isLotusDataLoaded } from "../../redux/selectors/selector";
 import { getMailsData } from "../../redux/mails-reducer";
 import MailsTable from "../MalisTable/MailsTable";
@@ -6,7 +6,8 @@ import withDataLoader from "../../redux/hocs/withDataLoader";
 import TopTableBar from "../TopTableBar/TopTableBar";
 import withToggleElements from "../../redux/hocs/withToggleElements";
 import { useEffect } from "../CommonInjection/Dependencies/ComponentImports";
-import { useIndexesForPage } from "../../redux/hooks/hooks";
+import { useDataLoader, useIndexesForPage } from "../../redux/hooks/hooks";
+import { compose } from "redux";
 
 const LotusPage = (props) => {
   const [showPasswords, setShowPasswords] = useState(false);
@@ -21,21 +22,15 @@ const LotusPage = (props) => {
       const indexesOfFoundResultsForCurrentPage = useIndexesForPage(pageName);
 
 
-
   return (
     <>
       <TopTableBar
         title="Поштові скриньки Lotus"
-        mailType="lotus"
-        valueOfSearchCheckBox={props.isPresentedSearchField}
-        handleToggleSearchField={props.handleToggleSearchField} 
+        mailType={pageName.toLocaleLowerCase()}
         handleTogglePasswords={handleTogglePasswords}
       />
       <MailsTable
-        mailType="Lotus"
-        foundResults = {props.foundResults}
-        mailsData={props.data}
-        isDataFetching={props.isDataFetching}
+        mailType={pageName}
         columns={[
           { key: "previousName", label: "Стара назва скриньки" },
           { key: "name", label: "Нова назва скриньки" },
@@ -45,10 +40,8 @@ const LotusPage = (props) => {
         passwordsMap={passwordsMap}
         rowsPerPage={rowsPerPage}
         pageNumber={usePageNumber()}
-        indexDataOfFoundResultsForFoundResultsPage={props.indexDataOfFoundResultsForFoundResultsPage}
         indexesOfFoundResultsForCurrentPage={indexesOfFoundResultsForCurrentPage}
-        isPreviousPageWasFoundResult={props.isPreviousPageWasFoundResult}
-        isPagesNavbarLinkElementOnCurrentPagePressed={props.isPagesNavbarLinkElementOnCurrentPagePressed}
+        
       />
     </>
   );

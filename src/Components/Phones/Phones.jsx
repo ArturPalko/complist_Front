@@ -2,10 +2,14 @@ import {
   usePageNumber,
   rowsPerPage,
   useEffect,
-  withDataLoader,
+//  withDataLoader,
   setDataIsLoadedActionCreator,
-  compose
+  //compose
 } from "../CommonInjection/Dependencies/ComponentImports";
+import { compose } from "redux";
+import withDataLoader from "../../redux/hocs/withDataLoader"; // ✅ правильно
+
+
 
 import PhonesTable from "../PhonesTable/PhonesTable";
 import {
@@ -32,14 +36,8 @@ const PhonesPage = (props) => {
     <>
       <TopTableBar
         title="Телефони"
-        valueOfSearchCheckBox={props.isPresentedSearchField}
-        handleToggleSearchField={props.handleToggleSearchField}
       />
-
       <PhonesTable
-        foundResults={props.foundResults}
-        phonesData={props.data}
-        isDataFetching={props.isDataFetching}
         columns={[
           { key: "userPosition", label: "Назва посади" },
           { key: "userName", label: "Прізвище, ім'я по батькові" },
@@ -55,12 +53,7 @@ const PhonesPage = (props) => {
         ]}
         pageNumber={usePageNumber()}
         rowsPerPage={rowsPerPage}
-        indexDataOfFoundResultsForFoundResultsPage={props.indexDataOfFoundResultsForFoundResultsPage}
-        found={props.foundSearchValueOfPhonesPage}
         indexesOfFoundResultsForCurrentPage={indexesOfFoundResultsForCurrentPage}
-        isPagesNavbarLinkElementOnCurrentPagePressed={props.isPagesNavbarLinkElementOnCurrentPagePressed}
-       // isRenderFromFoundResultsPage={props.isRenderFromFoundResultsPage ?? true}
-        isPreviousPageWasFoundResult={props.isPreviousPageWasFoundResult}
       />
     </>
   );

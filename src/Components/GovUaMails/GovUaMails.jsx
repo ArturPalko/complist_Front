@@ -14,27 +14,19 @@ const GovUAPage = (props) => {
     return(
       <>
       <TopTableBar
-      title="Поштові скриньки Gov-ua"
+      title="Поштові скриньки Вінницької митниці customs.gov.ua"
       mailType="gov-ua"
-      valueOfSearchCheckBox={props.isPresentedSearchField}
-      handleToggleSearchField={props.handleToggleSearchField} 
       />
         <MailsTable
             mailType="Gov-ua"
-            foundResults = {props.foundResults}
-            mailsData={props.data}
             columns={[
               { key: "mailName", label: "найменування скриньки" },
               { key: "departmentOrSection", label: "найменування підрозділу" },
               { key: "userName", label: "відповідальна особа" },
             ]}
-            title="Поштові скриньки Вінницької митниці customs.gov.ua"
             rowsPerPage={rowsPerPage}
             pageNumber={usePageNumber()}
-            indexDataOfFoundResultsForFoundResultsPage={props.indexDataOfFoundResultsForFoundResultsPage}
             indexesOfFoundResultsForCurrentPage={indexesOfFoundResultsForCurrentPage}
-            isPreviousPageWasFoundResult={props.isPreviousPageWasFoundResult}
-            isPagesNavbarLinkElementOnCurrentPagePressed={props.isPagesNavbarLinkElementOnCurrentPagePressed}
           />
       </>
 

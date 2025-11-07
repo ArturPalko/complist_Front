@@ -6,12 +6,15 @@ import {
 } from "../../redux/selectors/selector";
 import { useSelector } from "react-redux";
 import { connect } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect, useState,createContext } from "react";
 import PhonesPage from "../Phones/Phones";
 import LotusMails from "../LotusMails/LotusMails";
 import GovUaMails from "../GovUaMails/GovUaMails";
 import { useCurrentPageIndexData } from '../../redux/hooks/hooks';
+import { ToggleElementsContext } from "../../redux/hocs/withToggleElements";
 
+
+export const FoundResultsContext = createContext(null);
 const FoundResults = (props) => {
   const [rowsToPresent, setRowsToPresent] = useState([]);
   const [indexDataOfFoundResultsForFoundResultsPage, setIndexDataOfFoundResultsForFoundResultsPage] = useState([]);
@@ -58,6 +61,7 @@ const FoundResults = (props) => {
     );
 
     setRowsToPresent(present);
+
   }
   const dataForCurrentPage = useCurrentPageIndexData(props.activeMenu);
 
@@ -84,11 +88,13 @@ const FoundResults = (props) => {
  
 
   return ActiveComponent ? (
-    <ActiveComponent
-      foundResults={rowsToPresent}
-      indexDataOfFoundResultsForFoundResultsPage={indexDataOfFoundResultsForFoundResultsPage}
-      isRenderFromFoundResultsPage={false}
-    />
+      <FoundResultsContext.Provider value={{ 
+          foundResults: rowsToPresent || null, 
+          indexDataOfFoundResultsForFoundResultsPage: indexDataOfFoundResultsForFoundResultsPage || null 
+      }}>
+          <ActiveComponent />
+      </FoundResultsContext.Provider>
+
   ) : null;
 };
 

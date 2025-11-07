@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useContext } from "react";
 import { useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { rememberPreviousLocationActionCreator } from "../pagesNavbar-reducer";
@@ -9,6 +9,10 @@ import { getPhonesPageIndexDataOfFoundResults, getGovUaMailsPageIndexDataOfFound
   getLotusMailsPageIndexDataOfFoundResults, getCurrentPageNumberByKey, getPageIndexDataOfFoundResultsByKey
  } from "../selectors/selector";
 import redArrow from "../../../src/assets/red_arrow.png";
+import { DataLoaderContext } from "../hocs/withDataLoader";
+import { ToggleElementsContext } from "../hocs/withToggleElements";
+import { FoundResultsContext } from "../../Components/FoundResults/FoundResults";
+
 export const usePageNumber = () => {
   const params = useParams();
   return Number(params.pageNumber) || 1;
@@ -113,4 +117,11 @@ export const useRowHighlighting = (
 
 
   return { renderIndexCell };
+};
+
+export const useDataLoader = () => useContext(DataLoaderContext);
+export const useToggleElements = () => useContext(ToggleElementsContext);
+export const useFoundResults = () => {
+  const context = useContext(FoundResultsContext);
+  return context ?? { foundResults: null, indexDataOfFoundResultsForFoundResultsPage: null };
 };

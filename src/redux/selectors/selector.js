@@ -164,7 +164,7 @@ export const isPreviousPageWasFoundResult = (state)=>{
     case "phones":
         baseLink = "/phones"  
   }
-  debugger;
+  
   return state.currentPageNumber.previousLocation ==  `${baseLink}/foundResults`;
 
 }

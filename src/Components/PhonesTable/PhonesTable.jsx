@@ -1,38 +1,34 @@
 import s from "./PhonesTable.module.css";
-import Preloader from "../Preloader/Preloader";
-import redArrow from '../../assets/red_arrow.png';
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { useRowHighlighting } from "../../redux/hooks/hooks";
+import { useRowHighlighting, useDataLoader, useFoundResults, useToggleElements} from "../../redux/hooks/hooks";
 
 const PhonesTable = ({
-  foundResults,
-  phonesData,
   isDataFetching,
   columns,
   pageNumber,
   rowsPerPage,
-  indexDataOfFoundResultsForFoundResultsPage,
   indexesOfFoundResultsForCurrentPage,
-  isPagesNavbarLinkElementOnCurrentPagePressed,
-  isRenderFromFoundResultsPage,
-  isPreviousPageWasFoundResult
+  isRenderFromFoundResultsPage
 }) => {
 
   const rowRefs = useRef({});
 
-const { renderIndexCell } = useRowHighlighting(
+
+  const {data: phonesData, isPreviousPageWasFoundResult} = useDataLoader();
+  const {isPagesNavbarLinkElementOnCurrentPagePressed} = useToggleElements();
+    const {foundResults, indexDataOfFoundResultsForFoundResultsPage} = useFoundResults();
+  let pageData = foundResults ?? phonesData?.[pageNumber - 1]?.rows ?? [];
+  let indexDecrement = 0;
+  const phoneColumns = columns.find(c => c.key === "phones")?.subLabels.length || 0;
+
+  const { renderIndexCell } = useRowHighlighting(
     indexDataOfFoundResultsForFoundResultsPage,
     s,      
     "phones", 
      rowRefs 
   );
-
-  let pageData = foundResults ?? phonesData?.[pageNumber - 1]?.rows ?? [];
-  let indexDecrement = 0;
-  const phoneColumns = columns.find(c => c.key === "phones")?.subLabels.length || 0;
-
 const showDigitsFromPressed =
   indexesOfFoundResultsForCurrentPage.length !== 0 &&
   isPagesNavbarLinkElementOnCurrentPagePressed

@@ -1,6 +1,10 @@
+import { useToggleElements, usecontext } from "../../redux/hooks/hooks";
 import s from "./TopTableBar.module.css";
 
-const TopTableBar = ({ title, mailType, valueOfSearchCheckBox, handleToggleSearchField, handleTogglePasswords }) => {
+const TopTableBar = ({ title, mailType, handleTogglePasswords }) => {
+   const { handleToggleSearchField, valueOfSearchCheckBox } = useToggleElements(); 
+
+
   return (
     <div className={s.headerPanel}>
       <h2>{title}</h2>

@@ -2,25 +2,24 @@ import React, { useRef } from "react";
 import s from "../PhonesTable/PhonesTable.module.css";
 import "./MailsTable.css";
 import Preloader from "../Preloader/Preloader";
-import { useRowHighlighting } from "../../redux/hooks/hooks";
+import { useRowHighlighting, useDataLoader, useFoundResults, useToggleElements } from "../../redux/hooks/hooks";
 
 const MailsTable = ({
   mailType,
-  foundResults,
-  mailsData = [],
-  isDataFetching,
   columns,
-  title,
   showPasswords,
   passwordsMap,
   rowsPerPage,
   pageNumber,
-  indexDataOfFoundResultsForFoundResultsPage,
-  indexesOfFoundResultsForCurrentPage,
-  isPreviousPageWasFoundResult,
-  isPagesNavbarLinkElementOnCurrentPagePressed
+  indexesOfFoundResultsForCurrentPage
 }) => {
+  
+    const {data: mailsData, isPreviousPageWasFoundResult} = useDataLoader();
+    debugger;
+    const {foundResults, indexDataOfFoundResultsForFoundResultsPage} = useFoundResults(); 
+    const {isPagesNavbarLinkElementOnCurrentPagePressed} = useToggleElements(); 
   const pageData = foundResults ?? mailsData?.[pageNumber - 1]?.rows ?? [];
+  debugger;
   const rowRefs = useRef({});
   const { renderIndexCell } = useRowHighlighting(
     indexDataOfFoundResultsForFoundResultsPage,

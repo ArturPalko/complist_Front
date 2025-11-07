@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { connect } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Preloader from "../../Components/Preloader/Preloader";
@@ -7,8 +7,10 @@ import { foundSearchValueOfPhonesPage , getPhonesPageIndexDataOfFoundResults,
     foundSearchValueOfGovUaPage, getLotusMails, getLotusMailsCurretPageNumber,
      getLotusMailsPageIndexDataOfFoundResults, getGovUaMails,
       getGovUaMailsPageIndexDataOfFoundResults,getGovMailsCurretPageNumber } from "../selectors/selector";
+import { createContext } from "react";
 
 
+export const DataLoaderContext = createContext(null);
 
 const withDataLoader = (
   isDataLoadedselector,
@@ -65,22 +67,22 @@ const withDataLoader = (
   
     }, [props.isDataLoaded, props.fetchAction, fetchUrl, actionCreator, type]);
 
-    return showPreloader ? <Preloader count={count} /> : <WrappedComponent {...props} />;
-  };
+    
+    return showPreloader ? <Preloader count={count} /> : <DataLoaderContext.Provider 
+                                                          value={{ 
+                                                            data: props.data, 
+                                                            isPreviousPageWasFoundResult: props.isPreviousPageWasFoundResult 
+                                                          }}
+                                                        >
+                                                             <WrappedComponent />
+                                                        </DataLoaderContext.Provider>
+
+                                                        };
 
   const mapStateToProps = (state) => ({
     isDataLoaded: isDataLoadedselector(state),
     isDataFetching: isDataFetchingselector(state, type),
     data: dataSelector(state),
-    foundSearchValueOfPhonesPage:foundSearchValueOfPhonesPage(state),
-    foundSearchValueOfLotusMailsPage: foundSearchValueOfLotusMailsPage(state),
-    foundSearchValueOfGovUaPage:foundSearchValueOfGovUaPage(state),
-    getPhonesPageIndexDataOfFoundResults:getPhonesPageIndexDataOfFoundResults(state),
-    getPhonesCurrentPageNumber:getPhonesCurrentPageNumber(state),
-    getLotusMailsCurretPage: getLotusMailsCurretPageNumber(state),
-    getGovMailsCurretPageNumber: getGovMailsCurretPageNumber(state),
-    getLotusMailsPageIndexDataOfFoundResults: getLotusMailsPageIndexDataOfFoundResults(state),
-    getGovUaMailsPageIndexDataOfFoundResults:getGovUaMailsPageIndexDataOfFoundResults(state),
     isPreviousPageWasFoundResult:isPreviousPageWasFoundResult(state)
   });
 
