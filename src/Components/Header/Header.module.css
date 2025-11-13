@@ -1,5 +1,6 @@
 .singIn {
-  margin-left: auto;
+  position: relative;
+  right: 10px;
   align-items: center;
   height: 100%;
   padding-right: 20px;
@@ -12,7 +13,6 @@
 }
 
 
-/* стиль кнопки */
 .button {
   background: linear-gradient(135deg, #00e5ff, #0099cc);
   border: none;

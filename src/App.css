@@ -7,16 +7,15 @@
   "n c"
 
 }
-.header{
+.header {
   grid-area: h;
-  grid-gap: 10px;
-  background-color: aquamarine;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
- 
-}
+  align-items: center; 
+  background-color: aquamarine;
 
+
+
+}
 .content{
   grid-area: c;
   background-color: rgb(220, 220, 224);

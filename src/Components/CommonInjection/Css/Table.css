@@ -3,11 +3,13 @@ table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
+   cursor: default;
 }
 
 th, td {
   padding: 10px 15px;
   border: 1px solid #ddd;
+ 
 }
 
 th {

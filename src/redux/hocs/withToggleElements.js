@@ -1,15 +1,16 @@
 import { connect } from "react-redux";
 import { createContext } from "react";
-import { togglepagesNavbarLinkElementOnCurrentPage, toggleSearchFieldActionCreator } from "../toggledElements-reducer";
+import { togglepagesNavbarLinkElementOnCurrentPage, toggleSearchFieldActionCreator, clearSearchFieldsAndFoundResults } from "../toggledElements-reducer";
 import { isPresentedSearchField, isPagesNavbarLinkElementOnCurrentPagePressed} from "../../redux/selectors/selector";
 
 
-export const ToggleElementsContext = createContext(null);
+export const ToggleElementsContext = createContext(null)
 const withToggleElements = (WrappedComponent) => {
   const HOC = (props) => {
     const handleToggleSearchField = (e) => {
       const checked = e?.target?.checked ?? false;
-      props.toggleSearchField(checked); 
+      props.toggleSearchField(checked);
+      !checked && props.clearSearchFieldsAndFoundResults();
     };
 
     const togglePasswords = async (checked, setPasswordsMap) => {
@@ -50,13 +51,13 @@ const withToggleElements = (WrappedComponent) => {
 
   const mapStateToProps = (state) => ({
     isPresentedSearchField: !!isPresentedSearchField(state),
-    isPagesNavbarLinkElementOnCurrentPagePressed:isPagesNavbarLinkElementOnCurrentPagePressed(state)
+    isPagesNavbarLinkElementOnCurrentPagePressed:isPagesNavbarLinkElementOnCurrentPagePressed(state),
     
   });
 
   const mapDispatchToProps = {
     toggleSearchField: toggleSearchFieldActionCreator,
-    //togglepagesNavbarLinkElementOnCurrentPage:togglepagesNavbarLinkElementOnCurrentPage
+    clearSearchFieldsAndFoundResults: clearSearchFieldsAndFoundResults
   };
 
   return connect(mapStateToProps, mapDispatchToProps)(HOC);

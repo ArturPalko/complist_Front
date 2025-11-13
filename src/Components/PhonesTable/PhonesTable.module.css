@@ -14,10 +14,12 @@ thead th {
 }
 
 .mainDepartment{
+  text-align: center;
   background-color: rgb(156, 156, 238);
 }
 
 .section {
+  text-align: center;
   background-color: rgb(252, 195, 89);
 }
 
@@ -48,9 +50,7 @@ thead th {
 .hideText {
   opacity: 0;
 }
-tr{
-  cursor: pointer;
-}
+
 .arrow {
   position: absolute;
   top: 50%;
@@ -158,10 +158,13 @@ tr{
 } 
 
 .cellContent {
+  cursor: pointer;
   position: relative;       
-  padding: 8px 15px;
+  color: blue;
+  font-weight: bold;
   width: 100%;
   will-change: opacity, transform; /* підказка браузеру для плавних анімацій */
+  white-space: nowrap;
 }
 
 .text {
@@ -172,20 +175,11 @@ tr{
   opacity: 0;
 }
 
-.arrow {
-  will-change: opacity, transform;
-  position: absolute;
-  top: 50%;
-  right: 10px;             
-  transform: translateY(-50%);
-  opacity: 0;
-  transition: transform 0.3s ease, opacity 0.3s ease;
-  width: 16px;
-  height: 16px;
-}
+
 
 .showArrow {
   opacity: 1;
+  
 }
 
 .moveRight {
@@ -193,6 +187,10 @@ tr{
 }
 
 
-tr {
-  cursor: pointer;
+
+.indexesColumnHeader{
+  background: blue;
+  color:white; 
+
 }
+

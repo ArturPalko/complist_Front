@@ -2,6 +2,7 @@ const TOGGLE_SEARCH_FIELD_ELEMENT = "TOGGLE_SEARCH_FIELD_ELEMENT";
 const TOGGLE_PAGES_NAVBAR_LINK = "TOGGLE_PAGES_NAVBAR_LINK";
 const ADD_FOUND_ITEMS = "ADD_FOUND_ITEMS";
 const CLEAR_SEARCH_FORM = "CLEAR_SEARCH_FORM";
+const CLEAR_SEARCH_FIELDS_AND_FOUND_RESULTS = "CLEAR_SEARCH_FIELDS_AND_FOUND_RESULTS";
 
 const initialState = {
   showSearchField: { isActive: false },
@@ -63,7 +64,16 @@ export const toggledElemetsReducer = (state = initialState, action) => {
           },
         },
       };
-
+    
+    case CLEAR_SEARCH_FIELDS_AND_FOUND_RESULTS: 
+    return {
+      ...state,
+      searchField: {
+        "gov-ua": { searchValue: "", foundResults: [] },
+        lotus: { searchValue: "", foundResults: [] },
+        phones: { searchValue: "", foundResults: [] }
+      }
+    };
     
 
     default:
@@ -93,3 +103,5 @@ export const clearSearchForm = (activeMenu) => ({
   type: CLEAR_SEARCH_FORM,
   activeMenu
 });
+
+export const clearSearchFieldsAndFoundResults = () => ({ type: CLEAR_SEARCH_FIELDS_AND_FOUND_RESULTS });

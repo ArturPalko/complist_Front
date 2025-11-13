@@ -10,19 +10,19 @@ const PhonesTable = ({
   pageNumber,
   rowsPerPage,
   indexesOfFoundResultsForCurrentPage,
-  isRenderFromFoundResultsPage
+  isRenderFromFoundResultsPage,
+ departmentsAndSectionsPerPage
 }) => {
 
   const rowRefs = useRef({});
-
-
   const {data: phonesData, isPreviousPageWasFoundResult} = useDataLoader();
   const {isPagesNavbarLinkElementOnCurrentPagePressed} = useToggleElements();
     const {foundResults, indexDataOfFoundResultsForFoundResultsPage} = useFoundResults();
   let pageData = foundResults ?? phonesData?.[pageNumber - 1]?.rows ?? [];
   let indexDecrement = 0;
   const phoneColumns = columns.find(c => c.key === "phones")?.subLabels.length || 0;
-
+const indexDecrementFromPreviousPages = departmentsAndSectionsPerPage.slice(0, pageNumber-1).reduce((acc, val) => acc + val, 0);
+debugger;
   const { renderIndexCell } = useRowHighlighting(
     indexDataOfFoundResultsForFoundResultsPage,
     s,      
@@ -34,6 +34,9 @@ const showDigitsFromPressed =
   isPagesNavbarLinkElementOnCurrentPagePressed
     ? s.showColnumbersWhenPagesLinkOnCurrentPagePressed
     : "";
+console.log("departmentPerera:", departmentsAndSectionsPerPage);
+debugger;
+
   return (
  
     <div className={s.content}>
@@ -47,7 +50,7 @@ const showDigitsFromPressed =
           <table>
             <thead>
               <tr>
-                
+                {indexDataOfFoundResultsForFoundResultsPage && <th rowSpan="2" className={s.indexesColumnHeader}>Індекси</th>}
                 <th rowSpan="2">№ п/п</th>
                 {columns.map((col) =>
                   col.key === "phones" ? (
@@ -56,7 +59,6 @@ const showDigitsFromPressed =
                     <th key={col.key} rowSpan="2">{col.label}</th>
                   )
                 )}
-                {indexDataOfFoundResultsForFoundResultsPage && <th rowSpan="2">Індекси</th>}
               </tr>
               <tr>
                 {columns
@@ -76,9 +78,7 @@ const showDigitsFromPressed =
 
                 const hideClass = indexesOfFoundResultsForCurrentPage.length !== 0 && isPreviousPageWasFoundResult ? s.hideBright : "";
                 const hideClassFromPressed =indexesOfFoundResultsForCurrentPage.length !== 0 && isPagesNavbarLinkElementOnCurrentPagePressed ? s.hideBrightWhenPagesLinkOnCurrentPagePressed: '';
-                
 
-                //debugger;
 
                 switch (row.type) {
                   case "department":
@@ -86,16 +86,12 @@ const showDigitsFromPressed =
                     return (
                       <tr
                         key={`dep-${row.departmentId}`}
-                      //  onMouseEnter={() => setHoveredRow(index)}
-                   //     onMouseLeave={() => setHoveredRow(null)}
-                       // onClick={() => handleClick(index)}
-                        
                       >
+                          {renderIndexCell(index)}
                           <td className={`${s.mainDepartment}  ${hideClass} ${hideClassFromPressed}`} 
                           colSpan={columns.length + phoneColumns}>
                           {row.departmentName}
                         </td>
-                        {renderIndexCell(index)}
                       </tr>
                     );
 
@@ -104,17 +100,12 @@ const showDigitsFromPressed =
                     return (
                       <tr
                         key={`sec-${row.sectionId}`}
-                     //   onMouseEnter={() => setHoveredRow(index)}
-                    //    onMouseLeave={() => setHoveredRow(null)}
-                      //  onClick={() => handleClick(index)}
-                    
-                        data-index={index}
                       >
+                        {renderIndexCell(index)} 
                         <td className={`${s.section} ${hideClass} ${ hideClassFromPressed}`}
                           colSpan={columns.length + phoneColumns}>
                           {row.sectionName}
                         </td>
-                         {renderIndexCell(index)} 
                       </tr>
                     );
 
@@ -122,14 +113,12 @@ const showDigitsFromPressed =
                     return (
                       <tr
                         key={`user-${row.userId}`}
-                    //    onMouseEnter={() => setHoveredRow(index)}
-                   //     onMouseLeave={() => setHoveredRow(null)}
-                 //       onClick={() => handleClick(index)}
                       className={`${rowClass} ${rowClassFronPressed}`}
 
                         data-index={index}
                       >
-                        <td>{(pageNumber - 1) * rowsPerPage + index + 1 - indexDecrement}</td>
+                        {renderIndexCell(index)} 
+                        <td>{(pageNumber-1)*rowsPerPage +index + 1 - indexDecrement-indexDecrementFromPreviousPages}</td>
                         {row.userTypeId !== 1 ? (
                           <>
                             <td>{row.userName}</td>
@@ -145,7 +134,6 @@ const showDigitsFromPressed =
                           const phone = row.phones?.find(p => p.phoneType === sub.label);
                           return <td key={sub.key}>{phone ? phone.phoneName : ""}</td>;
                         })}
-                         {renderIndexCell(index)} 
                       </tr>
                     );
 

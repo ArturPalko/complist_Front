@@ -168,7 +168,181 @@ export const isPreviousPageWasFoundResult = (state)=>{
   return state.currentPageNumber.previousLocation ==  `${baseLink}/foundResults`;
 
 }
+
+
+
+export const getCountOfFoundResults = (state, typeOfPage) =>{
+  let results= state.toggledElements?.searchField?.[typeOfPage]?.foundResults;
+  if(typeOfPage == "phones"){
+    let count =0;
+    results.forEach(resultElement => {
+    if(resultElement.elementType =="user"){
+      count++;
+    }    
+   });
+   return count;
+  }
+ return results.length ?? 0;
+}
+  
+
+export const getCountOfPresentedElement = (state, activeMenu) => { 
+
+  let internalPhonesSelector=[];
+  let ciscoPhonesSelector=[];
+  let landLinePhonesSelector=[];
+
+  let countOfDepartments = 0;
+  let countOfSections = 0;
+  let countOfUsers = 0;
+  let countOfLotus = 0;
+  let countOfGovUa = 0;
+
+
+
+  let personalMailsOfLotus = 0;
+  let departmentMailsOfLotus=0;
+  let sectionMailsOfLotus =0;
+
+  let hasNewPostName=0;
+  let passwordKnown=0;
+  
+ function selectUniqueCount(value) {
+  // створюємо Set, де ключем буде рядок, який унікально ідентифікує об’єкт
+  const unique = new Set(
+    value.map(obj => `${obj.phoneType}-${obj.phoneName}`)
+  );
+  
+
+  return unique.size;
+}
+
+
+  let data = [];
+  switch(activeMenu) {
+    case "phones":
+      data = getPhones(state) || [];
+      data.forEach(element => {
+        element.rows.forEach(row => {
+          if (!row.type) return;
+          switch(row.type) {
+            case "department": countOfDepartments++; break;
+            case "section": countOfSections++; break;
+            case "user": 
+                countOfUsers++;
+                let userPhones = row.phones;
+                if (userPhones.length !==0){
+                  userPhones.forEach(phone =>{
+                    switch(phone.phoneType){
+                      case("Внутрішній"):
+                           internalPhonesSelector.push(phone);
+                           break;
+                      case("Міський"):
+                            landLinePhonesSelector.push(phone);
+                            break;
+                      case("IP (Cisco)"):
+                            ciscoPhonesSelector.push(phone);
+                            break;
+                    }
+                  })
+                }
+          }
+        });
+      });
+      break;
+    case "gov-ua":
+      data=getGovUaMails(state) || [];
+      data.forEach(element => {
+        countOfLotus += element.rows.length;
+        element.rows.forEach(rowElement => {
+            if (rowElement.name!=null){
+                hasNewPostName++;
+            }
+            if (rowElement.passwordKnown){
+              passwordKnown++;
+            }
+          switch(rowElement.ownerType){
+            case("User"):
+                personalMailsOfLotus++;
+                break;
+            case("Department"):
+                departmentMailsOfLotus++;
+                break;
+            case("Section"):
+                sectionMailsOfLotus++;
+                break;
+              
+            }
+
+          
+        })
+       
+      });
+      break;
+    case "lotus":
+      data = getLotusMails(state) || [];
+      data.forEach(element => {
+        countOfLotus += element.rows.length;
+        element.rows.forEach(rowElement => {
+            if (rowElement.name!=null){
+                hasNewPostName++;
+            }
+            if (rowElement.passwordKnown){
+              passwordKnown++;
+            }
+          switch(rowElement.ownerType){
+            case("User"):
+                personalMailsOfLotus++;
+                break;
+            case("Department"):
+                departmentMailsOfLotus++;
+                break;
+            case("Section"):
+                sectionMailsOfLotus++;
+                break;
+              
+            }
+
+          
+        })
+       
+      });
+      break;
+
+    case "gov-ua":
+      data = getGovUaMails(state) || [];
+      data.forEach(element => {
+        countOfGovUa += element.rows.length;
+      });
+      break;
+
+    default:
+      break;
+  }
+
+  return { countOfDepartments, countOfSections, countOfUsers, countOfLotus, countOfGovUa,
+    countOfLandlinePhones: selectUniqueCount(landLinePhonesSelector), countOfCiscoPhones:selectUniqueCount(ciscoPhonesSelector), countOfInternalPhones: selectUniqueCount(internalPhonesSelector),
+    personalMailsOfLotus,departmentMailsOfLotus,sectionMailsOfLotus, hasNewPostName,passwordKnown
+   };
+};
+
  
+
+
+export const getDepartmentsAndSectionsPerPage = (state,activeMenu) => {
+  if(activeMenu!=="phones") return [];
+  const data = getPhones(state) || [];
+
+  return data.map(page => {
+    let count = 0;
+    page.rows.forEach(row => {
+      if (row.type === "department" || row.type === "section") {
+        count++;
+      }
+    });
+    return count;
+  });
+};
 
 
 

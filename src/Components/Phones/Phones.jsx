@@ -1,42 +1,36 @@
 import {
   usePageNumber,
   rowsPerPage,
-  useEffect,
-//  withDataLoader,
-  setDataIsLoadedActionCreator,
-  //compose
 } from "../CommonInjection/Dependencies/ComponentImports";
 import { compose } from "redux";
-import withDataLoader from "../../redux/hocs/withDataLoader"; // ✅ правильно
-
-
+import withDataLoader from "../../redux/hocs/withDataLoader";
+import withToggleElements from "../../redux/hocs/withToggleElements";
 
 import PhonesTable from "../PhonesTable/PhonesTable";
+import TopTableBar from "../TopTableBar/TopTableBar";
+
 import {
   getPhones,
-  isDataFetching,
   isPhonesDataLoaded,
   isPhonesDataFetching,
-  getPageIndexDataOfFoundResultsByPage
+  getDepartmentsAndSectionsPerPage
 } from "../../redux/selectors/selector";
+
 import { getPhonesData } from "../../redux/phones-reducer";
-import TopTableBar from "../TopTableBar/TopTableBar";
-import withToggleElements from "../../redux/hocs/withToggleElements";
-import { useState } from "../CommonInjection/Dependencies/ComponentImports";
 import { useIndexesForPage } from "../../redux/hooks/hooks";
-import { useSelector } from "react-redux";
+
+import { connect } from "react-redux";
 
 const PhonesPage = (props) => {
-
-  const pageName = "phones"; 
+  const pageName = "phones";
   const indexesOfFoundResultsForCurrentPage = useIndexesForPage(pageName);
-  
+  const departmentsAndSectionsPerPage = props.getDepartmentsAndSectionsPerPage(pageName);
+
+
 
   return (
     <>
-      <TopTableBar
-        title="Телефони"
-      />
+      <TopTableBar title="Телефони" />
       <PhonesTable
         columns={[
           { key: "userPosition", label: "Назва посади" },
@@ -47,17 +41,28 @@ const PhonesPage = (props) => {
             subLabels: [
               { key: "landline", label: "Міський" },
               { key: "extension", label: "Внутрішній" },
-              { key: "cisco", label: "IP (Cisco)" }
-            ]
-          }
+              { key: "cisco", label: "IP (Cisco)" },
+            ],
+          },
         ]}
         pageNumber={usePageNumber()}
         rowsPerPage={rowsPerPage}
         indexesOfFoundResultsForCurrentPage={indexesOfFoundResultsForCurrentPage}
+       departmentsAndSectionsPerPage={departmentsAndSectionsPerPage}
+
+
+
       />
     </>
   );
 };
+
+
+const mapStateToProps = (state) => ({
+  getDepartmentsAndSectionsPerPage: (menu) =>
+    getDepartmentsAndSectionsPerPage(state, menu),
+});
+
 
 export default compose(
   withDataLoader(
@@ -67,5 +72,6 @@ export default compose(
     getPhonesData,
     "phones"
   ),
-  withToggleElements
+  withToggleElements,
+   connect(mapStateToProps),
 )(PhonesPage);

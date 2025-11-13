@@ -1,18 +1,27 @@
 import { connect } from "react-redux";
-import { activeMenu, isPresentedSearchField, getGovUaMails, getLotusMails,getPhones } from "../../../redux/selectors/selector";
+import { activeMenu, isPresentedSearchField, getGovUaMails, getLotusMails,getPhones, getCountOfFoundResults,
+  getCountOfPresentedElement,
+  getDepartmentsAndSectionsPerPage
+} from "../../../redux/selectors/selector";
 import { addFoundItems, clearSearchForm } from "../../../redux/toggledElements-reducer";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import SearchForm from "./SearchForm/SearchForm";
 
 const Search = (props) => {
   const activeMenuStr = props.activeMenu ? props.activeMenu.toLowerCase() : "";
   const [inputValue, setInputValue] = useState("");
+  const [showNotFound, setShowNotFound] = useState(false)
+  const inputRef = useRef(null);
 
   useEffect(() => {
     const initialValue = props.searchFieldValue ? props.searchFieldValue(activeMenuStr) : "";
     setInputValue(initialValue || "");
   }, [activeMenuStr, props.searchFieldValue]);
-
+  useEffect(() => {
+    if (!showNotFound && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [showNotFound]);
   const handleOnClearSearchFormButtonClick = () =>{
     props.clearSearchForm(props.activeMenu.toLowerCase());
     
@@ -21,6 +30,10 @@ const Search = (props) => {
   const handleOnSearchButtonClick = (e) => {
     e.preventDefault();
     const searchValue = inputValue.trim();
+    let b = props.getDepartmentsAndSectionsPerPage;
+    let n = props.getCountOfPresentedElement(activeMenuStr);
+    console.log ("n:", n)
+    //debugger;
     console.log("Пошуковий запит:", searchValue);
     console.log("Ми шукаємо на сторінці:", activeMenuStr);
 
@@ -70,7 +83,7 @@ if (searchArea.length) {
           typeof dataValue === "string" &&
           dataValue.toLowerCase().includes(searchValue.toLowerCase())
         ) {
-          foundResults.push({ dataKey, dataValue, currentPage: element.pageIndex, index });
+          foundResults.push({elementType:rowElement.type, dataKey, dataValue, currentPage: element.pageIndex, index });
           //debugger;
           
           foundInRow = true;
@@ -91,6 +104,7 @@ if (searchArea.length) {
             
           ) {
             foundResults.push({
+              elementType: rowElement.type,
               dataKey: "phoneName",
               dataValue: phoneObj.phoneName,
               currentPage: element.pageIndex,
@@ -109,20 +123,33 @@ if (searchArea.length) {
 
 if (!foundResults.length) {
   console.log("Не знайдено результатів");
+  
 }
+if (!foundResults.length) {
+      setShowNotFound(true);
+      debugger;
+      setTimeout(() => {
+        setShowNotFound(false);
+      }, 1000); 
+    }
 
 
     props.addFoundItems(activeMenuStr, searchValue, foundResults);
   };
 
   return (
-    <SearchForm
+        <SearchForm
+      ref={inputRef}
       isPresentedSearchField={props.isPresentedSearchField}
+      showNotFound={showNotFound}
       inputValue={inputValue}
       setInputValue={setInputValue}
       handleOnSearchButtonClick={handleOnSearchButtonClick}
       handleOnClearSearchFormButtonClick={handleOnClearSearchFormButtonClick}
+      getCountOfFoundResults={() => props.getCountOfFoundResults(activeMenuStr)}
+
     />
+
   );
 };
 
@@ -134,6 +161,9 @@ const mapStateToProps = (state) => ({
   getLotusMails: getLotusMails(state),
   getPhones:getPhones(state),
   searchFieldValue: (menu) => state.toggledElements.searchField[menu]?.searchValue || "",
+  getCountOfFoundResults: (menu) => getCountOfFoundResults(state, menu),
+  getCountOfPresentedElement: (menu) => getCountOfPresentedElement(state, menu),
+  getDepartmentsAndSectionsPerPage:getDepartmentsAndSectionsPerPage(state)
 });
 
 const mapDispatchToProps = { addFoundItems, clearSearchForm };

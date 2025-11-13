@@ -15,11 +15,9 @@ const MailsTable = ({
 }) => {
   
     const {data: mailsData, isPreviousPageWasFoundResult} = useDataLoader();
-    debugger;
     const {foundResults, indexDataOfFoundResultsForFoundResultsPage} = useFoundResults(); 
     const {isPagesNavbarLinkElementOnCurrentPagePressed} = useToggleElements(); 
   const pageData = foundResults ?? mailsData?.[pageNumber - 1]?.rows ?? [];
-  debugger;
   const rowRefs = useRef({});
   const { renderIndexCell } = useRowHighlighting(
     indexDataOfFoundResultsForFoundResultsPage,
@@ -33,10 +31,11 @@ const MailsTable = ({
       <table>
         <thead>
           <tr>
+            {indexDataOfFoundResultsForFoundResultsPage && <th className={s.indexesColumnHeader}>Індекси</th>}
             <th>№ п/п</th>
             {columns.map(col => <th key={col.key}>{col.label}</th>)}
             {showPasswords && <th>Пароль</th>}
-            {indexDataOfFoundResultsForFoundResultsPage && <th>Індекси</th>}
+            {/* {indexDataOfFoundResultsForFoundResultsPage && <th>Індекси</th>} */}
           </tr>
         </thead>
         <tbody>
@@ -50,9 +49,10 @@ const MailsTable = ({
 
             return (
               <tr key={item.id || index} className={`${rowClass} ${rowClassFromPressed}`}>
+                  {renderIndexCell(index)}
                 <td>{(pageNumber - 1) * rowsPerPage + index + 1}</td>
                 {columns.map(col => <td key={col.key}>{item[col.key]}</td>)}
-                {renderIndexCell(index)}
+                {/* {renderIndexCell(index)} */}
                 {showPasswords && <td>{passwordsMap[item.id] || "—"}</td>}
              </tr>
            );
