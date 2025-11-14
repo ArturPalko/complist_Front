@@ -187,146 +187,113 @@ export const getCountOfFoundResults = (state, typeOfPage) =>{
   
 
 export const getCountOfPresentedElement = (state, activeMenu) => { 
-
-  let internalPhonesSelector=[];
-  let ciscoPhonesSelector=[];
-  let landLinePhonesSelector=[];
+  let internalPhonesSelector = [];
+  let ciscoPhonesSelector = [];
+  let landLinePhonesSelector = [];
 
   let countOfDepartments = 0;
   let countOfSections = 0;
   let countOfUsers = 0;
-  let countOfLotus = 0;
-  let countOfGovUa = 0;
+  let countOfMails = 0;
 
+  let personalMails = 0;
+  let departmentMails = 0;
+  let sectionMails = 0;
 
+  let hasNewPostName = 0;
+  let passwordKnown = 0;
+  let hasResponsibleUser = 0;
 
-  let personalMailsOfLotus = 0;
-  let departmentMailsOfLotus=0;
-  let sectionMailsOfLotus =0;
+  const selectUniqueCount = (value) => {
+    const unique = new Set(value.map(obj => `${obj.phoneType}-${obj.phoneName}`));
+    return unique.size;
+  };
 
-  let hasNewPostName=0;
-  let passwordKnown=0;
-  
- function selectUniqueCount(value) {
-  // створюємо Set, де ключем буде рядок, який унікально ідентифікує об’єкт
-  const unique = new Set(
-    value.map(obj => `${obj.phoneType}-${obj.phoneName}`)
-  );
-  
+  const countMailData = (data) => {
+    data.forEach(element => {
+      countOfMails += element.rows.length;
+      element.rows.forEach(row => {
+        if (row.name != null) hasNewPostName++;
+        if (row.passwordKnown != null) passwordKnown++;
+        if (row.responsibleUser) hasResponsibleUser++;
 
-  return unique.size;
-}
+        switch (row.ownerType) {
+          case "User":
+            personalMails++;
+            break;
+          case "Department":
+            departmentMails++;
+            break;
+          case "Section":
+            sectionMails++;
+            break;
+        }
+      });
+    });
+  };
 
-
-  let data = [];
   switch(activeMenu) {
-    case "phones":
-      data = getPhones(state) || [];
+    case "phones": {
+      const data = getPhones(state) || [];
       data.forEach(element => {
         element.rows.forEach(row => {
           if (!row.type) return;
           switch(row.type) {
-            case "department": countOfDepartments++; break;
-            case "section": countOfSections++; break;
-            case "user": 
-                countOfUsers++;
-                let userPhones = row.phones;
-                if (userPhones.length !==0){
-                  userPhones.forEach(phone =>{
-                    switch(phone.phoneType){
-                      case("Внутрішній"):
-                           internalPhonesSelector.push(phone);
-                           break;
-                      case("Міський"):
-                            landLinePhonesSelector.push(phone);
-                            break;
-                      case("IP (Cisco)"):
-                            ciscoPhonesSelector.push(phone);
-                            break;
-                    }
-                  })
+            case "department":
+              countOfDepartments++;
+              break;
+            case "section":
+              countOfSections++;
+              break;
+            case "user":
+              countOfUsers++;
+              row.phones?.forEach(phone => {
+                switch(phone.phoneType) {
+                  case "Внутрішній": internalPhonesSelector.push(phone); break;
+                  case "Міський": landLinePhonesSelector.push(phone); break;
+                  case "IP (Cisco)": ciscoPhonesSelector.push(phone); break;
                 }
+              });
+              break;
           }
         });
       });
       break;
-    case "gov-ua":
-      data=getGovUaMails(state) || [];
-      data.forEach(element => {
-        countOfLotus += element.rows.length;
-        element.rows.forEach(rowElement => {
-            if (rowElement.name!=null){
-                hasNewPostName++;
-            }
-            if (rowElement.passwordKnown){
-              passwordKnown++;
-            }
-          switch(rowElement.ownerType){
-            case("User"):
-                personalMailsOfLotus++;
-                break;
-            case("Department"):
-                departmentMailsOfLotus++;
-                break;
-            case("Section"):
-                sectionMailsOfLotus++;
-                break;
-              
-            }
+    }
 
-          
-        })
-       
-      });
+    case "gov-ua": {
+      const data = getGovUaMails(state) || [];
+      countMailData(data);
       break;
-    case "lotus":
-      data = getLotusMails(state) || [];
-      data.forEach(element => {
-        countOfLotus += element.rows.length;
-        element.rows.forEach(rowElement => {
-            if (rowElement.name!=null){
-                hasNewPostName++;
-            }
-            if (rowElement.passwordKnown){
-              passwordKnown++;
-            }
-          switch(rowElement.ownerType){
-            case("User"):
-                personalMailsOfLotus++;
-                break;
-            case("Department"):
-                departmentMailsOfLotus++;
-                break;
-            case("Section"):
-                sectionMailsOfLotus++;
-                break;
-              
-            }
+    }
 
-          
-        })
-       
-      });
+    case "lotus": {
+      const data = getLotusMails(state) || [];
+      countMailData(data);
       break;
-
-    case "gov-ua":
-      data = getGovUaMails(state) || [];
-      data.forEach(element => {
-        countOfGovUa += element.rows.length;
-      });
-      break;
+    }
 
     default:
       break;
   }
 
-  return { countOfDepartments, countOfSections, countOfUsers, countOfLotus, countOfGovUa,
-    countOfLandlinePhones: selectUniqueCount(landLinePhonesSelector), countOfCiscoPhones:selectUniqueCount(ciscoPhonesSelector), countOfInternalPhones: selectUniqueCount(internalPhonesSelector),
-    personalMailsOfLotus,departmentMailsOfLotus,sectionMailsOfLotus, hasNewPostName,passwordKnown
-   };
+  return { 
+    countOfDepartments,
+    countOfSections,
+    countOfUsers,
+    countOfMails,
+    countOfLandlinePhones: selectUniqueCount(landLinePhonesSelector),
+    countOfCiscoPhones: selectUniqueCount(ciscoPhonesSelector),
+    countOfInternalPhones: selectUniqueCount(internalPhonesSelector),
+    personalMails,
+    departmentMails,
+    sectionMails,
+    hasNewPostName,
+    passwordKnown,
+    hasResponsibleUser
+  };
 };
 
- 
 
 
 export const getDepartmentsAndSectionsPerPage = (state,activeMenu) => {

@@ -22,7 +22,7 @@ const GovUAPage = (props) => {
             columns={[
               { key: "mailName", label: "найменування скриньки" },
               { key: "departmentOrSection", label: "найменування підрозділу" },
-              { key: "userName", label: "відповідальна особа" },
+              { key: "responsibleUser", label: "відповідальна особа" },
             ]}
             rowsPerPage={rowsPerPage}
             pageNumber={usePageNumber()}
