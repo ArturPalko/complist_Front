@@ -76,7 +76,6 @@ if (searchArea.length) {
 
       const index = rowIndex + 1;
       let foundInRow = false;
-     //debugger;
      for (const [dataKey,dataValue] of Object.entries(rowElement))  {
         if (
          !excludedSearchKeys.includes(dataKey)&&
@@ -84,7 +83,6 @@ if (searchArea.length) {
           dataValue.toLowerCase().includes(searchValue.toLowerCase())
         ) {
           foundResults.push({elementType:rowElement.type, dataKey, dataValue, currentPage: element.pageIndex, index });
-          //debugger;
           
           foundInRow = true;
           console.log(

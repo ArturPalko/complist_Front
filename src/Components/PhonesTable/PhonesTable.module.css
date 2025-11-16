@@ -134,6 +134,8 @@ thead th {
   text-align: right;
   font-weight: bold;
   margin-top:90px;
+  
+
 }
 
 
@@ -149,7 +151,10 @@ thead th {
   height: 40px;
   color: red;
   font-weight: bolder;
-  animation: hideDigits 3s step-end forwards; 
+
+  display: flex;
+  height: 100%;    
+
 }
 
 .showColnumbersWhenPagesLinkOnCurrentPagePressed{
