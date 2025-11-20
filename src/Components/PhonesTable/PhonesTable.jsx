@@ -25,11 +25,10 @@ const PhonesTable = ({
   } = usePhonesTableLogic({ columns, pageNumber, rowsPerPage, indexesOfFoundResultsForCurrentPage, departmentsAndSectionsPerPage });
 
   let indexDecrement = 0;
-
   return (
     <div className={s.content}>
       <div className={s.tableWrapper + " " + showDigitsFromPressed}>
-        {(showPreviousPageHighlight || isPagesNavbarLinkElementOnCurrentPagePressed) && indexesOfFoundResultsForCurrentPage.length !== 0 && (
+        {( isPagesNavbarLinkElementOnCurrentPagePressed || showPreviousPageHighlight ) && indexesOfFoundResultsForCurrentPage.length !== 0 && (
           <div className={s.colNumbers}>
             {Array.from({ length: pageData.length }, (_, i) => (
               <div key={i} ref={el => (colNumbersRef.current[i] = el)}>

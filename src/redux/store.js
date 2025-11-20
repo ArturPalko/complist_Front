@@ -5,6 +5,7 @@ import {pagesNavbarReducer} from "./pagesNavbar-reducer";
 import { thunk } from "redux-thunk";
 import { appReducer } from "./app-reducer";
 import { toggledElemetsReducer } from "./toggledElements-reducer";
+import { filterDataReducer } from "./selectors/filterData-reducer";
 
 
 let reducers = combineReducers({
@@ -13,6 +14,7 @@ let reducers = combineReducers({
     "currentPageNumber":pagesNavbarReducer,
     "dataState":appReducer,
     "toggledElements": toggledElemetsReducer,
+    "filters": filterDataReducer
     
 
 });

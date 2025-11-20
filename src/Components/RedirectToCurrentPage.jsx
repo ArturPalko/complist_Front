@@ -6,6 +6,7 @@ const RedirectToCurrentPage = ({ selector, buildPath }) => {
   const page = useSelector(selector);
 
   if (!page) return null;
+  
   return <Navigate to={buildPath(page)} replace />;
 };
 

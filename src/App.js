@@ -10,6 +10,7 @@ import { phonesCurrentPage, GovUaCurrentPage, lotusCurrentPage } from "./redux/s
 import Error from './Components/Error/Error';
 import FoundResults from './Components/FoundResults/FoundResults';
 import { useTrackLocation } from './redux/hooks/hooks';
+import FilterPanel from './Components/NavBar/FilterPanel/FilterPanel';
 
 function App() {
   useTrackLocation();
@@ -18,6 +19,7 @@ function App() {
     <div className="app-wrapper">
       <Header />
       <NavBar />
+      <FilterPanel/>
 
       <div className="app-wrapper-content">
         <Routes>

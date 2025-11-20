@@ -15,6 +15,7 @@ const PagesNavBar = (props) => {
   const pressTimer = useRef(null);
   const isPressed = useRef(false); 
   const delay = 1000;
+
   
 
   let countOfPages = 0;
@@ -57,6 +58,7 @@ function handleNavLinkPressed(e) {
 function handleNavLinkUnpressed() {
   clearTimeout(pressTimer.current);
   if (isPressed.current) {
+    console.log("При кліку")
     props.togglepagesNavbarLinkElementOnCurrentPage(false);
   }
 }
@@ -66,6 +68,7 @@ function handleNavLinkUnpressed() {
 
   if (pageName) {
     props.rememberCurrentPage(pageName, pageFromURL);
+    //debugger;
   }
 }, [location.pathname, pageName, pageFromURL]);
 
@@ -77,8 +80,8 @@ function handleNavLinkUnpressed() {
   
  useEffect(() => {
   //console.log("ак-к-к",props.isPhonesSearchValueFound);
-    if (activeMenu == "phones" && props.isPhonesSearchValueFound || (activeMenu == "Lotus" && props.isLotusSearchValueFounded)
-    || (activeMenu="Gov-ua") && props.isGovUaSearchValueFounded)/*|| props.isLotusSearchValueFounded || props.isGovUaSearchValueFounded)*/ {
+    if ((activeMenu == "phones" && props.isPhonesSearchValueFound) || (activeMenu == "Lotus" && props.isLotusSearchValueFounded)
+    || (activeMenu=="Gov-ua" && props.isGovUaSearchValueFounded)) {
       setShowFoundResultsPage(true);
       console.log("Значення для відображення:", showFoundResultPage);
       let foundResults;
@@ -134,6 +137,13 @@ function handleNavLinkUnpressed() {
           <NavLink
            onMouseDown={handleNavLinkPressed}
             onMouseUp={handleNavLinkUnpressed}
+            onDragStart={e => e.preventDefault()}
+            onMouseLeave={() => {
+            clearTimeout(pressTimer.current);
+            props.togglepagesNavbarLinkElementOnCurrentPage(false);
+    
+          }}
+
             key={i}
             to={`${basePath}${pageNumber}`}
                         className={({ isActive }) => `

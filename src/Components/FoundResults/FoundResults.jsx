@@ -3,6 +3,7 @@ import {
   foundSearchValueOfPhonesPage, foundSearchValueOfLotusMailsPage,
   foundSearchValueOfGovUaPage, getPhonesPageIndexDataOfFoundResults, getGovUaMailsPageIndexDataOfFoundResults,
   getLotusMailsPageIndexDataOfFoundResults,
+  rowsPerPage,
 } from "../../redux/selectors/selector";
 import { useSelector } from "react-redux";
 import { connect } from "react-redux";
@@ -12,6 +13,7 @@ import LotusMails from "../LotusMails/LotusMails";
 import GovUaMails from "../GovUaMails/GovUaMails";
 import { useCurrentPageIndexData } from '../../redux/hooks/hooks';
 import { ToggleElementsContext } from "../../redux/hocs/withToggleElements";
+import TooManyResultsOfSearch from "../TooManyResultsOfSearch/TooManyResultsOFSearch";
 
 
 export const FoundResultsContext = createContext(null);
@@ -87,15 +89,20 @@ const FoundResults = (props) => {
   const ActiveComponent = pageComponents[activeMenuKey];
  
 
-  return ActiveComponent ? (
+  return (
+    rowsToPresent.length > rowsPerPage ? (
+      <TooManyResultsOfSearch/>
+    ) : ActiveComponent ? (
       <FoundResultsContext.Provider value={{ 
-          foundResults: rowsToPresent || null, 
-          indexDataOfFoundResultsForFoundResultsPage: indexDataOfFoundResultsForFoundResultsPage || null 
+        foundResults: rowsToPresent || null, 
+        indexDataOfFoundResultsForFoundResultsPage: indexDataOfFoundResultsForFoundResultsPage || null 
       }}>
-          <ActiveComponent />
+        <ActiveComponent />
       </FoundResultsContext.Provider>
+    ) : null
+  );
 
-  ) : null;
+
 };
 
 const mapStateToProps = (state) => ({

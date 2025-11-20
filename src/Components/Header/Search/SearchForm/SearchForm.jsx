@@ -1,7 +1,7 @@
 import { forwardRef } from "react";
 import s from "./SearchForm.module.css";
 import cross from "../../../../assets/cross.png";
-import loupe from "../../../../assets/loupe.png"
+import loupe from "../../../../assets/loupe.png";
 
 const SearchForm = forwardRef((props, ref) => {
   const {
@@ -16,7 +16,6 @@ const SearchForm = forwardRef((props, ref) => {
 
   if (!isPresentedSearchField) return null;
 
-
   const count = getCountOfFoundResults(); 
 
   return (
@@ -27,7 +26,7 @@ const SearchForm = forwardRef((props, ref) => {
           maxLength={36}
           className={`${s.searchInput} ${showNotFound ? s.shake : ""}`}
           placeholder="Ввести значення пошуку"
-          value={showNotFound ? "Не знайдено" : inputValue}
+          value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           disabled={showNotFound}
         />
@@ -36,17 +35,18 @@ const SearchForm = forwardRef((props, ref) => {
           className={s.searchButton}
           type="submit"
           onClick={handleOnSearchButtonClick}
-          disabled={showNotFound}
         >
           Пошук
         </button>
       </form>
-         {count>0 && (<div className={s.resultsInfo}>
+      {count > 0 && (
+        <div className={s.resultsInfo}>
           <img src={loupe} alt="loupe" />
-          <span className={s.searchInputSupportText}>Знайдено результатів: {count} </span>
-        </div>)}
-
-    
+          <span className={s.searchInputSupportText}>
+            Знайдено результатів: {count}
+          </span>
+        </div>
+      )}
     </div>
   );
 });

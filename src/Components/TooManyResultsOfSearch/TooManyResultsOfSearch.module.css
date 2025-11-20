@@ -1,0 +1,15 @@
+.info{
+    display: flex;
+  align-items: center; 
+    margin-top: 240px;
+    gap:150px;
+    
+}
+.infoImg{
+    margin-left: 450px;
+}
+
+.description{
+    font-size: 27pt;
+}
+

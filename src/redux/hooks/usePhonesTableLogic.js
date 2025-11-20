@@ -47,14 +47,20 @@ export const usePhonesTableLogic = ({
   };
 
   useRowHeights(rowRefs, colNumbersRef, [pageData]);
+useEffect(() => {
+  let timer;
 
-  useEffect(() => {
-    if (isPreviousPageWasFoundResult) {
-      setShowPreviousPageHighlight(true);
-      const timer = setTimeout(() => setShowPreviousPageHighlight(false), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [isPreviousPageWasFoundResult]);
+  if (isPreviousPageWasFoundResult) {
+    setShowPreviousPageHighlight(true);
+
+    timer = setTimeout(() => setShowPreviousPageHighlight(false), 3000);
+  } else {
+    setShowPreviousPageHighlight(false);
+  }
+
+  return () => clearTimeout(timer);
+}, [isPreviousPageWasFoundResult, pageNumber]);
+
 
   return {
     pageData,
@@ -66,6 +72,7 @@ export const usePhonesTableLogic = ({
     isPagesNavbarLinkElementOnCurrentPagePressed,
     phoneColumns,
     indexDataOfFoundResultsForFoundResultsPage,
-    indexDecrementFromPreviousPages
+    indexDecrementFromPreviousPages,
+    isPreviousPageWasFoundResult
   };
 };

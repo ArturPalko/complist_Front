@@ -20,6 +20,7 @@ const LotusPage = (props) => {
 
       const pageName = "Lotus"; 
       const indexesOfFoundResultsForCurrentPage = useIndexesForPage(pageName);
+      console.log("Індекси для поточної сторінки++-+-+-:",indexesOfFoundResultsForCurrentPage)
 
 
   return (

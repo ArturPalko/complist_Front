@@ -3,20 +3,32 @@ const SET_PREVIOUS_LOCATION = "SET_PREVIOUS_LOCATION";
 
 const initialState = {
     activeMenu: "",
-    Lotus: 1,
-    "Gov-ua": 1,
-    phones: 1,
+    Lotus: {digitPage:1, lastVisitedPage:1},
+    "Gov-ua": {digitPage:1, lastVisitedPage:1},
+    phones: {digitPage:1, lastVisitedPage:1},
     previousLocation:""
 };
 
 export const pagesNavbarReducer = (state = initialState, action) => {
     switch(action.type) {
         case REMEMBER_CURRENT_PAGE_NUMBER:
+           
+            const pageName = action.pageName;  
+            const value = action.pageNumber; // сюди передаєш page/{number} або "foundResults"
+
+            const isNumberPage = !isNaN(Number(value));
+
             return {
                 ...state,
-                activeMenu:action.pageName,
-                [action.pageName]: action.pageNumber
+                activeMenu: pageName,
+
+                [pageName]: {
+                    ...state[pageName],
+                    lastVisitedPage: value,
+                    digitPage: isNumberPage ? Number(value) : state[pageName].digitPage
+                }
             };
+        
         case SET_PREVIOUS_LOCATION:
             return {
                 ...state,

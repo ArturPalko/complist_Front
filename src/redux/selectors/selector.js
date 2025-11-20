@@ -22,9 +22,26 @@ export const phonesCount = (state) => {
     return state.mails?.["gov-ua"]?.length || 0;
   } 
   
-export const GovUaCurrentPage = (state) => state.currentPageNumber["Gov-ua"];
-export const lotusCurrentPage = (state) => state.currentPageNumber.Lotus;
-export const phonesCurrentPage = (state) => state.currentPageNumber.phones;
+export const GovUaCurrentPage = (state) => {
+  let found = foundSearchValueOfGovUaPage(state)?.foundResults;
+  if(state.currentPageNumber["Gov-ua"].lastVisitedPage == "foundResults" && (found==undefined || found.length==0)){
+    return state.currentPageNumber["Gov-ua"].digitPage
+  }
+   return state.currentPageNumber["Gov-ua"].lastVisitedPage
+  }
+export const lotusCurrentPage = (state) =>{
+ let found = foundSearchValueOfLotusMailsPage(state)?.foundResults;
+  if (state.currentPageNumber.Lotus.lastVisitedPage == "foundResults" && (found==undefined || found.length==0)){
+     return state.currentPageNumber.Lotus.digitPage;
+  }
+  return state.currentPageNumber.Lotus.lastVisitedPage;} 
+export const phonesCurrentPage = (state) => {
+   let found = foundSearchValueOfPhonesPage(state)?.foundResults;
+   if (state.currentPageNumber.phones.lastVisitedPage == "foundResults" && (found==undefined || found.length==0)){
+     return state.currentPageNumber.phones.digitPage;
+  }
+  return state.currentPageNumber.phones.lastVisitedPage;
+}
 
 export const isLotusDataLoaded = (state) =>{
         return state.dataState.lotus.dataIsLoaded
@@ -108,7 +125,7 @@ export const getGovUaMailsPageIndexDataOfFoundResults = (state) => {
   
 }
 
-export const getCurrentPageNumberByKey = (key) => (state) => state.currentPageNumber[key];
+export const getCurrentPageNumberByKey = (key) => (state) => state.currentPageNumber[key].digitPage;
 export const getPageIndexDataOfFoundResultsByKey = (key) => (state) => {
   const keysToKeep = ["currentPage", "index"];
   const foundResults = state.toggledElements.searchField[key].foundResults || [];
@@ -203,6 +220,7 @@ export const getCountOfPresentedElement = (state, activeMenu) => {
   let hasNewPostName = 0;
   let passwordKnown = 0;
   let hasResponsibleUser = 0;
+
 
   const selectUniqueCount = (value) => {
     const unique = new Set(value.map(obj => `${obj.phoneType}-${obj.phoneName}`));
@@ -312,4 +330,7 @@ export const getDepartmentsAndSectionsPerPage = (state,activeMenu) => {
 };
 
 
+export const getFilteredState = (state, activeMenu) => {
+  return state.filters?.[activeMenu]?.usedFilters || {};
+};
 

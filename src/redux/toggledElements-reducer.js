@@ -3,14 +3,15 @@ const TOGGLE_PAGES_NAVBAR_LINK = "TOGGLE_PAGES_NAVBAR_LINK";
 const ADD_FOUND_ITEMS = "ADD_FOUND_ITEMS";
 const CLEAR_SEARCH_FORM = "CLEAR_SEARCH_FORM";
 const CLEAR_SEARCH_FIELDS_AND_FOUND_RESULTS = "CLEAR_SEARCH_FIELDS_AND_FOUND_RESULTS";
+const UPDATE_DRAFT_VALUE = "UPDATE_DRAFT_VALUE";
 
 const initialState = {
   showSearchField: { isActive: false },
   pagesNavbarLinkElementOnCurrentPage: {isPressed:false},
   searchField: {
-    "gov-ua": { searchValue: "", foundResults: [] },
-    lotus: { searchValue: "", foundResults: [] },
-    phones: { searchValue: "", foundResults: [] }
+    "gov-ua": { draftValue: "", searchValue: "", foundResults: [] },
+    lotus: { draftValue: "", searchValue: "", foundResults: [] },
+    phones: {draftValue: "", searchValue: "", foundResults: [] }
   }
 };
 
@@ -37,6 +38,32 @@ export const toggledElemetsReducer = (state = initialState, action) => {
 
           }
         }
+    case UPDATE_DRAFT_VALUE:
+    return {
+      ...state,
+      searchField: {
+        ...state.searchField,
+        [action.activeMenu]: {
+          ...state.searchField[action.activeMenu],
+          draftValue: action.draftValue
+        }
+      }
+    };
+
+case ADD_FOUND_ITEMS:
+  return {
+    ...state,
+    searchField: {
+      ...state.searchField,
+      [action.activeMenu]: {
+        ...state.searchField[action.activeMenu],
+        searchValue: action.searchValue || "",
+        draftValue: action.searchValue || "", 
+        foundResults: action.foundResults || []
+      }
+    }
+  };
+
 
     case ADD_FOUND_ITEMS:
       return {
@@ -46,7 +73,8 @@ export const toggledElemetsReducer = (state = initialState, action) => {
           [action.activeMenu]: {
             ...state.searchField[action.activeMenu],
             searchValue: action.searchValue || "",
-            foundResults: action.foundResults || []
+            foundResults: action.foundResults || [],
+            draftValue:""
             
           }
         }
@@ -61,6 +89,7 @@ export const toggledElemetsReducer = (state = initialState, action) => {
             ...state.searchField[action.activeMenu],
             searchValue: "",
             foundResults: [],
+            draftValue:""
           },
         },
       };
@@ -90,6 +119,13 @@ export const togglepagesNavbarLinkElementOnCurrentPage= (value)=>({
   type:TOGGLE_PAGES_NAVBAR_LINK,
   value
 })
+
+export const updateDraftValue = (activeMenu, draftValue) => ({
+  type: UPDATE_DRAFT_VALUE,
+  activeMenu,
+  draftValue
+});
+
 
 export const addFoundItems = (activeMenu, searchValue, foundResults) => ({
   type: ADD_FOUND_ITEMS,

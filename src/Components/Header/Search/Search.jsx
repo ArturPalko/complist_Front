@@ -1,169 +1,153 @@
 import { connect } from "react-redux";
-import { activeMenu, isPresentedSearchField, getGovUaMails, getLotusMails,getPhones, getCountOfFoundResults,
+import {
+  activeMenu,
+  isPresentedSearchField,
+  getGovUaMails,
+  getLotusMails,
+  getPhones,
+  getCountOfFoundResults,
   getCountOfPresentedElement,
   getDepartmentsAndSectionsPerPage
 } from "../../../redux/selectors/selector";
-import { addFoundItems, clearSearchForm } from "../../../redux/toggledElements-reducer";
-import { useState, useEffect, useRef } from "react";
+
+import { addFoundItems, clearSearchForm, updateDraftValue } from "../../../redux/toggledElements-reducer";
+import { useState, useRef, useEffect } from "react";
 import SearchForm from "./SearchForm/SearchForm";
 
 const Search = (props) => {
   const activeMenuStr = props.activeMenu ? props.activeMenu.toLowerCase() : "";
-  const [inputValue, setInputValue] = useState("");
-  const [showNotFound, setShowNotFound] = useState(false)
+  const [showNotFound, setShowNotFound] = useState(false);
   const inputRef = useRef(null);
 
-  useEffect(() => {
-    const initialValue = props.searchFieldValue ? props.searchFieldValue(activeMenuStr) : "";
-    setInputValue(initialValue || "");
-  }, [activeMenuStr, props.searchFieldValue]);
+  // draft і search значення з Redux
+  const draftValue = props.draftValue(activeMenuStr);
+  const searchValue = props.searchFieldValue(activeMenuStr);
+
+  // обчислюємо value інпуту
+  const inputValue = showNotFound
+    ? "Не знайдено"
+    : draftValue !== ""
+      ? draftValue
+      : searchValue || "";
+
+  // Фокус на інпут
   useEffect(() => {
     if (!showNotFound && inputRef.current) {
       inputRef.current.focus();
     }
-  }, [showNotFound]);
-  const handleOnClearSearchFormButtonClick = () =>{
-    props.clearSearchForm(props.activeMenu.toLowerCase());
-    
-  }
+  }, [showNotFound, activeMenuStr]);
+
+  const handleOnClearSearchFormButtonClick = () => {
+    props.clearSearchForm(activeMenuStr);
+  };
 
   const handleOnSearchButtonClick = (e) => {
     e.preventDefault();
-    const searchValue = inputValue.trim();
-    let b = props.getDepartmentsAndSectionsPerPage;
-    let n = props.getCountOfPresentedElement(activeMenuStr);
-    console.log ("n:", n)
-    //debugger;
-    console.log("Пошуковий запит:", searchValue);
-    console.log("Ми шукаємо на сторінці:", activeMenuStr);
+    const searchValueTrimmed = draftValue.trim();
+    if (searchValueTrimmed.length < 3) return;
 
+    // Вибір області пошуку по активному меню
     let searchArea = [];
-    let currentPage = 0;
-    let index = 0;
-    let foundResults = [];
-    const excludedSearchKeys =["type", "userId", "userTypeId","userTypePriority",
-
-    "userPositionPriority", "departmentId", "departmentPriority", "sectionId", "sectionPriority"
-  ]
-
-  
-    switch(activeMenuStr) {
+    switch (activeMenuStr) {
       case "gov-ua":
         searchArea = props.getGovUaMails;
         break;
       case "lotus":
         searchArea = props.getLotusMails;
         break;
-      case "phones": searchArea = props.getPhones;
-        break; 
+      case "phones":
+        searchArea = props.getPhones;
+        break;
       default:
         searchArea = [];
     }
 
-if (searchArea.length) {
-  console.log("Шукаємо тут+++++++++++++", searchArea);
-  
+    const excludedSearchKeys = [
+      "type", "userId", "userTypeId","userTypePriority",
+      "userPositionPriority", "departmentId", "departmentPriority",
+      "sectionId", "sectionPriority"
+    ];
 
-  searchArea.forEach((element) => {
-    if (!element || !element.rows) return;
-        if (searchValue === ""|| searchValue.length < 3 ) return;
+    const foundResults = [];
 
+    // Пошук у вибраній області
+    searchArea.forEach((element) => {
+      if (!element || !element.rows) return;
 
-    element.rows.forEach((rowElement, rowIndex) => {
+      element.rows.forEach((rowElement, rowIndex) => {
+        if (!rowElement) return;
+        const index = rowIndex + 1;
+        let foundInRow = false;
 
-     
-      if (!rowElement) return;
-
-      const index = rowIndex + 1;
-      let foundInRow = false;
-     for (const [dataKey,dataValue] of Object.entries(rowElement))  {
-        if (
-         !excludedSearchKeys.includes(dataKey)&&
-          typeof dataValue === "string" &&
-          dataValue.toLowerCase().includes(searchValue.toLowerCase())
-        ) {
-          foundResults.push({elementType:rowElement.type, dataKey, dataValue, currentPage: element.pageIndex, index });
-          
-          foundInRow = true;
-          console.log(
-            `Знайдено на верхньому рівні: сторінка ${element.pageIndex}, рядок ${index}, ${dataKey}: ${dataValue}`
-          ); 
-
-          break;
-        
-        }
-      };
-
-      if (!foundInRow && Array.isArray(rowElement.phones)) {
-        rowElement.phones.forEach((phoneObj) => {
-          if (
-            phoneObj?.phoneName &&
-            phoneObj.phoneName.toLowerCase().includes(searchValue.toLowerCase())
-            
-          ) {
+        for (const [dataKey, dataValue] of Object.entries(rowElement)) {
+          if (!excludedSearchKeys.includes(dataKey) &&
+              typeof dataValue === "string" &&
+              dataValue.toLowerCase().includes(searchValueTrimmed.toLowerCase())) {
             foundResults.push({
               elementType: rowElement.type,
-              dataKey: "phoneName",
-              dataValue: phoneObj.phoneName,
+              dataKey,
+              dataValue,
               currentPage: element.pageIndex,
               index
             });
-            console.log(
-              `Знайдено у phones: сторінка ${element.pageIndex}, рядок ${index}, значення: ${phoneObj.phoneName}`
-            );
+            foundInRow = true;
+            break;
           }
-        });
-        
-      }
-    });
-  });
-}
+        }
 
-if (!foundResults.length) {
-  console.log("Не знайдено результатів");
-  
-}
-if (!foundResults.length) {
+        if (!foundInRow && Array.isArray(rowElement.phones)) {
+          rowElement.phones.forEach((phoneObj) => {
+            if (phoneObj?.phoneName &&
+                phoneObj.phoneName.toLowerCase().includes(searchValueTrimmed.toLowerCase())) {
+              foundResults.push({
+                elementType: rowElement.type,
+                dataKey: "phoneName",
+                dataValue: phoneObj.phoneName,
+                currentPage: element.pageIndex,
+                index
+              });
+            }
+          });
+        }
+      });
+    });
+
+    if (!foundResults.length) {
       setShowNotFound(true);
-      debugger;
-      setTimeout(() => {
-        setShowNotFound(false);
-      }, 1000); 
+      setTimeout(() => setShowNotFound(false), 1000);
     }
 
-
-    props.addFoundItems(activeMenuStr, searchValue, foundResults);
+    // Диспатч результатів у Redux
+    props.addFoundItems(activeMenuStr, searchValueTrimmed, foundResults);
   };
 
   return (
-        <SearchForm
+    <SearchForm
       ref={inputRef}
-      isPresentedSearchField={props.isPresentedSearchField}
       showNotFound={showNotFound}
       inputValue={inputValue}
-      setInputValue={setInputValue}
+      setInputValue={(value) => value != "" ? props.updateDraftValue(activeMenuStr, value):props.clearSearchForm(activeMenuStr)}
+      isPresentedSearchField={props.isPresentedSearchField}
       handleOnSearchButtonClick={handleOnSearchButtonClick}
       handleOnClearSearchFormButtonClick={handleOnClearSearchFormButtonClick}
       getCountOfFoundResults={() => props.getCountOfFoundResults(activeMenuStr)}
-
     />
-
   );
 };
-
 
 const mapStateToProps = (state) => ({
   isPresentedSearchField: isPresentedSearchField(state),
   activeMenu: activeMenu(state),
   getGovUaMails: getGovUaMails(state),
   getLotusMails: getLotusMails(state),
-  getPhones:getPhones(state),
+  getPhones: getPhones(state),
   searchFieldValue: (menu) => state.toggledElements.searchField[menu]?.searchValue || "",
+  draftValue: (menu) => state.toggledElements.searchField[menu]?.draftValue || "",
   getCountOfFoundResults: (menu) => getCountOfFoundResults(state, menu),
   getCountOfPresentedElement: (menu) => getCountOfPresentedElement(state, menu),
-  getDepartmentsAndSectionsPerPage:getDepartmentsAndSectionsPerPage(state)
+  getDepartmentsAndSectionsPerPage: getDepartmentsAndSectionsPerPage(state)
 });
 
-const mapDispatchToProps = { addFoundItems, clearSearchForm };
+const mapDispatchToProps = { addFoundItems, clearSearchForm, updateDraftValue };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Search);
