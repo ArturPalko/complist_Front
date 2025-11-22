@@ -2,9 +2,10 @@ import React, { useEffect, useState,useRef } from "react";
 import s from './PagesNavBar.module.css';
 import { NavLink, useLocation } from 'react-router-dom';
 import { connect } from "react-redux";
-import { govUaCount, lotusCount, phonesCount, isPhonesSearchValueFound, foundSearchValueOfPhonesPage, getPhones, getPhonesCurrentPageNumber, activeMenu, isGovUaSearchValueFounded, isLotusSearchValueFounded, foundSearchValueOfLotusMailsPage, foundSearchValueOfGovUaPage} from "../../../redux/selectors/selector";
+import { govUaCount, lotusCount, phonesCount, isPhonesSearchValueFound, foundSearchValueOfPhonesPage, getPhones, getPhonesCurrentPageNumber, activeMenu, isGovUaSearchValueFounded, isLotusSearchValueFounded, foundSearchValueOfLotusMailsPage, foundSearchValueOfGovUaPage, getCountOfPageForFiltredResults} from "../../../redux/selectors/selector";
 import { rememberCurrentPagesActionCreator, } from "../../../redux/pagesNavbar-reducer";
 import { togglepagesNavbarLinkElementOnCurrentPage } from "../../../redux/toggledElements-reducer";
+
 
 const PagesNavBar = (props) => {
   const location = useLocation();
@@ -44,6 +45,12 @@ const PagesNavBar = (props) => {
 
     }
   }
+  let count = props.countFiltred(props.activeMenu);
+if (!count || count.length === 0) {
+  count = countOfPages; // базова кількість сторінок до того, як дані з фільтру з'являться
+}
+
+
 
 
 function handleNavLinkPressed(e) {
@@ -131,7 +138,10 @@ function handleNavLinkUnpressed() {
           )}
 
 
-      {Array.from({ length: countOfPages }, (_, i) => {
+          
+       
+
+      {Array.from({ length: count }, (_, i) => {
         const pageNumber = i + 1;
         return (
           <NavLink
@@ -173,7 +183,8 @@ const mapStateToProps = (state) => ({
   foundSearchValueOfPhonesPage: foundSearchValueOfPhonesPage(state),
   foundSearchValueOfLotusMailsPage:foundSearchValueOfLotusMailsPage(state),
   foundSearchValueOfGovUaPage:foundSearchValueOfGovUaPage(state),
-  getPhonesCurrentPageNumber:getPhonesCurrentPageNumber(state)
+  getPhonesCurrentPageNumber:getPhonesCurrentPageNumber(state),
+  countFiltred: (menu) => getCountOfPageForFiltredResults(state, menu)
 
   
 });

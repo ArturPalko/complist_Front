@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { useDataLoader, useFoundResults, useToggleElements } from "./hooks";
-import { useRowHighlighting } from "./hooks";
+import { useRowHighlighting , useFilteredPageData} from "./hooks";
 import { useRowHeights } from "./useSyncRowHeights";
 import s from "../../Components/PhonesTable/PhonesTable.module.css";
+
 
 export const useMailsTableLogic = ({
   mailType,
@@ -16,7 +17,15 @@ export const useMailsTableLogic = ({
   const { foundResults, indexDataOfFoundResultsForFoundResultsPage } = useFoundResults();
   const { isPagesNavbarLinkElementOnCurrentPagePressed } = useToggleElements();
 
-  const pageData = foundResults ?? mailsData?.[pageNumber - 1]?.rows ?? [];
+
+  const filteredPageData = useFilteredPageData(mailsData);
+  debugger;
+
+
+const pageData = foundResults ?? filteredPageData?.[pageNumber - 1]?.rows  ?? mailsData?.[pageNumber - 1]?.rows ?? [];
+
+
+
 
   const rowRefs = useRef([]);
   const colNumbersRef = useRef([]);

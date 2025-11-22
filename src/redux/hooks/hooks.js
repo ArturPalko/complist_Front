@@ -6,12 +6,17 @@ import { rememberPreviousLocationActionCreator } from "../pagesNavbar-reducer";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getPhonesPageIndexDataOfFoundResults, getGovUaMailsPageIndexDataOfFoundResults,
-  getLotusMailsPageIndexDataOfFoundResults, getCurrentPageNumberByKey, getPageIndexDataOfFoundResultsByKey
+  getLotusMailsPageIndexDataOfFoundResults, getCurrentPageNumberByKey, getPageIndexDataOfFoundResultsByKey,
+  getFilteredState
  } from "../selectors/selector";
 import redArrow from "../../../src/assets/red_arrow.png";
 import { DataLoaderContext } from "../hocs/withDataLoader";
 import { ToggleElementsContext } from "../hocs/withToggleElements";
 import { FoundResultsContext } from "../../Components/FoundResults/FoundResults";
+
+import { activeMenu as activeMenuSelector, getIndexesOfFiltredResults, getGovUaMails, getLotusMails } from "../selectors/selector";
+
+
 
 export const usePageNumber = () => {
   const params = useParams();
@@ -124,4 +129,34 @@ export const useToggleElements = () => useContext(ToggleElementsContext);
 export const useFoundResults = () => {
   const context = useContext(FoundResultsContext);
   return context ?? { foundResults: null, indexDataOfFoundResultsForFoundResultsPage: null };
+};
+
+
+
+
+
+
+
+
+
+
+export const useFilteredPageData = (mailsData) => {
+  const activeMenu = useSelector(activeMenuSelector);
+  const filtredChunks = useSelector(state => getIndexesOfFiltredResults(state, activeMenu));
+
+  if (!Array.isArray(mailsData) || !Array.isArray(filtredChunks)) return [];
+
+  const mappedChunks = filtredChunks.map((chunk) => {
+    const rows = chunk.rows
+      .map(row => {
+        const page = mailsData.find(p => p.pageIndex === row.page); 
+        if (!page || !Array.isArray(page.rows)) return null;
+        return page.rows[row.index]; 
+      })
+      .filter(Boolean); 
+
+    return rows.length > 0 ? { pageIndex: chunk.pageIndex, rows } : null;
+  }).filter(Boolean);
+
+  return mappedChunks;
 };

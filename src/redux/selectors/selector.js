@@ -334,3 +334,13 @@ export const getFilteredState = (state, activeMenu) => {
   return state.filters?.[activeMenu]?.usedFilters || {};
 };
 
+export const getIndexesOfFiltredResults = (state, activeMenu) => {
+  return state.filters?.[activeMenu]?.filtredResults || [];
+};
+
+
+export const getCountOfPageForFiltredResults = (state, activeMenu) => {
+  let a =  state.filters?.[activeMenu]?.filtredResults.length || [];
+  console.log("Це э АААА",a)
+  return a
+};

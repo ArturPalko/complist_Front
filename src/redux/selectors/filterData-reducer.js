@@ -1,5 +1,6 @@
 const ADD_FILTRED_DATA= "ADD_FILTRED_DATA";
 const CLEAR_FILTRED_STATE_FOR_CURRENT_FORM = "CLEAR_FILTRED_STATE_FOR_CURRENT_FORM";
+const ADD_INDEXES_OF_FILTRED_RESULTS = "ADD_INDEXES_OF_FILTRED_RESULTS";
 
 const initialState = {
     "Gov-ua": {usedFilters:{personalMails:false, departmentMails:false, sectionMails: false, 
@@ -23,13 +24,24 @@ export const filterDataReducer = (state=initialState,action) =>{
                 }
             }
         case CLEAR_FILTRED_STATE_FOR_CURRENT_FORM: {
+            return {
+                ...state,
+                [action.menu]: {
+                    usedFilters: Object.fromEntries(
+                        Object.keys(state[action.menu].usedFilters).map(key => [key, false])
+                    ),
+                    filtredResults: []
+                }
+            };
+        }
+case ADD_INDEXES_OF_FILTRED_RESULTS: {
+    const currentStateForMenu = state[action.menu] ?? { usedFilters: {}, filtredResults: [] };
     return {
         ...state,
         [action.menu]: {
-            usedFilters: Object.fromEntries(
-                Object.keys(state[action.menu].usedFilters).map(key => [key, false])
-            ),
-            filtredResults: []
+            ...currentStateForMenu,
+            usedFilters: { ...currentStateForMenu.usedFilters },
+            filtredResults: action.filtredIndexesOfFoundResults
         }
     };
 }
@@ -51,4 +63,11 @@ export const addFilter = (menu, filter) => ({
 export const clearCurrentForm = (menu, filter) => ({
     type: CLEAR_FILTRED_STATE_FOR_CURRENT_FORM ,
     menu,
+});
+
+
+export const addIndexesOfFiltredResults = (menu, filtredIndexesOfFoundResults) => ({
+    type: ADD_INDEXES_OF_FILTRED_RESULTS ,
+    menu,
+    filtredIndexesOfFoundResults
 });
