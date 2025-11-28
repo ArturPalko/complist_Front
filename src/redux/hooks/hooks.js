@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getPhonesPageIndexDataOfFoundResults, getGovUaMailsPageIndexDataOfFoundResults,
   getLotusMailsPageIndexDataOfFoundResults, getCurrentPageNumberByKey, getPageIndexDataOfFoundResultsByKey,
-  getFilteredState
+  getFilteredState , isFilterAppliedSelector
  } from "../selectors/selector";
 import redArrow from "../../../src/assets/red_arrow.png";
 import { DataLoaderContext } from "../hocs/withDataLoader";
@@ -136,27 +136,39 @@ export const useFoundResults = () => {
 
 
 
-
-
-
-
 export const useFilteredPageData = (mailsData) => {
   const activeMenu = useSelector(activeMenuSelector);
   const filtredChunks = useSelector(state => getIndexesOfFiltredResults(state, activeMenu));
+  const isFilterApplied = useSelector(isFilterAppliedSelector(activeMenu));
+ // boolean
 
-  if (!Array.isArray(mailsData) || !Array.isArray(filtredChunks)) return [];
+  if (!Array.isArray(mailsData)) return { data: [], isFilterApplied: false };
 
-  const mappedChunks = filtredChunks.map((chunk) => {
-    const rows = chunk.rows
-      .map(row => {
-        const page = mailsData.find(p => p.pageIndex === row.page); 
-        if (!page || !Array.isArray(page.rows)) return null;
-        return page.rows[row.index]; 
+  if (isFilterApplied) {
+    console.log ("isFilterApplied", isFilterApplied)
+    debugger;
+    if (!Array.isArray(filtredChunks) || filtredChunks.length === 0) {
+      return { data: [], isFilterApplied: true };
+    }
+  debugger;
+    const mappedChunks = filtredChunks
+      .map(chunk => {
+        const rows = chunk.rows
+          .map(row => {
+            const page = mailsData.find(p => p.pageIndex === row.page);
+            return page?.rows?.[row.index] ?? null;
+          })
+          .filter(Boolean);
+
+        return rows.length > 0 ? { pageIndex: chunk.pageIndex, rows } : null;
       })
-      .filter(Boolean); 
+      .filter(Boolean);
 
-    return rows.length > 0 ? { pageIndex: chunk.pageIndex, rows } : null;
-  }).filter(Boolean);
+    return { data: mappedChunks, isFilterApplied: true };
+  }
 
-  return mappedChunks;
+  // Фільтр не застосований
+  return { data: mailsData, isFilterApplied: false };
 };
+
+

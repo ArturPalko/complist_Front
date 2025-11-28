@@ -1,11 +1,13 @@
 const REMEMBER_CURRENT_PAGE_NUMBER = "REMEMBER_CURRENT_PAGE_NUMBER";
 const SET_PREVIOUS_LOCATION = "SET_PREVIOUS_LOCATION";
+const SET_FILTER_PAGE = "SET_FILTER_PAGE";
+const SET_ACTIVE_MENU = "SET_ACTIVE_MENU";
 
 const initialState = {
     activeMenu: "",
-    Lotus: {digitPage:1, lastVisitedPage:1},
-    "Gov-ua": {digitPage:1, lastVisitedPage:1},
-    phones: {digitPage:1, lastVisitedPage:1},
+    Lotus: {digitPage:1, lastVisitedPage:1, filterPage:null},
+    "Gov-ua": {digitPage:1, lastVisitedPage:1, filterPage:null},
+    phones: {digitPage:1, lastVisitedPage:1, filterPage:2},
     previousLocation:""
 };
 
@@ -14,7 +16,7 @@ export const pagesNavbarReducer = (state = initialState, action) => {
         case REMEMBER_CURRENT_PAGE_NUMBER:
            
             const pageName = action.pageName;  
-            const value = action.pageNumber; // сюди передаєш page/{number} або "foundResults"
+            const value = action.pageNumber; 
 
             const isNumberPage = !isNaN(Number(value));
 
@@ -24,7 +26,7 @@ export const pagesNavbarReducer = (state = initialState, action) => {
 
                 [pageName]: {
                     ...state[pageName],
-                    lastVisitedPage: value,
+                    lastVisitedPage: Number(value),
                     digitPage: isNumberPage ? Number(value) : state[pageName].digitPage
                 }
             };
@@ -34,6 +36,16 @@ export const pagesNavbarReducer = (state = initialState, action) => {
                 ...state,
                 previousLocation: action.previousLocation
             };
+        case SET_FILTER_PAGE:
+            return {
+                ...state,
+                activeMenu: action.pageName,
+                [action.pageName]: {
+                    ...state[action.pageName],
+                    filterPage: Number(action.pageNumber)
+                }
+            };
+
 
 
         default:
@@ -51,3 +63,10 @@ export const rememberPreviousLocationActionCreator = (previousLocation) => ({
     type: SET_PREVIOUS_LOCATION,
     previousLocation
 });
+
+export const setFilterPage = (pageName, pageNumber) => ({
+    type: SET_FILTER_PAGE,
+    pageName,
+    pageNumber
+});
+

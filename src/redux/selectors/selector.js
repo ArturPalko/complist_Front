@@ -315,8 +315,15 @@ export const getCountOfPresentedElement = (state, activeMenu) => {
 
 
 export const getDepartmentsAndSectionsPerPage = (state,activeMenu) => {
+  let data =[];
   if(activeMenu!=="phones") return [];
-  const data = getPhones(state) || [];
+  if(isFilterAppliedSelector(activeMenu)(state)){
+    data = getIndexesOfFiltredResults(state, activeMenu);
+  }
+  else{
+     data = getPhones(state) || [];
+  }
+  
 
   return data.map(page => {
     let count = 0;
@@ -344,3 +351,9 @@ export const getCountOfPageForFiltredResults = (state, activeMenu) => {
   console.log("Це э АААА",a)
   return a
 };
+
+export const isFilterAppliedSelector = (menu) => (state) =>
+  state.filters?.[menu]?.isFilterApplied ?? false;
+
+export const getCurentFilterPage = (state, activeMenu) =>
+  state.currentPageNumber[activeMenu].filterPage 

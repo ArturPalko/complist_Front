@@ -1,9 +1,13 @@
 import React, { useEffect, useState,useRef } from "react";
 import s from './PagesNavBar.module.css';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { connect } from "react-redux";
-import { govUaCount, lotusCount, phonesCount, isPhonesSearchValueFound, foundSearchValueOfPhonesPage, getPhones, getPhonesCurrentPageNumber, activeMenu, isGovUaSearchValueFounded, isLotusSearchValueFounded, foundSearchValueOfLotusMailsPage, foundSearchValueOfGovUaPage, getCountOfPageForFiltredResults} from "../../../redux/selectors/selector";
-import { rememberCurrentPagesActionCreator, } from "../../../redux/pagesNavbar-reducer";
+import { govUaCount, lotusCount, phonesCount, isPhonesSearchValueFound, foundSearchValueOfPhonesPage, 
+  getPhones, getPhonesCurrentPageNumber, activeMenu, isGovUaSearchValueFounded, isLotusSearchValueFounded, 
+  foundSearchValueOfLotusMailsPage, foundSearchValueOfGovUaPage, getCountOfPageForFiltredResults, lotusCurrentPage,
+   GovUaCurrentPage, phonesCurrentPage,
+   isFilterAppliedSelector} from "../../../redux/selectors/selector";
+import { rememberCurrentPagesActionCreator, setFilterPage, } from "../../../redux/pagesNavbar-reducer";
 import { togglepagesNavbarLinkElementOnCurrentPage } from "../../../redux/toggledElements-reducer";
 
 
@@ -16,6 +20,8 @@ const PagesNavBar = (props) => {
   const pressTimer = useRef(null);
   const isPressed = useRef(false); 
   const delay = 1000;
+  const navigate = useNavigate();
+
 
   
 
@@ -46,11 +52,52 @@ const PagesNavBar = (props) => {
     }
   }
   let count = props.countFiltred(props.activeMenu);
-if (!count || count.length === 0) {
+if ((!count || count.length == 0 )&& props.isFilterAppliedSelector(pageName)==false) {
+ // debugger
   count = countOfPages; // базова кількість сторінок до того, як дані з фільтру з'являться
+  //navigate(`${basePath}1`)
+  debugger;
+  
 }
+// useEffect(() => {
+//   const count = props.countFiltred(props.activeMenu);
+//   if (count === undefined) return;
+
+//   let currentPage = 0;
+
+//   switch (props.activeMenu) {
+//     case "lotus":
+//       currentPage = props.lotusCurrentPage;
+//       break;
+
+//     case "Gov-ua":
+//       currentPage = props.GovUaCurrentPage;
+//       break;
+
+//     case "phones":
+//       currentPage = props.phonesCurrentPage;
+//       break;
+
+//     default:
+//       currentPage = 0;
+//   }
+
+ 
+
+//   if (count !== undefined && currentPage !==1) {
+  
+//     navigate(`${basePath}1`);
+//   }
+// }, [
+  
+//   count
+// ]);
 
 
+// useEffect(() => {
+//   console.log("Count змінився", count);
+//   navigate(`${basePath}1`)
+// }, [count]);
 
 
 function handleNavLinkPressed(e) {
@@ -71,13 +118,18 @@ function handleNavLinkUnpressed() {
 }
 
   
- useEffect(() => {
+useEffect(() => {
+  const isApplied = props.isFilterAppliedSelector(pageName);
 
-  if (pageName) {
+  if (pageName && !isApplied) {
     props.rememberCurrentPage(pageName, pageFromURL);
-    //debugger;
   }
+  if(pageName && isApplied){
+    props.setFilterPage(pageName, pageFromURL)
+  }
+
 }, [location.pathname, pageName, pageFromURL]);
+
 
 /*useEffect(() => {
   isPressed.current = false;
@@ -141,7 +193,8 @@ function handleNavLinkUnpressed() {
           
        
 
-      {Array.from({ length: count }, (_, i) => {
+      {count > 0 &&
+       Array.from({ length: count }, (_, i) => {
         const pageNumber = i + 1;
         return (
           <NavLink
@@ -184,11 +237,18 @@ const mapStateToProps = (state) => ({
   foundSearchValueOfLotusMailsPage:foundSearchValueOfLotusMailsPage(state),
   foundSearchValueOfGovUaPage:foundSearchValueOfGovUaPage(state),
   getPhonesCurrentPageNumber:getPhonesCurrentPageNumber(state),
-  countFiltred: (menu) => getCountOfPageForFiltredResults(state, menu)
+  countFiltred: (menu) => getCountOfPageForFiltredResults(state, menu),
+  lotusCurrentPage:lotusCurrentPage(state),
+  GovUaCurrentPage:GovUaCurrentPage(state),
+  phonesCurrentPage:phonesCurrentPage(state),
+ isFilterAppliedSelector: (menu) => isFilterAppliedSelector(menu)(state)
+
 
   
 });
 
-const mapDispatchToProps = { rememberCurrentPage: rememberCurrentPagesActionCreator, togglepagesNavbarLinkElementOnCurrentPage:togglepagesNavbarLinkElementOnCurrentPage };
+const mapDispatchToProps = { rememberCurrentPage: rememberCurrentPagesActionCreator, 
+                          togglepagesNavbarLinkElementOnCurrentPage:togglepagesNavbarLinkElementOnCurrentPage,
+                            setFilterPage };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PagesNavBar);

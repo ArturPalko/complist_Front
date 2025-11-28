@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { useDataLoader, useFoundResults, useToggleElements, useRowHighlighting } from "../../redux/hooks/hooks";
+import { useDataLoader, useFoundResults, useToggleElements, useRowHighlighting,
+  useFilteredPageData
+ } from "../../redux/hooks/hooks";
 import s from "../../Components/PhonesTable/PhonesTable.module.css";
 
 import { useRowHeights } from "./useSyncRowHeights";
@@ -18,7 +20,30 @@ export const usePhonesTableLogic = ({
   const { isPagesNavbarLinkElementOnCurrentPagePressed } = useToggleElements();
   const { foundResults, indexDataOfFoundResultsForFoundResultsPage } = useFoundResults();
 
-  const pageData = foundResults ?? phonesData?.[pageNumber - 1]?.rows ?? [];
+const { data: filteredPageData, isFilterApplied } = useFilteredPageData(phonesData);
+
+  
+
+const pageData =
+  foundResults?.[pageNumber - 1]?.rows ??
+  (isFilterApplied
+    ? filteredPageData?.[pageNumber - 1]?.rows ?? []
+    : phonesData?.[pageNumber - 1]?.rows ?? []);
+
+
+    console.log("phonesData",phonesData)
+    console.log("filtredPageData",filteredPageData)
+
+
+  //   const pageData =
+  // foundResults?.[pageNumber - 1]?.rows ??
+  // (filteredPageData?.length > 0
+  //   ? filteredPageData[pageNumber - 1]?.rows ?? []
+  //   : phonesData?.[pageNumber - 1]?.rows ?? []);
+
+  //const pageData = foundResults ?? filteredPageData?.[pageNumber - 1]?.rows  ?? phonesData?.[pageNumber - 1]?.rows ?? [];
+
+  //const pageData = foundResults ?? phonesData?.[pageNumber - 1]?.rows ?? [];
   const phoneColumns = columns.find(c => c.key === "phones")?.subLabels.length || 0;
   const indexDecrementFromPreviousPages = departmentsAndSectionsPerPage.slice(0, pageNumber - 1).reduce((acc, val) => acc + val, 0);
 

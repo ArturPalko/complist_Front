@@ -46,6 +46,7 @@ function App() {
               index
               element={
                 <RedirectToCurrentPage
+                  redirectMenu={"phones"}
                   selector={phonesCurrentPage}
                   buildPath={(page) => `/phones/${page}`}
                 />
@@ -64,6 +65,7 @@ function App() {
                 index
                 element={
                   <RedirectToCurrentPage
+                    redirectMenu={"Gov-ua"}
                     selector={GovUaCurrentPage}
                     buildPath={(page) => `/mails/Gov-ua/${page}`}
                   />
@@ -81,6 +83,7 @@ function App() {
                 index
                 element={
                   <RedirectToCurrentPage
+                    redirectMenu ={"Lotus"}
                     selector={lotusCurrentPage}
                     buildPath={(page) => `/mails/Lotus/${page}`}
                   />
