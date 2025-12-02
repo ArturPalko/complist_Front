@@ -6,7 +6,8 @@ import {
   getFilteredState,
   getLotusMails,
   getPhones,
-  getPositionsAndTypesOfUsers
+  getPositionsAndTypesOfUsers,
+  getSubFilters
 } from "../../../redux/selectors/selector";
 import s from "../FilterPanel/FilterPanel.module.css";
 import CustomCheckbox from "./CustomCheckbox/CustomCheckBox.jsx";
@@ -102,13 +103,13 @@ const FilterPanel = (props) => {
     if (row.type === "department") {
       const usersPass = row.users?.some(checkRowOrUser) || false;
       const sectionsPass = row.sections?.some(section =>
-        section.users?.length > 0 && section.users.every(checkRowOrUser)
+        section.users?.length > 0 && section.users.some(checkRowOrUser)
       ) || false;
       return usersPass || sectionsPass;
     }
 
     if (row.type === "section") {
-      return row.users?.length > 0 && row.users.every(checkRowOrUser);
+      return row.users?.length > 0 && row.users.some(checkRowOrUser);
     }
 
     return checkRowOrUser(row);
@@ -118,7 +119,7 @@ const FilterPanel = (props) => {
     const activeFilters = Object.entries(state)
       .filter(([key, v]) => v && conditions[key])
       .map(([key]) => key);
-
+debugger;
     const dataFromStore =
       props.activeMenu.toLowerCase() === "gov-ua"
         ? props.getGovUaMails || []
@@ -147,14 +148,18 @@ const FilterPanel = (props) => {
   useEffect(() => {
     if (props.activeMenu === "phones") {
       const storedSubFilters = props.getFilteredState("phones").subFilters || {};
+      debugger;
+   
       const initialSubConditions = Object.entries(storedSubFilters).reduce((acc, [key, value]) => {
-        if (value) acc[key] = el => el.userType === key.replace("userType_", "");
-        return acc;
-      }, {});
+  if (value) acc[key] = el => el.userType === key;
+  return acc;
+}, {});
+
       setSubocnditions(initialSubConditions);
-      setSelectedSubConditions(Object.keys(storedSubFilters).filter(k => storedSubFilters[k]));
+      //setSelectedSubConditions(Object.keys(storedSubFilters).filter(k => storedSubFilters[k]));
+      debugger;
     }
-  }, [props.activeMenu]);
+  }, [props.activeMenu, props.getSubFilters]);
 
   // Перерахунок фільтрованих чанків
   useEffect(() => {
@@ -238,10 +243,10 @@ const FilterPanel = (props) => {
 
         {props.activeMenu === "phones" && (
           <CustomDropDown
-            initialSelected={selectedSubConditions}
-            setSelected={setSelectedSubConditions}
-            setSubocnditions={setSubocnditions}
-            handleCheckboxChange={handleCheckboxChange}
+           // initialSelected={selectedSubConditions}
+           // setSelected={setSelectedSubConditions}
+           // setSubocnditions={setSubocnditions}
+           // handleCheckboxChange={handleCheckboxChange}
           />
         )}
       </div>
@@ -255,7 +260,8 @@ const mapStateToProps = state => ({
   getLotusMails: getLotusMails(state),
   getPhones: getPhones(state),
   getFilteredState: menu => getFilteredState(state, menu),
-  getPositionsAndTypesOfUsers: getPositionsAndTypesOfUsers(state)
+  getPositionsAndTypesOfUsers: getPositionsAndTypesOfUsers(state),
+  getSubFilters:getSubFilters(state)
 });
 
 const mapDispatchToProps = { addFilter, clearCurrentForm, addIndexesOfFiltredResults };

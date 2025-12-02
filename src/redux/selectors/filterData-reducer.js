@@ -38,7 +38,8 @@ const initialState = {
             hasCiscoPhone: false,
             NOThasLadnlinePhone: false,
             NOThasInternalPhone: false,
-            NOThasCiscoPhone: false
+            NOThasCiscoPhone: false,
+            subFilters:[]
         },
         filtredResults: [],
         isFilterApplied: false

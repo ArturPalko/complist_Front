@@ -389,3 +389,7 @@ export const getPositionsAndTypesOfUsers = (state) => {
   console.log("Типи посад:", userPositions);
   return  userTypes/*{userTypes ,userPositions}*/
 };
+
+
+export const getSubFilters = (state) =>
+  state.filters.phones?.usedFilters.subFilters ?? [];

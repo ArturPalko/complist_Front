@@ -1,12 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
 import { connect } from "react-redux";
 import "./CustomDropDown.module.css";
-import { getPositionsAndTypesOfUsers } from "../../../../redux/selectors/selector";
+import { activeMenu, getPositionsAndTypesOfUsers, getSubFilters } from "../../../../redux/selectors/selector";
 import { addFilteredDataSubconditions } from "../../../../redux/selectors/filterData-reducer";
 
 const CustomDropDown = (props) => {
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState(props.initialSelected || []);
   const dropdownRef = useRef();
 
   const optionsList = props.getPositionsAndTypesOfUsers || [];
@@ -22,36 +21,31 @@ const CustomDropDown = (props) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Оновлюємо subConditions у FilterPanel при зміні вибраних опцій
-  useEffect(() => {
-    const subConditions = selected.reduce((acc, type) => {
-      acc[`userType_${type}`] = el => el.userType === type;
-      return acc;
-    }, {});
-    props.setSubocnditions(subConditions);
-  }, [selected, props]);
-
   const toggleSelection = (type) => {
-    const newSelected = selected.includes(type)
-      ? selected.filter(t => t !== type)
-      : [...selected, type];
-
-    setSelected(newSelected);
-    props.addFilteredDataSubconditions(type); // запис у стор
+    props.addFilteredDataSubconditions(type); // оновлюємо стор
+  
   };
+
+  // перетворюємо об’єкт subFilters у масив вибраних ключів
+  const selectedKeys = Object.keys(props.subFiltersFromStore || {}).filter(
+    (key) => props.subFiltersFromStore[key]
+    
+  );
 
   return (
     <div className="dropdown-container" ref={dropdownRef}>
       <button onClick={() => setOpen(!open)}>
-        {selected.length ? selected.join(", ") : "Оберіть типи контактів"}
+        {selectedKeys.length
+          ? selectedKeys.join(", ")
+          : "Оберіть типи контактів"}
       </button>
       {open && (
         <div className="dropdown-menu">
-          {optionsList.map(type => (
+          {optionsList.map((type) => (
             <label key={type}>
               <input
                 type="checkbox"
-                checked={selected.includes(type)}
+                checked={selectedKeys.includes(type)}
                 onChange={() => toggleSelection(type)}
               />
               {type}
@@ -64,7 +58,9 @@ const CustomDropDown = (props) => {
 };
 
 const mapStateToProps = (state) => ({
+  activeMenu: activeMenu(state),
   getPositionsAndTypesOfUsers: getPositionsAndTypesOfUsers(state),
+  subFiltersFromStore: getSubFilters(state), // об’єкт
 });
 
 const mapDispatchToProps = { addFilteredDataSubconditions };
