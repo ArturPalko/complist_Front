@@ -1,6 +1,8 @@
 const ADD_FILTRED_DATA = "ADD_FILTRED_DATA";
+const ADD_FILTRED_DATA_SUBCONDITIONS = "ADD_FILTRED_DATA_SUBCONDITIONS";
 const CLEAR_FILTRED_STATE_FOR_CURRENT_FORM = "CLEAR_FILTRED_STATE_FOR_CURRENT_FORM";
 const ADD_INDEXES_OF_FILTRED_RESULTS = "ADD_INDEXES_OF_FILTRED_RESULTS";
+
 
 const initialState = {
     "Gov-ua": {
@@ -23,7 +25,8 @@ const initialState = {
             hasPrevioustName: false,
             hasNewPostName: false,
             passworKnown: false,
-            passwordUnknown: false
+            passwordUnknown: false,
+            subFilters:[]
         },
         filtredResults: [],
         isFilterApplied: false
@@ -59,6 +62,35 @@ export const filterDataReducer = (state = initialState, action) => {
                 }
             };
         }
+
+        case ADD_FILTRED_DATA_SUBCONDITIONS: {
+    if (action.menu !== "phones") return state; // сабумови тільки для phones
+
+    // гарантуємо існування subFilters
+    const currentSubFilters = state.phones.usedFilters.subFilters || {};
+
+    const newSubFilters = {
+        ...currentSubFilters,
+        [action.subKey]: currentSubFilters[action.subKey] ? !currentSubFilters[action.subKey] : true
+    };
+
+    return {
+        ...state,
+        phones: {
+            ...state.phones,
+            usedFilters: {
+                ...state.phones.usedFilters,
+                subFilters: newSubFilters
+            },
+            isFilterApplied:
+                Object.values(state.phones.usedFilters)
+                    .filter(v => typeof v === "boolean")
+                    .some(Boolean) ||
+                Object.values(newSubFilters).some(Boolean)
+        }
+    };
+}
+
 
         case CLEAR_FILTRED_STATE_FOR_CURRENT_FORM: {
             const clearedFilters = Object.fromEntries(
@@ -96,6 +128,14 @@ export const addFilter = (menu, filter) => ({
     menu,
     filter
 });
+
+
+export const addFilteredDataSubconditions = (subKey) => ({
+    type: "ADD_FILTRED_DATA_SUBCONDITIONS",
+    menu: "phones",   // сабумови тільки для phones
+    subKey
+});
+
 
 export const clearCurrentForm = (menu) => ({
     type: CLEAR_FILTRED_STATE_FOR_CURRENT_FORM,

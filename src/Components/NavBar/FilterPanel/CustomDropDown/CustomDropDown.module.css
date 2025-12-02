@@ -1,0 +1,35 @@
+.dropdown-container {
+  position: relative;
+  width: 200px;
+  font-family: sans-serif;
+}
+
+.dropdown-toggle {
+  width: 100%;
+  padding: 8px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  border: 1px solid #ccc;
+  background: white;
+  z-index: 10;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.dropdown-item input {
+  margin-right: 8px;
+}

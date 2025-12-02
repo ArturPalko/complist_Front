@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import {
   getGovUaMails,
@@ -5,15 +6,12 @@ import {
   getFilteredState,
   getLotusMails,
   getPhones,
-  GovUaCurrentPage,
-  lotusCurrentPage,
-  phonesCurrentPage
+  getPositionsAndTypesOfUsers
 } from "../../../redux/selectors/selector";
 import s from "../FilterPanel/FilterPanel.module.css";
 import CustomCheckbox from "./CustomCheckbox/CustomCheckBox.jsx";
-import { useState } from "react";
 import { addFilter, clearCurrentForm, addIndexesOfFiltredResults } from "../../../redux/selectors/filterData-reducer.js";
-import { useNavigate } from "react-router-dom";
+import CustomDropDown from "./CustomDropDown/CustomDropDown.jsx";
 
 const CHUNK_SIZE = 18;
 
@@ -21,7 +19,17 @@ const FilterPanel = (props) => {
   const govUa = "gov-ua";
   const lotus = "lotus";
   const phones = "phones";
-  const navigate = useNavigate();
+
+  const [selectedSubConditions, setSelectedSubConditions] = useState([]);
+  const [subConditions, setSubocnditions] = useState({});
+  const [checkboxState, setCheckboxState] = useState(() => {
+    const used = props.getFilteredState(props.activeMenu) || {};
+    const initialState = {};
+    Object.keys(used).forEach(key => {
+      initialState[key] = used[key] || false;
+    });
+    return initialState;
+  });
 
   const filterPoints = [
     { pages: [govUa, lotus], groupName: "Власник", key: "personalMails", label: "Персональні" },
@@ -74,53 +82,42 @@ const FilterPanel = (props) => {
     NOThasCiscoPhone: (el) => !el.phones?.some(p => p.phoneType === "IP (Cisco)"),
   };
 
-  const filterPointsForCurrentMenu = filterPoints.filter((p) =>
-    p.pages.includes(props.activeMenu.toLowerCase())
-  );
-
-  const groupedFilterPoints = filterPointsForCurrentMenu.reduce((acc, item) => {
-    if (!acc[item.groupName]) acc[item.groupName] = [];
-    acc[item.groupName].push(item);
-    return acc;
-  }, {});
-
-  const [checkboxState, setCheckboxState] = useState(() => {
-    const used = props.getFilteredState(props.activeMenu);
-    const initialState = {};
-    filterPointsForCurrentMenu.forEach((item) => {
-      initialState[item.key] = used[item.key] || false;
-    });
-    return initialState;
-  });
-
   const getAlternativeKeys = (key) => {
     const direct = filterGroups[key] || [];
     const reverse = Object.keys(filterGroups).filter((k) => filterGroups[k].includes(key));
     return [...direct, ...reverse];
   };
 
-  const passesFiltersForRow = (row, activeFilters) => {
-    if (!activeFilters.length) return true;
+  const passesFiltersForRow = (row, activeFilters = [], subConditions = {}) => {
+    const checkRowOrUser = (el) => {
+      const filtersPass = activeFilters.length > 0
+        ? activeFilters.every(f => typeof conditions[f] === "function" && conditions[f](el))
+        : true;
+      const subConditionsPass = Object.keys(subConditions).length > 0
+        ? Object.values(subConditions).some(cond => cond(el))
+        : true;
+      return filtersPass && subConditionsPass;
+    };
 
     if (row.type === "department") {
-      const usersPass = row.users?.some(u => activeFilters.every(f => conditions[f](u))) || false;
-
+      const usersPass = row.users?.some(checkRowOrUser) || false;
       const sectionsPass = row.sections?.some(section =>
-        section.users?.length > 0 && section.users.every(u => activeFilters.every(f => conditions[f](u)))
+        section.users?.length > 0 && section.users.every(checkRowOrUser)
       ) || false;
-
       return usersPass || sectionsPass;
     }
 
     if (row.type === "section") {
-      return row.users?.length > 0 && row.users.every(u => activeFilters.every(f => conditions[f](u)));
+      return row.users?.length > 0 && row.users.every(checkRowOrUser);
     }
 
-    return activeFilters.every(f => conditions[f](row));
+    return checkRowOrUser(row);
   };
 
-  const computeFilteredChunks = (state) => {
-    const filters = Object.entries(state).filter(([_, v]) => v).map(([key]) => key);
+  const computeFilteredChunks = (state, subConditions) => {
+    const activeFilters = Object.entries(state)
+      .filter(([key, v]) => v && conditions[key])
+      .map(([key]) => key);
 
     const dataFromStore =
       props.activeMenu.toLowerCase() === "gov-ua"
@@ -133,8 +130,8 @@ const FilterPanel = (props) => {
 
     dataFromStore.forEach((element, pageIndex) => {
       element.rows.forEach((row, rowIndex) => {
-        if (passesFiltersForRow(row, filters)) {
-          allFilteredIndexes.push({ page: pageIndex + 1, index: rowIndex , type: row.type});
+        if (passesFiltersForRow(row, activeFilters, subConditions)) {
+          allFilteredIndexes.push({ page: pageIndex + 1, index: rowIndex, type: row.type });
         }
       });
     });
@@ -146,68 +143,31 @@ const FilterPanel = (props) => {
     return chunks;
   };
 
-  // -------------------- Функція редиректу на поточну сторінку --------------------
-  const redirectToCurrentPage = () => {
-    let redirectPage;
-    let basePath;
-
-    switch (props.activeMenu) {
-      case "Gov-ua":
-        basePath = "/mails/Gov-ua/";
-        redirectPage = props.GovUaCurrentPage;
-        break;
-      case "Lotus":
-        basePath = "/mails/Lotus/";
-        redirectPage = props.lotusCurrentPage;
-        break;
-      case "phones":
-        basePath = "/phones/";
-        redirectPage = props.phonesCurrentPage;
-        break;
-      default:
-        basePath = "/";
-        redirectPage = 1;
+  // Встановлюємо сабумови для phones при зміні меню
+  useEffect(() => {
+    if (props.activeMenu === "phones") {
+      const storedSubFilters = props.getFilteredState("phones").subFilters || {};
+      const initialSubConditions = Object.entries(storedSubFilters).reduce((acc, [key, value]) => {
+        if (value) acc[key] = el => el.userType === key.replace("userType_", "");
+        return acc;
+      }, {});
+      setSubocnditions(initialSubConditions);
+      setSelectedSubConditions(Object.keys(storedSubFilters).filter(k => storedSubFilters[k]));
     }
+  }, [props.activeMenu]);
 
-    navigate(`${basePath}${redirectPage}`);
-  };
+  // Перерахунок фільтрованих чанків
+  useEffect(() => {
+    const chunks = computeFilteredChunks(checkboxState, subConditions);
+    props.addIndexesOfFiltredResults(props.activeMenu, chunks);
+  }, [checkboxState, subConditions]);
 
   const handleCheckboxChange = (key) => {
     const altKeys = getAlternativeKeys(key);
     setCheckboxState(prev => {
       const updated = { ...prev, [key]: !prev[key] };
-
-      // Вимикаємо альтернативні чекбокси
       if (updated[key]) altKeys.forEach(alt => (updated[alt] = false));
-
-      // Редирект на першу сторінку при активації чекбокса
-      if (updated[key]) {
-        let basePath;
-        switch (props.activeMenu) {
-          case "Gov-ua":
-            basePath = "/mails/Gov-ua/";
-            break;
-          case "Lotus":
-            basePath = "/mails/Lotus/";
-            break;
-          case "phones":
-            basePath = "/phones/";
-            break;
-          default:
-            basePath = "/";
-        }
-        navigate(`${basePath}1`);
-      }
-
-      // Обчислюємо фільтри і зберігаємо індекси
-      const chunks = computeFilteredChunks(updated);
-      props.addIndexesOfFiltredResults(props.activeMenu, chunks);
       props.addFilter(props.activeMenu, key);
-
-      // Редирект якщо всі чекбокси зняті
-      const anyChecked = Object.values(updated).some(v => v);
-      if (!anyChecked) redirectToCurrentPage();
-
       return updated;
     });
   };
@@ -215,11 +175,21 @@ const FilterPanel = (props) => {
   const handleOnClearFormButtonClick = () => {
     props.clearCurrentForm(props.activeMenu);
     setCheckboxState({});
-    props.addIndexesOfFiltredResults(props.activeMenu, []);
-    redirectToCurrentPage();
+    setSubocnditions({});
+    setSelectedSubConditions([]);
   };
 
-  const filteredChunks = computeFilteredChunks(checkboxState);
+  const filterPointsForCurrentMenu = filterPoints.filter((p) =>
+    p.pages.includes(props.activeMenu.toLowerCase())
+  );
+
+  const groupedFilterPoints = filterPointsForCurrentMenu.reduce((acc, item) => {
+    if (!acc[item.groupName]) acc[item.groupName] = [];
+    acc[item.groupName].push(item);
+    return acc;
+  }, {});
+
+  const filteredChunks = computeFilteredChunks(checkboxState, subConditions);
 
   return (
     <div className={s.panel}>
@@ -265,6 +235,15 @@ const FilterPanel = (props) => {
             })}
           </fieldset>
         ))}
+
+        {props.activeMenu === "phones" && (
+          <CustomDropDown
+            initialSelected={selectedSubConditions}
+            setSelected={setSelectedSubConditions}
+            setSubocnditions={setSubocnditions}
+            handleCheckboxChange={handleCheckboxChange}
+          />
+        )}
       </div>
     </div>
   );
@@ -276,9 +255,7 @@ const mapStateToProps = state => ({
   getLotusMails: getLotusMails(state),
   getPhones: getPhones(state),
   getFilteredState: menu => getFilteredState(state, menu),
-  GovUaCurrentPage: GovUaCurrentPage(state),
-  lotusCurrentPage: lotusCurrentPage(state),
-  phonesCurrentPage: phonesCurrentPage(state)
+  getPositionsAndTypesOfUsers: getPositionsAndTypesOfUsers(state)
 });
 
 const mapDispatchToProps = { addFilter, clearCurrentForm, addIndexesOfFiltredResults };

@@ -5,9 +5,9 @@ const SET_ACTIVE_MENU = "SET_ACTIVE_MENU";
 
 const initialState = {
     activeMenu: "",
-    Lotus: {digitPage:1, lastVisitedPage:1, filterPage:null},
-    "Gov-ua": {digitPage:1, lastVisitedPage:1, filterPage:null},
-    phones: {digitPage:1, lastVisitedPage:1, filterPage:2},
+    Lotus: {digitPage:1, lastVisitedPage:1, filterPage:1},
+    "Gov-ua": {digitPage:1, lastVisitedPage:1, filterPage:1},
+    phones: {digitPage:1, lastVisitedPage:1, filterPage:1},
     previousLocation:""
 };
 

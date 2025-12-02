@@ -56,7 +56,7 @@ if ((!count || count.length == 0 )&& props.isFilterAppliedSelector(pageName)==fa
  // debugger
   count = countOfPages; // базова кількість сторінок до того, як дані з фільтру з'являться
   //navigate(`${basePath}1`)
-  debugger;
+ // debugger;
   
 }
 // useEffect(() => {

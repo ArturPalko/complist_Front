@@ -146,11 +146,11 @@ export const useFilteredPageData = (mailsData) => {
 
   if (isFilterApplied) {
     console.log ("isFilterApplied", isFilterApplied)
-    debugger;
+   // debugger;
     if (!Array.isArray(filtredChunks) || filtredChunks.length === 0) {
       return { data: [], isFilterApplied: true };
     }
-  debugger;
+  //debugger;
     const mappedChunks = filtredChunks
       .map(chunk => {
         const rows = chunk.rows
