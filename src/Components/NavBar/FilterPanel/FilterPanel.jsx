@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { connect } from "react-redux";
 import {
   getGovUaMails,
@@ -7,7 +8,10 @@ import {
   getLotusMails,
   getPhones,
   getPositionsAndTypesOfUsers,
-  getSubFilters
+  getSubFilters,
+  GovUaCurrentPage,
+  lotusCurrentPage,
+  phonesCurrentPage
 } from "../../../redux/selectors/selector";
 import s from "../FilterPanel/FilterPanel.module.css";
 import CustomCheckbox from "./CustomCheckbox/CustomCheckBox.jsx";
@@ -16,10 +20,12 @@ import CustomDropDown from "./CustomDropDown/CustomDropDown.jsx";
 
 const CHUNK_SIZE = 18;
 
+
 const FilterPanel = (props) => {
   const govUa = "gov-ua";
   const lotus = "lotus";
   const phones = "phones";
+  const navigate = useNavigate();
 
   const [selectedSubConditions, setSelectedSubConditions] = useState([]);
   const [subConditions, setSubocnditions] = useState({});
@@ -94,9 +100,14 @@ const FilterPanel = (props) => {
       const filtersPass = activeFilters.length > 0
         ? activeFilters.every(f => typeof conditions[f] === "function" && conditions[f](el))
         : true;
-      const subConditionsPass = Object.keys(subConditions).length > 0
-        ? Object.values(subConditions).some(cond => cond(el))
-        : true;
+     const subConditionsPass =
+  Object.values(subConditions).some(groupObj => Object.keys(groupObj).length > 0)
+    ? Object.values(subConditions).some(groupObj =>
+        Object.values(groupObj).some(condFn => condFn(el))
+      )
+    : true;
+    debugger;
+
       return filtersPass && subConditionsPass;
     };
 
@@ -119,7 +130,6 @@ const FilterPanel = (props) => {
     const activeFilters = Object.entries(state)
       .filter(([key, v]) => v && conditions[key])
       .map(([key]) => key);
-debugger;
     const dataFromStore =
       props.activeMenu.toLowerCase() === "gov-ua"
         ? props.getGovUaMails || []
@@ -141,19 +151,52 @@ debugger;
     for (let i = 0; i < allFilteredIndexes.length; i += CHUNK_SIZE) {
       chunks.push({ pageIndex: chunks.length + 1, rows: allFilteredIndexes.slice(i, i + CHUNK_SIZE) });
     }
+  debugger
     return chunks;
   };
+
+const navigateToPage = (page) => {
+  let basePath;
+
+  switch (props.activeMenu) {
+    case "Gov-ua":
+      basePath = "/mails/Gov-ua/";
+      break;
+    case "Lotus":
+      basePath = "/mails/Lotus/";
+      break;
+    case "phones":
+      basePath = "/phones/";
+      break;
+    default:
+      basePath = "/";
+  }
+
+  navigate(basePath + page);
+};
 
   // Встановлюємо сабумови для phones при зміні меню
   useEffect(() => {
     if (props.activeMenu === "phones") {
       const storedSubFilters = props.getFilteredState("phones").subFilters || {};
-      debugger;
+     
    
-      const initialSubConditions = Object.entries(storedSubFilters).reduce((acc, [key, value]) => {
-  if (value) acc[key] = el => el.userType === key;
-  return acc;
-}, {});
+  const initialSubConditions = {};
+
+Object.entries(storedSubFilters).forEach(([variety, keysObj]) => {
+  initialSubConditions[variety] = {};
+  Object.entries(keysObj).forEach(([key, isSelected]) => {
+    if (isSelected) {
+      initialSubConditions[variety][key] = (el) => {
+        if (variety === "contactType") return el.userType === key;
+        if (variety === "userPosition") return el.userPosition === key;
+        return false;
+      };
+    }
+  });
+});
+
+
 
       setSubocnditions(initialSubConditions);
       //setSelectedSubConditions(Object.keys(storedSubFilters).filter(k => storedSubFilters[k]));
@@ -163,8 +206,11 @@ debugger;
 
   // Перерахунок фільтрованих чанків
   useEffect(() => {
+    debugger;
     const chunks = computeFilteredChunks(checkboxState, subConditions);
     props.addIndexesOfFiltredResults(props.activeMenu, chunks);
+    debugger;
+
   }, [checkboxState, subConditions]);
 
   const handleCheckboxChange = (key) => {
@@ -173,16 +219,45 @@ debugger;
       const updated = { ...prev, [key]: !prev[key] };
       if (updated[key]) altKeys.forEach(alt => (updated[alt] = false));
       props.addFilter(props.activeMenu, key);
+      debugger;
       return updated;
     });
   };
+useEffect(() => {
+  const anyChecked = Object.values(checkboxState).some(v => v) || Object.values(subConditions).some(v => v);
+
+  let page;
+  if (anyChecked) {
+    // якщо є обрана умова — редірект на 1
+    page = 1;
+  } else {
+    // якщо нічого не обрано — редірект на сторінку зі стора
+    if (props.activeMenu === "Gov-ua") page = props.GovUaCurrentPage;
+    else if (props.activeMenu === "Lotus") page = props.lotusCurrentPage;
+    else if (props.activeMenu === "phones") page = props.phonesCurrentPage;
+    else page = 1;
+  }
+
+  navigateToPage(page);
+}, [checkboxState, subConditions]);
+
 
   const handleOnClearFormButtonClick = () => {
-    props.clearCurrentForm(props.activeMenu);
-    setCheckboxState({});
-    setSubocnditions({});
-    setSelectedSubConditions([]);
-  };
+  props.clearCurrentForm(props.activeMenu);
+  setCheckboxState({});
+  setSubocnditions({});
+  setSelectedSubConditions([]);
+
+
+  let page = 1;
+
+  if (props.activeMenu === "Gov-ua") page = props.GovUaCurrentPage;
+  if (props.activeMenu === "Lotus") page = props.lotusCurrentPage;
+  if (props.activeMenu === "phones") page = props.phonesCurrentPage;
+
+  navigateToPage(page);
+};
+
 
   const filterPointsForCurrentMenu = filterPoints.filter((p) =>
     p.pages.includes(props.activeMenu.toLowerCase())
@@ -261,7 +336,10 @@ const mapStateToProps = state => ({
   getPhones: getPhones(state),
   getFilteredState: menu => getFilteredState(state, menu),
   getPositionsAndTypesOfUsers: getPositionsAndTypesOfUsers(state),
-  getSubFilters:getSubFilters(state)
+  getSubFilters:getSubFilters(state),
+  GovUaCurrentPage: GovUaCurrentPage(state),
+  lotusCurrentPage: lotusCurrentPage(state),
+  phonesCurrentPage: phonesCurrentPage(state)
 });
 
 const mapDispatchToProps = { addFilter, clearCurrentForm, addIndexesOfFiltredResults };

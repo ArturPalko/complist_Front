@@ -360,35 +360,38 @@ export const isFilterAppliedSelector = (menu) => (state) =>
 export const getCurentFilterPage = (state, activeMenu) =>
   state.currentPageNumber?.[activeMenu]?.filterPage ?? 1;
 
-
 export const getPositionsAndTypesOfUsers = (state) => {
-  let userTypes = [];
-  let userPositions=[];
-  let data = getPhones(state);
-  if(!data) return "Немає"
+  const contactTypes = [];
+  const userPositions = [];
+  const data = getPhones(state);
+
+  if (!Array.isArray(data) || data.length === 0) {
+    return { contactTypes: [], userPositions: [] };
+  }
 
   data.forEach(element => {
-    let foreacher=element.rows;
-    foreacher.forEach(row => {
+    if (!Array.isArray(element.rows)) return;
+
+    element.rows.forEach(row => {
       if (row.type === "user") {
-        if (!userTypes.includes(row.userType)) {
-          userTypes.push(row.userType);
+        if (!contactTypes.includes(row.userType)) {
+          contactTypes.push(row.userType);
         }
-        if(row.userType=="Користувач"){
-          if(!userPositions.includes(row.userPosition)){
-            if (row.userPosition==undefined) console.log("Пустий ровP:", row)
+
+        if (row.userType === "Користувач") {
+          if (!userPositions.includes(row.userPosition)) {
+            if (row.userPosition === undefined) console.log("Пустий рядок:", row);
             userPositions.push(row.userPosition);
           }
-
         }
       }
     });
   });
 
-  console.log("Типи користувачів:", userTypes);
-  console.log("Типи посад:", userPositions);
-  return  userTypes/*{userTypes ,userPositions}*/
+  return { contactTypes, userPositions };
 };
+
+
 
 
 export const getSubFilters = (state) =>

@@ -6,6 +6,9 @@
   flex-direction: column;
   background-color:aliceblue;
   height: auto;
+    position: relative;
+  z-index: 100; /* щоб дропдаун був поверх інших елементів грида */
+
 }
 
 .panelContent{

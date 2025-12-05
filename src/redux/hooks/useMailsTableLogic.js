@@ -3,6 +3,7 @@ import { useDataLoader, useFoundResults, useToggleElements } from "./hooks";
 import { useRowHighlighting , useFilteredPageData} from "./hooks";
 import { useRowHeights } from "./useSyncRowHeights";
 import s from "../../Components/PhonesTable/PhonesTable.module.css";
+import { isFilterAppliedSelector } from "../selectors/selector";
 
 
 export const useMailsTableLogic = ({
@@ -18,11 +19,17 @@ export const useMailsTableLogic = ({
   const { isPagesNavbarLinkElementOnCurrentPagePressed } = useToggleElements();
 
 
-  const filteredPageData = useFilteredPageData(mailsData);
+
+  const { data: filteredPageData, isFilterApplied } = useFilteredPageData(mailsData);
   debugger;
 
 
-const pageData = foundResults ?? filteredPageData?.[pageNumber - 1]?.rows  ?? mailsData?.[pageNumber - 1]?.rows ?? [];
+//const pageData = foundResults ?? filteredPageData?.[pageNumber - 1]?.rows  ?? mailsData?.[pageNumber - 1]?.rows ?? [];
+const pageData =
+  foundResults?.[pageNumber - 1]?.rows ??
+  (isFilterApplied
+    ? filteredPageData?.[pageNumber - 1]?.rows ?? []
+    : mailsData?.[pageNumber - 1]?.rows ?? []);
 
 
 
@@ -61,6 +68,7 @@ const pageData = foundResults ?? filteredPageData?.[pageNumber - 1]?.rows  ?? ma
     showDigitsFromPressed,
     showPreviousPageHighlight,
     isPagesNavbarLinkElementOnCurrentPagePressed,
-    indexDataOfFoundResultsForFoundResultsPage
+    indexDataOfFoundResultsForFoundResultsPage,
+
   };
 };

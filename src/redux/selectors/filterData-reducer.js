@@ -26,7 +26,6 @@ const initialState = {
             hasNewPostName: false,
             passworKnown: false,
             passwordUnknown: false,
-            subFilters:[]
         },
         filtredResults: [],
         isFilterApplied: false
@@ -39,7 +38,7 @@ const initialState = {
             NOThasLadnlinePhone: false,
             NOThasInternalPhone: false,
             NOThasCiscoPhone: false,
-            subFilters:[]
+            subFilters:{contactType:[], userPosition:[] }
         },
         filtredResults: [],
         isFilterApplied: false
@@ -47,12 +46,19 @@ const initialState = {
 };
 
 export const filterDataReducer = (state = initialState, action) => {
+    console.log("REDUCER STATE BEFORE:", state);
     switch (action.type) {
         case ADD_FILTRED_DATA: {
+            debugger;
+            
+  console.log("ADD_FILTRED_DATA:", action.menu, action.filter);
+
+
             const newUsedFilters = {
                 ...state[action.menu].usedFilters,
                 [action.filter]: !state[action.menu].usedFilters[action.filter]
             };
+            debugger;
 
             return {
                 ...state,
@@ -65,32 +71,35 @@ export const filterDataReducer = (state = initialState, action) => {
         }
 
         case ADD_FILTRED_DATA_SUBCONDITIONS: {
-    if (action.menu !== "phones") return state; // сабумови тільки для phones
+  if (action.menu !== "phones") return state;
 
-    // гарантуємо існування subFilters
-    const currentSubFilters = state.phones.usedFilters.subFilters || {};
+  const currentVariety = state.phones.usedFilters.subFilters[action.variety] || {};
 
-    const newSubFilters = {
-        ...currentSubFilters,
-        [action.subKey]: currentSubFilters[action.subKey] ? !currentSubFilters[action.subKey] : true
-    };
+  const newVariety = {
+    ...currentVariety,
+    [action.subKey]: !currentVariety[action.subKey]
+  };
 
-    return {
-        ...state,
-        phones: {
-            ...state.phones,
-            usedFilters: {
-                ...state.phones.usedFilters,
-                subFilters: newSubFilters
-            },
-            isFilterApplied:
-                Object.values(state.phones.usedFilters)
-                    .filter(v => typeof v === "boolean")
-                    .some(Boolean) ||
-                Object.values(newSubFilters).some(Boolean)
+  return {
+    ...state,
+    phones: {
+      ...state.phones,
+      usedFilters: {
+        ...state.phones.usedFilters,
+        subFilters: {
+          ...state.phones.usedFilters.subFilters,
+          [action.variety]: newVariety
         }
-    };
+      },
+      isFilterApplied:
+        Object.values(state.phones.usedFilters)
+          .filter(v => typeof v === "boolean")
+          .some(Boolean) ||
+        Object.values(newVariety).some(Boolean)
+    }
+  };
 }
+
 
 
         case CLEAR_FILTRED_STATE_FOR_CURRENT_FORM: {
@@ -131,10 +140,11 @@ export const addFilter = (menu, filter) => ({
 });
 
 
-export const addFilteredDataSubconditions = (subKey) => ({
+export const addFilteredDataSubconditions = (subKey, variety) => ({
     type: "ADD_FILTRED_DATA_SUBCONDITIONS",
     menu: "phones",   // сабумови тільки для phones
-    subKey
+    subKey,
+    variety
 });
 
 
@@ -148,5 +158,4 @@ export const addIndexesOfFiltredResults = (menu, filtredIndexesOfFoundResults) =
     menu,
     filtredIndexesOfFoundResults
 });
-
 

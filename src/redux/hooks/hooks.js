@@ -13,6 +13,7 @@ import redArrow from "../../../src/assets/red_arrow.png";
 import { DataLoaderContext } from "../hocs/withDataLoader";
 import { ToggleElementsContext } from "../hocs/withToggleElements";
 import { FoundResultsContext } from "../../Components/FoundResults/FoundResults";
+import { useMemo } from "react";
 
 import { activeMenu as activeMenuSelector, getIndexesOfFiltredResults, getGovUaMails, getLotusMails } from "../selectors/selector";
 
@@ -140,35 +141,34 @@ export const useFilteredPageData = (mailsData) => {
   const activeMenu = useSelector(activeMenuSelector);
   const filtredChunks = useSelector(state => getIndexesOfFiltredResults(state, activeMenu));
   const isFilterApplied = useSelector(isFilterAppliedSelector(activeMenu));
- // boolean
 
-  if (!Array.isArray(mailsData)) return { data: [], isFilterApplied: false };
+  // ТЕПЕР — реальне "обчислення" залежить від цих значень
+  return useMemo(() => {
+    if (!Array.isArray(mailsData)) return { data: [], isFilterApplied: false };
 
-  if (isFilterApplied) {
-    console.log ("isFilterApplied", isFilterApplied)
-   // debugger;
-    if (!Array.isArray(filtredChunks) || filtredChunks.length === 0) {
-      return { data: [], isFilterApplied: true };
+    if (isFilterApplied) {
+      if (!Array.isArray(filtredChunks) || filtredChunks.length === 0) {
+        return { data: [], isFilterApplied: true };
+      }
+
+      const mappedChunks = filtredChunks
+        .map(chunk => {
+          const rows = chunk.rows
+            .map(row => {
+              const page = mailsData.find(p => p.pageIndex === row.page);
+              return page?.rows?.[row.index] ?? null;
+            })
+            .filter(Boolean);
+
+          return rows.length > 0 ? { pageIndex: chunk.pageIndex, rows } : null;
+        })
+        .filter(Boolean);
+
+      return { data: mappedChunks, isFilterApplied: true };
     }
-  //debugger;
-    const mappedChunks = filtredChunks
-      .map(chunk => {
-        const rows = chunk.rows
-          .map(row => {
-            const page = mailsData.find(p => p.pageIndex === row.page);
-            return page?.rows?.[row.index] ?? null;
-          })
-          .filter(Boolean);
 
-        return rows.length > 0 ? { pageIndex: chunk.pageIndex, rows } : null;
-      })
-      .filter(Boolean);
-
-    return { data: mappedChunks, isFilterApplied: true };
-  }
-
-  // Фільтр не застосований
-  return { data: mailsData, isFilterApplied: false };
+    return { data: mailsData, isFilterApplied: false };
+  }, [mailsData, filtredChunks, isFilterApplied]);
 };
 
 

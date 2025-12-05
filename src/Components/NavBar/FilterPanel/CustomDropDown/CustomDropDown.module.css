@@ -1,35 +1,55 @@
-.dropdown-container {
+.dropdownContainer {
   position: relative;
-  width: 200px;
-  font-family: sans-serif;
+  width: 300px;
 }
 
-.dropdown-toggle {
+.dropdownToggle {
   width: 100%;
-  padding: 8px;
+  padding: 10px;
   cursor: pointer;
-  text-align: left;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
 }
 
-.dropdown-menu {
+.dropdownMenuContainer {
   position: absolute;
-  top: 100%;
+  bottom: 100%; /* відкривається вгору */
   left: 0;
   right: 0;
-  border: 1px solid #ccc;
-  background: white;
-  z-index: 10;
-  max-height: 150px;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 1001;
 }
 
-.dropdown-item {
+.dropdownMenuUpper,
+.dropdownMenuLower {
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 10px;
+  box-shadow: 0 -5px 10px rgba(0,0,0,0.1);
+}
+
+.group {
+  border: none;
+  padding: 0;
+}
+
+.legend {
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.dropdownItem {
   display: flex;
   align-items: center;
-  padding: 4px 8px;
-  cursor: pointer;
+  padding: 4px 6px;
 }
 
-.dropdown-item input {
+.dropdownItem input {
   margin-right: 8px;
 }
