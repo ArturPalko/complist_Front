@@ -20,55 +20,18 @@ import CustomDropDown from "./CustomDropDown/CustomDropDown.jsx";
 
 const CHUNK_SIZE = 18;
 
-
 const FilterPanel = (props) => {
-  const govUa = "gov-ua";
-  const lotus = "lotus";
-  const phones = "phones";
   const navigate = useNavigate();
 
-  const [selectedSubConditions, setSelectedSubConditions] = useState([]);
-  const [subConditions, setSubocnditions] = useState({});
-  const [checkboxState, setCheckboxState] = useState(() => {
-    const used = props.getFilteredState(props.activeMenu) || {};
-    const initialState = {};
-    Object.keys(used).forEach(key => {
-      initialState[key] = used[key] || false;
-    });
-    return initialState;
-  });
+  // Локальні стейти для чекбоксів
+  const [lotusFilters, setLotusFilters] = useState({});
+  const [govUaFilters, setGovUaFilters] = useState({});
+  const [phonesFilters, setPhonesFilters] = useState({});
+ // Локальний стейт для саб-умов phones
+const [phonesSubConditions, setPhonesSubConditions] = useState([]);
 
-  const filterPoints = [
-    { pages: [govUa, lotus], groupName: "Власник", key: "personalMails", label: "Персональні" },
-    { pages: [govUa, lotus], groupName: "Власник", key: "departmentMails", label: "Самостійного підрозділу" },
-    { pages: [govUa, lotus], groupName: "Власник", key: "sectionMails", label: "(Не) самостійного підрозділу" },
-    { pages: [govUa], groupName: "Позитивна властивість", key: "hasResponsible", label: "Має відповідальну особу" },
-    { pages: [lotus], groupName: "Позитивна властивість", key: "hasNewPostName", label: "Має нову назву" },
-    { pages: [lotus], groupName: "Позитивна властивість", key: "hasPrevioustName", label: "Має стару назву" },
-    { pages: [govUa, lotus], groupName: "Позитивна властивість", key: "passwordKnown", label: "Пароль відомий" },
-    { pages: [govUa], groupName: "Негативна властивість", key: "hasNoResponsible", label: "(Не) має відповідальну особу" },
-    { pages: [lotus], groupName: "Негативна властивість", key: "NOThasNewPostName", label: "(Не) має нову назву" },
-    { pages: [lotus], groupName: "Позитивна властивість", key: "NOThasPrevioustName", label: "(Не) має стару назву" },
-    { pages: [govUa, lotus], groupName: "Негативна властивість", key: "passwordUnKnown", label: "Пароль не відомий" },
-    { pages: [phones], groupName: "Позитивна властивість", key: "hasLandlinePhone", label: "має Міський телефон" },
-    { pages: [phones], groupName: "Позитивна властивість", key: "hasInternalPhone", label: "має Внутрішній телефон" },
-    { pages: [phones], groupName: "Позитивна властивість", key: "hasCiscoPhone", label: "має IP Cisco телефон" },
-    { pages: [phones], groupName: "Негативна властивість", key: "NOThasLandlinePhone", label: "(НЕ) має Міський телефон" },
-    { pages: [phones], groupName: "Негативна властивість", key: "NOThasInternalPhone", label: "(НЕ) має Внутрішній телефон" },
-    { pages: [phones], groupName: "Негативна властивість", key: "NOThasCiscoPhone", label: "(НЕ) має IP Cisco телефон" },
-  ];
 
-  const filterGroups = {
-    personalMails: ["departmentMails", "sectionMails"],
-    hasResponsible: ["hasNoResponsible"],
-    passwordKnown: ["passwordUnKnown"],
-    hasNewPostName: ["NOThasNewPostName"],
-    hasPrevioustName: ["NOThasPrevioustName"],
-    hasLandlinePhone: ["NOThasLandlinePhone"],
-    hasInternalPhone: ["NOThasInternalPhone"],
-    hasCiscoPhone: ["NOThasCiscoPhone"]
-  };
-
+  // Визначаємо умови для всіх фільтрів
   const conditions = {
     personalMails: (el) => el.ownerType === "User",
     departmentMails: (el) => el.ownerType === "Department",
@@ -89,6 +52,37 @@ const FilterPanel = (props) => {
     NOThasCiscoPhone: (el) => !el.phones?.some(p => p.phoneType === "IP (Cisco)"),
   };
 
+  const filterGroups = {
+    personalMails: ["departmentMails", "sectionMails"],
+    hasResponsible: ["hasNoResponsible"],
+    passwordKnown: ["passwordUnKnown"],
+    hasNewPostName: ["NOThasNewPostName"],
+    hasPrevioustName: ["NOThasPrevioustName"],
+    hasLandlinePhone: ["NOThasLandlinePhone"],
+    hasInternalPhone: ["NOThasInternalPhone"],
+    hasCiscoPhone: ["NOThasCiscoPhone"]
+  };
+
+  const filterPoints = [
+    { pages: ["gov-ua", "lotus"], groupName: "Власник", key: "personalMails", label: "Персональні" },
+    { pages: ["gov-ua", "lotus"], groupName: "Власник", key: "departmentMails", label: "Самостійного підрозділу" },
+    { pages: ["gov-ua", "lotus"], groupName: "Власник", key: "sectionMails", label: "(Не) самостійного підрозділу" },
+    { pages: ["gov-ua"], groupName: "Позитивна властивість", key: "hasResponsible", label: "Має відповідальну особу" },
+    { pages: ["lotus"], groupName: "Позитивна властивість", key: "hasNewPostName", label: "Має нову назву" },
+    { pages: ["lotus"], groupName: "Позитивна властивість", key: "hasPrevioustName", label: "Має стару назву" },
+    { pages: ["gov-ua", "lotus"], groupName: "Позитивна властивість", key: "passwordKnown", label: "Пароль відомий" },
+    { pages: ["gov-ua"], groupName: "Негативна властивість", key: "hasNoResponsible", label: "(Не) має відповідальну особу" },
+    { pages: ["lotus"], groupName: "Негативна властивість", key: "NOThasNewPostName", label: "(Не) має нову назву" },
+    { pages: ["lotus"], groupName: "Позитивна властивість", key: "NOThasPrevioustName", label: "(Не) має стару назву" },
+    { pages: ["gov-ua", "lotus"], groupName: "Негативна властивість", key: "passwordUnKnown", label: "Пароль не відомий" },
+    { pages: ["phones"], groupName: "Позитивна властивість", key: "hasLandlinePhone", label: "має Міський телефон" },
+    { pages: ["phones"], groupName: "Позитивна властивість", key: "hasInternalPhone", label: "має Внутрішній телефон" },
+    { pages: ["phones"], groupName: "Позитивна властивість", key: "hasCiscoPhone", label: "має IP Cisco телефон" },
+    { pages: ["phones"], groupName: "Негативна властивість", key: "NOThasLandlinePhone", label: "(НЕ) має Міський телефон" },
+    { pages: ["phones"], groupName: "Негативна властивість", key: "NOThasInternalPhone", label: "(НЕ) має Внутрішній телефон" },
+    { pages: ["phones"], groupName: "Негативна властивість", key: "NOThasCiscoPhone", label: "(НЕ) має IP Cisco телефон" },
+  ];
+
   const getAlternativeKeys = (key) => {
     const direct = filterGroups[key] || [];
     const reverse = Object.keys(filterGroups).filter((k) => filterGroups[k].includes(key));
@@ -100,13 +94,12 @@ const FilterPanel = (props) => {
       const filtersPass = activeFilters.length > 0
         ? activeFilters.every(f => typeof conditions[f] === "function" && conditions[f](el))
         : true;
-     const subConditionsPass =
-  Object.values(subConditions).some(groupObj => Object.keys(groupObj).length > 0)
-    ? Object.values(subConditions).some(groupObj =>
-        Object.values(groupObj).some(condFn => condFn(el))
-      )
-    : true;
-    debugger;
+
+      const subConditionsPass = Object.values(subConditions).some(groupObj => Object.keys(groupObj).length > 0)
+        ? Object.values(subConditions).some(groupObj =>
+            Object.values(groupObj).some(condFn => condFn(el))
+          )
+        : true;
 
       return filtersPass && subConditionsPass;
     };
@@ -130,6 +123,7 @@ const FilterPanel = (props) => {
     const activeFilters = Object.entries(state)
       .filter(([key, v]) => v && conditions[key])
       .map(([key]) => key);
+
     const dataFromStore =
       props.activeMenu.toLowerCase() === "gov-ua"
         ? props.getGovUaMails || []
@@ -151,113 +145,82 @@ const FilterPanel = (props) => {
     for (let i = 0; i < allFilteredIndexes.length; i += CHUNK_SIZE) {
       chunks.push({ pageIndex: chunks.length + 1, rows: allFilteredIndexes.slice(i, i + CHUNK_SIZE) });
     }
-  debugger
+
     return chunks;
   };
 
-const navigateToPage = (page) => {
-  let basePath;
-
-  switch (props.activeMenu) {
-    case "Gov-ua":
-      basePath = "/mails/Gov-ua/";
-      break;
-    case "Lotus":
-      basePath = "/mails/Lotus/";
-      break;
-    case "phones":
-      basePath = "/phones/";
-      break;
-    default:
-      basePath = "/";
-  }
-
-  navigate(basePath + page);
-};
-
-  // Встановлюємо сабумови для phones при зміні меню
-  useEffect(() => {
-    if (props.activeMenu === "phones") {
-      const storedSubFilters = props.getFilteredState("phones").subFilters || {};
-     
-   
-  const initialSubConditions = {};
-
-Object.entries(storedSubFilters).forEach(([variety, keysObj]) => {
-  initialSubConditions[variety] = {};
-  Object.entries(keysObj).forEach(([key, isSelected]) => {
-    if (isSelected) {
-      initialSubConditions[variety][key] = (el) => {
-        if (variety === "contactType") return el.userType === key;
-        if (variety === "userPosition") return el.userPosition === key;
-        return false;
-      };
+  const navigateToPage = (page) => {
+    let basePath;
+    switch (props.activeMenu) {
+      case "Gov-ua": basePath = "/mails/Gov-ua/"; break;
+      case "Lotus": basePath = "/mails/Lotus/"; break;
+      case "phones": basePath = "/phones/"; break;
+      default: basePath = "/"; break;
     }
-  });
-});
+    navigate(basePath + page);
+  };
 
+  // Обираємо активний стейт залежно від меню
+  const currentFilters = 
+    props.activeMenu === "Lotus" ? lotusFilters :
+    props.activeMenu === "Gov-ua" ? govUaFilters :
+    phonesFilters;
 
-
-      setSubocnditions(initialSubConditions);
-      //setSelectedSubConditions(Object.keys(storedSubFilters).filter(k => storedSubFilters[k]));
-      debugger;
+  // Зміна чекбоксу для поточного меню
+  const handleCheckboxChange = (key) => {
+    if (props.activeMenu === "Lotus") {
+      setLotusFilters(prev => ({ ...prev, [key]: !prev[key] }));
+    } else if (props.activeMenu === "Gov-ua") {
+      setGovUaFilters(prev => ({ ...prev, [key]: !prev[key] }));
+    } else {
+      // phones
+      setPhonesFilters(prev => ({ ...prev, [key]: !prev[key] }));
     }
-  }, [props.activeMenu, props.getSubFilters]);
+      props.addFilter(props.activeMenu, key);
+  };
+
+  // Саб-умови для phones
+  const handlePhoneSubMenuChange = (subMenuKey, itemKey, isChecked) => {
+    setPhonesSubConditions(prev => {
+      const newSub = { ...prev };
+      if (!newSub[subMenuKey]) newSub[subMenuKey] = {};
+      if (isChecked) {
+        newSub[subMenuKey][itemKey] = (el) => {
+          if (subMenuKey === "contactType") return el.userType === itemKey;
+          if (subMenuKey === "userPosition") return el.userPosition === itemKey;
+          return false;
+        };
+      } else {
+        delete newSub[subMenuKey][itemKey];
+      }
+      return newSub;
+    });
+  };
 
   // Перерахунок фільтрованих чанків
   useEffect(() => {
-    debugger;
-    const chunks = computeFilteredChunks(checkboxState, subConditions);
+    const chunks = computeFilteredChunks(currentFilters, props.activeMenu === "phones" ? phonesSubConditions : {});
     props.addIndexesOfFiltredResults(props.activeMenu, chunks);
-    debugger;
-
-  }, [checkboxState, subConditions]);
-
-  const handleCheckboxChange = (key) => {
-    const altKeys = getAlternativeKeys(key);
-    setCheckboxState(prev => {
-      const updated = { ...prev, [key]: !prev[key] };
-      if (updated[key]) altKeys.forEach(alt => (updated[alt] = false));
-      props.addFilter(props.activeMenu, key);
-      debugger;
-      return updated;
-    });
-  };
-useEffect(() => {
-  const anyChecked = Object.values(checkboxState).some(v => v) || Object.values(subConditions).some(v => v);
-
-  let page;
-  if (anyChecked) {
-    // якщо є обрана умова — редірект на 1
-    page = 1;
-  } else {
-    // якщо нічого не обрано — редірект на сторінку зі стора
-    if (props.activeMenu === "Gov-ua") page = props.GovUaCurrentPage;
-    else if (props.activeMenu === "Lotus") page = props.lotusCurrentPage;
-    else if (props.activeMenu === "phones") page = props.phonesCurrentPage;
-    else page = 1;
-  }
-
-  navigateToPage(page);
-}, [checkboxState, subConditions]);
-
+  }, [currentFilters, phonesSubConditions, props.activeMenu]);
 
   const handleOnClearFormButtonClick = () => {
-  props.clearCurrentForm(props.activeMenu);
-  setCheckboxState({});
-  setSubocnditions({});
-  setSelectedSubConditions([]);
+    if (props.activeMenu === "Lotus") setLotusFilters({});
+    if (props.activeMenu === "Gov-ua") setGovUaFilters({});
+    if (props.activeMenu === "phones") {
+      setPhonesFilters({});
+      setPhonesSubConditions({});
+    }
 
+    props.clearCurrentForm(props.activeMenu);
 
-  let page = 1;
+    // Редірект
+    let page = 1;
+    if (props.activeMenu === "Gov-ua") page = props.GovUaCurrentPage;
+    if (props.activeMenu === "Lotus") page = props.lotusCurrentPage;
+    if (props.activeMenu === "phones") page = props.phonesCurrentPage;
 
-  if (props.activeMenu === "Gov-ua") page = props.GovUaCurrentPage;
-  if (props.activeMenu === "Lotus") page = props.lotusCurrentPage;
-  if (props.activeMenu === "phones") page = props.phonesCurrentPage;
-
-  navigateToPage(page);
-};
-
+    navigateToPage(page);
+  };
 
   const filterPointsForCurrentMenu = filterPoints.filter((p) =>
     p.pages.includes(props.activeMenu.toLowerCase())
@@ -269,7 +232,42 @@ useEffect(() => {
     return acc;
   }, {});
 
-  const filteredChunks = computeFilteredChunks(checkboxState, subConditions);
+  const filteredChunks = computeFilteredChunks(currentFilters, props.activeMenu === "phones" ? phonesSubConditions : {});
+  useEffect(() => {
+  const chunks = computeFilteredChunks(currentFilters, props.activeMenu === "phones" ? phonesSubConditions : {});
+
+  // Визначаємо чи є активні фільтри
+  const anyFilterApplied = Object.values(currentFilters).some(v => v) ||
+                           Object.values(phonesSubConditions).some(group => Object.keys(group).length > 0);
+
+  // Передаємо в Redux
+  props.addIndexesOfFiltredResults(props.activeMenu, chunks);
+  props.addFilter(props.activeMenu, null, anyFilterApplied); // другий параметр null або обраний ключ фільтра
+}, [currentFilters, phonesSubConditions, props.activeMenu]);
+
+
+useEffect(() => {
+  if (props.activeMenu === "phones") {
+    const storedSubFilters = props.getSubFilters; // із Redux
+    const initialSubConditions = {};
+
+    Object.entries(storedSubFilters).forEach(([category, keysObj]) => {
+      initialSubConditions[category] = {};
+      Object.entries(keysObj).forEach(([key, isSelected]) => {
+        if (isSelected) {
+          initialSubConditions[category][key] = (el) => {
+            if (category === "contactType") return el.userType === key;
+            if (category === "userPosition") return el.userPosition === key;
+            return false;
+          };
+        }
+      });
+    });
+
+    setPhonesSubConditions(initialSubConditions);
+  }
+}, [props.activeMenu, props.getSubFilters]);
+
 
   return (
     <div className={s.panel}>
@@ -300,12 +298,12 @@ useEffect(() => {
             <legend>{groupName}</legend>
             {items.map(item => {
               const altKeys = getAlternativeKeys(item.key);
-              const isDisabled = altKeys.some(alt => checkboxState[alt]);
+              const isDisabled = altKeys.some(alt => currentFilters[alt]);
               return (
                 <CustomCheckbox
                   key={item.key}
                   label={item.label}
-                  checked={checkboxState[item.key] || false}
+                  checked={currentFilters[item.key] || false}
                   onChange={() => handleCheckboxChange(item.key)}
                   bgColor="white"
                   checkColor="black"
@@ -318,10 +316,8 @@ useEffect(() => {
 
         {props.activeMenu === "phones" && (
           <CustomDropDown
-           // initialSelected={selectedSubConditions}
-           // setSelected={setSelectedSubConditions}
-           // setSubocnditions={setSubocnditions}
-           // handleCheckboxChange={handleCheckboxChange}
+            menus={phonesSubConditions}
+            handleChange={handlePhoneSubMenuChange}
           />
         )}
       </div>
@@ -336,7 +332,7 @@ const mapStateToProps = state => ({
   getPhones: getPhones(state),
   getFilteredState: menu => getFilteredState(state, menu),
   getPositionsAndTypesOfUsers: getPositionsAndTypesOfUsers(state),
-  getSubFilters:getSubFilters(state),
+  getSubFilters: getSubFilters(state),
   GovUaCurrentPage: GovUaCurrentPage(state),
   lotusCurrentPage: lotusCurrentPage(state),
   phonesCurrentPage: phonesCurrentPage(state)

@@ -48,27 +48,24 @@ const initialState = {
 export const filterDataReducer = (state = initialState, action) => {
     console.log("REDUCER STATE BEFORE:", state);
     switch (action.type) {
-        case ADD_FILTRED_DATA: {
-            debugger;
-            
-  console.log("ADD_FILTRED_DATA:", action.menu, action.filter);
+     case ADD_FILTRED_DATA: {
+    const { menu, filter } = action;
+    if (!filter) return state; // якщо немає ключа, нічого не міняємо
 
+    const newUsedFilters = {
+        ...state[menu].usedFilters,
+        [filter]: !state[menu].usedFilters[filter]  // toggle
+    };
 
-            const newUsedFilters = {
-                ...state[action.menu].usedFilters,
-                [action.filter]: !state[action.menu].usedFilters[action.filter]
-            };
-            debugger;
-
-            return {
-                ...state,
-                [action.menu]: {
-                    ...state[action.menu],
-                    usedFilters: newUsedFilters,
-                    isFilterApplied: Object.values(newUsedFilters).some(Boolean)
-                }
-            };
+    return {
+        ...state,
+        [menu]: {
+            ...state[menu],
+            usedFilters: newUsedFilters,
+            isFilterApplied: Object.values(newUsedFilters).some(Boolean) // ставимо true, якщо є хоч один активний
         }
+    };
+}
 
         case ADD_FILTRED_DATA_SUBCONDITIONS: {
   if (action.menu !== "phones") return state;
@@ -79,6 +76,7 @@ export const filterDataReducer = (state = initialState, action) => {
     ...currentVariety,
     [action.subKey]: !currentVariety[action.subKey]
   };
+  debugger;
 
   return {
     ...state,
@@ -98,6 +96,7 @@ export const filterDataReducer = (state = initialState, action) => {
         Object.values(newVariety).some(Boolean)
     }
   };
+  
 }
 
 
