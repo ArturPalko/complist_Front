@@ -11,6 +11,7 @@ import Error from './Components/Error/Error';
 import FoundResults from './Components/FoundResults/FoundResults';
 import { useTrackLocation } from './redux/hooks/hooks';
 import FilterPanel from './Components/NavBar/FilterPanel/FilterPanel';
+import Filter from './Components/NavBar/Filter/Filter';
 
 function App() {
   useTrackLocation();
@@ -19,7 +20,7 @@ function App() {
     <div className="app-wrapper">
       <Header />
       <NavBar />
-      <FilterPanel/>
+      {/* <Filter/> */}
 
       <div className="app-wrapper-content">
         <Routes>

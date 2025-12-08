@@ -3,6 +3,7 @@ import s from './NavBar.module.css';
 import { NavLink } from 'react-router-dom';
 import PagesNavBar from './PagesNavBar/PagesNavBar';
 import { useParams, useLocation } from "react-router-dom";
+import Filter from './Filter/Filter';
 
 function NavBar() {
   const [showDropdown, setShowDropdown] = useState(true);
@@ -47,7 +48,21 @@ function NavBar() {
               </div>
             )}
           </div>
-          {showPagesNavigation && <PagesNavBar />}
+        <div style={{ position: "relative" }}>
+  {showPagesNavigation && <PagesNavBar />}
+
+  <Filter
+    style={{
+       color :"green",
+      position: "absolute",
+      top: "60px", // висота PagesNavBar
+      left: 0,
+      zIndex: 100000, // щоб накладатися на вертикальне меню
+    }}
+  />
+</div>
+
+          
         </nav>
       </div>
     </div>

@@ -21,7 +21,7 @@ export const useMailsTableLogic = ({
 
 
   const { data: filteredPageData, isFilterApplied } = useFilteredPageData(mailsData);
-  debugger;
+  
 
 
 //const pageData = foundResults ?? filteredPageData?.[pageNumber - 1]?.rows  ?? mailsData?.[pageNumber - 1]?.rows ?? [];

@@ -2,6 +2,7 @@ const ADD_FILTRED_DATA = "ADD_FILTRED_DATA";
 const ADD_FILTRED_DATA_SUBCONDITIONS = "ADD_FILTRED_DATA_SUBCONDITIONS";
 const CLEAR_FILTRED_STATE_FOR_CURRENT_FORM = "CLEAR_FILTRED_STATE_FOR_CURRENT_FORM";
 const ADD_INDEXES_OF_FILTRED_RESULTS = "ADD_INDEXES_OF_FILTRED_RESULTS";
+const CLEAR_FILTRED_DATA = "CLEAR_FILTRED_DATA";
 
 
 const initialState = {
@@ -48,6 +49,14 @@ const initialState = {
 export const filterDataReducer = (state = initialState, action) => {
     console.log("REDUCER STATE BEFORE:", state);
     switch (action.type) {
+        case CLEAR_FILTRED_DATA:
+                return {
+                    ...state,
+                    "Gov-ua": { ...initialState["Gov-ua"] },
+                    Lotus: { ...initialState["Lotus"] },
+                    phones: { ...initialState["phones"] }
+                };
+
      case ADD_FILTRED_DATA: {
     const { menu, filter } = action;
     if (!filter) return state; // якщо немає ключа, нічого не міняємо
@@ -76,7 +85,6 @@ export const filterDataReducer = (state = initialState, action) => {
     ...currentVariety,
     [action.subKey]: !currentVariety[action.subKey]
   };
-  debugger;
 
   return {
     ...state,
@@ -156,5 +164,9 @@ export const addIndexesOfFiltredResults = (menu, filtredIndexesOfFoundResults) =
     type: ADD_INDEXES_OF_FILTRED_RESULTS,
     menu,
     filtredIndexesOfFoundResults
+});
+
+export const clearFiltredData = () => ({
+    type: CLEAR_FILTRED_DATA
 });
 

@@ -71,6 +71,10 @@ export const isPresentedSearchField = (state) =>{
   return state.toggledElements.showSearchField.isActive ;
   
 }
+export const isPresentedFielterPanel = (state) =>{
+  return state.toggledElements.showFilterPanel.isActive ;
+  
+}
 
 export const activeMenu = (state) => state.currentPageNumber.activeMenu;
 export const searchFieldValue = (state, menu) => {
@@ -350,7 +354,6 @@ export const getIndexesOfFiltredResults = (state, activeMenu) => {
 
 export const getCountOfPageForFiltredResults = (state, activeMenu) => {
   let a =  state.filters?.[activeMenu]?.filtredResults.length || [];
-  console.log("Це э АААА",a)
   return a
 };
 
@@ -393,6 +396,6 @@ export const getPositionsAndTypesOfUsers = (state) => {
 
 
 
-
 export const getSubFilters = (state) =>
   state.filters.phones?.usedFilters.subFilters ?? [];
+

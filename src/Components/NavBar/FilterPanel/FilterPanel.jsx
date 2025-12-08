@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { connect } from "react-redux";
 import {
@@ -17,7 +17,8 @@ import s from "../FilterPanel/FilterPanel.module.css";
 import CustomCheckbox from "./CustomCheckbox/CustomCheckBox.jsx";
 import { addFilter, clearCurrentForm, addIndexesOfFiltredResults } from "../../../redux/selectors/filterData-reducer.js";
 import CustomDropDown from "./CustomDropDown/CustomDropDown.jsx";
-
+import { isPresentedFielterPanel } from "../../../redux/selectors/selector";
+import { useSelector } from "react-redux";
 const CHUNK_SIZE = 18;
 
 const FilterPanel = (props) => {
@@ -29,7 +30,6 @@ const FilterPanel = (props) => {
   const [phonesFilters, setPhonesFilters] = useState({});
  // Локальний стейт для саб-умов phones
 const [phonesSubConditions, setPhonesSubConditions] = useState([]);
-
 
   // Визначаємо умови для всіх фільтрів
   const conditions = {
@@ -82,6 +82,92 @@ const [phonesSubConditions, setPhonesSubConditions] = useState([]);
     { pages: ["phones"], groupName: "Негативна властивість", key: "NOThasInternalPhone", label: "(НЕ) має Внутрішній телефон" },
     { pages: ["phones"], groupName: "Негативна властивість", key: "NOThasCiscoPhone", label: "(НЕ) має IP Cisco телефон" },
   ];
+
+
+
+const hasAnyFilters = (filters = {}, subConditions = {}) => {
+  const hasMain = Object.values(filters).some(Boolean);
+
+  const hasSub = Object.values(subConditions).some(
+    group => Object.keys(group).length > 0
+  );
+
+  return hasMain || hasSub;
+};
+
+const redirectToCurrentPage = (filters = {}, subConditions = {}) => {
+  const hasFilters = hasAnyFilters(filters, subConditions);
+
+  let page;
+
+  if (hasFilters) {
+    // Є активні фільтри — завжди 1 сторінка
+    page = 1;
+  } else {
+    // Немає фільтрів — повертаємось на поточну сторінку зі стора
+    switch (props.activeMenu) {
+      case "Gov-ua":
+        page = props.GovUaCurrentPage || 1;
+        break;
+      case "Lotus":
+        page = props.lotusCurrentPage || 1;
+        break;
+      case "phones":
+        page = props.phonesCurrentPage || 1; // ✅ беремо стору для Phones
+        break;
+      default:
+        page = 1;
+    }
+  }
+
+  navigateToPage(page);
+};
+  // Зміна чекбоксу для поточного меню
+const handleCheckboxChange = (key) => {
+  if (props.activeMenu === "Lotus") {
+    setLotusFilters(prev => {
+      const newFilters = { ...prev, [key]: !prev[key] };
+      redirectToCurrentPage(newFilters); // редірект після оновлення
+      return newFilters;
+    });
+  } else if (props.activeMenu === "Gov-ua") {
+    setGovUaFilters(prev => {
+      const newFilters = { ...prev, [key]: !prev[key] };
+      redirectToCurrentPage(newFilters); // редірект після оновлення
+      return newFilters;
+    });
+  } else {
+    // Phones
+    setPhonesFilters(prev => {
+      const newFilters = { ...prev, [key]: !prev[key] };
+      redirectToCurrentPage(newFilters, phonesSubConditions); // редірект для Phones
+      return newFilters;
+    });
+  }
+
+  // Redux update
+  props.addFilter(props.activeMenu, key);
+};
+
+
+  const handleOnClearFormButtonClick = () => {
+    let page = 1;
+    if (props.activeMenu === "Lotus") setLotusFilters({});
+    if (props.activeMenu === "Gov-ua") setGovUaFilters({});
+    if (props.activeMenu === "phones") {
+      setPhonesFilters({});
+      setPhonesSubConditions({});
+
+      navigateToPage(page); 
+    }
+
+    props.clearCurrentForm(props.activeMenu);
+    redirectToCurrentPage({}, {});
+
+
+  };
+
+
 
   const getAlternativeKeys = (key) => {
     const direct = filterGroups[key] || [];
@@ -166,36 +252,9 @@ const [phonesSubConditions, setPhonesSubConditions] = useState([]);
     props.activeMenu === "Gov-ua" ? govUaFilters :
     phonesFilters;
 
-  // Зміна чекбоксу для поточного меню
-  const handleCheckboxChange = (key) => {
-    if (props.activeMenu === "Lotus") {
-      setLotusFilters(prev => ({ ...prev, [key]: !prev[key] }));
-    } else if (props.activeMenu === "Gov-ua") {
-      setGovUaFilters(prev => ({ ...prev, [key]: !prev[key] }));
-    } else {
-      // phones
-      setPhonesFilters(prev => ({ ...prev, [key]: !prev[key] }));
-    }
-      props.addFilter(props.activeMenu, key);
-  };
 
-  // Саб-умови для phones
-  const handlePhoneSubMenuChange = (subMenuKey, itemKey, isChecked) => {
-    setPhonesSubConditions(prev => {
-      const newSub = { ...prev };
-      if (!newSub[subMenuKey]) newSub[subMenuKey] = {};
-      if (isChecked) {
-        newSub[subMenuKey][itemKey] = (el) => {
-          if (subMenuKey === "contactType") return el.userType === itemKey;
-          if (subMenuKey === "userPosition") return el.userPosition === itemKey;
-          return false;
-        };
-      } else {
-        delete newSub[subMenuKey][itemKey];
-      }
-      return newSub;
-    });
-  };
+
+
 
   // Перерахунок фільтрованих чанків
   useEffect(() => {
@@ -203,24 +262,7 @@ const [phonesSubConditions, setPhonesSubConditions] = useState([]);
     props.addIndexesOfFiltredResults(props.activeMenu, chunks);
   }, [currentFilters, phonesSubConditions, props.activeMenu]);
 
-  const handleOnClearFormButtonClick = () => {
-    if (props.activeMenu === "Lotus") setLotusFilters({});
-    if (props.activeMenu === "Gov-ua") setGovUaFilters({});
-    if (props.activeMenu === "phones") {
-      setPhonesFilters({});
-      setPhonesSubConditions({});
-    }
 
-    props.clearCurrentForm(props.activeMenu);
-
-    // Редірект
-    let page = 1;
-    if (props.activeMenu === "Gov-ua") page = props.GovUaCurrentPage;
-    if (props.activeMenu === "Lotus") page = props.lotusCurrentPage;
-    if (props.activeMenu === "phones") page = props.phonesCurrentPage;
-
-    navigateToPage(page);
-  };
 
   const filterPointsForCurrentMenu = filterPoints.filter((p) =>
     p.pages.includes(props.activeMenu.toLowerCase())
@@ -267,8 +309,46 @@ useEffect(() => {
     setPhonesSubConditions(initialSubConditions);
   }
 }, [props.activeMenu, props.getSubFilters]);
+// Фільтровані саб-умови для Phones беремо з Redux
+const prevSubFiltersRef = useRef({});
+
+useEffect(() => {
+  if (props.activeMenu === "phones") {
+    const hasSubFilters = Object.values(props.getSubFilters || {})
+      .some(group => Object.keys(group).length > 0);
+
+    const hasMainFilters = Object.values(phonesFilters || {}).some(v => v);
+
+    const prevSubFilters = prevSubFiltersRef.current;
+
+    // Перевіряємо, чи змінилися саб-фільтри
+    const subFiltersChanged = JSON.stringify(prevSubFilters) !== JSON.stringify(props.getSubFilters);
+
+    if ((hasSubFilters || hasMainFilters) && subFiltersChanged) {
+      redirectToCurrentPage(phonesFilters, props.getSubFilters);
+    }
+
+    // Оновлюємо реф після перевірки
+    prevSubFiltersRef.current = props.getSubFilters;
+  }
+}, [props.getSubFilters, phonesFilters, props.activeMenu]);
 
 
+const isPresentedFielterPanel = useSelector(state => 
+  state.toggledElements.showFilterPanel.isActive
+);
+
+useEffect(() => {
+  if (!isPresentedFielterPanel) {
+    setLotusFilters({});
+    setGovUaFilters({});
+    setPhonesFilters({});
+    setPhonesSubConditions({});
+  }
+}, [isPresentedFielterPanel]);
+
+
+ 
   return (
     <div className={s.panel}>
       <div className={s.panelContent}>
@@ -317,7 +397,7 @@ useEffect(() => {
         {props.activeMenu === "phones" && (
           <CustomDropDown
             menus={phonesSubConditions}
-            handleChange={handlePhoneSubMenuChange}
+            
           />
         )}
       </div>

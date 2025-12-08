@@ -1,3 +1,4 @@
+const TOGGLE_FIELTER_PANEL_ELEMENT = "TOGGLE_FIELTER_PANEL_ELEMENT"
 const TOGGLE_SEARCH_FIELD_ELEMENT = "TOGGLE_SEARCH_FIELD_ELEMENT";
 const TOGGLE_PAGES_NAVBAR_LINK = "TOGGLE_PAGES_NAVBAR_LINK";
 const ADD_FOUND_ITEMS = "ADD_FOUND_ITEMS";
@@ -7,6 +8,7 @@ const UPDATE_DRAFT_VALUE = "UPDATE_DRAFT_VALUE";
 
 const initialState = {
   showSearchField: { isActive: false },
+  showFilterPanel: { isActive: false },
   pagesNavbarLinkElementOnCurrentPage: {isPressed:false},
   searchField: {
     "gov-ua": { draftValue: "", searchValue: "", foundResults: [] },
@@ -17,6 +19,19 @@ const initialState = {
 
 export const toggledElemetsReducer = (state = initialState, action) => {
   switch (action.type) {
+
+     case TOGGLE_FIELTER_PANEL_ELEMENT:
+      return {
+        ...state,
+        showfFielterPanel: {
+          ...state.showFilterPanel,
+          isActive:
+            action.value !== undefined
+              ? action.value
+              : !state.showFilterPanel.isActive
+        }
+      };
+
     case TOGGLE_SEARCH_FIELD_ELEMENT:
       return {
         ...state,
@@ -109,6 +124,11 @@ case ADD_FOUND_ITEMS:
       return state;
   }
 };
+
+export const toggleFielterPanelElement = (value) => ({
+  type: TOGGLE_FIELTER_PANEL_ELEMENT,
+  value
+});
 
 export const toggleSearchFieldActionCreator = (value) => ({
   type: TOGGLE_SEARCH_FIELD_ELEMENT,
