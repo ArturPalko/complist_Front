@@ -23,7 +23,7 @@ export const toggledElemetsReducer = (state = initialState, action) => {
      case TOGGLE_FIELTER_PANEL_ELEMENT:
       return {
         ...state,
-        showfFielterPanel: {
+        showFilterPanel: {
           ...state.showFilterPanel,
           isActive:
             action.value !== undefined

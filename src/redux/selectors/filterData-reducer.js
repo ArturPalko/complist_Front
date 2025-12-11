@@ -50,6 +50,7 @@ export const filterDataReducer = (state = initialState, action) => {
     console.log("REDUCER STATE BEFORE:", state);
     switch (action.type) {
         case CLEAR_FILTRED_DATA:
+            debugger;
                 return {
                     ...state,
                     "Gov-ua": { ...initialState["Gov-ua"] },

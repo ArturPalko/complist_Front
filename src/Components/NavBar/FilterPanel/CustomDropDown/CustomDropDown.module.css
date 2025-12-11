@@ -1,6 +1,7 @@
+/* === Повний екран (Desktop) === */
 .dropdownContainer {
   position: relative;
-  width: 300px;
+  width: 100%;
 }
 
 .dropdownToggle {
@@ -52,4 +53,36 @@
 
 .dropdownItem input {
   margin-right: 8px;
+}
+
+/* === Звужене вікно (Tablet / Mobile) === */
+@media (max-width: 1024px) {
+  .dropdownToggle {
+    padding: 6px; /* менше padding */
+    font-size: 0.95rem; /* менший шрифт */
+  }
+
+  .dropdownMenuContainer {
+    gap: 6px; /* менший відступ між елементами */
+  }
+
+  .dropdownMenuUpper,
+  .dropdownMenuLower {
+    padding: 6px;
+    max-height: 150px; /* трохи нижче */
+    border-radius: 4px;
+  }
+
+  .legend {
+    margin-bottom: 4px;
+    font-size: 0.95rem;
+  }
+
+  .dropdownItem {
+    padding: 3px 4px;
+  }
+
+  .dropdownItem input {
+    margin-right: 6px;
+  }
 }

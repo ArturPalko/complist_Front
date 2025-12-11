@@ -1,28 +1,39 @@
-.app-wrapper{
-  display:grid;
-grid-template-rows: 60px 180px 1fr;
-  grid-template-columns: 2fr 10fr;
-  grid-template-areas:
-  "h h"
-  "n c";
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden; /* відключаємо скрол браузера */
+    overflow-x: auto; /* горизонтальний скрол */
+  overflow-y: auto; /* вертикальний скрол можна прибрати */
 
 }
+
+.app-wrapper {
+  display: grid;
+  grid-template-rows: 60px 1fr; /* header + решта */
+  grid-template-columns: 2fr 10fr;
+  grid-template-areas:
+    "h h"
+    "n c";
+  height: 100vh; /* контейнер на весь екран */
+}
+
 .header {
   grid-area: h;
   display: flex;
   align-items: center; 
   background-color: aquamarine;
-
-
-
 }
-.content{
+
+.nav {
+  grid-area: n;
+  background-color: antiquewhite;
+  height: 100%; /* ключ: навбар займає весь ряд */
+  overflow: auto; /* прокрутка тільки всередині, якщо багато елементів */
+}
+
+.content {
   grid-area: c;
   background-color: rgb(220, 220, 224);
-  height: 1000px;
-}
-.nav{
-  grid-area: n;
-  background-color:antiquewhite;
-  height: 1000px;
+  height: 100%; /* контент займає весь ряд */
+  overflow: auto;
 }
