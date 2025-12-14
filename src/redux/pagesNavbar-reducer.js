@@ -26,7 +26,7 @@ export const pagesNavbarReducer = (state = initialState, action) => {
 
                 [pageName]: {
                     ...state[pageName],
-                    lastVisitedPage: Number(value),
+                    lastVisitedPage: value,
                     digitPage: isNumberPage ? Number(value) : state[pageName].digitPage
                 }
             };

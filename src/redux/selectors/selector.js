@@ -399,3 +399,6 @@ export const getPositionsAndTypesOfUsers = (state) => {
 export const getSubFilters = (state) =>
   state.filters.phones?.usedFilters.subFilters ?? [];
 
+// selector.js
+export const isCurrentPageFoundResult = (menu) => (state) =>
+  state.currentPageNumber?.[menu]?.lastVisitedPage === "foundResults";

@@ -70,57 +70,67 @@ export const useIndexesForPage = (pageKey) => {
 export const useRowHighlighting = (
   indexDataOfFoundResultsForFoundResultsPage,
   s,
-  baseRoute,
-  ro
+  menu,
+  rowRefs,
+  safeIndexData
 ) => {
   const [hoveredRow, setHoveredRow] = useState(null);
   const [clickedRow, setClickedRow] = useState(null);
   const navigate = useNavigate();
-  const rowRefs = ro;
-  //debugger
 
-  const handleClick = (index) => {
-    setClickedRow(index);
-    const arrow = rowRefs.current[index];
-    if (arrow) {
-      const onTransitionEnd = () => {
-        const targetPage =
-          indexDataOfFoundResultsForFoundResultsPage[index]?.currentPage;
-          //debugger;
-        if (targetPage) navigate(`/${baseRoute}/${targetPage}`);
-        arrow.removeEventListener("transitionend", onTransitionEnd);
-      };
-      arrow.addEventListener("transitionend", onTransitionEnd);
-    }
-  };
+const handleClick = (index) => {
+  const cellData = indexDataOfFoundResultsForFoundResultsPage?.[index];
+  if (!cellData) return;
 
- const renderIndexCell = (index) => {
-  if (!indexDataOfFoundResultsForFoundResultsPage) return null;
+  const targetPage = cellData.currentPage;
 
-  return (
-    <td
-      className={s.cell}
-      onMouseEnter={() => setHoveredRow(index)}
-      onMouseLeave={() => setHoveredRow(null)}
-      onClick={() => handleClick(index)}
-    >
-      <div className={s.cellContent}>
-        <span className={`${s.text} ${hoveredRow === index ? s.hideText : ""}`}>
-          Сторінка: {indexDataOfFoundResultsForFoundResultsPage[index].currentPage}, 
-          Стрічка: {indexDataOfFoundResultsForFoundResultsPage[index].index}
-        </span>
-        <img
-          ref={(el) => (rowRefs.current[index] = el)}
-          src={redArrow}
-          alt="arrow"
-          className={`${s.arrow} ${hoveredRow === index ? s.showArrow : ""} ${clickedRow === index ? s.moveRight : ""}`}
-        />
-      </div>
-    </td>
-  );
+  let url;
+  if (menu === "phones") {
+    url = `/phones/${targetPage}`;
+  } else {
+    url = `/mails/${menu}/${targetPage}`;
+  }
+
+  // 1. Встановлюємо стан для анімації
+  setClickedRow(index);
+
+  // 2. Використовуємо requestAnimationFrame для гарантованого відмалювання класу
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      // 3. Навігація після тривалості анімації
+      setTimeout(() => {
+        navigate(url);
+      }, 300); // тривалість анімації moveRight
+    });
+  });
 };
 
 
+  const renderIndexCell = (index) => {
+    const cellData = indexDataOfFoundResultsForFoundResultsPage?.[index];
+    if (!cellData) return null;
+
+    return (
+      <td
+        className={s.cell}
+        onMouseEnter={() => setHoveredRow(index)}
+        onMouseLeave={() => setHoveredRow(null)}
+        onClick={() => handleClick(index)}
+      >
+        <div className={s.cellContent}>
+          <span className={`${s.text} ${hoveredRow === index ? s.hideText : ""}`}>
+            Сторінка: {cellData.currentPage}, Стрічка: {cellData.index}
+          </span>
+          <img
+            ref={(el) => (rowRefs.current[index] = el)}
+            src={redArrow}
+            alt="arrow"
+            className={`${s.arrow} ${hoveredRow === index ? s.showArrow : ""} ${clickedRow === index ? s.moveRight : ""}`}
+          />
+        </div>
+      </td>
+    );
+  };
 
   return { renderIndexCell };
 };
@@ -142,7 +152,6 @@ export const useFilteredPageData = (mailsData) => {
   const filtredChunks = useSelector(state => getIndexesOfFiltredResults(state, activeMenu));
   const isFilterApplied = useSelector(isFilterAppliedSelector(activeMenu));
 
-  // ТЕПЕР — реальне "обчислення" залежить від цих значень
   return useMemo(() => {
     if (!Array.isArray(mailsData)) return { data: [], isFilterApplied: false };
 
@@ -172,3 +181,42 @@ export const useFilteredPageData = (mailsData) => {
 };
 
 
+
+export const useFoundResultsColNumbersLogic = ({
+  isFoundResults,
+  indexesOfFoundResultsForCurrentPage = [],
+  isPagesNavbarLinkPressed,
+  isPreviousPageWasFoundResult,
+}) => {
+  const [showPreviousPageHighlight, setShowPreviousPageHighlight] = useState(false);
+
+  // Клас для анімації колонки
+  const showDigitsFromPressed =
+    isFoundResults &&
+    indexesOfFoundResultsForCurrentPage.length > 0 &&
+    isPagesNavbarLinkPressed
+      ? "showColnumbersWhenPagesLinkOnCurrentPagePressed"
+      : "";
+
+  // Чи відображати блок colNumbers
+  const shouldShowColNumbers =
+    indexesOfFoundResultsForCurrentPage.length > 0 &&
+    (isPagesNavbarLinkPressed || showPreviousPageHighlight);
+
+  useEffect(() => {
+    let timer;
+    if (isPreviousPageWasFoundResult) {
+      setShowPreviousPageHighlight(true);
+      timer = setTimeout(() => setShowPreviousPageHighlight(false), 3000);
+    } else {
+      setShowPreviousPageHighlight(false);
+    }
+    return () => clearTimeout(timer);
+  }, [isPreviousPageWasFoundResult]);
+
+  return {
+    showDigitsFromPressed,
+    shouldShowColNumbers,
+    showPreviousPageHighlight,
+  };
+};

@@ -1,6 +1,7 @@
 import React from "react";
 import s from "./PhonesTable.module.css";
-import { usePhonesTableLogic } from "../../redux/hooks/usePhonesTableLogic"
+import { usePhonesTableLogic } from "../../redux/hooks/usePhonesTableLogic";
+import { useFoundResults } from "../../redux/hooks/hooks";
 
 const PhonesTable = ({
   isDataFetching,
@@ -11,6 +12,9 @@ const PhonesTable = ({
   isRenderFromFoundResultsPage,
   departmentsAndSectionsPerPage
 }) => {
+
+  const { foundResults, indexDataOfFoundResultsForFoundResultsPage } = useFoundResults() || { foundResults: [], indexDataOfFoundResultsForFoundResultsPage: [] };
+
   const {
     pageData,
     rowRefs,
@@ -20,15 +24,23 @@ const PhonesTable = ({
     showPreviousPageHighlight,
     isPagesNavbarLinkElementOnCurrentPagePressed,
     phoneColumns,
-    indexDataOfFoundResultsForFoundResultsPage,
-    indexDecrementFromPreviousPages
-  } = usePhonesTableLogic({ columns, pageNumber, rowsPerPage, indexesOfFoundResultsForCurrentPage, departmentsAndSectionsPerPage });
+    indexDecrementFromPreviousPages,
+    shouldShowColNumbers
+  } = usePhonesTableLogic({
+    columns,
+    pageNumber,
+    rowsPerPage,
+    indexesOfFoundResultsForCurrentPage,
+    departmentsAndSectionsPerPage,
+    foundResults,
+    indexDataOfFoundResultsForFoundResultsPage
+  });
 
   let indexDecrement = 0;
   return (
     <div className={s.content}>
       <div className={s.tableWrapper + " " + showDigitsFromPressed}>
-        {( isPagesNavbarLinkElementOnCurrentPagePressed || showPreviousPageHighlight ) && indexesOfFoundResultsForCurrentPage.length !== 0 && (
+        {shouldShowColNumbers && (
           <div className={s.colNumbers}>
             {Array.from({ length: pageData.length }, (_, i) => (
               <div key={i} ref={el => (colNumbersRef.current[i] = el)}>

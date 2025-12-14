@@ -1,64 +1,56 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useDataLoader, useFoundResults, useToggleElements } from "./hooks";
-import { useRowHighlighting , useFilteredPageData} from "./hooks";
+import { useRowHighlighting, useFilteredPageData } from "./hooks";
 import { useRowHeights } from "./useSyncRowHeights";
 import s from "../../Components/PhonesTable/PhonesTable.module.css";
-import { isFilterAppliedSelector } from "../selectors/selector";
-
+import { useSelector } from "react-redux";
+import { isCurrentPageFoundResult } from "../selectors/selector";
+import { useFoundResultsColNumbersLogic } from "./hooks"; // універсальний хук
 
 export const useMailsTableLogic = ({
   mailType,
   pageNumber,
   rowsPerPage,
-  indexesOfFoundResultsForCurrentPage
+  indexesOfFoundResultsForCurrentPage,
+  foundResults = [],
+  indexDataOfFoundResultsForFoundResultsPage = []
 }) => {
-  const [showPreviousPageHighlight, setShowPreviousPageHighlight] = useState(false);
-
-  const { data: mailsData, isPreviousPageWasFoundResult } = useDataLoader();
-  const { foundResults, indexDataOfFoundResultsForFoundResultsPage } = useFoundResults();
-  const { isPagesNavbarLinkElementOnCurrentPagePressed } = useToggleElements();
-
-
-
-  const { data: filteredPageData, isFilterApplied } = useFilteredPageData(mailsData);
-  
-
-
-//const pageData = foundResults ?? filteredPageData?.[pageNumber - 1]?.rows  ?? mailsData?.[pageNumber - 1]?.rows ?? [];
-const pageData =
-  foundResults?.[pageNumber - 1]?.rows ??
-  (isFilterApplied
-    ? filteredPageData?.[pageNumber - 1]?.rows ?? []
-    : mailsData?.[pageNumber - 1]?.rows ?? []);
-
-
-
-
   const rowRefs = useRef([]);
   const colNumbersRef = useRef([]);
+
+  const { data: mailsData, isPreviousPageWasFoundResult } = useDataLoader();
+  const { isPagesNavbarLinkElementOnCurrentPagePressed } = useToggleElements();
+
+  const safeFoundResults = foundResults || [];
+  const safeIndexData = indexDataOfFoundResultsForFoundResultsPage || [];
+  const menu = mailType;
+  const isFoundResults = useSelector(isCurrentPageFoundResult(menu));
+
+  const { data: filteredPageData, isFilterApplied } = useFilteredPageData(mailsData);
+
+  const pageData = isFoundResults
+    ? safeFoundResults
+    : isFilterApplied
+      ? filteredPageData?.[pageNumber - 1]?.rows ?? []
+      : mailsData?.[pageNumber - 1]?.rows ?? [];
 
   const { renderIndexCell } = useRowHighlighting(
     indexDataOfFoundResultsForFoundResultsPage,
     s,
-    `mails/${mailType}`,
-    rowRefs
+    menu,
+    rowRefs,
+    safeIndexData
   );
 
-  const showDigitsFromPressed =
-    indexesOfFoundResultsForCurrentPage.length !== 0 &&
-    isPagesNavbarLinkElementOnCurrentPagePressed
-      ? s.showColnumbersWhenPagesLinkOnCurrentPagePressed
-      : "";
+  const { showDigitsFromPressed, shouldShowColNumbers, showPreviousPageHighlight } =
+    useFoundResultsColNumbersLogic({
+      isFoundResults,
+      indexesOfFoundResultsForCurrentPage,
+      isPagesNavbarLinkPressed: isPagesNavbarLinkElementOnCurrentPagePressed,
+      isPreviousPageWasFoundResult,
+    });
 
   useRowHeights(rowRefs, colNumbersRef, [pageData]);
-
-  useEffect(() => {
-    if (isPreviousPageWasFoundResult) {
-      setShowPreviousPageHighlight(true);
-      const timer = setTimeout(() => setShowPreviousPageHighlight(false), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [isPreviousPageWasFoundResult]);
 
   return {
     pageData,
@@ -68,7 +60,8 @@ const pageData =
     showDigitsFromPressed,
     showPreviousPageHighlight,
     isPagesNavbarLinkElementOnCurrentPagePressed,
+    shouldShowColNumbers,
     indexDataOfFoundResultsForFoundResultsPage,
-
+    indexesOfFoundResultsForCurrentPage,
   };
 };
