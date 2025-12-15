@@ -10,25 +10,15 @@ import { useDataLoader, useIndexesForPage } from "../../redux/hooks/hooks";
 import { compose } from "redux";
 
 const LotusPage = (props) => {
-  const [showPasswords, setShowPasswords] = useState(false);
-  const [passwordsMap, setPasswordsMap] = useState({});
 
-  const handleTogglePasswords = async (e) => {
-    const checked = e.target.checked;
-    setShowPasswords(checked);
-    props.togglePasswords(checked,setPasswordsMap);}
-
-      const pageName = "Lotus"; 
-      const indexesOfFoundResultsForCurrentPage = useIndexesForPage(pageName);
-      console.log("Індекси для поточної сторінки++-+-+-:",indexesOfFoundResultsForCurrentPage)
-
+  const pageName = "Lotus"; 
+  const indexesOfFoundResultsForCurrentPage = useIndexesForPage(pageName);
 
   return (
     <>
       <TopTableBar
         title="Поштові скриньки Lotus"
         mailType={pageName.toLocaleLowerCase()}
-        handleTogglePasswords={handleTogglePasswords}
       />
       <MailsTable
         mailType={pageName}
@@ -37,8 +27,8 @@ const LotusPage = (props) => {
           { key: "name", label: "Нова назва скриньки" },
           { key: "owner", label: "Назва підрозділу" },
         ]}
-        showPasswords={showPasswords}
-        passwordsMap={passwordsMap}
+        showPasswords={props.showPasswords}
+        passwordsMap={props.passwordsMap}
         rowsPerPage={rowsPerPage}
         pageNumber={usePageNumber()}
         indexesOfFoundResultsForCurrentPage={indexesOfFoundResultsForCurrentPage}
@@ -56,5 +46,5 @@ export default compose(
     getMailsData,
     "lotus"
   ),
-  withToggleElements
+  withToggleElements("Lotus")
 )(LotusPage);

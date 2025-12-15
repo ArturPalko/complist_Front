@@ -11,9 +11,9 @@ import { getPhonesPageIndexDataOfFoundResults, getGovUaMailsPageIndexDataOfFound
  } from "../selectors/selector";
 import redArrow from "../../../src/assets/red_arrow.png";
 import { DataLoaderContext } from "../hocs/withDataLoader";
-import { ToggleElementsContext } from "../hocs/withToggleElements";
 import { FoundResultsContext } from "../../Components/FoundResults/FoundResults";
 import { useMemo } from "react";
+import { SearchToggleContext, PasswordsToggleContext } from "../hocs/withToggleElements";
 
 import { activeMenu as activeMenuSelector, getIndexesOfFiltredResults, getGovUaMails, getLotusMails } from "../selectors/selector";
 
@@ -136,11 +136,18 @@ const handleClick = (index) => {
 };
 
 export const useDataLoader = () => useContext(DataLoaderContext);
-export const useToggleElements = () => useContext(ToggleElementsContext);
+// export const useToggleElements = () => useContext(ToggleElementsContext);
 export const useFoundResults = () => {
   const context = useContext(FoundResultsContext);
   return context ?? { foundResults: null, indexDataOfFoundResultsForFoundResultsPage: null };
 };
+
+
+// для чекбокса пошуку
+export const useSearchToggle = () => useContext(SearchToggleContext);
+
+// для показу паролів
+export const usePasswordsToggle = () => useContext(PasswordsToggleContext);
 
 
 

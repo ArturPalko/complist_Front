@@ -1,63 +1,99 @@
 import { connect } from "react-redux";
+import { useState } from "react";
+import {
+  toggleSearchFieldActionCreator,
+  clearSearchFieldsAndFoundResults
+} from "../toggledElements-reducer";
+import {
+  isPresentedSearchField,
+  isPagesNavbarLinkElementOnCurrentPagePressed
+} from "../../redux/selectors/selector";
 import { createContext } from "react";
-import { togglepagesNavbarLinkElementOnCurrentPage, toggleSearchFieldActionCreator, clearSearchFieldsAndFoundResults } from "../toggledElements-reducer";
-import { isPresentedSearchField, isPagesNavbarLinkElementOnCurrentPagePressed} from "../../redux/selectors/selector";
 
 
-export const ToggleElementsContext = createContext(null)
-const withToggleElements = (WrappedComponent) => {
+
+// Контексти
+export const SearchToggleContext = createContext(null);
+export const PasswordsToggleContext = createContext(null);
+
+const withToggleElements = (type) => (WrappedComponent) => {
   const HOC = (props) => {
+    /* ===== SEARCH (Redux) ===== */
     const handleToggleSearchField = (e) => {
       const checked = e?.target?.checked ?? false;
       props.toggleSearchField(checked);
-      !checked && props.clearSearchFieldsAndFoundResults();
+      if (!checked) props.clearSearchFieldsAndFoundResults();
     };
 
-    const togglePasswords = async (checked, setPasswordsMap) => {
-      if (checked) {
-        try {
-          const response = await fetch(`http://localhost:5114/mails/Lotus/passwords`);
-          if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-          const data = await response.json();
+    /* ===== PASSWORDS (локальний state) ===== */
+    const [showPasswords, setShowPasswords] = useState(false);
+    const [passwordsMap, setPasswordsMap] = useState({});
 
-          const map = {};
-          data.forEach(item => (map[item.id] = item.password));
+    const handleTogglePasswords = async (e) => {
+      const checked = e.target.checked;
+      setShowPasswords(checked);
 
-          setPasswordsMap(map);
-        } catch (error) {
-          console.error("Fetch passwords error:", error);
-        }
-      } else {
+      if (!checked) {
         setPasswordsMap({});
+        return;
+      }
+
+      try {
+        // Робимо запит залежно від типу
+        const urlMap = {
+          "Lotus": "http://localhost:5114/mails/Lotus/passwords",
+          "Gov-ua": "http://localhost:5114/mails/Gov-ua/passwords"
+        };
+
+        const response = await fetch(urlMap[type]);
+        if (!response.ok) throw new Error("Passwords fetch failed");
+
+        const data = await response.json();
+        const map = {};
+        data.forEach(item => (map[item.id] = item.password));
+        setPasswordsMap(map);
+        debugger;
+      } catch (err) {
+        console.error(err);
       }
     };
 
-
     return (
-        <ToggleElementsContext.Provider
+      <SearchToggleContext.Provider
         value={{
-          handleToggleSearchField, 
-          valueOfSearchCheckBox: props.isPresentedSearchField, 
-          isPagesNavbarLinkElementOnCurrentPagePressed:props.isPagesNavbarLinkElementOnCurrentPagePressed,
-      togglePasswords
-  }}
->
-  <WrappedComponent />
-</ToggleElementsContext.Provider>
+          handleToggleSearchField,
+          valueOfSearchCheckBox: props.isPresentedSearchField,
+          isPagesNavbarLinkElementOnCurrentPagePressed:
+            props.isPagesNavbarLinkElementOnCurrentPagePressed
+        }}
+      >
+        <PasswordsToggleContext.Provider
+          value={{
+            showPasswords,
+            passwordsMap,
+            handleTogglePasswords
+          }}
+        >
+          <WrappedComponent
+            {...props}
+            showPasswords={showPasswords}
+            passwordsMap={passwordsMap}
+          />
 
-    
+        </PasswordsToggleContext.Provider>
+      </SearchToggleContext.Provider>
     );
   };
 
   const mapStateToProps = (state) => ({
     isPresentedSearchField: !!isPresentedSearchField(state),
-    isPagesNavbarLinkElementOnCurrentPagePressed:isPagesNavbarLinkElementOnCurrentPagePressed(state),
-    
+    isPagesNavbarLinkElementOnCurrentPagePressed:
+      !!isPagesNavbarLinkElementOnCurrentPagePressed(state)
   });
 
   const mapDispatchToProps = {
     toggleSearchField: toggleSearchFieldActionCreator,
-    clearSearchFieldsAndFoundResults: clearSearchFieldsAndFoundResults
+    clearSearchFieldsAndFoundResults
   };
 
   return connect(mapStateToProps, mapDispatchToProps)(HOC);

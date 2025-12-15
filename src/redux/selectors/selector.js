@@ -238,7 +238,7 @@ export const getCountOfPresentedElement = (state, activeMenu) => {
       countOfMails += element.rows.length;
       element.rows.forEach(row => {
         if (row.name != null) hasNewPostName++;
-        if (row.passwordKnown != null) passwordKnown++;
+        if (row.passwordKnown != false) passwordKnown++;
         if (row.responsibleUser) hasResponsibleUser++;
 
         switch (row.ownerType) {

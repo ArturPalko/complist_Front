@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useDataLoader, useFoundResults, useToggleElements } from "./hooks";
+import { useDataLoader, useFoundResults, useSearchToggle } from "./hooks";
 import { useRowHighlighting, useFilteredPageData } from "./hooks";
 import { useRowHeights } from "./useSyncRowHeights";
 import s from "../../Components/PhonesTable/PhonesTable.module.css";
@@ -19,7 +19,7 @@ export const useMailsTableLogic = ({
   const colNumbersRef = useRef([]);
 
   const { data: mailsData, isPreviousPageWasFoundResult } = useDataLoader();
-  const { isPagesNavbarLinkElementOnCurrentPagePressed } = useToggleElements();
+  const { isPagesNavbarLinkElementOnCurrentPagePressed } = useSearchToggle();
 
   const safeFoundResults = foundResults || [];
   const safeIndexData = indexDataOfFoundResultsForFoundResultsPage || [];

@@ -6,40 +6,42 @@ import TopTableBar from "../TopTableBar/TopTableBar";
 import withToggleElements from "../../redux/hocs/withToggleElements";
 import { useIndexesForPage } from "../../redux/hooks/hooks";
 
-const GovUAPage = (props) => {
 
-  const pageName = "Gov-ua"; 
+
+const GovUAPage = (props) => {
+  const pageName = "Gov-ua";
   const indexesOfFoundResultsForCurrentPage = useIndexesForPage(pageName);
 
-    return(
-      <>
+  return (
+    <>
       <TopTableBar
-      title="Поштові скриньки Вінницької митниці customs.gov.ua"
-      mailType="gov-ua"
+        title="Поштові скриньки Вінницької митниці customs.gov.ua"
+        mailType={pageName.toLocaleLowerCase()}
       />
-        <MailsTable
-            mailType="Gov-ua"
-            columns={[
-              { key: "mailName", label: "найменування скриньки" },
-              { key: "departmentOrSection", label: "найменування підрозділу" },
-              { key: "responsibleUser", label: "відповідальна особа" },
-            ]}
-            rowsPerPage={rowsPerPage}
-            pageNumber={usePageNumber()}
-            indexesOfFoundResultsForCurrentPage={indexesOfFoundResultsForCurrentPage}
-          />
-      </>
+      <MailsTable
+        mailType={pageName}
+        columns={[
+          { key: "mailName", label: "найменування скриньки" },
+          { key: "departmentOrSection", label: "найменування підрозділу" },
+          { key: "responsibleUser", label: "відповідальна особа" },
+        ]}
+        showPasswords={props.showPasswords}        // береться з HOC
+        passwordsMap={props.passwordsMap}          // береться з HOC
+        rowsPerPage={rowsPerPage}
+        pageNumber={usePageNumber()}
+        indexesOfFoundResultsForCurrentPage={indexesOfFoundResultsForCurrentPage}
+      />
+    </>
+  );
+};
 
-          )
-
-}
-  
 export default compose(
   withDataLoader(
-  isGovUaDataLoaded,   
-  isGovUaDataFetching,
-  getGovUaMails,      
-  getMailsData,          
-  "gov-ua"),
-  withToggleElements    
+    isGovUaDataLoaded,
+    isGovUaDataFetching,
+    getGovUaMails,
+    getMailsData,
+    "gov-ua"
+  ),
+  withToggleElements("Gov-ua")   // параметризований HOC
 )(GovUAPage);

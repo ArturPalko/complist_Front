@@ -1,8 +1,11 @@
-import { useToggleElements, usecontext } from "../../redux/hooks/hooks";
+import {  usecontext } from "../../redux/hooks/hooks";
+import { useSearchToggle, usePasswordsToggle } from "../../redux/hooks/hooks.js";
 import s from "./TopTableBar.module.css";
 
-const TopTableBar = ({ title, mailType, handleTogglePasswords }) => {
-   const { handleToggleSearchField, valueOfSearchCheckBox } = useToggleElements(); 
+const TopTableBar = ({ title, mailType }) => {
+    const { handleToggleSearchField, valueOfSearchCheckBox } = useSearchToggle();
+  const { valueOfpasswordCheckbox, handleTogglePasswords } = usePasswordsToggle();
+   debugger;
 
 
   return (
@@ -26,13 +29,14 @@ const TopTableBar = ({ title, mailType, handleTogglePasswords }) => {
           </div>
         </div>
 
-        {mailType === "lotus" && (
+        {(mailType === "lotus" || mailType == "gov-ua") && (
           <div className={s.switchWrapper}>
             <div>
               <label className={s.switch}>
                 <input
                   type="checkbox"
                   onChange={handleTogglePasswords}
+                  checked={valueOfpasswordCheckbox}
                 />
                 <span className={`${s.slider} ${s.green}`}></span>
               </label>

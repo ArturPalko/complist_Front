@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useDataLoader, useToggleElements, useRowHighlighting, useFilteredPageData } from "../../redux/hooks/hooks";
+import { useDataLoader, useRowHighlighting, useFilteredPageData, useSearchToggle } from "../../redux/hooks/hooks";
 import s from "../../Components/PhonesTable/PhonesTable.module.css";
 import { useSelector } from "react-redux";
 import { isCurrentPageFoundResult } from "../selectors/selector";
@@ -19,7 +19,7 @@ export const usePhonesTableLogic = ({
   const colNumbersRef = useRef([]);
 
   const { data: phonesData, isPreviousPageWasFoundResult } = useDataLoader();
-  const { isPagesNavbarLinkElementOnCurrentPagePressed } = useToggleElements();
+  const { isPagesNavbarLinkElementOnCurrentPagePressed } = useSearchToggle();
 
   const safeFoundResults = foundResults || [];
   const safeIndexData = indexDataOfFoundResultsForFoundResultsPage || [];

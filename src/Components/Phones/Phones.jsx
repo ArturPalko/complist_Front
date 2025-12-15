@@ -72,6 +72,6 @@ export default compose(
     getPhonesData,
     "phones"
   ),
-  withToggleElements,
+  withToggleElements("phones"),
    connect(mapStateToProps),
 )(PhonesPage);
