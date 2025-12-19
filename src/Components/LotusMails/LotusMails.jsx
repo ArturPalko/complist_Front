@@ -1,4 +1,4 @@
-import { usePageNumber, rowsPerPage, useState/*, compose */} from "../CommonInjection/Dependencies/ComponentImports";
+import { rowsPerPage, useState/*, compose */} from "../CommonInjection/Dependencies/ComponentImports";
 import { getLotusMails, isLotusDataFetching, isLotusDataLoaded } from "../../redux/selectors/selector";
 import { getMailsData } from "../../redux/mails-reducer";
 import MailsTable from "../MalisTable/MailsTable";
@@ -8,6 +8,7 @@ import withToggleElements from "../../redux/hocs/withToggleElements";
 import { useEffect } from "../CommonInjection/Dependencies/ComponentImports";
 import { useDataLoader, useIndexesForPage } from "../../redux/hooks/hooks";
 import { compose } from "redux";
+import { usePageNumber } from "../../redux/hooks/hooks";
 
 const LotusPage = (props) => {
 

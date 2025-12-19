@@ -58,13 +58,18 @@ export const filterDataReducer = (state = initialState, action) => {
                     phones: { ...initialState["phones"] }
                 };
 
-     case ADD_FILTRED_DATA: {
+ case ADD_FILTRED_DATA: {
     const { menu, filter } = action;
-    if (!filter) return state; // якщо немає ключа, нічого не міняємо
 
+    // 🔹 якщо menu немає або filter немає — нічого не робимо
+      if (!menu || menu === "" || !state[menu] || !filter) {
+        debugger;
+        return state;
+    }
+debugger;
     const newUsedFilters = {
         ...state[menu].usedFilters,
-        [filter]: !state[menu].usedFilters[filter]  // toggle
+        [filter]: !state[menu].usedFilters[filter] // toggle
     };
 
     return {
@@ -72,10 +77,11 @@ export const filterDataReducer = (state = initialState, action) => {
         [menu]: {
             ...state[menu],
             usedFilters: newUsedFilters,
-            isFilterApplied: Object.values(newUsedFilters).some(Boolean) // ставимо true, якщо є хоч один активний
+            isFilterApplied: Object.values(newUsedFilters).some(Boolean)
         }
     };
 }
+
 
         case ADD_FILTRED_DATA_SUBCONDITIONS: {
   if (action.menu !== "phones") return state;

@@ -24,15 +24,17 @@ export const usePhonesTableLogic = ({
   const safeFoundResults = foundResults || [];
   const safeIndexData = indexDataOfFoundResultsForFoundResultsPage || [];
   const isFoundResults = useSelector(isCurrentPageFoundResult("phones"));
+  
 
   const { data: filteredPageData, isFilterApplied } = useFilteredPageData(phonesData);
 
- 
+
   const pageData = isFoundResults
     ? safeFoundResults
     : isFilterApplied
       ? filteredPageData?.[pageNumber - 1]?.rows ?? []
       : phonesData?.[pageNumber - 1]?.rows ?? [];
+      debugger;
 
   const phoneColumns = columns.find(c => c.key === "phones")?.subLabels.length || 0;
   const indexDecrementFromPreviousPages = departmentsAndSectionsPerPage

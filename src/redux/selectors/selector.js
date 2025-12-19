@@ -402,3 +402,7 @@ export const getSubFilters = (state) =>
 // selector.js
 export const isCurrentPageFoundResult = (menu) => (state) =>
   state.currentPageNumber?.[menu]?.lastVisitedPage === "foundResults";
+
+
+
+

@@ -1,5 +1,4 @@
 import {
-  usePageNumber,
   rowsPerPage,
 } from "../CommonInjection/Dependencies/ComponentImports";
 import { compose } from "redux";
@@ -20,6 +19,7 @@ import { getPhonesData } from "../../redux/phones-reducer";
 import { useIndexesForPage } from "../../redux/hooks/hooks";
 
 import { connect } from "react-redux";
+import { usePageNumber } from "../../redux/hooks/hooks";
 
 const PhonesPage = (props) => {
   const pageName = "phones";

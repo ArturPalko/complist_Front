@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { redirectToPage } from "../../Components/NavBar/commonFunctions";
+import { addFilter } from "../selectors/filterData-reducer";
 
 const CHUNK_SIZE = 18;
 
@@ -158,7 +159,10 @@ export const useFilters = (props = {}) => {
   }
 
 
-  if (typeof addFilter === "function") addFilter(activeMenu, key);
+  if (typeof addFilter === "function" && activeMenu && key) {
+  addFilter(activeMenu, key);
+}
+
 };
 
 
@@ -336,14 +340,14 @@ export const useFilters = (props = {}) => {
   }, [isPresentedFielterPanel]);
 
   // Додатковий useEffect: повідомляємо про наявність фільтрів в Redux (як раніше)
-  useEffect(() => {
-    const chunks = computeFilteredChunks(currentFilters, activeMenu === "phones" ? phonesSubConditions : {});
-    const anyFilterApplied = Object.values(currentFilters || {}).some(v => v) ||
-      Object.values(phonesSubConditions || {}).some(group => Object.keys(group || {}).length > 0);
+  // useEffect(() => {
+  //   const chunks = computeFilteredChunks(currentFilters, activeMenu === "phones" ? phonesSubConditions : {});
+  //   const anyFilterApplied = Object.values(currentFilters || {}).some(v => v) ||
+  //     Object.values(phonesSubConditions || {}).some(group => Object.keys(group || {}).length > 0);
 
-    if (typeof addIndexesOfFiltredResults === "function") addIndexesOfFiltredResults(activeMenu, chunks);
-    if (typeof addFilter === "function") addFilter(activeMenu, null, anyFilterApplied);
-  }, [currentFilters, phonesSubConditions, activeMenu, addIndexesOfFiltredResults, addFilter]);
+  //   if (typeof addIndexesOfFiltredResults === "function") addIndexesOfFiltredResults(activeMenu, chunks);
+  //   if (typeof addFilter === "function") addFilter(activeMenu, null, anyFilterApplied);
+  // }, [currentFilters, phonesSubConditions, activeMenu, addIndexesOfFiltredResults, addFilter]);
 
   // Повертаємо API, яке використовувався в оригінальній компоненті
 
@@ -361,3 +365,6 @@ export const useFilters = (props = {}) => {
     
   };
 };
+ 
+
+

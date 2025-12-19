@@ -17,6 +17,7 @@ export const pagesNavbarReducer = (state = initialState, action) => {
            
             const pageName = action.pageName;  
             const value = action.pageNumber; 
+            debugger;
 
             const isNumberPage = !isNaN(Number(value));
 

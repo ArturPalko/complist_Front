@@ -1,10 +1,11 @@
-import { usePageNumber, rowsPerPage, connect, useState, useEffect, withDataLoader,setDataIsLoadedActionCreator,compose} from "../CommonInjection/Dependencies/ComponentImports";
+import {  rowsPerPage, connect, useState, useEffect, withDataLoader,setDataIsLoadedActionCreator,compose} from "../CommonInjection/Dependencies/ComponentImports";
 import MailsTable from "../MalisTable/MailsTable";
 import { getGovUaMails, isGovUaDataFetching, isGovUaDataLoaded } from "../../redux/selectors/selector";
 import { getMailsData } from "../../redux/mails-reducer";
 import TopTableBar from "../TopTableBar/TopTableBar";
 import withToggleElements from "../../redux/hocs/withToggleElements";
 import { useIndexesForPage } from "../../redux/hooks/hooks";
+import { usePageNumber } from "../../redux/hooks/hooks";
 
 
 

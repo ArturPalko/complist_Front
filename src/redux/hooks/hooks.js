@@ -155,6 +155,7 @@ export const usePasswordsToggle = () => useContext(PasswordsToggleContext);
 
 
 export const useFilteredPageData = (mailsData) => {
+  debugger;
   const activeMenu = useSelector(activeMenuSelector);
   const filtredChunks = useSelector(state => getIndexesOfFiltredResults(state, activeMenu));
   const isFilterApplied = useSelector(isFilterAppliedSelector(activeMenu));
@@ -179,6 +180,7 @@ export const useFilteredPageData = (mailsData) => {
           return rows.length > 0 ? { pageIndex: chunk.pageIndex, rows } : null;
         })
         .filter(Boolean);
+      debugger;
 
       return { data: mappedChunks, isFilterApplied: true };
     }
@@ -227,3 +229,4 @@ export const useFoundResultsColNumbersLogic = ({
     showPreviousPageHighlight,
   };
 };
+
