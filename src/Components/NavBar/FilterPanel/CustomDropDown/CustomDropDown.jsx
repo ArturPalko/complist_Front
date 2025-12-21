@@ -22,7 +22,6 @@ const CustomDropDown = (props) => {
 
   // --- Toggle для одиночного чекбокса ---
   const toggleItem = (value, variety) => {
-     debugger;
     props.addFilteredDataSubconditions(value, variety);
    
   };

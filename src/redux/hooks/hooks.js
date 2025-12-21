@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { redirect, useParams } from "react-router-dom";
 import { useEffect, useRef, useState, useContext } from "react";
 import { useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -155,7 +155,6 @@ export const usePasswordsToggle = () => useContext(PasswordsToggleContext);
 
 
 export const useFilteredPageData = (mailsData) => {
-  debugger;
   const activeMenu = useSelector(activeMenuSelector);
   const filtredChunks = useSelector(state => getIndexesOfFiltredResults(state, activeMenu));
   const isFilterApplied = useSelector(isFilterAppliedSelector(activeMenu));
@@ -180,8 +179,6 @@ export const useFilteredPageData = (mailsData) => {
           return rows.length > 0 ? { pageIndex: chunk.pageIndex, rows } : null;
         })
         .filter(Boolean);
-      debugger;
-
       return { data: mappedChunks, isFilterApplied: true };
     }
 
@@ -211,7 +208,6 @@ export const useFoundResultsColNumbersLogic = ({
   const shouldShowColNumbers =
     indexesOfFoundResultsForCurrentPage.length > 0 &&
     (isPagesNavbarLinkPressed || showPreviousPageHighlight);
-
   useEffect(() => {
     let timer;
     if (isPreviousPageWasFoundResult) {

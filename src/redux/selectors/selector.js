@@ -24,26 +24,99 @@ export const phonesCount = (state) => {
     return state.mails?.["gov-ua"]?.length || 0;
   } 
   
+// export const GovUaCurrentPage = (state) => {
+//   let found = foundSearchValueOfGovUaPage(state)?.foundResults;
+//   if(state.currentPageNumber["Gov-ua"].lastVisitedPage == "foundResults" && (found==undefined || found.length==0)){
+//     debugger;
+//     return state.currentPageNumber["Gov-ua"].digitPage
+//   }
+//   debugger;
+//    return state.currentPageNumber["Gov-ua"].lastVisitedPage
+//   }
+
 export const GovUaCurrentPage = (state) => {
-  let found = foundSearchValueOfGovUaPage(state)?.foundResults;
-  if(state.currentPageNumber["Gov-ua"].lastVisitedPage == "foundResults" && (found==undefined || found.length==0)){
-    return state.currentPageNumber["Gov-ua"].digitPage
+  const pageState = state.currentPageNumber["Gov-ua"];
+  const foundResults = foundSearchValueOfGovUaPage(state)?.foundResults ?? [];
+  
+
+  // якщо були foundResults, але вони зникли — повертаємось на digitPage
+  if (
+    pageState.lastVisitedPage === "foundResults" &&
+    foundResults.length === 1
+  ) {
+    return pageState.digitPage;
   }
-   return state.currentPageNumber["Gov-ua"].lastVisitedPage
+
+  // якщо lastVisitedPage — число, ок
+  if (typeof pageState.lastVisitedPage === "number") {
+    return pageState.lastVisitedPage;
   }
-export const lotusCurrentPage = (state) =>{
- let found = foundSearchValueOfLotusMailsPage(state)?.foundResults;
-  if (state.currentPageNumber.Lotus.lastVisitedPage == "foundResults" && (found==undefined || found.length==0)){
-     return state.currentPageNumber.Lotus.digitPage;
+
+  // fallback
+  return pageState.digitPage;
+};
+
+// export const lotusCurrentPage = (state) =>{
+//  let found = foundSearchValueOfLotusMailsPage(state)?.foundResults;
+//   if (state.currentPageNumber.Lotus.lastVisitedPage == "foundResults" && (found==undefined || found.length==0)){
+//      return state.currentPageNumber.Lotus.digitPage;
+//   }
+//   return state.currentPageNumber.Lotus.lastVisitedPage;} 
+// export const phonesCurrentPage = (state) => {
+//    let found = foundSearchValueOfPhonesPage(state)?.foundResults;
+//    if (state.currentPageNumber.phones.lastVisitedPage == "foundResults" && (found==undefined || found.length==0)){
+//      return state.currentPageNumber.phones.digitPage;
+//   }
+//   if(isFilterAppliedSelector(state)) return state.currentPageNumber.phones.digitPage;
+//   return state.currentPageNumber.phones.lastVisitedPage;
+// }
+
+export const lotusCurrentPage = (state) => {
+  const pageState = state.currentPageNumber.Lotus;
+  const foundResults = foundSearchValueOfLotusMailsPage(state)?.foundResults ?? [];
+
+  if (
+    pageState.lastVisitedPage === "foundResults" &&
+    foundResults.length === 1
+  ) {
+    return pageState.digitPage;
   }
-  return state.currentPageNumber.Lotus.lastVisitedPage;} 
+
+  if (typeof pageState.lastVisitedPage === "number") {
+    return pageState.lastVisitedPage;
+  }
+
+  return pageState.digitPage;
+};
 export const phonesCurrentPage = (state) => {
-   let found = foundSearchValueOfPhonesPage(state)?.foundResults;
-   if (state.currentPageNumber.phones.lastVisitedPage == "foundResults" && (found==undefined || found.length==0)){
-     return state.currentPageNumber.phones.digitPage;
+  const pageState = state.currentPageNumber.phones;
+  const foundResults = foundSearchValueOfPhonesPage(state)?.foundResults ?? [];
+  const isFilterApplied = isFilterAppliedSelector("phones")(state);
+
+
+  if (
+    pageState.lastVisitedPage === "foundResults" &&
+    foundResults.length === 11 && !isFilterApplied
+  ) {
+    debugger;
+    return pageState.digitPage;
   }
-  return state.currentPageNumber.phones.lastVisitedPage;
-}
+  if (
+    pageState.lastVisitedPage === "foundResults" &&
+    foundResults.length === 1 && isFilterApplied
+  ) {
+    debugger;
+    return pageState.filterPage;
+  }
+
+  if (typeof pageState.lastVisitedPage === "number") {
+    return pageState.lastVisitedPage;
+  }
+  debugger;
+  return pageState.digitPage;
+};
+
+
 
 export const isLotusDataLoaded = (state) =>{
         return state.dataState.lotus.dataIsLoaded
@@ -131,7 +204,7 @@ export const getGovUaMailsPageIndexDataOfFoundResults = (state) => {
   
 }
 
-export const getCurrentPageNumberByKey = (key) => (state) => state.currentPageNumber[key].digitPage;
+export const getCurrentPageNumberByKey = (key) => (state) => state.currentPageNumber[key].lastVisitedPage;
 export const getPageIndexDataOfFoundResultsByKey = (key) => (state) => {
   const keysToKeep = ["currentPage", "index"];
   const foundResults = state.toggledElements.searchField[key].foundResults || [];
@@ -403,6 +476,9 @@ export const getSubFilters = (state) =>
 export const isCurrentPageFoundResult = (menu) => (state) =>
   state.currentPageNumber?.[menu]?.lastVisitedPage === "foundResults";
 
+
+export const getLastVisitedPage = (state,menu) =>
+  state.currentPageNumber?.[menu]?.lastVisitedPage || 1;
 
 
 

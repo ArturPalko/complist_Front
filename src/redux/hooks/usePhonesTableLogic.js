@@ -24,6 +24,7 @@ export const usePhonesTableLogic = ({
   const safeFoundResults = foundResults || [];
   const safeIndexData = indexDataOfFoundResultsForFoundResultsPage || [];
   const isFoundResults = useSelector(isCurrentPageFoundResult("phones"));
+  // const isFoundResults =true;
   
 
   const { data: filteredPageData, isFilterApplied } = useFilteredPageData(phonesData);
@@ -34,8 +35,6 @@ export const usePhonesTableLogic = ({
     : isFilterApplied
       ? filteredPageData?.[pageNumber - 1]?.rows ?? []
       : phonesData?.[pageNumber - 1]?.rows ?? [];
-      debugger;
-
   const phoneColumns = columns.find(c => c.key === "phones")?.subLabels.length || 0;
   const indexDecrementFromPreviousPages = departmentsAndSectionsPerPage
     .slice(0, pageNumber - 1)
@@ -87,3 +86,4 @@ export const usePhonesTableLogic = ({
     isPreviousPageWasFoundResult,
   };
 };
+

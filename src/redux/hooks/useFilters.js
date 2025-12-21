@@ -1,8 +1,10 @@
 // src/redux/hooks/useFilters.js
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { redirect, useNavigate } from "react-router-dom";
 import { redirectToPage } from "../../Components/NavBar/commonFunctions";
 import { addFilter } from "../selectors/filterData-reducer";
+import { getLastVisitedPage } from "../selectors/selector";
+import { useSelector } from "react-redux";
 
 const CHUNK_SIZE = 18;
 
@@ -28,6 +30,8 @@ export const useFilters = (props = {}) => {
   const [govUaFilters, setGovUaFilters] = useState({});
   const [phonesFilters, setPhonesFilters] = useState({});
   const [phonesSubConditions, setPhonesSubConditions] = useState({});
+  const lastPage = useSelector(state => getLastVisitedPage(state, activeMenu));
+   debugger;
 
 
   const conditions = {
@@ -113,6 +117,8 @@ export const useFilters = (props = {}) => {
   };
 
  const redirectToCurrentPage = (filters = {}, subConditions = {}) => {
+  if (lastPage == "foundResults") return 
+
   const hasFilters = hasAnyFilters(filters, subConditions);
 
 
@@ -136,7 +142,6 @@ export const useFilters = (props = {}) => {
 
  
  const handleCheckboxChange = (key) => {
-    debugger;
   if (activeMenu === "Lotus") {
     setLotusFilters(prev => {
       const newFilters = { ...prev, [key]: !prev[key] };
@@ -150,7 +155,6 @@ export const useFilters = (props = {}) => {
       return newFilters;
     });
   } else {
-    debugger;
     setPhonesFilters(prev => {
       const newFilters = { ...prev, [key]: !prev[key] };
       redirectToCurrentPage(newFilters, phonesSubConditions); // ⬅ редірект для phones із саб-фільтрами
@@ -173,7 +177,7 @@ export const useFilters = (props = {}) => {
     if (activeMenu === "phones") {
       setPhonesFilters({});
       setPhonesSubConditions({});
-      navigateToPage(page);
+      //navigateToPage(page);
     }
     if (typeof clearCurrentForm === "function") clearCurrentForm(activeMenu);
     redirectToCurrentPage({}, {});
@@ -265,7 +269,6 @@ export const useFilters = (props = {}) => {
     for (let i = 0; i < allFilteredIndexes.length; i += CHUNK_SIZE) {
       chunks.push({ pageIndex: chunks.length + 1, rows: allFilteredIndexes.slice(i, i + CHUNK_SIZE) });
     }
-    debugger;
     return chunks;
   };
 
@@ -329,9 +332,7 @@ export const useFilters = (props = {}) => {
 
   // Скидання коли панель ховається
   useEffect(() => {
-    debugger;
     if (!isPresentedFielterPanel) {
-        debugger;
       setLotusFilters({});
       setGovUaFilters({});
       setPhonesFilters({});
@@ -362,6 +363,7 @@ export const useFilters = (props = {}) => {
     filterPoints,
     filterGroups,
     filterPointsForCurrentMenu,
+    
     
   };
 };

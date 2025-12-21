@@ -5,9 +5,6 @@ import s from "./TopTableBar.module.css";
 const TopTableBar = ({ title, mailType }) => {
     const { handleToggleSearchField, valueOfSearchCheckBox } = useSearchToggle();
   const { valueOfpasswordCheckbox, handleTogglePasswords } = usePasswordsToggle();
-   debugger;
-
-
   return (
     <div className={s.headerPanel}>
       <h2>{title}</h2>

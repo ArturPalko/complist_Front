@@ -65,9 +65,15 @@ const FoundResults = (props) => {
     );
 
    // setRowsToPresent(presentRows);
-    debugger
+ 
     //setIndexDataOfFoundResultsForFoundResultsPage(foundResultsForCurrentMenu.map(r => r.currentPage));
-    const  indexDataOfFoundResultsForFoundResultsPage = foundResultsForCurrentMenu.map(r => r.currentPage);
+    const indexDataOfFoundResultsForFoundResultsPage =
+  foundResultsForCurrentMenu.map((r, index) => ({
+    currentPage: r.currentPage,
+    index: r.index
+  }));
+
+    
   // }, [
   //   dataToSearch,
   //   foundResultsForCurrentMenu

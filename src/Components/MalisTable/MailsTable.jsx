@@ -25,7 +25,6 @@ const MailsTable = ({
     shouldShowColNumbers
 
   } = useMailsTableLogic({ mailType, pageNumber, rowsPerPage,foundResults, indexesOfFoundResultsForCurrentPage,indexDataOfFoundResultsForFoundResultsPage });
-  debugger;
   return (
     <div className={s.content}>
       <div className={s.tableWrapper + " " + showDigitsFromPressed}>

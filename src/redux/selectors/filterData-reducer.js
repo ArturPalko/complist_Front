@@ -50,7 +50,6 @@ export const filterDataReducer = (state = initialState, action) => {
     console.log("REDUCER STATE BEFORE:", state);
     switch (action.type) {
         case CLEAR_FILTRED_DATA:
-            debugger;
                 return {
                     ...state,
                     "Gov-ua": { ...initialState["Gov-ua"] },
@@ -63,10 +62,8 @@ export const filterDataReducer = (state = initialState, action) => {
 
     // 🔹 якщо menu немає або filter немає — нічого не робимо
       if (!menu || menu === "" || !state[menu] || !filter) {
-        debugger;
         return state;
     }
-debugger;
     const newUsedFilters = {
         ...state[menu].usedFilters,
         [filter]: !state[menu].usedFilters[filter] // toggle

@@ -1,28 +1,51 @@
 import { connect } from "react-redux";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   toggleSearchFieldActionCreator,
   clearSearchFieldsAndFoundResults
 } from "../toggledElements-reducer";
 import {
   isPresentedSearchField,
-  isPagesNavbarLinkElementOnCurrentPagePressed
+  isPagesNavbarLinkElementOnCurrentPagePressed,
+  isFilterAppliedSelector,
+  activeMenu,
+  GovUaCurrentPage,
+  lotusCurrentPage,
+  phonesCurrentPage
 } from "../../redux/selectors/selector";
 import { createContext } from "react";
+import { redirectToPage } from "../../Components/NavBar/commonFunctions.js";
 
-
-
-// Контексти
 export const SearchToggleContext = createContext(null);
 export const PasswordsToggleContext = createContext(null);
 
 const withToggleElements = (type) => (WrappedComponent) => {
   const HOC = (props) => {
+    const navigate = useNavigate();
+    const activeMenu = props.activeMenu;
+  const  GovUaCurrentPage = props.GovUaCurrentPage;
+  const      lotusCurrentPage = props.lotusCurrentPage;
+  const phonesCurrentPage=  props.phonesCurrentPage;
     /* ===== SEARCH (Redux) ===== */
     const handleToggleSearchField = (e) => {
       const checked = e?.target?.checked ?? false;
       props.toggleSearchField(checked);
-      if (!checked) props.clearSearchFieldsAndFoundResults();
+
+      if (!checked) {
+        props.clearSearchFieldsAndFoundResults();
+
+        // Редірект тільки якщо застосовані фільтри
+        if (props.isFilterApplied) {
+          redirectToPage({
+            navigate,
+            activeMenu,
+            GovUaCurrentPage,
+            lotusCurrentPage,
+            phonesCurrentPage: props.phonesCurrentPage
+          });
+        }
+      }
     };
 
     /* ===== PASSWORDS (локальний state) ===== */
@@ -39,7 +62,6 @@ const withToggleElements = (type) => (WrappedComponent) => {
       }
 
       try {
-        // Робимо запит залежно від типу
         const urlMap = {
           "Lotus": "http://localhost:5114/mails/Lotus/passwords",
           "Gov-ua": "http://localhost:5114/mails/Gov-ua/passwords"
@@ -52,7 +74,6 @@ const withToggleElements = (type) => (WrappedComponent) => {
         const map = {};
         data.forEach(item => (map[item.id] = item.password));
         setPasswordsMap(map);
-        debugger;
       } catch (err) {
         console.error(err);
       }
@@ -79,17 +100,25 @@ const withToggleElements = (type) => (WrappedComponent) => {
             showPasswords={showPasswords}
             passwordsMap={passwordsMap}
           />
-
         </PasswordsToggleContext.Provider>
       </SearchToggleContext.Provider>
     );
   };
 
-  const mapStateToProps = (state) => ({
-    isPresentedSearchField: !!isPresentedSearchField(state),
-    isPagesNavbarLinkElementOnCurrentPagePressed:
-      !!isPagesNavbarLinkElementOnCurrentPagePressed(state)
-  });
+  const mapStateToProps = (state) => {
+    const active = activeMenu(state);
+
+    return {
+      activeMenu: active,
+      isPresentedSearchField: !!isPresentedSearchField(state),
+      isPagesNavbarLinkElementOnCurrentPagePressed:
+        !!isPagesNavbarLinkElementOnCurrentPagePressed(state),
+      isFilterApplied: isFilterAppliedSelector(state, active), // boolean
+      GovUaCurrentPage: GovUaCurrentPage(state),
+      lotusCurrentPage: lotusCurrentPage(state),
+      phonesCurrentPage: phonesCurrentPage(state)
+    };
+  };
 
   const mapDispatchToProps = {
     toggleSearchField: toggleSearchFieldActionCreator,

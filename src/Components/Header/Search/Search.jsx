@@ -8,7 +8,8 @@ import {
   getPhones,
   getCountOfFoundResults,
   getCountOfPresentedElement,
-  getDepartmentsAndSectionsPerPage
+  getDepartmentsAndSectionsPerPage,
+  getIndexesOfFiltredResults
 } from "../../../redux/selectors/selector.js";
 import { addFoundItems, clearSearchForm, updateDraftValue } from "../../../redux/toggledElements-reducer";
 import SearchForm from "./SearchForm/SearchForm.jsx";
@@ -43,14 +44,17 @@ const Search = (props) => {
 
   // Виклик хука для отримання відфільтрованих даних
   const { data: filteredPageData, isFilterApplied } = useFilteredPageData(searchArea);
-debugger;
   const handleOnClearSearchFormButtonClick = () => {
     props.clearSearchForm(activeMenuStr);
   };
 
   const handleOnSearchButtonClick = (e) => {
     e.preventDefault();
-    const searchValueTrimmed = draftValue.trim();
+    runSearch();
+ }
+
+    const runSearch=()=>{
+         const searchValueTrimmed = draftValue.trim();
     if (searchValueTrimmed.length < 3) return;
 
     const searchTarget = isFilterApplied ? filteredPageData : searchArea;
@@ -96,6 +100,12 @@ debugger;
 
     props.addFoundItems(activeMenuStr, searchValueTrimmed, foundResults);
   };
+ 
+   
+useEffect(() => {
+  runSearch();
+}, [props.getIndexesOfFiltredResults]);
+
 
   return (
     <SearchForm
@@ -113,6 +123,8 @@ debugger;
   );
 };
 
+
+
 const mapStateToProps = (state) => {
   const menu = activeMenu(state);
 
@@ -128,6 +140,7 @@ const mapStateToProps = (state) => {
     getCountOfFoundResults: (m) => getCountOfFoundResults(state, m),
     getCountOfPresentedElement: (m) => getCountOfPresentedElement(state, m),
     getDepartmentsAndSectionsPerPage: getDepartmentsAndSectionsPerPage(state),
+    getIndexesOfFiltredResults:getIndexesOfFiltredResults(state,menu)
   };
 };
 

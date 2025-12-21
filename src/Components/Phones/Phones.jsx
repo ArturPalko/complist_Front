@@ -25,9 +25,6 @@ const PhonesPage = (props) => {
   const pageName = "phones";
   const indexesOfFoundResultsForCurrentPage = useIndexesForPage(pageName);
   const departmentsAndSectionsPerPage = props.getDepartmentsAndSectionsPerPage(pageName);
-
-
-
   return (
     <>
       <TopTableBar title="Телефони" />
@@ -48,7 +45,7 @@ const PhonesPage = (props) => {
         pageNumber={usePageNumber()}
         rowsPerPage={rowsPerPage}
         indexesOfFoundResultsForCurrentPage={indexesOfFoundResultsForCurrentPage}
-       departmentsAndSectionsPerPage={departmentsAndSectionsPerPage}
+        departmentsAndSectionsPerPage={departmentsAndSectionsPerPage}
 
 
 

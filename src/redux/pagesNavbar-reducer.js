@@ -2,6 +2,7 @@ const REMEMBER_CURRENT_PAGE_NUMBER = "REMEMBER_CURRENT_PAGE_NUMBER";
 const SET_PREVIOUS_LOCATION = "SET_PREVIOUS_LOCATION";
 const SET_FILTER_PAGE = "SET_FILTER_PAGE";
 const SET_ACTIVE_MENU = "SET_ACTIVE_MENU";
+const SET_LAST_VISITED_PAGE ="SET_LAST_VISITED_PAGE";
 
 const initialState = {
     activeMenu: "",
@@ -17,8 +18,6 @@ export const pagesNavbarReducer = (state = initialState, action) => {
            
             const pageName = action.pageName;  
             const value = action.pageNumber; 
-            debugger;
-
             const isNumberPage = !isNaN(Number(value));
 
             return {
@@ -46,6 +45,17 @@ export const pagesNavbarReducer = (state = initialState, action) => {
                     filterPage: Number(action.pageNumber)
                 }
             };
+             case SET_LAST_VISITED_PAGE:
+            return {
+                ...state,
+                activeMenu: action.pageName,
+                [action.pageName]: {
+                    ...state[action.pageName],
+                    lastVisitedPage: action.pageNumber
+                }
+            };
+
+
 
 
 
@@ -70,4 +80,11 @@ export const setFilterPage = (pageName, pageNumber) => ({
     pageName,
     pageNumber
 });
+
+export const setLastVisitedPage = (pageName, pageNumber) => ({
+    type: SET_LAST_VISITED_PAGE,
+    pageName,
+    pageNumber
+});
+
 

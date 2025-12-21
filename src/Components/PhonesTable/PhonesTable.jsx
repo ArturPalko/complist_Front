@@ -14,7 +14,6 @@ const PhonesTable = ({
 }) => {
 
   const { foundResults, indexDataOfFoundResultsForFoundResultsPage } = useFoundResults() || { foundResults: [], indexDataOfFoundResultsForFoundResultsPage: [] };
-debugger;
   const {
     pageData,
     rowRefs,
@@ -35,7 +34,6 @@ debugger;
     foundResults,
     indexDataOfFoundResultsForFoundResultsPage
   });
-
   let indexDecrement = 0;
   return (
     <div className={s.content}>
