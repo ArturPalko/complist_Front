@@ -7,8 +7,7 @@ export const redirectToPage = ({
   phonesCurrentPage 
 }) => {
   let page = 1;
-  debugger;
-debugger;
+  
   switch (activeMenu) {
     case "Gov-ua":
       page = GovUaCurrentPage || 1;
@@ -19,7 +18,7 @@ debugger;
       navigate(`/mails/Lotus/${page}`);
       break;
     case "phones":
-      page = phonesCurrentPage ||8 ;
+      page = phonesCurrentPage ||1 ;
       navigate(`/phones/${page}`);
       break;
     default:

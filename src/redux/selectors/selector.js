@@ -1,6 +1,41 @@
 import userEvent from "@testing-library/user-event";
 
 export const rowsPerPage = 18;
+export const foundSearchValueOfPhonesPage = (state) => 
+   state.toggledElements.searchField["phones"];
+
+export const foundSearchValueOfLotusMailsPage = (state) => 
+   state.toggledElements.searchField["lotus"];
+
+export const foundSearchValueOfGovUaPage = (state) => 
+   state.toggledElements.searchField["gov-ua"];
+
+const createCurrentPageSelector = ({
+  key,
+  foundSelector,
+  hasFilter = false,
+}) => (state) => {
+  const pageState = state.currentPageNumber[key];
+  const foundResults = foundSelector(state)?.foundResults ?? [];
+  const isFilterApplied = hasFilter
+    ? isFilterAppliedSelector(key)(state)
+    : false;
+
+  if (
+    pageState.lastVisitedPage === "foundResults" &&
+    foundResults.length > 0
+  ) {
+    return isFilterApplied
+      ? pageState.filterPage
+      : pageState.digitPage;
+  }
+
+  if (typeof pageState.lastVisitedPage === "number") {
+    return pageState.lastVisitedPage;
+  }
+
+  return pageState.digitPage;
+};
 
 export const getLotusMails = (state) => {
     return state.mails.lotus 
@@ -24,99 +59,22 @@ export const phonesCount = (state) => {
     return state.mails?.["gov-ua"]?.length || 0;
   } 
   
-// export const GovUaCurrentPage = (state) => {
-//   let found = foundSearchValueOfGovUaPage(state)?.foundResults;
-//   if(state.currentPageNumber["Gov-ua"].lastVisitedPage == "foundResults" && (found==undefined || found.length==0)){
-//     debugger;
-//     return state.currentPageNumber["Gov-ua"].digitPage
-//   }
-//   debugger;
-//    return state.currentPageNumber["Gov-ua"].lastVisitedPage
-//   }
+// ===== конкретні селектори =====
+export const phonesCurrentPage = createCurrentPageSelector({
+  key: "phones",
+  foundSelector: foundSearchValueOfPhonesPage,
+  hasFilter: true,
+});
 
-export const GovUaCurrentPage = (state) => {
-  const pageState = state.currentPageNumber["Gov-ua"];
-  const foundResults = foundSearchValueOfGovUaPage(state)?.foundResults ?? [];
-  
+export const lotusCurrentPage = createCurrentPageSelector({
+  key: "Lotus",
+  foundSelector: foundSearchValueOfLotusMailsPage,
+});
 
-  // якщо були foundResults, але вони зникли — повертаємось на digitPage
-  if (
-    pageState.lastVisitedPage === "foundResults" &&
-    foundResults.length === 1
-  ) {
-    return pageState.digitPage;
-  }
-
-  // якщо lastVisitedPage — число, ок
-  if (typeof pageState.lastVisitedPage === "number") {
-    return pageState.lastVisitedPage;
-  }
-
-  // fallback
-  return pageState.digitPage;
-};
-
-// export const lotusCurrentPage = (state) =>{
-//  let found = foundSearchValueOfLotusMailsPage(state)?.foundResults;
-//   if (state.currentPageNumber.Lotus.lastVisitedPage == "foundResults" && (found==undefined || found.length==0)){
-//      return state.currentPageNumber.Lotus.digitPage;
-//   }
-//   return state.currentPageNumber.Lotus.lastVisitedPage;} 
-// export const phonesCurrentPage = (state) => {
-//    let found = foundSearchValueOfPhonesPage(state)?.foundResults;
-//    if (state.currentPageNumber.phones.lastVisitedPage == "foundResults" && (found==undefined || found.length==0)){
-//      return state.currentPageNumber.phones.digitPage;
-//   }
-//   if(isFilterAppliedSelector(state)) return state.currentPageNumber.phones.digitPage;
-//   return state.currentPageNumber.phones.lastVisitedPage;
-// }
-
-export const lotusCurrentPage = (state) => {
-  const pageState = state.currentPageNumber.Lotus;
-  const foundResults = foundSearchValueOfLotusMailsPage(state)?.foundResults ?? [];
-
-  if (
-    pageState.lastVisitedPage === "foundResults" &&
-    foundResults.length === 1
-  ) {
-    return pageState.digitPage;
-  }
-
-  if (typeof pageState.lastVisitedPage === "number") {
-    return pageState.lastVisitedPage;
-  }
-
-  return pageState.digitPage;
-};
-export const phonesCurrentPage = (state) => {
-  const pageState = state.currentPageNumber.phones;
-  const foundResults = foundSearchValueOfPhonesPage(state)?.foundResults ?? [];
-  const isFilterApplied = isFilterAppliedSelector("phones")(state);
-
-
-  if (
-    pageState.lastVisitedPage === "foundResults" &&
-    foundResults.length === 11 && !isFilterApplied
-  ) {
-    debugger;
-    return pageState.digitPage;
-  }
-  if (
-    pageState.lastVisitedPage === "foundResults" &&
-    foundResults.length === 1 && isFilterApplied
-  ) {
-    debugger;
-    return pageState.filterPage;
-  }
-
-  if (typeof pageState.lastVisitedPage === "number") {
-    return pageState.lastVisitedPage;
-  }
-  debugger;
-  return pageState.digitPage;
-};
-
-
+export const GovUaCurrentPage = createCurrentPageSelector({
+  key: "Gov-ua",
+  foundSelector: foundSearchValueOfGovUaPage,
+});
 
 export const isLotusDataLoaded = (state) =>{
         return state.dataState.lotus.dataIsLoaded
@@ -164,14 +122,6 @@ export const isPhonesSearchValueFound = (state) =>
    state.toggledElements.searchField["phones"].foundResults.length > 0;
 
 
-export const foundSearchValueOfPhonesPage = (state) => 
-   state.toggledElements.searchField["phones"];
-
-export const foundSearchValueOfLotusMailsPage = (state) => 
-   state.toggledElements.searchField["lotus"];
-
-export const foundSearchValueOfGovUaPage = (state) => 
-   state.toggledElements.searchField["gov-ua"];
 
 
 export const getPhonesPageIndexDataOfFoundResults = (state) => {
@@ -482,3 +432,4 @@ export const getLastVisitedPage = (state,menu) =>
 
 
 
+getIndexesOfFiltredResults

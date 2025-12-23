@@ -129,6 +129,7 @@ export const filterDataReducer = (state = initialState, action) => {
 
         case ADD_INDEXES_OF_FILTRED_RESULTS: {
             const currentStateForMenu = state[action.menu] ?? { usedFilters: {}, filtredResults: [], isFilterApplied: false };
+
             return {
                 ...state,
                 [action.menu]: {

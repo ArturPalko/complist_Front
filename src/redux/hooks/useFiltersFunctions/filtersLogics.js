@@ -1,0 +1,50 @@
+ export const conditions = {
+    personalMails: (el) => el.ownerType === "User",
+    departmentMails: (el) => el.ownerType === "Department",
+    sectionMails: (el) => el.ownerType === "Section",
+    hasResponsible: (el) => el.responsibleUser !== "",
+    passwordKnown: (el) => el.passwordKnown === true,
+    hasPrevioustName: (el) => el.previousName !== null,
+    hasNoResponsible: (el) => el.responsibleUser === "",
+    hasNewPostName: (el) => el.name != null,
+    passwordUnKnown: (el) => el.passwordKnown === false,
+    NOThasNewPostName: (el) => el.name == null,
+    NOThasPrevioustName: (el) => el.previousName === null,
+    hasLandlinePhone: (el) => el.phones?.some(p => p.phoneType === "Міський"),
+    NOThasLandlinePhone: (el) => !el.phones?.some(p => p.phoneType === "Міський"),
+    hasInternalPhone: (el) => el.phones?.some(p => p.phoneType === "Внутрішній"),
+    NOThasInternalPhone: (el) => !el.phones?.some(p => p.phoneType === "Внутрішній"),
+    hasCiscoPhone: (el) => el.phones?.some(p => p.phoneType === "IP (Cisco)"),
+    NOThasCiscoPhone: (el) => !el.phones?.some(p => p.phoneType === "IP (Cisco)"),
+  };
+
+  export const filterGroups = {
+    personalMails: ["departmentMails", "sectionMails"],
+    hasResponsible: ["hasNoResponsible"],
+    passwordKnown: ["passwordUnKnown"],
+    hasNewPostName: ["NOThasNewPostName"],
+    hasPrevioustName: ["NOThasPrevioustName"],
+    hasLandlinePhone: ["NOThasLandlinePhone"],
+    hasInternalPhone: ["NOThasInternalPhone"],
+    hasCiscoPhone: ["NOThasCiscoPhone"]
+  };
+
+  export const filterPoints = [
+    { pages: ["gov-ua", "lotus"], groupName: "Власник", key: "personalMails", label: "Персональні" },
+    { pages: ["gov-ua", "lotus"], groupName: "Власник", key: "departmentMails", label: "Самостійного підрозділу" },
+    { pages: ["gov-ua", "lotus"], groupName: "Власник", key: "sectionMails", label: "(Не) самостійного підрозділу" },
+    { pages: ["gov-ua"], groupName: "Позитивна властивість", key: "hasResponsible", label: "Має відповідальну особу" },
+    { pages: ["lotus"], groupName: "Позитивна властивість", key: "hasNewPostName", label: "Має нову назву" },
+    { pages: ["lotus"], groupName: "Позитивна властивість", key: "hasPrevioustName", label: "Має стару назву" },
+    { pages: ["gov-ua", "lotus"], groupName: "Позитивна властивість", key: "passwordKnown", label: "Пароль відомий" },
+    { pages: ["gov-ua"], groupName: "Негативна властивість", key: "hasNoResponsible", label: "(Не) має відповідальну особу" },
+    { pages: ["lotus"], groupName: "Негативна властивість", key: "NOThasNewPostName", label: "(Не) має нову назву" },
+    { pages: ["lotus"], groupName: "Негативна властивість", key: "NOThasPrevioustName", label: "(Не) має стару назву" },
+    { pages: ["gov-ua", "lotus"], groupName: "Негативна властивість", key: "passwordUnKnown", label: "Пароль не відомий" },
+    { pages: ["phones"], groupName: "Позитивна властивість", key: "hasLandlinePhone", label: "має Міський телефон" },
+    { pages: ["phones"], groupName: "Позитивна властивість", key: "hasInternalPhone", label: "має Внутрішній телефон" },
+    { pages: ["phones"], groupName: "Позитивна властивість", key: "hasCiscoPhone", label: "має IP Cisco телефон" },
+    { pages: ["phones"], groupName: "Негативна властивість", key: "NOThasLandlinePhone", label: "(НЕ) має Міський телефон" },
+    { pages: ["phones"], groupName: "Негативна властивість", key: "NOThasInternalPhone", label: "(НЕ) має Внутрішній телефон" },
+    { pages: ["phones"], groupName: "Негативна властивість", key: "NOThasCiscoPhone", label: "(НЕ) має IP Cisco телефон" },
+  ];

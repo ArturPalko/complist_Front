@@ -1,18 +1,29 @@
-.singIn {
-  position: relative;
-  right: 10px;
+.header {
+  display: flex;
   align-items: center;
-  height: 100%;
+  justify-content: flex-start; /* стандартно */
+  padding: 0 20px;
+  height: 100px;
+  width: 100%;
+}
+
+.statusBar {
+  display: block;
+}
+
+.searchBar {
+  flex: 1;
+  width: 500px;
+  margin: 0 10px; /* невеликий відступ */
+}
+
+.singIn {
+  flex-shrink: 0;
+  margin: 0;
   padding-right: 20px;
-  margin-top:  30px;
 }
 
-.searchBar{
-  margin: 0 auto;
-
-}
-
-
+/* кнопка */
 .button {
   background: linear-gradient(135deg, #00e5ff, #0099cc);
   border: none;
@@ -34,6 +45,72 @@
 
 .button:active {
   transform: scale(0.97);
+}
+
+/* Адаптивність */
+
+/* При ширині ≤1200px ховаємо StatusBar і розкидаємо елементи */
+@media (max-width: 1800px) {
+  .statusBar {
+    display: none;
+  }
+
+  .header {
+    justify-content: space-between;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .searchBar {
+    margin: 0;
+    padding-left: 0;
+  }
+
+  .singIn {
+    margin-top: 0;
+    right: 0;
+  }
+}
+
+/* При ширині ≤576px - StatusBar ховається, Search та кнопка розкидаються */
+@media (max-width: 576px) {
+  .statusBar {
+    display: none;
+  }
+
+  .header {
+    justify-content: space-between;
+  }
+
+  .searchBar {
+    margin-right: 10px;
+  }
+}
+
+/* При дуже вузьких екранах ≤200px повертаємо початкове позиціонування */
+@media (max-width: 200px) {
+  .header {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .searchBar {
+    flex: 1 1 100%;
+    margin-right: 0;
+  }
+
+  .singIn {
+    margin-top: 10px;
+  }
+}
+
+.singIn {
+  flex-shrink: 0;
+  margin: 0;
+  padding-right: 20px;
+  position: relative;
+  left: 0;
+  transition: left 0.2s ease;
 }
 
 
