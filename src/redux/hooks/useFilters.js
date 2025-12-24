@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -8,7 +8,7 @@ import { computeFilteredChunks } from "./useFiltersFunctions/computeFilteredChun
 import { redirectToCurrentPage as redirectUtil } from "./useFiltersFunctions/redirectToCurrentPage";
 import { handleOnCheckboxChangeHandler } from "./useFiltersFunctions/handlers/handleOnCheckboxChange";
 import { handleOnClearFormButtonClickHandler } from "./useFiltersFunctions/handlers/handleOnClearFormButtonClick";
-import { useMemo } from "react";
+
 const CHUNK_SIZE = 18;
 
 export const useFilters = (props = {}) => {
@@ -30,13 +30,11 @@ export const useFilters = (props = {}) => {
   const navigate = useNavigate();
   const lastPage = useSelector((state) => getLastVisitedPage(state, activeMenu));
 
-  // ---------------- STATE ----------------
   const [phonesSubConditions, setPhonesSubConditions] = useState({});
   const [lotusFilters, setLotusFilters] = useState({});
   const [govUaFilters, setGovUaFilters] = useState({});
   const [phonesFilters, setPhonesFilters] = useState({});
 
-  // ---------------- CURRENT FILTERS ----------------
   const currentFilters =
     activeMenu === "Lotus"
       ? lotusFilters
@@ -130,7 +128,9 @@ export const useFilters = (props = {}) => {
       redirectToCurrentPage
     });
 
-  // ---------------- FILTERING & DISPATCH (оптимізовано) ----------------
+  // ---------------- FILTERING & DISPATCH ----------------
+  const prevChunks = useRef([]);
+
   const filteredChunks = useMemo(() => {
     if (!hasAnyFilters(currentFilters, phonesSubConditions)) return [];
 
@@ -145,8 +145,11 @@ export const useFilters = (props = {}) => {
       chunkSize: CHUNK_SIZE
     });
 
-    if (typeof addIndexesOfFiltredResults === "function") {
-      addIndexesOfFiltredResults(activeMenu, chunks);
+    if (JSON.stringify(chunks) !== JSON.stringify(prevChunks.current)) {
+      if (typeof addIndexesOfFiltredResults === "function") {
+        addIndexesOfFiltredResults(activeMenu, chunks);
+      }
+      prevChunks.current = chunks;
     }
 
     return chunks;

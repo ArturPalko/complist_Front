@@ -6,20 +6,25 @@ import TopTableBar from "../TopTableBar/TopTableBar";
 import withToggleElements from "../../redux/hocs/withToggleElements";
 import { useIndexesForPage } from "../../redux/hooks/hooks";
 import { usePageNumber } from "../../redux/hooks/hooks";
+import { useRef } from "react";
+
 
 
 
 const GovUAPage = (props) => {
   const pageName = "Gov-ua";
   const indexesOfFoundResultsForCurrentPage = useIndexesForPage(pageName);
+  const titleRef = useRef(null); // додали ref
 
   return (
     <>
       <TopTableBar
-        title="Поштові скриньки Вінницької митниці customs.gov.ua"
+        ref={titleRef}
+        title="Поштові скриньки customs.gov.ua"
         mailType={pageName.toLocaleLowerCase()}
       />
       <MailsTable
+        titleRef={titleRef} 
         mailType={pageName}
         columns={[
           { key: "mailName", label: "найменування скриньки" },

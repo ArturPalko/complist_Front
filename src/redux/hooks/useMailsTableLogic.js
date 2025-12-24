@@ -13,7 +13,9 @@ export const useMailsTableLogic = ({
   rowsPerPage,
   indexesOfFoundResultsForCurrentPage,
   foundResults = [],
-  indexDataOfFoundResultsForFoundResultsPage = []
+  indexDataOfFoundResultsForFoundResultsPage = [],
+  titleRef,
+  headerRef
 }) => {
   const rowRefs = useRef([]);
   const colNumbersRef = useRef([]);
@@ -50,7 +52,7 @@ export const useMailsTableLogic = ({
       isPreviousPageWasFoundResult,
     });
 
-  useRowHeights(rowRefs, colNumbersRef, [pageData]);
+    useRowHeights(rowRefs, colNumbersRef, [pageData],headerRef,titleRef);
 
   return {
     pageData,

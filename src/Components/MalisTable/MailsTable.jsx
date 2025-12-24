@@ -3,8 +3,10 @@ import s from "../../Components/PhonesTable/PhonesTable.module.css";
 import "./MailsTable.css";
 import { useMailsTableLogic } from "../../redux/hooks/useMailsTableLogic"; // шлях до нового хука
 import { useFoundResults } from "../../redux/hooks/hooks";
+import { useRef } from "react";
 
 const MailsTable = ({
+  titleRef,
   mailType,
   columns,
   showPasswords,
@@ -13,6 +15,7 @@ const MailsTable = ({
   pageNumber,
   indexesOfFoundResultsForCurrentPage
 }) => {
+   const headerRef = useRef(null);
    const { foundResults, indexDataOfFoundResultsForFoundResultsPage } = useFoundResults() || { foundResults: [], indexDataOfFoundResultsForFoundResultsPage: [] };
   const {
     pageData,
@@ -24,14 +27,22 @@ const MailsTable = ({
     isPagesNavbarLinkElementOnCurrentPagePressed,
     shouldShowColNumbers
 
-  } = useMailsTableLogic({ mailType, pageNumber, rowsPerPage,foundResults, indexesOfFoundResultsForCurrentPage,indexDataOfFoundResultsForFoundResultsPage });
+  } = useMailsTableLogic({ mailType,
+     pageNumber, 
+     rowsPerPage,
+     foundResults, 
+     indexesOfFoundResultsForCurrentPage,
+     indexDataOfFoundResultsForFoundResultsPage,
+     titleRef,
+      headerRef,
+   });
   return (
     <div className={s.content}>
       <div className={s.tableWrapper + " " + showDigitsFromPressed}>
         {/* {(showPreviousPageHighlight ||
           isPagesNavbarLinkElementOnCurrentPagePressed) &&
           indexesOfFoundResultsForCurrentPage.length !== 0*/shouldShowColNumbers && ( 
-            <div className={s.colNumbers} style={{ marginTop: "45px" }}>
+            <div className={s.colNumbers} >
               {pageData.map((_, i) => (
                 <div
                   key={i}
@@ -45,7 +56,7 @@ const MailsTable = ({
           )}
 
         <table>
-          <thead>
+          <thead  ref={headerRef} >
             <tr>
               {indexDataOfFoundResultsForFoundResultsPage && (
                 <th className={s.indexesColumnHeader}>Індекси</th>

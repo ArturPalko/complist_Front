@@ -7,8 +7,6 @@ import {
   getLotusMails,
   getPhones,
   getCountOfFoundResults,
-  getCountOfPresentedElement,
-  getDepartmentsAndSectionsPerPage,
   getIndexesOfFiltredResults,
   isGovUaSearchValueFounded,
   isLotusSearchValueFounded,
@@ -21,6 +19,8 @@ import { useFilteredPageData } from "../../../redux/hooks/hooks.js";
 const Search = (props) => {
   const activeMenuStr = props.activeMenu ? props.activeMenu.toLowerCase() : "";
   const [showNotFound, setShowNotFound] = useState(false);
+  const [userSearchedOnce, setUserSearchedOnce] = useState(false);
+  const [lastSearchFound, setLastSearchFound] = useState(true); // чи щось знайдено в останньому пошуку
   const inputRef = useRef(null);
 
   const draftValue = props.draftValue(activeMenuStr);
@@ -32,39 +32,25 @@ const Search = (props) => {
     if (!showNotFound && inputRef.current) inputRef.current.focus();
   }, [showNotFound, activeMenuStr]);
 
-  // Формування searchArea для хука
   const searchArea = (() => {
     switch (activeMenuStr) {
-      case "gov-ua":
-        return props.getGovUaMails;
-      case "lotus":
-        return props.getLotusMails;
-      case "phones":
-        return props.getPhones;
-      default:
-        return [];
+      case "gov-ua": return props.getGovUaMails;
+      case "lotus": return props.getLotusMails;
+      case "phones": return props.getPhones;
+      default: return [];
     }
   })();
 
-  // Виклик хука для отримання відфільтрованих даних
   const { data: filteredPageData, isFilterApplied } = useFilteredPageData(searchArea);
-  const handleOnClearSearchFormButtonClick = () => {
-    props.clearSearchForm(activeMenuStr);
-  };
 
-  const handleOnSearchButtonClick = (e) => {
-    e.preventDefault();
-    runSearch();
- }
-
-    const runSearch=()=>{
-         const searchValueTrimmed = draftValue.trim();
+  const runSearch = () => {
+    const searchValueTrimmed = draftValue.trim();
     if (searchValueTrimmed.length < 3) return;
 
     const searchTarget = isFilterApplied ? filteredPageData : searchArea;
 
     const excludedKeys = [
-      "type", "userId", "userTypeId","userTypePriority",
+      "type", "userId", "userTypeId", "userTypePriority",
       "userPositionPriority", "departmentId", "departmentPriority",
       "sectionId", "sectionPriority"
     ];
@@ -100,22 +86,30 @@ const Search = (props) => {
     if (!foundResults.length) {
       setShowNotFound(true);
       setTimeout(() => setShowNotFound(false), 1000);
+      setLastSearchFound(false); // нічого не знайдено
+    } else {
+      setLastSearchFound(true); // щось знайдено
     }
 
     props.addFoundItems(activeMenuStr, searchValueTrimmed, foundResults);
   };
- 
-   
-useEffect(() => {
-  switch (props.activeMenu){
-    case "Gov-ua": isFounded = props.isGovUaSearchValueFounded; break
-    case "Lotus": isFounded = props.isLotusSearchValueFounded; break
-    case "phones": isFounded = props.isPhonesSearchValueFound; break
-  }
-  debugger;
- /* if(isFounded)*/ runSearch();
-}, [props.getIndexesOfFiltredResults]);
 
+  const handleOnSearchButtonClick = (e) => {
+    e.preventDefault();
+    runSearch();
+    setUserSearchedOnce(true);
+  };
+
+  const handleOnClearSearchFormButtonClick = () => {
+    props.clearSearchForm(activeMenuStr);
+  };
+
+  // Автоматичний пошук при зміні індексів, якщо користувач хоча б раз шукав і минулий пошук щось знайшов
+  useEffect(() => {
+    if (!userSearchedOnce) return;
+    if (!lastSearchFound) return; 
+    runSearch();
+  }, [props.getIndexesOfFiltredResults]);
 
   return (
     <SearchForm
@@ -133,14 +127,11 @@ useEffect(() => {
   );
 };
 
-
-
 const mapStateToProps = (state) => {
   const menu = activeMenu(state);
 
   return {
     activeMenu: menu,
-    isFilterAppliedSelector: (m) => state.filters?.[m]?.isApplied || false,
     isPresentedSearchField: isPresentedSearchField(state),
     getGovUaMails: getGovUaMails(state),
     getLotusMails: getLotusMails(state),
@@ -148,12 +139,10 @@ const mapStateToProps = (state) => {
     searchFieldValue: (m) => state.toggledElements.searchField[m]?.searchValue || "",
     draftValue: (m) => state.toggledElements.searchField[m]?.draftValue || "",
     getCountOfFoundResults: (m) => getCountOfFoundResults(state, m),
-    getCountOfPresentedElement: (m) => getCountOfPresentedElement(state, m),
-    getDepartmentsAndSectionsPerPage: getDepartmentsAndSectionsPerPage(state),
-    getIndexesOfFiltredResults:getIndexesOfFiltredResults(state,menu),
-    isGovUaSearchValueFounded:isGovUaSearchValueFounded(state),
-    isLotusSearchValueFounded:isLotusSearchValueFounded(state),
-    isPhonesSearchValueFound:isPhonesSearchValueFound(state)
+    getIndexesOfFiltredResults: getIndexesOfFiltredResults(state, menu),
+    isGovUaSearchValueFounded: isGovUaSearchValueFounded(state),
+    isLotusSearchValueFounded: isLotusSearchValueFounded(state),
+    isPhonesSearchValueFound: isPhonesSearchValueFound(state)
   };
 };
 

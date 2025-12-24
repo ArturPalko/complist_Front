@@ -1,15 +1,15 @@
-import {  usecontext } from "../../redux/hooks/hooks";
+import React from "react";
 import { useSearchToggle, usePasswordsToggle } from "../../redux/hooks/hooks.js";
 import s from "./TopTableBar.module.css";
 
-const TopTableBar = ({ title, mailType }) => {
-    const { handleToggleSearchField, valueOfSearchCheckBox } = useSearchToggle();
+const TopTableBar = React.forwardRef(({ title, mailType }, ref) => {
+  const { handleToggleSearchField, valueOfSearchCheckBox } = useSearchToggle();
   const { valueOfpasswordCheckbox, handleTogglePasswords } = usePasswordsToggle();
+
   return (
-    <div className={s.headerPanel}>
+    <div ref={ref} className={s.headerPanel}>
       <h2>{title}</h2>
       <div className={s.buttonsBar}>
-
         <div className={s.switchWrapper}>
           <div>
             <label className={s.switch}>
@@ -26,7 +26,7 @@ const TopTableBar = ({ title, mailType }) => {
           </div>
         </div>
 
-        {(mailType === "lotus" || mailType == "gov-ua") && (
+        {(mailType === "lotus" || mailType === "gov-ua") && (
           <div className={s.switchWrapper}>
             <div>
               <label className={s.switch}>
@@ -43,10 +43,9 @@ const TopTableBar = ({ title, mailType }) => {
             </div>
           </div>
         )}
-
       </div>
     </div>
   );
-};
+});
 
 export default TopTableBar;

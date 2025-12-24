@@ -13,7 +13,9 @@ export const usePhonesTableLogic = ({
   indexesOfFoundResultsForCurrentPage,
   departmentsAndSectionsPerPage,
   foundResults = [],
-  indexDataOfFoundResultsForFoundResultsPage = []
+  indexDataOfFoundResultsForFoundResultsPage = [],
+  headerRef,
+  titleRef
 }) => {
   const rowRefs = useRef([]);
   const colNumbersRef = useRef([]);
@@ -58,18 +60,18 @@ export const usePhonesTableLogic = ({
     });
 
   // Синхронізація висот рядків
-  const syncHeights = () => {
-    rowRefs.current.forEach((tr, i) => {
-      if (tr && colNumbersRef.current[i]) {
-        const td = tr.querySelector(`td[data-key='${tr.dataset.key}']`) || tr.querySelector("td");
-        if (td) {
-          colNumbersRef.current[i].style.height = `${td.offsetHeight}px`;
-        }
-      }
-    });
-  };
+  // const syncHeights = () => {
+  //   rowRefs.current.forEach((tr, i) => {
+  //     if (tr && colNumbersRef.current[i]) {
+  //       const td = tr.querySelector(`td[data-key='${tr.dataset.key}']`) || tr.querySelector("td");
+  //       if (td) {
+  //         colNumbersRef.current[i].style.height = `${td.offsetHeight}px`;
+  //       }
+  //     }
+  //   });
+  // };
 
-  useRowHeights(rowRefs, colNumbersRef, [pageData]);
+  useRowHeights(rowRefs, colNumbersRef, [pageData],headerRef,titleRef);
 
   return {
     pageData,

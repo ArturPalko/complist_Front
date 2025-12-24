@@ -2,8 +2,12 @@ import React from "react";
 import s from "./PhonesTable.module.css";
 import { usePhonesTableLogic } from "../../redux/hooks/usePhonesTableLogic";
 import { useFoundResults } from "../../redux/hooks/hooks";
+import  { useRef } from "react";
+
+
 
 const PhonesTable = ({
+  titleRef,
   isDataFetching,
   columns,
   pageNumber,
@@ -12,8 +16,12 @@ const PhonesTable = ({
   isRenderFromFoundResultsPage,
   departmentsAndSectionsPerPage
 }) => {
+  // Рефи для заголовка таблиці та title
+  const headerRef = useRef(null);
 
-  const { foundResults, indexDataOfFoundResultsForFoundResultsPage } = useFoundResults() || { foundResults: [], indexDataOfFoundResultsForFoundResultsPage: [] };
+  const { foundResults, indexDataOfFoundResultsForFoundResultsPage } =
+    useFoundResults() || { foundResults: [], indexDataOfFoundResultsForFoundResultsPage: [] };
+
   const {
     pageData,
     rowRefs,
@@ -32,9 +40,13 @@ const PhonesTable = ({
     indexesOfFoundResultsForCurrentPage,
     departmentsAndSectionsPerPage,
     foundResults,
-    indexDataOfFoundResultsForFoundResultsPage
+    indexDataOfFoundResultsForFoundResultsPage,
+    headerRef,
+    titleRef
   });
+
   let indexDecrement = 0;
+  // const titleRef = useRef(null);  // реф для заголовка сторінки або секції
   // debugger
   return (
     <div className={s.content}>
@@ -50,7 +62,7 @@ const PhonesTable = ({
         )}
 
         <table>
-          <thead>
+          <thead ref={headerRef}>
             <tr>
               {indexDataOfFoundResultsForFoundResultsPage && <th rowSpan="2" className={s.indexesColumnHeader}>Індекси</th>}
               <th rowSpan="2">№ п/п</th>
