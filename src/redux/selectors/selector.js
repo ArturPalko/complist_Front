@@ -1,4 +1,5 @@
 import userEvent from "@testing-library/user-event";
+import { createSelector } from "@reduxjs/toolkit";
 
 export const rowsPerPage = 18;
 export const foundSearchValueOfPhonesPage = (state) => 
@@ -232,114 +233,112 @@ export const getCountOfFoundResults = (state, typeOfPage) =>{
 }
   
 
-export const getCountOfPresentedElement = (state, activeMenu) => { 
-  let internalPhonesSelector = [];
-  let ciscoPhonesSelector = [];
-  let landLinePhonesSelector = [];
+export const getCountOfPresentedElement = createSelector(
+  [getPhones, getGovUaMails, getLotusMails, activeMenu],
+  (phonesData, govUaMails, lotusMails, activeMenuValue) => {
+    let internalPhonesSelector = [];
+    let ciscoPhonesSelector = [];
+    let landLinePhonesSelector = [];
 
-  let countOfDepartments = 0;
-  let countOfSections = 0;
-  let countOfUsers = 0;
-  let countOfMails = 0;
+    let countOfDepartments = 0;
+    let countOfSections = 0;
+    let countOfUsers = 0;
+    let countOfMails = 0;
 
-  let personalMails = 0;
-  let departmentMails = 0;
-  let sectionMails = 0;
+    let personalMails = 0;
+    let departmentMails = 0;
+    let sectionMails = 0;
 
-  let hasNewPostName = 0;
-  let passwordKnown = 0;
-  let hasResponsibleUser = 0;
+    let hasNewPostName = 0;
+    let passwordKnown = 0;
+    let hasResponsibleUser = 0;
 
+    const selectUniqueCount = (value) => {
+      const unique = new Set(value.map(obj => `${obj.phoneType}-${obj.phoneName}`));
+      return unique.size;
+    };
 
-  const selectUniqueCount = (value) => {
-    const unique = new Set(value.map(obj => `${obj.phoneType}-${obj.phoneName}`));
-    return unique.size;
-  };
-
-  const countMailData = (data) => {
-    data.forEach(element => {
-      countOfMails += element.rows.length;
-      element.rows.forEach(row => {
-        if (row.name != null) hasNewPostName++;
-        if (row.passwordKnown != false) passwordKnown++;
-        if (row.responsibleUser) hasResponsibleUser++;
-
-        switch (row.ownerType) {
-          case "User":
-            personalMails++;
-            break;
-          case "Department":
-            departmentMails++;
-            break;
-          case "Section":
-            sectionMails++;
-            break;
-        }
-      });
-    });
-  };
-
-  switch(activeMenu) {
-    case "phones": {
-      const data = getPhones(state) || [];
+    const countMailData = (data) => {
       data.forEach(element => {
+        countOfMails += element.rows.length;
         element.rows.forEach(row => {
-          if (!row.type) return;
-          switch(row.type) {
-            case "department":
-              countOfDepartments++;
+          if (row.name != null) hasNewPostName++;
+          if (row.passwordKnown != false) passwordKnown++;
+          if (row.responsibleUser) hasResponsibleUser++;
+
+          switch (row.ownerType) {
+            case "User":
+              personalMails++;
               break;
-            case "section":
-              countOfSections++;
+            case "Department":
+              departmentMails++;
               break;
-            case "user":
-              countOfUsers++;
-              row.phones?.forEach(phone => {
-                switch(phone.phoneType) {
-                  case "Внутрішній": internalPhonesSelector.push(phone); break;
-                  case "Міський": landLinePhonesSelector.push(phone); break;
-                  case "IP (Cisco)": ciscoPhonesSelector.push(phone); break;
-                }
-              });
+            case "Section":
+              sectionMails++;
               break;
           }
         });
       });
-      break;
+    };
+
+    switch (activeMenuValue) {
+      case "phones": {
+        const data = phonesData || [];
+        data.forEach(element => {
+          element.rows.forEach(row => {
+            if (!row.type) return;
+            switch (row.type) {
+              case "department":
+                countOfDepartments++;
+                break;
+              case "section":
+                countOfSections++;
+                break;
+              case "user":
+                countOfUsers++;
+                row.phones?.forEach(phone => {
+                  switch(phone.phoneType) {
+                    case "Внутрішній": internalPhonesSelector.push(phone); break;
+                    case "Міський": landLinePhonesSelector.push(phone); break;
+                    case "IP (Cisco)": ciscoPhonesSelector.push(phone); break;
+                  }
+                });
+                break;
+            }
+          });
+        });
+        break;
+      }
+
+      case "gov-ua":
+        countMailData(govUaMails || []);
+        break;
+
+      case "lotus":
+        countMailData(lotusMails || []);
+        break;
+
+      default:
+        break;
     }
 
-    case "gov-ua": {
-      const data = getGovUaMails(state) || [];
-      countMailData(data);
-      break;
-    }
-
-    case "lotus": {
-      const data = getLotusMails(state) || [];
-      countMailData(data);
-      break;
-    }
-
-    default:
-      break;
+    return {
+      countOfDepartments,
+      countOfSections,
+      countOfUsers,
+      countOfMails,
+      countOfLandlinePhones: selectUniqueCount(landLinePhonesSelector),
+      countOfCiscoPhones: selectUniqueCount(ciscoPhonesSelector),
+      countOfInternalPhones: selectUniqueCount(internalPhonesSelector),
+      personalMails,
+      departmentMails,
+      sectionMails,
+      hasNewPostName,
+      passwordKnown,
+      hasResponsibleUser
+    };
   }
-
-  return { 
-    countOfDepartments,
-    countOfSections,
-    countOfUsers,
-    countOfMails,
-    countOfLandlinePhones: selectUniqueCount(landLinePhonesSelector),
-    countOfCiscoPhones: selectUniqueCount(ciscoPhonesSelector),
-    countOfInternalPhones: selectUniqueCount(internalPhonesSelector),
-    personalMails,
-    departmentMails,
-    sectionMails,
-    hasNewPostName,
-    passwordKnown,
-    hasResponsibleUser
-  };
-};
+);
 
 
 
@@ -432,4 +431,7 @@ export const getLastVisitedPage = (state,menu) =>
 
 
 
-getIndexesOfFiltredResults
+export const getCountOfUsers = createSelector(
+  [getCountOfPresentedElement],
+  (counts) => counts.countOfUsers
+);

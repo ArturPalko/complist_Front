@@ -1,19 +1,15 @@
-// src/redux/hooks/useFilters.js
-import { useState, useEffect, useRef, useCallback } from "react";
-import { redirect, useNavigate } from "react-router-dom";
-import { redirectToPage } from "../../Components/NavBar/commonFunctions";
-import { addFilter } from "../selectors/filterData-reducer";
-import { getLastVisitedPage } from "../selectors/selector";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+
+import { getLastVisitedPage } from "../selectors/selector";
 import { filterGroups, conditions, filterPoints } from "./useFiltersFunctions/filtersLogics";
 import { computeFilteredChunks } from "./useFiltersFunctions/computeFilteredChunks";
 import { redirectToCurrentPage as redirectUtil } from "./useFiltersFunctions/redirectToCurrentPage";
-import { handleOnCheckboxChangeHandler } from "./useFiltersFunctions/handlers/handleOnCheckboxChange.js";
-import { handleOnClearFormButtonClickHandler } from "./useFiltersFunctions/handlers/handleOnClearFormButtonClick.js";
-
+import { handleOnCheckboxChangeHandler } from "./useFiltersFunctions/handlers/handleOnCheckboxChange";
+import { handleOnClearFormButtonClickHandler } from "./useFiltersFunctions/handlers/handleOnClearFormButtonClick";
+import { useMemo } from "react";
 const CHUNK_SIZE = 18;
-
-
 
 export const useFilters = (props = {}) => {
   const {
@@ -32,62 +28,82 @@ export const useFilters = (props = {}) => {
   } = props;
 
   const navigate = useNavigate();
+  const lastPage = useSelector((state) => getLastVisitedPage(state, activeMenu));
 
-  const [filteredChunks, setFilteredChunks] = useState([]);
+  // ---------------- STATE ----------------
+  const [phonesSubConditions, setPhonesSubConditions] = useState({});
   const [lotusFilters, setLotusFilters] = useState({});
   const [govUaFilters, setGovUaFilters] = useState({});
   const [phonesFilters, setPhonesFilters] = useState({});
-  const [phonesSubConditions, setPhonesSubConditions] = useState({});
 
-  const lastPage = useSelector(state => getLastVisitedPage(state, activeMenu));
-
-  const filterPointsForCurrentMenu = (filterPoints || []).filter((p) =>
-    p.pages.includes((activeMenu || "").toLowerCase())
-  );
-
-  const groupedFilterPoints = filterPointsForCurrentMenu.reduce((acc, item) => {
-    if (!acc[item.groupName]) acc[item.groupName] = [];
-    acc[item.groupName].push(item);
-    return acc;
-  }, {});
-
+  // ---------------- CURRENT FILTERS ----------------
   const currentFilters =
-    activeMenu === "Lotus" ? lotusFilters :
-    activeMenu === "Gov-ua" ? govUaFilters :
-    phonesFilters;
+    activeMenu === "Lotus"
+      ? lotusFilters
+      : activeMenu === "Gov-ua"
+      ? govUaFilters
+      : phonesFilters;
 
+  // ---------------- SYNC SUBCONDITIONS ----------------
+  useEffect(() => {
+    if (activeMenu !== "phones") return;
+
+    const result = {};
+    const storedSubFilters = getSubFilters || {};
+
+    Object.entries(storedSubFilters).forEach(([category, keysObj]) => {
+      const activeKeys = Object.entries(keysObj || {})
+        .filter(([, v]) => v)
+        .map(([k]) => k);
+
+      if (!activeKeys.length) return;
+
+      result[category] = {};
+      activeKeys.forEach((key) => {
+        result[category][key] = (row) => {
+          if (category === "contactType") return row.userType === key;
+          if (category === "userPosition") return row.userPosition === key;
+          return false;
+        };
+      });
+    });
+
+    setPhonesSubConditions(result);
+  }, [getSubFilters, activeMenu]);
+
+  // ---------------- HELPERS ----------------
   const getAlternativeKeys = (key) => {
     const direct = filterGroups[key] || [];
-    const reverse = Object.keys(filterGroups).filter((k) => filterGroups[k].includes(key));
+    const reverse = Object.keys(filterGroups).filter((k) =>
+      filterGroups[k]?.includes(key)
+    );
     return [...direct, ...reverse];
   };
 
   const hasAnyFilters = (filters = {}, subConditions = {}) => {
-    const hasMain = Object.values(filters || {}).some(Boolean);
-    const hasSub = Object.values(subConditions || {}).some(
-      group => Object.keys(group || {}).length > 0
+    const hasMain = Object.values(filters).some(Boolean);
+    const hasSub = Object.values(subConditions).some(
+      (group) => Object.keys(group || {}).length > 0
     );
     return hasMain || hasSub;
   };
 
-  // Wrapper для хендлерів
+  // ---------------- REDIRECT ----------------
+  const redirectToCurrentPage = (filters = {}) => {
+    redirectUtil({
+      filters,
+      subConditions: phonesSubConditions,
+      lastPage,
+      hasAnyFiltersFn: hasAnyFilters,
+      navigate,
+      activeMenu,
+      GovUaCurrentPage,
+      lotusCurrentPage,
+      phonesCurrentPage
+    });
+  };
 
-
-const redirectToCurrentPage = (filters = {}, subConditions = phonesSubConditions) => {
-  redirectUtil({
-    filters,
-    subConditions,
-    lastPage: lastPage, // беремо з useSelector
-    hasAnyFiltersFn: hasAnyFilters,
-    navigate,
-    activeMenu,
-    GovUaCurrentPage,
-    lotusCurrentPage,
-    phonesCurrentPage
-  });
-};
-
-
+  // ---------------- HANDLERS ----------------
   const handleCheckboxChange = (key) =>
     handleOnCheckboxChangeHandler({
       key,
@@ -114,8 +130,58 @@ const redirectToCurrentPage = (filters = {}, subConditions = phonesSubConditions
       redirectToCurrentPage
     });
 
-  // --- useEffect для перерахунку chunks, синхронізації субфільтрів та скидання фільтрів залишаються без змін ---
+  // ---------------- FILTERING & DISPATCH (оптимізовано) ----------------
+  const filteredChunks = useMemo(() => {
+    if (!hasAnyFilters(currentFilters, phonesSubConditions)) return [];
 
+    const chunks = computeFilteredChunks({
+      state: currentFilters,
+      subConditions: phonesSubConditions,
+      activeMenu,
+      getGovUaMails,
+      getLotusMails,
+      getPhones,
+      conditions,
+      chunkSize: CHUNK_SIZE
+    });
+
+    if (typeof addIndexesOfFiltredResults === "function") {
+      addIndexesOfFiltredResults(activeMenu, chunks);
+    }
+
+    return chunks;
+  }, [
+    currentFilters,
+    phonesSubConditions,
+    activeMenu,
+    getGovUaMails,
+    getLotusMails,
+    getPhones,
+    addIndexesOfFiltredResults
+  ]);
+
+  // ---------------- UI HELPERS ----------------
+  const filterPointsForCurrentMenu = (filterPoints || []).filter((p) =>
+    p.pages.includes((activeMenu || "").toLowerCase())
+  );
+
+  const groupedFilterPoints = filterPointsForCurrentMenu.reduce((acc, item) => {
+    if (!acc[item.groupName]) acc[item.groupName] = [];
+    acc[item.groupName].push(item);
+    return acc;
+  }, {});
+
+  // ---------------- RESET WHEN PANEL HIDDEN ----------------
+  useEffect(() => {
+    if (!isPresentedFielterPanel) {
+      setLotusFilters({});
+      setGovUaFilters({});
+      setPhonesFilters({});
+      setPhonesSubConditions({});
+    }
+  }, [isPresentedFielterPanel]);
+
+  // ---------------- RETURN ----------------
   return {
     filteredChunks,
     groupedFilterPoints,

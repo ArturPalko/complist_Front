@@ -9,7 +9,10 @@ import {
   getCountOfFoundResults,
   getCountOfPresentedElement,
   getDepartmentsAndSectionsPerPage,
-  getIndexesOfFiltredResults
+  getIndexesOfFiltredResults,
+  isGovUaSearchValueFounded,
+  isLotusSearchValueFounded,
+  isPhonesSearchValueFound
 } from "../../../redux/selectors/selector.js";
 import { addFoundItems, clearSearchForm, updateDraftValue } from "../../../redux/toggledElements-reducer";
 import SearchForm from "./SearchForm/SearchForm.jsx";
@@ -23,6 +26,7 @@ const Search = (props) => {
   const draftValue = props.draftValue(activeMenuStr);
   const searchValue = props.searchFieldValue(activeMenuStr);
   const inputValue = showNotFound ? "Не знайдено" : draftValue || searchValue || "";
+  let isFounded;
 
   useEffect(() => {
     if (!showNotFound && inputRef.current) inputRef.current.focus();
@@ -103,7 +107,13 @@ const Search = (props) => {
  
    
 useEffect(() => {
-  runSearch();
+  switch (props.activeMenu){
+    case "Gov-ua": isFounded = props.isGovUaSearchValueFounded; break
+    case "Lotus": isFounded = props.isLotusSearchValueFounded; break
+    case "phones": isFounded = props.isPhonesSearchValueFound; break
+  }
+  debugger;
+ /* if(isFounded)*/ runSearch();
 }, [props.getIndexesOfFiltredResults]);
 
 
@@ -140,7 +150,10 @@ const mapStateToProps = (state) => {
     getCountOfFoundResults: (m) => getCountOfFoundResults(state, m),
     getCountOfPresentedElement: (m) => getCountOfPresentedElement(state, m),
     getDepartmentsAndSectionsPerPage: getDepartmentsAndSectionsPerPage(state),
-    getIndexesOfFiltredResults:getIndexesOfFiltredResults(state,menu)
+    getIndexesOfFiltredResults:getIndexesOfFiltredResults(state,menu),
+    isGovUaSearchValueFounded:isGovUaSearchValueFounded(state),
+    isLotusSearchValueFounded:isLotusSearchValueFounded(state),
+    isPhonesSearchValueFound:isPhonesSearchValueFound(state)
   };
 };
 

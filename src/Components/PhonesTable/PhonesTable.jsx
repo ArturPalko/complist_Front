@@ -35,6 +35,7 @@ const PhonesTable = ({
     indexDataOfFoundResultsForFoundResultsPage
   });
   let indexDecrement = 0;
+  // debugger
   return (
     <div className={s.content}>
       <div className={s.tableWrapper + " " + showDigitsFromPressed}>
