@@ -109,13 +109,16 @@ export const useFilters = (props = {}) => {
       activeMenu,
       lotusFilters,
       setLotusFilters,
+      setPhonesSubConditions,
       govUaFilters,
       setGovUaFilters,
       phonesFilters,
       setPhonesFilters,
       phonesSubConditions,
       addFilter,
-      redirectToCurrentPage
+      redirectToCurrentPage,
+      hasAnyFilters,
+      clearCurrentForm
     });
 
   const handleOnClearFormButtonClick = () =>

@@ -12,7 +12,6 @@ import {
   phonesCurrentPage,
   isFilterAppliedSelector,
   isPresentedFielterPanel,
-  getCountOfUsersSelector,
   getCountOfUsers,
   getCountOfMails
 } from "../../../redux/selectors/selector";
@@ -72,12 +71,14 @@ const FilterPanel = (props) => {
 
   const contactsCount = useMemo(() => {
     if (!props.isFilterApplied) {
-      if(props.activeMenu =="phones"){
-        return props.getCountOfUsers ;
-      }
-      else{
-        return props.getCountOfMails;
-      
+      if (props.activeMenu.toLowerCase() === "phones") {
+        let a = props.getCountOfUsers("phones");
+        debugger;
+        return a
+      } else if (props.activeMenu.toLowerCase() === "lotus") {
+        return props.getCountOfMails("Lotus");
+      } else if (props.activeMenu.toLowerCase() === "gov-ua") {
+        return props.getCountOfMails("Gov-ua");
       }
     }
 
@@ -85,7 +86,14 @@ const FilterPanel = (props) => {
       filteredChunks,
       dataByMenu: dataFromStore
     });
-  }, [filteredChunks, dataFromStore, props.isFilterApplied]);
+  }, [
+    filteredChunks,
+    dataFromStore,
+    props.isFilterApplied,
+    props.activeMenu,
+    props.getCountOfUsers,
+    props.getCountOfMails
+  ]);
 
   return (
     <div className={s.panel}>
@@ -117,7 +125,7 @@ const FilterPanel = (props) => {
           </fieldset>
         ))}
 
-        {props.activeMenu === "phones" && (
+        {props.activeMenu.toLowerCase() === "phones" && (
           <CustomDropDown menus={phonesSubConditions} />
         )}
       </div>
@@ -139,8 +147,8 @@ const mapStateToProps = (state) => {
     phonesCurrentPage: phonesCurrentPage(state),
     isPresentedFielterPanel: isPresentedFielterPanel(state),
     isFilterApplied: isFilterAppliedSelector(menu)(state),
-    getCountOfUsers: getCountOfUsers(state),
-    getCountOfMails:getCountOfMails(state)
+    getCountOfUsers: (menuName) => getCountOfUsers(state, menuName),
+    getCountOfMails: (menuName) => getCountOfMails(state, menuName)
   };
 };
 

@@ -17,9 +17,20 @@ const StatusBar = ({ counts, activeMenu }) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  counts: getCountOfPresentedElement(state, activeMenu(state).toLowerCase()),
-  activeMenu: activeMenu(state).toLowerCase(),
-});
+const mapStateToProps = (state) => {
+  const allCounts = getCountOfPresentedElement(state); // весь об’єкт counts
+  const menu = activeMenu(state).toLowerCase();
+
+  // вибираємо counts для активного меню
+  let countsForMenu = {};
+  if (menu === "phones") countsForMenu = allCounts.phones || {};
+  if (menu === "lotus") countsForMenu = allCounts.Lotus || {};
+  if (menu === "gov-ua") countsForMenu = allCounts["Gov-ua"] || {};
+
+  return {
+    counts: countsForMenu,
+    activeMenu: menu
+  };
+};
 
 export default connect(mapStateToProps)(StatusBar);

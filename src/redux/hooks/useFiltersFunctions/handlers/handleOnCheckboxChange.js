@@ -1,4 +1,3 @@
-// src/redux/hooks/useFiltersHandlers/handleCheckboxChange.js
 export const handleOnCheckboxChangeHandler = ({
   key,
   activeMenu,
@@ -8,32 +7,45 @@ export const handleOnCheckboxChangeHandler = ({
   setGovUaFilters,
   phonesFilters,
   setPhonesFilters,
+  setPhonesSubConditions,
   phonesSubConditions,
   addFilter,
-  redirectToCurrentPage
+  redirectToCurrentPage,
+  hasAnyFilters,
+  clearCurrentForm
 }) => {
+  let currentFilters;
+  let setFiltersFn;
+
   if (activeMenu === "Lotus") {
-    setLotusFilters(prev => {
-      const newFilters = { ...prev, [key]: !prev[key] };
-      redirectToCurrentPage(newFilters);
-      return newFilters;
-    });
+    currentFilters = lotusFilters;
+    setFiltersFn = setLotusFilters;
   } else if (activeMenu === "Gov-ua") {
-    setGovUaFilters(prev => {
-      const newFilters = { ...prev, [key]: !prev[key] };
-      redirectToCurrentPage(newFilters);
-      return newFilters;
-    });
+    currentFilters = govUaFilters;
+    setFiltersFn = setGovUaFilters;
   } else {
-    setPhonesFilters(prev => {
-      const newFilters = { ...prev, [key]: !prev[key] };
-      debugger;
-      redirectToCurrentPage(newFilters, phonesSubConditions);
-      return newFilters;
-    });
+    currentFilters = phonesFilters;
+    setFiltersFn = setPhonesFilters;
   }
 
-  if (activeMenu && key) {
-    addFilter(activeMenu, key);
+  const newFilters = { ...currentFilters, [key]: !currentFilters[key] };
+  const anyFiltersLeft = hasAnyFilters(newFilters, phonesSubConditions);
+debugger;
+  if (anyFiltersLeft==false) {
+  
+    setFiltersFn({});
+    if (activeMenu === "phones") setPhonesSubConditions({});
+    clearCurrentForm?.(activeMenu);
+    redirectToCurrentPage?.({}, phonesSubConditions);
+    debugger;
+    return;
   }
+
+  setFiltersFn(newFilters);
+
+  // Диспатч
+  addFilter(activeMenu, key);
+
+  // Редірект
+  redirectToCurrentPage?.(newFilters, phonesSubConditions);
 };
