@@ -310,18 +310,17 @@ export const getCountOfPresentedElement = createSelector(
         break;
       }
 
-      case "gov-ua":
+      case "Gov-ua":
         countMailData(govUaMails || []);
         break;
 
-      case "lotus":
+      case "Lotus":
         countMailData(lotusMails || []);
         break;
 
       default:
         break;
     }
-
     return {
       countOfDepartments,
       countOfSections,
@@ -435,3 +434,10 @@ export const getCountOfUsers = createSelector(
   [getCountOfPresentedElement],
   (counts) => counts.countOfUsers
 );
+
+export const getCountOfMails = createSelector(
+  [getCountOfPresentedElement],
+  
+  (counts) => counts.countOfMails
+);
+

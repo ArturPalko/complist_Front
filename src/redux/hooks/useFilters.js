@@ -83,6 +83,7 @@ export const useFilters = (props = {}) => {
     const hasSub = Object.values(subConditions).some(
       (group) => Object.keys(group || {}).length > 0
     );
+    debugger;
     return hasMain || hasSub;
   };
 

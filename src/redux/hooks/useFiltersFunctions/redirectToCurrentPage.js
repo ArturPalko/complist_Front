@@ -14,6 +14,7 @@ export const redirectToCurrentPage = ({
   if (lastPage === "foundResults") return;
 
   const hasFilters = hasAnyFiltersFn(filters, subConditions);
+  debugger;
 
   const pageParams = { navigate, activeMenu, GovUaCurrentPage, lotusCurrentPage, phonesCurrentPage };
 
@@ -22,6 +23,7 @@ export const redirectToCurrentPage = ({
     else if (activeMenu === "Lotus") pageParams.lotusCurrentPage = 1;
     else if (activeMenu === "phones") pageParams.phonesCurrentPage = 1;
   }
-
+  debugger;
   redirectToPage(pageParams);
+  
 };

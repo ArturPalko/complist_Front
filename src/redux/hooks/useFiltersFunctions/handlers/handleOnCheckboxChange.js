@@ -27,6 +27,7 @@ export const handleOnCheckboxChangeHandler = ({
   } else {
     setPhonesFilters(prev => {
       const newFilters = { ...prev, [key]: !prev[key] };
+      debugger;
       redirectToCurrentPage(newFilters, phonesSubConditions);
       return newFilters;
     });
@@ -35,5 +36,4 @@ export const handleOnCheckboxChangeHandler = ({
   if (activeMenu && key) {
     addFilter(activeMenu, key);
   }
-  debugger;
 };

@@ -13,7 +13,8 @@ import {
   isFilterAppliedSelector,
   isPresentedFielterPanel,
   getCountOfUsersSelector,
-  getCountOfUsers
+  getCountOfUsers,
+  getCountOfMails
 } from "../../../redux/selectors/selector";
 
 import s from "../FilterPanel/FilterPanel.module.css";
@@ -70,7 +71,15 @@ const FilterPanel = (props) => {
   ]);
 
   const contactsCount = useMemo(() => {
-    if (!props.isFilterApplied) return props.getCountOfUsers ;
+    if (!props.isFilterApplied) {
+      if(props.activeMenu =="phones"){
+        return props.getCountOfUsers ;
+      }
+      else{
+        return props.getCountOfMails;
+      
+      }
+    }
 
     return countContacts({
       filteredChunks,
@@ -82,7 +91,7 @@ const FilterPanel = (props) => {
     <div className={s.panel}>
       <div className={s.panelContent}>
         <div className={s.menu}>
-          <h4>Контактів: {contactsCount}</h4>
+          <h4>Записів: {contactsCount}</h4>
           <button onClick={handleOnClearFormButtonClick}>Скинути</button>
         </div>
 
@@ -130,7 +139,8 @@ const mapStateToProps = (state) => {
     phonesCurrentPage: phonesCurrentPage(state),
     isPresentedFielterPanel: isPresentedFielterPanel(state),
     isFilterApplied: isFilterAppliedSelector(menu)(state),
-    getCountOfUsers: getCountOfUsers(state)
+    getCountOfUsers: getCountOfUsers(state),
+    getCountOfMails:getCountOfMails(state)
   };
 };
 

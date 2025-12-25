@@ -34,6 +34,5 @@ export const computeFilteredChunks = ({
   for (let i = 0; i < allFilteredIndexes.length; i += chunkSize) {
     chunks.push({ pageIndex: chunks.length + 1, rows: allFilteredIndexes.slice(i, i + chunkSize) });
   }
-debugger;
   return chunks;
 };

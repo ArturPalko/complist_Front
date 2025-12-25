@@ -6,7 +6,8 @@ import { govUaCount, lotusCount, phonesCount, isPhonesSearchValueFound, foundSea
   getPhones, getPhonesCurrentPageNumber, activeMenu, isGovUaSearchValueFounded, isLotusSearchValueFounded, 
   foundSearchValueOfLotusMailsPage, foundSearchValueOfGovUaPage, getCountOfPageForFiltredResults, lotusCurrentPage,
    GovUaCurrentPage, phonesCurrentPage,
-   isFilterAppliedSelector} from "../../../redux/selectors/selector";
+   isFilterAppliedSelector,
+   isCurrentPageFoundResult} from "../../../redux/selectors/selector";
 import { rememberCurrentPagesActionCreator, setFilterPage, setLastVisitedPage, } from "../../../redux/pagesNavbar-reducer";
 import { togglepagesNavbarLinkElementOnCurrentPage } from "../../../redux/toggledElements-reducer";
 
@@ -21,6 +22,7 @@ const PagesNavBar = (props) => {
   const isPressed = useRef(false); 
   const delay = 1000;
   const navigate = useNavigate();
+  let isFoundResultsPage;
 
   let countOfPages = 0;
   let basePath = "";
@@ -48,6 +50,7 @@ const PagesNavBar = (props) => {
 
     }
   }
+  isFoundResultsPage=pageFromURL== "foundResults";
 
   let count = props.countFiltred(props.activeMenu);
   if ((!count || count.length === 0) && props.isFilterAppliedSelector(pageName) === false) {
@@ -139,7 +142,6 @@ const PagesNavBar = (props) => {
       );
 
       const indexes = Object.values(index).map(obj => Object.values(obj));
-      console.log("Indexes::::::", indexes);
       setIndexes(indexes);
 
     } else {
@@ -155,10 +157,9 @@ const PagesNavBar = (props) => {
     props.foundSearchValueOfGovUaPage, 
     props.foundSearchValueOfLotusMailsPage
   ]);
-
   return (
     <div className={s.navigationOfPage}>
-      {showFoundResultPage && (
+      {(showFoundResultPage ||isFoundResultsPage) && (
         <NavLink
           to={`${basePath}foundResults`}
           className={({ isActive }) =>
@@ -169,7 +170,7 @@ const PagesNavBar = (props) => {
         </NavLink>
       )}
 
-      {count > 0 &&
+      {count >0 &&
        Array.from({ length: count }, (_, i) => {
         const pageNumber = i + 1;
         return (
