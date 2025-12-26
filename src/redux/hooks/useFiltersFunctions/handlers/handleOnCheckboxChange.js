@@ -16,7 +16,7 @@ export const handleOnCheckboxChangeHandler = ({
 }) => {
   let currentFilters;
   let setFiltersFn;
-
+debugger;
   if (activeMenu === "Lotus") {
     currentFilters = lotusFilters;
     setFiltersFn = setLotusFilters;
@@ -45,7 +45,7 @@ debugger;
 
   // Диспатч
   addFilter(activeMenu, key);
-
+debugger;
   // Редірект
   redirectToCurrentPage?.(newFilters, phonesSubConditions);
 };

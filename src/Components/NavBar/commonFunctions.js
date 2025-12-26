@@ -19,6 +19,7 @@ export const redirectToPage = ({
       break;
     case "phones":
       page = phonesCurrentPage ||1 ;
+      debugger;
       navigate(`/phones/${page}`);
       break;
     default:

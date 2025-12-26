@@ -73,7 +73,6 @@ const FilterPanel = (props) => {
     if (!props.isFilterApplied) {
       if (props.activeMenu.toLowerCase() === "phones") {
         let a = props.getCountOfUsers("phones");
-        debugger;
         return a
       } else if (props.activeMenu.toLowerCase() === "lotus") {
         return props.getCountOfMails("Lotus");

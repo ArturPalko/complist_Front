@@ -378,22 +378,13 @@ export const getLastVisitedPage = (state,menu) =>
 
 
 
-// export const getCountOfUsers = createSelector(
-//   [getCountOfPresentedElement],
-//   (counts) => counts.countOfUsers
-// );
 
-// export const getCountOfMails = createSelector(
-//   [getCountOfPresentedElement],
-  
-//   (counts) => counts.countOfMails
-// );
 export const getCountOfUsers = (state, menu) => {
-  const counts = getCountOfPresentedElement(state, menu) || {};
-  return counts.countOfUsers || 0;
+  const counts = getCountOfPresentedElement(state) || {}; // menu більше не передаємо всередину селектора
+  return counts[menu]?.countOfUsers || 0;
 };
 
 export const getCountOfMails = (state, menu) => {
-  const counts = getCountOfPresentedElement(state, menu) || {};
-  return counts.countOfMails || 0;
+  const counts = getCountOfPresentedElement(state) || {};
+  return counts[menu]?.countOfMails || 0;
 };

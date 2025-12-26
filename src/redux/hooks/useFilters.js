@@ -42,32 +42,53 @@ export const useFilters = (props = {}) => {
       ? govUaFilters
       : phonesFilters;
 
+  const prevChunks = useRef([]);
+
   // ---------------- SYNC SUBCONDITIONS ----------------
-  useEffect(() => {
-    if (activeMenu !== "phones") return;
+  // 1️⃣ useEffect для оновлення саб-фільтрів
+useEffect(() => {
+  if (activeMenu !== "phones") return;
 
-    const result = {};
-    const storedSubFilters = getSubFilters || {};
+  const storedSubFilters = getSubFilters || {};
+  const result = {};
 
-    Object.entries(storedSubFilters).forEach(([category, keysObj]) => {
-      const activeKeys = Object.entries(keysObj || {})
-        .filter(([, v]) => v)
-        .map(([k]) => k);
+  Object.entries(storedSubFilters).forEach(([category, keysObj]) => {
+    const activeKeys = Object.entries(keysObj || {})
+      .filter(([, v]) => v)
+      .map(([k]) => k);
 
-      if (!activeKeys.length) return;
+    // категорія завжди існує
+    result[category] = {};
 
-      result[category] = {};
-      activeKeys.forEach((key) => {
-        result[category][key] = (row) => {
-          if (category === "contactType") return row.userType === key;
-          if (category === "userPosition") return row.userPosition === key;
-          return false;
-        };
-      });
+    activeKeys.forEach((key) => {
+      result[category][key] = (row) => {
+        if (category === "contactType") return row.userType === key;
+        if (category === "userPosition") return row.userPosition === key;
+        return false;
+      };
     });
+  });
 
-    setPhonesSubConditions(result);
-  }, [getSubFilters, activeMenu]);
+  setPhonesSubConditions(result);
+}, [getSubFilters, activeMenu]);
+
+// 2️⃣ useEffect для редиректу, тільки для phones
+useEffect(() => {
+  if (activeMenu !== "phones") return;
+
+  // Викликаємо редирект після оновлення phonesSubConditions
+  redirectToCurrentPage({
+    filters: currentFilters,          // main-фільтри
+    subConditions: phonesSubConditions, // актуальні саб-фільтри
+    lastPage,
+    hasAnyFiltersFn: hasAnyFilters,
+    navigate,
+    activeMenu,
+    GovUaCurrentPage,
+    lotusCurrentPage,
+    phonesCurrentPage
+  });
+}, [phonesSubConditions, currentFilters]);
 
   // ---------------- HELPERS ----------------
   const getAlternativeKeys = (key) => {
@@ -121,7 +142,7 @@ export const useFilters = (props = {}) => {
       clearCurrentForm
     });
 
-  const handleOnClearFormButtonClick = () =>
+  const handleOnClearFormButtonClick = () => {
     handleOnClearFormButtonClickHandler({
       activeMenu,
       setLotusFilters,
@@ -131,12 +152,23 @@ export const useFilters = (props = {}) => {
       clearCurrentForm,
       redirectToCurrentPage
     });
+    // ✅ Скидання prevChunks та очищення індексів
+    prevChunks.current = [];
+    if (typeof addIndexesOfFiltredResults === "function") {
+      addIndexesOfFiltredResults(activeMenu, []);
+    }
+  };
 
   // ---------------- FILTERING & DISPATCH ----------------
-  const prevChunks = useRef([]);
-
   const filteredChunks = useMemo(() => {
-    if (!hasAnyFilters(currentFilters, phonesSubConditions)) return [];
+    if (!hasAnyFilters(currentFilters, phonesSubConditions)) {
+      // ✅ Очистка prevChunks і стору, якщо немає активних фільтрів
+      prevChunks.current = [];
+      if (typeof addIndexesOfFiltredResults === "function") {
+        addIndexesOfFiltredResults(activeMenu, []);
+      }
+      return [];
+    }
 
     const chunks = computeFilteredChunks({
       state: currentFilters,
@@ -185,6 +217,10 @@ export const useFilters = (props = {}) => {
       setGovUaFilters({});
       setPhonesFilters({});
       setPhonesSubConditions({});
+      prevChunks.current = [];
+      if (typeof addIndexesOfFiltredResults === "function") {
+        addIndexesOfFiltredResults(activeMenu, []);
+      }
     }
   }, [isPresentedFielterPanel]);
 
