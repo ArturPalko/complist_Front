@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
-import { getCountOfPresentedElement, activeMenu } from "../../../redux/selectors/selector";
+import { getCountsForActiveMenu } from "../../../redux/selectors/selector"; // новий селектор
+import { activeMenu as getActiveMenu } from "../../../redux/selectors/selector"; // твій активний menu селектор
 import s from "./StatusBar.module.css";
-import contacts from "../../../assets/contacts.png";
 import aca from "../../../assets/aca.png";
 import ConvertForLotusSVG from "../../../assets/Spinner/SVG/ConverForLotusSVG";
 import ConverForGovUaSVG from "../../../assets/Spinner/SVG/ConverForGovUaSVG";
@@ -9,7 +9,7 @@ import PhonesSVG from "../../../assets/Spinner/SVG/PhonesSVG";
 
 const StatusBar = ({ counts, activeMenu }) => {
   return (
-    <div >
+    <div>
       {activeMenu === "phones" && <PhonesSVG counts={counts} />}
       {activeMenu === "lotus" && <ConvertForLotusSVG counts={counts} aca={aca} />}
       {activeMenu === "gov-ua" && <ConverForGovUaSVG counts={counts} />}
@@ -17,20 +17,9 @@ const StatusBar = ({ counts, activeMenu }) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  const allCounts = getCountOfPresentedElement(state); // весь об’єкт counts
-  const menu = activeMenu(state).toLowerCase();
-
-  // вибираємо counts для активного меню
-  let countsForMenu = {};
-  if (menu === "phones") countsForMenu = allCounts.phones || {};
-  if (menu === "lotus") countsForMenu = allCounts.Lotus || {};
-  if (menu === "gov-ua") countsForMenu = allCounts["Gov-ua"] || {};
-
-  return {
-    counts: countsForMenu,
-    activeMenu: menu
-  };
-};
+const mapStateToProps = (state) => ({
+  counts: getCountsForActiveMenu(state),
+  activeMenu: getActiveMenu(state).toLowerCase()
+});
 
 export default connect(mapStateToProps)(StatusBar);

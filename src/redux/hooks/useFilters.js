@@ -44,52 +44,6 @@ export const useFilters = (props = {}) => {
 
   const prevChunks = useRef([]);
 
-  // ---------------- SYNC SUBCONDITIONS ----------------
-  // 1️⃣ useEffect для оновлення саб-фільтрів
-useEffect(() => {
-  if (activeMenu !== "phones") return;
-
-  const storedSubFilters = getSubFilters || {};
-  const result = {};
-
-  Object.entries(storedSubFilters).forEach(([category, keysObj]) => {
-    const activeKeys = Object.entries(keysObj || {})
-      .filter(([, v]) => v)
-      .map(([k]) => k);
-
-    // категорія завжди існує
-    result[category] = {};
-
-    activeKeys.forEach((key) => {
-      result[category][key] = (row) => {
-        if (category === "contactType") return row.userType === key;
-        if (category === "userPosition") return row.userPosition === key;
-        return false;
-      };
-    });
-  });
-
-  setPhonesSubConditions(result);
-}, [getSubFilters, activeMenu]);
-
-// 2️⃣ useEffect для редиректу, тільки для phones
-useEffect(() => {
-  if (activeMenu !== "phones") return;
-
-  // Викликаємо редирект після оновлення phonesSubConditions
-  redirectToCurrentPage({
-    filters: currentFilters,          // main-фільтри
-    subConditions: phonesSubConditions, // актуальні саб-фільтри
-    lastPage,
-    hasAnyFiltersFn: hasAnyFilters,
-    navigate,
-    activeMenu,
-    GovUaCurrentPage,
-    lotusCurrentPage,
-    phonesCurrentPage
-  });
-}, [phonesSubConditions, currentFilters]);
-
   // ---------------- HELPERS ----------------
   const getAlternativeKeys = (key) => {
     const direct = filterGroups[key] || [];
@@ -100,19 +54,18 @@ useEffect(() => {
   };
 
   const hasAnyFilters = (filters = {}, subConditions = {}) => {
-    const hasMain = Object.values(filters).some(Boolean);
+    const hasMain = Object.values(filters).some(v => v === true);
     const hasSub = Object.values(subConditions).some(
-      (group) => Object.keys(group || {}).length > 0
+      group => group && Object.values(group).some(v => v === true || typeof v === "function")
     );
-    debugger;
     return hasMain || hasSub;
   };
 
   // ---------------- REDIRECT ----------------
-  const redirectToCurrentPage = (filters = {}) => {
+  const redirectToCurrentPage = (filters = {}, subConditions = phonesSubConditions) => {
     redirectUtil({
       filters,
-      subConditions: phonesSubConditions,
+      subConditions,
       lastPage,
       hasAnyFiltersFn: hasAnyFilters,
       navigate,
@@ -122,6 +75,38 @@ useEffect(() => {
       phonesCurrentPage
     });
   };
+
+  // ---------------- SYNC SUBCONDITIONS & REDIRECT ----------------
+  useEffect(() => {
+    if (activeMenu !== "phones") return;
+
+    const storedSubFilters = getSubFilters || {};
+    const result = {};
+
+    Object.entries(storedSubFilters).forEach(([category, keysObj]) => {
+      const activeKeys = Object.entries(keysObj || {})
+        .filter(([, v]) => v === true)
+        .map(([k]) => k);
+
+      if (!activeKeys.length) return;
+
+      result[category] = {};
+      activeKeys.forEach((key) => {
+        result[category][key] = (row) => {
+          if (category === "contactType") return row.userType === key;
+          if (category === "userPosition") return row.userPosition === key;
+          return false;
+        };
+      });
+    });
+
+    // Оновлюємо саб-фільтри
+    setPhonesSubConditions(result);
+
+    // Редирект з актуальними саб-фільтрами
+    redirectToCurrentPage(currentFilters, result);
+
+  }, [getSubFilters, activeMenu, currentFilters]);
 
   // ---------------- HANDLERS ----------------
   const handleCheckboxChange = (key) =>
@@ -152,7 +137,6 @@ useEffect(() => {
       clearCurrentForm,
       redirectToCurrentPage
     });
-    // ✅ Скидання prevChunks та очищення індексів
     prevChunks.current = [];
     if (typeof addIndexesOfFiltredResults === "function") {
       addIndexesOfFiltredResults(activeMenu, []);
@@ -162,7 +146,6 @@ useEffect(() => {
   // ---------------- FILTERING & DISPATCH ----------------
   const filteredChunks = useMemo(() => {
     if (!hasAnyFilters(currentFilters, phonesSubConditions)) {
-      // ✅ Очистка prevChunks і стору, якщо немає активних фільтрів
       prevChunks.current = [];
       if (typeof addIndexesOfFiltredResults === "function") {
         addIndexesOfFiltredResults(activeMenu, []);

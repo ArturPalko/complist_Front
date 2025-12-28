@@ -11,10 +11,14 @@ import {
   lotusCurrentPage,
   phonesCurrentPage,
   isFilterAppliedSelector,
-  isPresentedFielterPanel,
-  getCountOfUsers,
-  getCountOfMails
+  isPresentedFielterPanel
 } from "../../../redux/selectors/selector";
+
+import {
+  getPhonesCount,
+  getLotusCount,
+  getGovUaCount
+} from "../../../redux/selectors/selector.js";
 
 import s from "../FilterPanel/FilterPanel.module.css";
 import CustomCheckbox from "./CustomCheckbox/CustomCheckBox.jsx";
@@ -28,6 +32,18 @@ import {
 
 import { useFilters } from "../../../redux/hooks/useFilters.js";
 import { countContacts } from "./countContacts.js";
+
+// Утиліти для кількості контактів по меню
+const getCountOfUsersByMenu = (state, menuName) => {
+  if (menuName === "phones") return getPhonesCount(state).countOfUsers || 0;
+  return 0;
+};
+
+const getCountOfMailsByMenu = (state, menuName) => {
+  if (menuName.toLowerCase() === "lotus") return getLotusCount(state).countOfMails || 0;
+  if (menuName.toLowerCase() === "gov-ua") return getGovUaCount(state).countOfMails || 0;
+  return 0;
+};
 
 const FilterPanel = (props) => {
   const {
@@ -71,13 +87,15 @@ const FilterPanel = (props) => {
 
   const contactsCount = useMemo(() => {
     if (!props.isFilterApplied) {
-      if (props.activeMenu.toLowerCase() === "phones") {
-        let a = props.getCountOfUsers("phones");
-        return a
-      } else if (props.activeMenu.toLowerCase() === "lotus") {
-        return props.getCountOfMails("Lotus");
-      } else if (props.activeMenu.toLowerCase() === "gov-ua") {
-        return props.getCountOfMails("Gov-ua");
+      switch (props.activeMenu.toLowerCase()) {
+        case "phones":
+          return getCountOfUsersByMenu(props.state, "phones");
+        case "lotus":
+          return getCountOfMailsByMenu(props.state, "lotus");
+        case "gov-ua":
+          return getCountOfMailsByMenu(props.state, "gov-ua");
+        default:
+          return 0;
       }
     }
 
@@ -90,8 +108,7 @@ const FilterPanel = (props) => {
     dataFromStore,
     props.isFilterApplied,
     props.activeMenu,
-    props.getCountOfUsers,
-    props.getCountOfMails
+    props.state
   ]);
 
   return (
@@ -136,6 +153,7 @@ const mapStateToProps = (state) => {
   const menu = activeMenu(state);
 
   return {
+    state, // передаємо весь state для useMemo та підрахунку
     activeMenu: menu,
     getGovUaMails: getGovUaMails(state),
     getLotusMails: getLotusMails(state),
@@ -145,9 +163,7 @@ const mapStateToProps = (state) => {
     lotusCurrentPage: lotusCurrentPage(state),
     phonesCurrentPage: phonesCurrentPage(state),
     isPresentedFielterPanel: isPresentedFielterPanel(state),
-    isFilterApplied: isFilterAppliedSelector(menu)(state),
-    getCountOfUsers: (menuName) => getCountOfUsers(state, menuName),
-    getCountOfMails: (menuName) => getCountOfMails(state, menuName)
+    isFilterApplied: isFilterAppliedSelector(menu)(state)
   };
 };
 

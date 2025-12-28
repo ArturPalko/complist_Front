@@ -1,6 +1,7 @@
 import userEvent from "@testing-library/user-event";
-import { selectUniqueCount,countMailData } from "./helFunctions/getCountOfPresentedElement ";
+import { selectUniqueCount,countMailData } from "./helpFunctions/countMailsData";
 import { createSelector } from "@reduxjs/toolkit";
+import { countPhoneData } from "./helpFunctions/countPhonesData";
 
 export const rowsPerPage = 18;
 export const foundSearchValueOfPhonesPage = (state) => 
@@ -234,56 +235,24 @@ export const getCountOfFoundResults = (state, typeOfPage) =>{
 }
   
 
-export const getCountOfPresentedElement = createSelector(
-  [getPhones, getGovUaMails, getLotusMails],
-  (phonesData, govUaMails, lotusMails) => {
-    // ---------------- PHONES ----------------
-    let internalPhones = [];
-    let landLinePhones = [];
-    let ciscoPhones = [];
+// //////////////////////////////////////////
+//////////////////////////////////////////
+//////////////////////////////////////////
+// кешовані селектори для кожного меню
+export const getPhonesCount = createSelector([getPhones], countPhoneData);
+export const getLotusCount = createSelector([getLotusMails], countMailData);
+export const getGovUaCount = createSelector([getGovUaMails], countMailData);
 
-    let countOfDepartments = 0;
-    let countOfSections = 0;
-    let countOfUsers = 0;
-
-    (phonesData || []).forEach(element => {
-      element.rows.forEach(row => {
-        if (!row.type) return;
-        switch (row.type) {
-          case "department": countOfDepartments++; break;
-          case "section": countOfSections++; break;
-          case "user":
-            countOfUsers++;
-            row.phones?.forEach(phone => {
-              switch(phone.phoneType) {
-                case "Внутрішній": internalPhones.push(phone); break;
-                case "Міський": landLinePhones.push(phone); break;
-                case "IP (Cisco)": ciscoPhones.push(phone); break;
-              }
-            });
-            break;
-        }
-      });
-    });
-
-    const phonesCount = {
-      countOfDepartments,
-      countOfSections,
-      countOfUsers,
-      countOfLandlinePhones: selectUniqueCount(landLinePhones),
-      countOfCiscoPhones: selectUniqueCount(ciscoPhones),
-      countOfInternalPhones: selectUniqueCount(internalPhones)
-    };
-
-    // ---------------- MAILS ----------------
-    const lotusCount = countMailData(lotusMails || []);
-    const govUaCount = countMailData(govUaMails || []);
-
-    return {
-      phones: phonesCount,
-      Lotus: lotusCount,
-      "Gov-ua": govUaCount
-    };
+// основний селектор з кешуванням для активного меню
+export const getCountsForActiveMenu = createSelector(
+  [activeMenu, getPhonesCount, getLotusCount, getGovUaCount],
+  (menu, phonesCount, lotusCount, govUaCount) => {
+    switch (menu.toLowerCase()) {
+      case 'phones': return phonesCount;
+      case 'lotus': return lotusCount;
+      case 'gov-ua': return govUaCount;
+      default: return {};
+    }
   }
 );
 
@@ -379,12 +348,3 @@ export const getLastVisitedPage = (state,menu) =>
 
 
 
-export const getCountOfUsers = (state, menu) => {
-  const counts = getCountOfPresentedElement(state) || {}; // menu більше не передаємо всередину селектора
-  return counts[menu]?.countOfUsers || 0;
-};
-
-export const getCountOfMails = (state, menu) => {
-  const counts = getCountOfPresentedElement(state) || {};
-  return counts[menu]?.countOfMails || 0;
-};

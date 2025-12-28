@@ -4,6 +4,7 @@ export const selectUniqueCount = (phones) =>
 
 // Підрахунок поштових даних
 export const countMailData = (data) => {
+  debugger;
   let countOfMails = 0;
   let personalMails = 0;
   let departmentMails = 0;

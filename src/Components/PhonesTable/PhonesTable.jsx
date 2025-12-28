@@ -47,7 +47,7 @@ const PhonesTable = ({
 
   let indexDecrement = 0;
   // const titleRef = useRef(null);  // реф для заголовка сторінки або секції
-  // debugger
+  
   return (
     <div className={s.content}>
       <div className={s.tableWrapper + " " + showDigitsFromPressed}>

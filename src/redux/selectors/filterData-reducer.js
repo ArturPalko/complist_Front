@@ -68,6 +68,8 @@ export const filterDataReducer = (state = initialState, action) => {
         ...state[menu].usedFilters,
         [filter]: !state[menu].usedFilters[filter] // toggle
     };
+    let checking = Object.values(newUsedFilters).some(Boolean);
+    debugger;
 
     return {
         ...state,
@@ -80,36 +82,46 @@ export const filterDataReducer = (state = initialState, action) => {
 }
 
 
-        case ADD_FILTRED_DATA_SUBCONDITIONS: {
+     case ADD_FILTRED_DATA_SUBCONDITIONS: {
   if (action.menu !== "phones") return state;
 
-  const currentVariety = state.phones.usedFilters.subFilters[action.variety] || {};
+  const currentVariety = state.phones.usedFilters.subFilters?.[action.variety] || {};
 
   const newVariety = {
     ...currentVariety,
     [action.subKey]: !currentVariety[action.subKey]
   };
 
+  const newSubFilters = {
+    ...state.phones.usedFilters.subFilters,
+    [action.variety]: newVariety
+  };
+
+  const newUsedFilters = {
+    ...state.phones.usedFilters,
+    subFilters: newSubFilters
+  };
+
+  // Перевіряємо, чи є хоча б один активний фільтр
+  const mainFiltersApplied = Object.values(newUsedFilters)
+    .filter(v => typeof v === "boolean")
+    .some(Boolean);
+
+  const subFiltersApplied = Object.values(newSubFilters)
+    .some(category =>
+      Object.values(category || {}).some(Boolean)
+    );
+
   return {
     ...state,
     phones: {
       ...state.phones,
-      usedFilters: {
-        ...state.phones.usedFilters,
-        subFilters: {
-          ...state.phones.usedFilters.subFilters,
-          [action.variety]: newVariety
-        }
-      },
-      isFilterApplied:
-        Object.values(state.phones.usedFilters)
-          .filter(v => typeof v === "boolean")
-          .some(Boolean) ||
-        Object.values(newVariety).some(Boolean)
+      usedFilters: newUsedFilters,
+      isFilterApplied: mainFiltersApplied || subFiltersApplied
     }
   };
-  
 }
+
 
 
 
