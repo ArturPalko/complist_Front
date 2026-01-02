@@ -8,9 +8,8 @@ import {
   getPhones,
   getCountOfFoundResults,
   getIndexesOfFiltredResults,
-  isGovUaSearchValueFounded,
-  isLotusSearchValueFounded,
-  isPhonesSearchValueFound
+  selectSearchValueByPage,
+  isSearchValueFoundByPage
 } from "../../../redux/selectors/selector.js";
 import { addFoundItems, clearSearchForm, updateDraftValue } from "../../../redux/toggledElements-reducer";
 import SearchForm from "./SearchForm/SearchForm.jsx";
@@ -20,13 +19,12 @@ const Search = (props) => {
   const activeMenuStr = props.activeMenu ? props.activeMenu.toLowerCase() : "";
   const [showNotFound, setShowNotFound] = useState(false);
   const [userSearchedOnce, setUserSearchedOnce] = useState(false);
-  const [lastSearchFound, setLastSearchFound] = useState(true); // чи щось знайдено в останньому пошуку
+  const [lastSearchFound, setLastSearchFound] = useState(true);
   const inputRef = useRef(null);
 
   const draftValue = props.draftValue(activeMenuStr);
   const searchValue = props.searchFieldValue(activeMenuStr);
   const inputValue = showNotFound ? "Не знайдено" : draftValue || searchValue || "";
-  let isFounded;
 
   useEffect(() => {
     if (!showNotFound && inputRef.current) inputRef.current.focus();
@@ -86,9 +84,9 @@ const Search = (props) => {
     if (!foundResults.length) {
       setShowNotFound(true);
       setTimeout(() => setShowNotFound(false), 1000);
-      setLastSearchFound(false); // нічого не знайдено
+      setLastSearchFound(false);
     } else {
-      setLastSearchFound(true); // щось знайдено
+      setLastSearchFound(true);
     }
 
     props.addFoundItems(activeMenuStr, searchValueTrimmed, foundResults);
@@ -104,10 +102,9 @@ const Search = (props) => {
     props.clearSearchForm(activeMenuStr);
   };
 
-  // Автоматичний пошук при зміні індексів, якщо користувач хоча б раз шукав і минулий пошук щось знайшов
   useEffect(() => {
     if (!userSearchedOnce) return;
-    if (!lastSearchFound) return; 
+    if (!lastSearchFound) return;
     runSearch();
   }, [props.getIndexesOfFiltredResults]);
 
@@ -140,9 +137,10 @@ const mapStateToProps = (state) => {
     draftValue: (m) => state.toggledElements.searchField[m]?.draftValue || "",
     getCountOfFoundResults: (m) => getCountOfFoundResults(state, m),
     getIndexesOfFiltredResults: getIndexesOfFiltredResults(state, menu),
-    isGovUaSearchValueFounded: isGovUaSearchValueFounded(state),
-    isLotusSearchValueFounded: isLotusSearchValueFounded(state),
-    isPhonesSearchValueFound: isPhonesSearchValueFound(state)
+    // старі селектори замінені на універсальний
+    isGovUaSearchValueFounded: isSearchValueFoundByPage("gov-ua")(state),
+    isLotusSearchValueFounded: isSearchValueFoundByPage("lotus")(state),
+    isPhonesSearchValueFound: isSearchValueFoundByPage("phones")(state)
   };
 };
 

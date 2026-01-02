@@ -1,4 +1,5 @@
 import { passesFiltersForRow } from "./passesFiltersForRow";
+import { rowsPerPage as chunkSize } from "../../selectors/selector";
 
 export const computeFilteredChunks = ({
   state = {},
@@ -7,8 +8,7 @@ export const computeFilteredChunks = ({
   getGovUaMails = [],
   getLotusMails = [],
   getPhones = [],
-  conditions,
-  chunkSize = 18
+  conditions
 }) => {
   const activeFilters = Object.entries(state)
     .filter(([key, v]) => v && conditions[key])

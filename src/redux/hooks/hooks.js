@@ -5,8 +5,7 @@ import { useDispatch } from "react-redux";
 import { rememberPreviousLocationActionCreator } from "../pagesNavbar-reducer";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { getPhonesPageIndexDataOfFoundResults, getGovUaMailsPageIndexDataOfFoundResults,
-  getLotusMailsPageIndexDataOfFoundResults, getCurrentPageNumberByKey, getPageIndexDataOfFoundResultsByKey,
+import {getPageIndexDataOfFoundResultsByPage, getCurrentPageNumberByKey,
   getFilteredState , isFilterAppliedSelector
  } from "../selectors/selector";
 import redArrow from "../../../src/assets/red_arrow.png";
@@ -38,34 +37,45 @@ export const useTrackLocation = () => {
   }, [location, dispatch]);
 };
 
-export const useCurrentPageIndexData = (activeMenu) => {
-  const phonesData = useSelector(getPhonesPageIndexDataOfFoundResults);
-  const lotusData = useSelector(getLotusMailsPageIndexDataOfFoundResults);
-  const govUaData = useSelector(getGovUaMailsPageIndexDataOfFoundResults);
 
+
+
+
+export const useCurrentPageIndexData = (activeMenu) => {
+  const phonesData = useSelector(getPageIndexDataOfFoundResultsByPage("phones")) || [];
+  const lotusData = useSelector(getPageIndexDataOfFoundResultsByPage("lotus")) || [];
+  const govUaData = useSelector(getPageIndexDataOfFoundResultsByPage("gov-ua")) || [];
 
   switch(activeMenu) {
     case "phones":
-      return phonesData || [];
+      return phonesData;
     case "Lotus":
-      return lotusData || [];
+      return lotusData;
     case "Gov-ua":
-      return govUaData || [];
+      return govUaData;
     default:
       return [];
   }
 };
 
-export const useIndexesForPage = (pageKey) => {
-  const pageNumber = useSelector(state => getCurrentPageNumberByKey(pageKey)(state));
-  const data = useSelector(state => getPageIndexDataOfFoundResultsByKey(pageKey.toLowerCase())(state)) || [];
 
+
+export const useIndexesForPage = (pageKey) => {
+  // поточна сторінка для конкретного меню
+
+
+  const pageNumber = useSelector(state => getCurrentPageNumberByKey(pageKey)(state));
+
+  // знайдені результати для цієї сторінки
+  const data = useSelector(state => getPageIndexDataOfFoundResultsByPage(pageKey)(state)) || [];
+
+  // відбираємо індекси для поточної сторінки
   const indexes = data
-     .filter(item => Number(item.currentPage) === Number(pageNumber))
+    .filter(item => Number(item.currentPage) === Number(pageNumber))
     .map(item => item.index);
+
   return indexes;
 };
-
 
 export const useRowHighlighting = (
   indexDataOfFoundResultsForFoundResultsPage,

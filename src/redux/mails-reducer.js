@@ -1,6 +1,7 @@
 
 import { getGovUaMails, getLotusMails } from "./selectors/selector";
 import { createFetchThunk } from "./fetchDataThunkCreator";
+import { rowsPerPage as limitRows } from "./selectors/selector";
 
 
 const ADD_MAILS = "ADD_MAILS"
@@ -24,7 +25,6 @@ const initialState = {
 export const mailsReducer = (state = initialState, action) => {
     switch(action.type) {
         case ADD_MAILS  :
-             const limitRows = 18;
                 let countRows = 0;
                 let pageIndex = 1;
                 let pages = [];

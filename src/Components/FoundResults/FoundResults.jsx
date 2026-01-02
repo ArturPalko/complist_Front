@@ -1,7 +1,6 @@
 import { 
   activeMenu, getPhones, getGovUaMails, getLotusMails,
-  foundSearchValueOfPhonesPage, foundSearchValueOfLotusMailsPage,
-  foundSearchValueOfGovUaPage, rowsPerPage, isFilterAppliedSelector
+ selectSearchValueByPage, rowsPerPage, isFilterAppliedSelector
 } from "../../redux/selectors/selector";
 import { connect } from "react-redux";
 import { useEffect, useState, createContext } from "react";
@@ -100,9 +99,9 @@ const mapStateToProps = (state) => ({
   getPhones: getPhones(state),
   getLotusMails: getLotusMails(state),
   getGovUaMails: getGovUaMails(state),
-  foundSearchValueOfPhonesPage: foundSearchValueOfPhonesPage(state),
-  foundSearchValueOfLotusMailsPage: foundSearchValueOfLotusMailsPage(state),
-  foundSearchValueOfGovUaPage: foundSearchValueOfGovUaPage(state),
+  foundSearchValueOfPhonesPage: selectSearchValueByPage("phones")(state),
+  foundSearchValueOfLotusMailsPage: selectSearchValueByPage("lotus")(state),
+  foundSearchValueOfGovUaPage: selectSearchValueByPage("gov-ua")(state),
   isFilterApplied: isFilterAppliedSelector(state)
 });
 

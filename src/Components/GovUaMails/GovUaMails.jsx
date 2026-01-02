@@ -14,6 +14,7 @@ import { useRef } from "react";
 const GovUAPage = (props) => {
   const pageName = "Gov-ua";
   const indexesOfFoundResultsForCurrentPage = useIndexesForPage(pageName);
+  debugger;
   const titleRef = useRef(null); // додали ref
 
   return (

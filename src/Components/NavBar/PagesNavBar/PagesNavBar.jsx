@@ -1,80 +1,84 @@
-import React, { useEffect, useState,useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import s from './PagesNavBar.module.css';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { connect } from "react-redux";
-import { govUaCount, lotusCount, phonesCount, isPhonesSearchValueFound, foundSearchValueOfPhonesPage, 
-  getPhones, getPhonesCurrentPageNumber, activeMenu, isGovUaSearchValueFounded, isLotusSearchValueFounded, 
-  foundSearchValueOfLotusMailsPage, foundSearchValueOfGovUaPage, getCountOfPageForFiltredResults, lotusCurrentPage,
-   GovUaCurrentPage, phonesCurrentPage,
-   isFilterAppliedSelector,
-   isCurrentPageFoundResult} from "../../../redux/selectors/selector";
-import { rememberCurrentPagesActionCreator, setFilterPage, setLastVisitedPage, } from "../../../redux/pagesNavbar-reducer";
-import { togglepagesNavbarLinkElementOnCurrentPage } from "../../../redux/toggledElements-reducer";
+import { 
+  selectPaginationPagesCount,
+  getCountOfPageForFiltredResults,
+  activeMenu,
+  isFilterAppliedSelector,
+  selectSearchValueByPage,
+  isSearchValueFoundByPage
+} from "../../../redux/selectors/selector";
 
+import { 
+  rememberCurrentPagesActionCreator, 
+  setFilterPage, 
+  setLastVisitedPage 
+} from "../../../redux/pagesNavbar-reducer";
+
+import { togglepagesNavbarLinkElementOnCurrentPage } from "../../../redux/toggledElements-reducer";
 
 const PagesNavBar = (props) => {
   const location = useLocation();
   const pathParts = location.pathname.split("/").filter(Boolean);
-  const [showFoundResultPage, setShowFoundResultsPage]= useState(false);
-  const keysToKeep = ["currentPage"];
+  const [showFoundResultPage, setShowFoundResultsPage] = useState(false);
   const [indexes, setIndexes] = useState([]);
   const pressTimer = useRef(null);
   const isPressed = useRef(false); 
+  const keysToKeep = ["currentPage"];
   const delay = 1000;
-  const navigate = useNavigate();
-  let isFoundResultsPage;
 
-  let countOfPages = 0;
-  let basePath = "";
+  const navigate = useNavigate();
+
+  // --- Визначаємо базові змінні
   let pageName = "";
+  let basePath = "";
   let pageFromURL = "1";
 
   if (pathParts[0] === "phones") {
-    countOfPages = props.phonesCount;
-    basePath = "/phones/";
     pageName = "phones";
+    basePath = "/phones/";
     pageFromURL = pathParts[1];
-
   } else if (pathParts[0] === "mails") {
     if (pathParts[1] === "Lotus") {
-      countOfPages = props.lotusCount;
-      basePath = "/mails/Lotus/";
       pageName = "Lotus";
+      basePath = "/mails/Lotus/";
       pageFromURL = pathParts[2];
-
     } else if (pathParts[1] === "Gov-ua") {
-      countOfPages = props.govUaCount;
-      basePath = "/mails/Gov-ua/";
       pageName = "Gov-ua";
+      basePath = "/mails/Gov-ua/";
       pageFromURL = pathParts[2];
-
     }
   }
-  isFoundResultsPage=pageFromURL== "foundResults";
 
+  const isFoundResultsPage = pageFromURL === "foundResults";
+
+  // --- Підрахунок кількості сторінок
   let count = props.countFiltred(props.activeMenu);
-  if ((!count || count.length === 0) && props.isFilterAppliedSelector(pageName) === false) {
-    count = countOfPages; // базова кількість сторінок до того, як дані з фільтру з'являться
+
+  if ((!count || count.length === 0) && !props.isFilterAppliedSelector(pageName)) {
+    count = props.pagesCount; // базова кількість сторінок до появи даних фільтру
   }
 
-  function handleNavLinkPressed(e) {
+  // --- Обробники натискання на NavLink
+  const handleNavLinkPressed = (e) => {
     if (pageFromURL === e.currentTarget.textContent) {
       pressTimer.current = setTimeout(() => {
         props.togglepagesNavbarLinkElementOnCurrentPage(true);
         isPressed.current = true;
       }, delay);
     }
-  }
+  };
 
-  function handleNavLinkUnpressed() {
+  const handleNavLinkUnpressed = () => {
     clearTimeout(pressTimer.current);
     if (isPressed.current) {
-      console.log("При кліку")
       props.togglepagesNavbarLinkElementOnCurrentPage(false);
     }
-  }
+  };
 
-  // 🔹 Визначаємо foundResults для всіх подальших перевірок
+  // --- Отримуємо foundResults для сторінки
   let foundResults;
   switch(pageName) {
     case "phones":
@@ -87,39 +91,39 @@ const PagesNavBar = (props) => {
       foundResults = props.foundSearchValueOfGovUaPage?.foundResults;
       break;
     default:
-      foundResults = null;
+      foundResults = [];
   }
 
+  // --- Effect для оновлення останніх відвіданих сторінок
   useEffect(() => {
     const isApplied = props.isFilterAppliedSelector(pageName);
-    if(pageName &&pageFromURL  && isApplied && foundResults?.length>0)
-    {
-      props.setLastVisitedPage(pageName,pageFromURL)
-      if(pageFromURL !="foundResults")
-      props.setFilterPage(pageName,pageFromURL)
-    }
-    if (pageName &&pageFromURL  && !isApplied) {
-       props.rememberCurrentPage(pageName, pageFromURL);
-    }
-    if(pageName &&pageFromURL && isApplied && foundResults?.length==0){
-      props.setFilterPage(pageName, pageFromURL)
-      props.setLastVisitedPage(pageName,pageFromURL)
+
+    if(pageName && pageFromURL) {
+      if(isApplied && foundResults?.length > 0) {
+        props.setLastVisitedPage(pageName, pageFromURL);
+        if(pageFromURL !== "foundResults") props.setFilterPage(pageName, pageFromURL);
+      } else if(!isApplied) {
+        props.rememberCurrentPage(pageName, pageFromURL);
+      } else if(isApplied && foundResults?.length === 0) {
+        props.setFilterPage(pageName, pageFromURL);
+        props.setLastVisitedPage(pageName, pageFromURL);
+      }
     }
   }, [location.pathname, pageName, pageFromURL, foundResults]);
 
-  let activeMenu = props.activeMenu;
-
+  // --- Effect для обробки пошуку
   useEffect(() => {
-    //console.log("ак-к-к",props.isPhonesSearchValueFound);
-    if ((activeMenu === "phones" && props.isPhonesSearchValueFound) || 
-        (activeMenu === "Lotus" && props.isLotusSearchValueFounded) ||
-        (activeMenu === "Gov-ua" && props.isGovUaSearchValueFounded)) {
-      
-      setShowFoundResultsPage(true);
-      console.log("Значення для відображення:", showFoundResultPage);
+    const active = props.activeMenu;
+    const isFound = 
+      (active === "phones" && props.isPhonesSearchValueFound) || 
+      (active === "Lotus" && props.isLotusSearchValueFounded) ||
+      (active === "Gov-ua" && props.isGovUaSearchValueFounded);
 
-      // 🔹 Визначаємо foundResults у залежності від активного меню
-      switch(activeMenu){
+    if (isFound) {
+      setShowFoundResultsPage(true);
+
+      // Обчислюємо індекси знайдених результатів
+      switch(active) {
         case "phones":
           foundResults = props.foundSearchValueOfPhonesPage?.foundResults;
           break;
@@ -132,8 +136,6 @@ const PagesNavBar = (props) => {
         default:
           foundResults = [];
       }
-      
-      console.log("FoundResults::::::",foundResults)
 
       const index = foundResults.map(result =>
         Object.fromEntries(
@@ -141,25 +143,25 @@ const PagesNavBar = (props) => {
         )
       );
 
-      const indexes = Object.values(index).map(obj => Object.values(obj));
-      setIndexes(indexes);
-
+      const newIndexes = Object.values(index).map(obj => Object.values(obj));
+      setIndexes(newIndexes);
     } else {
       setShowFoundResultsPage(false);
       setIndexes([]);
     }
   }, [
     props.activeMenu,
-    props.isPhonesSearchValueFound, 
-    props.isLotusSearchValueFounded, 
-    props.isGovUaSearchValueFounded, 
+    props.isPhonesSearchValueFound,
+    props.isLotusSearchValueFounded,
+    props.isGovUaSearchValueFounded,
     props.foundSearchValueOfPhonesPage,
-    props.foundSearchValueOfGovUaPage, 
-    props.foundSearchValueOfLotusMailsPage
+    props.foundSearchValueOfLotusMailsPage,
+    props.foundSearchValueOfGovUaPage
   ]);
+
   return (
     <div className={s.navigationOfPage}>
-      {(showFoundResultPage ||isFoundResultsPage) && (
+      {(showFoundResultPage || isFoundResultsPage) && (
         <NavLink
           to={`${basePath}foundResults`}
           className={({ isActive }) =>
@@ -170,56 +172,56 @@ const PagesNavBar = (props) => {
         </NavLink>
       )}
 
-      {count >0 &&
-       Array.from({ length: count }, (_, i) => {
-        const pageNumber = i + 1;
-        return (
-          <NavLink
-            onMouseDown={handleNavLinkPressed}
-            onMouseUp={handleNavLinkUnpressed}
-            onDragStart={e => e.preventDefault()}
-            onMouseLeave={() => {
-              clearTimeout(pressTimer.current);
-              props.togglepagesNavbarLinkElementOnCurrentPage(false);
-            }}
-            key={i}
-            to={`${basePath}${pageNumber}`}
-            className={({ isActive }) => `
-              ${s.pageNavigator}
-              ${isActive ? ` ${s.activeLink}` : ""}
-              ${indexes.some(page => page.includes(i + 1)) ? ` ${s.containsSearchedValues}` : ""}
-            `}
-          >
-            {pageNumber}
-          </NavLink>
-        );
-      })}
+      {count > 0 &&
+        Array.from({ length: count }, (_, i) => {
+          const pageNumber = i + 1;
+          return (
+            <NavLink
+              key={i}
+              to={`${basePath}${pageNumber}`}
+              onMouseDown={handleNavLinkPressed}
+              onMouseUp={handleNavLinkUnpressed}
+              onDragStart={e => e.preventDefault()}
+              onMouseLeave={() => {
+                clearTimeout(pressTimer.current);
+                props.togglepagesNavbarLinkElementOnCurrentPage(false);
+              }}
+              className={({ isActive }) => `
+                ${s.pageNavigator}
+                ${isActive ? ` ${s.activeLink}` : ""}
+                ${indexes.some(page => page.includes(pageNumber)) ? ` ${s.containsSearchedValues}` : ""}
+              `}
+            >
+              {pageNumber}
+            </NavLink>
+          );
+        })
+      }
     </div>
   );
 };
 
+// --- mapStateToProps
 const mapStateToProps = (state) => ({
-  activeMenu:activeMenu(state),
-  phonesCount: phonesCount(state),
-  lotusCount: lotusCount(state),
-  govUaCount: govUaCount(state),
-  isPhonesSearchValueFound:isPhonesSearchValueFound(state),
-  isGovUaSearchValueFounded:isGovUaSearchValueFounded(state),
-  isLotusSearchValueFounded:isLotusSearchValueFounded(state),
-  foundSearchValueOfPhonesPage: foundSearchValueOfPhonesPage(state),
-  foundSearchValueOfLotusMailsPage:foundSearchValueOfLotusMailsPage(state),
-  foundSearchValueOfGovUaPage:foundSearchValueOfGovUaPage(state),
-  getPhonesCurrentPageNumber:getPhonesCurrentPageNumber(state),
+  activeMenu: activeMenu(state),
+  pagesCount: selectPaginationPagesCount(activeMenu(state))(state),
+
+  isPhonesSearchValueFound: isSearchValueFoundByPage("phones")(state),
+  isGovUaSearchValueFounded: isSearchValueFoundByPage("gov-ua")(state),
+  isLotusSearchValueFounded: isSearchValueFoundByPage("lotus")(state),
+
+  foundSearchValueOfPhonesPage: selectSearchValueByPage("phones")(state),
+  foundSearchValueOfLotusMailsPage: selectSearchValueByPage("lotus")(state),
+  foundSearchValueOfGovUaPage: selectSearchValueByPage("gov-ua")(state),
+
   countFiltred: (menu) => getCountOfPageForFiltredResults(state, menu),
-  lotusCurrentPage:lotusCurrentPage(state),
-  GovUaCurrentPage:GovUaCurrentPage(state),
-  phonesCurrentPage:phonesCurrentPage(state),
-  isFilterAppliedSelector: (menu) => isFilterAppliedSelector(menu)(state)
+  isFilterAppliedSelector: (menu) => isFilterAppliedSelector(menu)(state),
 });
 
+// --- mapDispatchToProps
 const mapDispatchToProps = { 
-  rememberCurrentPage: rememberCurrentPagesActionCreator, 
-  togglepagesNavbarLinkElementOnCurrentPage: togglepagesNavbarLinkElementOnCurrentPage,
+  rememberCurrentPage: rememberCurrentPagesActionCreator,
+  togglepagesNavbarLinkElementOnCurrentPage,
   setFilterPage,
   setLastVisitedPage
 };

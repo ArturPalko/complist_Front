@@ -2,43 +2,28 @@ import userEvent from "@testing-library/user-event";
 import { selectUniqueCount,countMailData } from "./helpFunctions/countMailsData";
 import { createSelector } from "@reduxjs/toolkit";
 import { countPhoneData } from "./helpFunctions/countPhonesData";
+import {createCurrentPageSelector} from "./selectorFabrics/createCurrentPageSelector";
+import { extractPositionsAndTypes } from "./helpFunctions/extractPositionsAndTypes";
+import { countDepartmentsAndSections } from "./helpFunctions/countDepartmentsAndSections";
+import { getBaseLinkByMenu } from './helpFunctions/getBaseLinkByMenu'; 
+import { getPaginationPages } from "./helpFunctions/getPaginationPages";
+import { processFoundResults } from "./helpFunctions/processFoundResults";
+
 
 export const rowsPerPage = 18;
-export const foundSearchValueOfPhonesPage = (state) => 
-   state.toggledElements.searchField["phones"];
+export const pages = ["gov-ua", "lotus", "phones"];
 
-export const foundSearchValueOfLotusMailsPage = (state) => 
-   state.toggledElements.searchField["lotus"];
+export const selectSearchValueByPage = (page) => (state) =>
+  state.toggledElements.searchField[page];
 
-export const foundSearchValueOfGovUaPage = (state) => 
-   state.toggledElements.searchField["gov-ua"];
-
-const createCurrentPageSelector = ({
-  key,
-  foundSelector,
-  hasFilter = false,
-}) => (state) => {
-  const pageState = state.currentPageNumber[key];
-  const foundResults = foundSelector(state)?.foundResults ?? [];
-  const isFilterApplied = hasFilter
-    ? isFilterAppliedSelector(key)(state)
-    : false;
-
-  if (
-    pageState.lastVisitedPage === "foundResults" &&
-    foundResults.length > 0
-  ) {
-    return isFilterApplied
-      ? pageState.filterPage
-      : pageState.digitPage;
+export const foundSearchValueOnAnyPage = (pagesArray) => (state) => {
+  for (const page of pagesArray) {
+    const value = state.toggledElements.searchField[page];
+    if (value) return value;
   }
-
-  if (typeof pageState.lastVisitedPage === "number") {
-    return pageState.lastVisitedPage;
-  }
-
-  return pageState.digitPage;
+  return null;
 };
+
 
 export const getLotusMails = (state) => {
     return state.mails.lotus 
@@ -52,31 +37,28 @@ export const getPhones = (state) => {
     return state.phones.pages
 }
 
-export const phonesCount = (state) => {
-    return state.phones?.pages?.length || 0
-  }
- export const lotusCount = (state) => {
-    return state.mails?.lotus?.length || 0
-  }
- export const govUaCount = (state) =>{
-    return state.mails?.["gov-ua"]?.length || 0;
-  } 
+export const selectPaginationPagesCount =
+  (activeMenu) =>
+  (state) => {
+    return getPaginationPages(state, activeMenu)?.length || 0;
+  };
+
   
 // ===== конкретні селектори =====
 export const phonesCurrentPage = createCurrentPageSelector({
   key: "phones",
-  foundSelector: foundSearchValueOfPhonesPage,
+  foundSelector: selectSearchValueByPage("phones"),
   hasFilter: true,
 });
 
 export const lotusCurrentPage = createCurrentPageSelector({
   key: "Lotus",
-  foundSelector: foundSearchValueOfLotusMailsPage,
+  foundSelector: selectSearchValueByPage("lotus"),
 });
 
 export const GovUaCurrentPage = createCurrentPageSelector({
   key: "Gov-ua",
-  foundSelector: foundSearchValueOfGovUaPage,
+  foundSelector: selectSearchValueByPage("gov-ua"),
 });
 
 export const isLotusDataLoaded = (state) =>{
@@ -115,75 +97,24 @@ export const searchFieldValue = (state, menu) => {
   return state.toggledElements.searchField[menu]?.searchValue || "";
 };
 
-export const isGovUaSearchValueFounded = (state) => 
-   state.toggledElements.searchField["gov-ua"]?.foundResults.length > 0;
-
-export const isLotusSearchValueFounded = (state) => 
-    state.toggledElements.searchField["lotus"]?.foundResults.length > 0;
-
-export const isPhonesSearchValueFound = (state) => 
-   state.toggledElements.searchField["phones"].foundResults.length > 0;
+export const isSearchValueFoundByPage = (page) => (state) =>
+  Boolean(state.toggledElements.searchField[page]?.foundResults?.length);
 
 
 
 
-export const getPhonesPageIndexDataOfFoundResults = (state) => {
-          const keysToKeep = ["currentPage", "index"];
-         return (foundSearchValueOfPhonesPage(state).foundResults.map(result =>
-                                    Object.fromEntries(
-                                        Object.entries(result).filter(([key]) => keysToKeep.includes(key))
-                                    )
-                                  ));
-  
-}
-
-export const getLotusMailsPageIndexDataOfFoundResults = (state) => {
-          const keysToKeep = ["currentPage", "index"];
-         return (foundSearchValueOfLotusMailsPage(state).foundResults.map(result =>
-                                    Object.fromEntries(
-                                        Object.entries(result).filter(([key]) => keysToKeep.includes(key))
-                                    )
-                                  ));
-  
-}
-
-export const getGovUaMailsPageIndexDataOfFoundResults = (state) => {
-          const keysToKeep = ["currentPage", "index"];
-         return (foundSearchValueOfGovUaPage(state).foundResults.map(result =>
-                                    Object.fromEntries(
-                                        Object.entries(result).filter(([key]) => keysToKeep.includes(key))
-                                    )
-                                  ));
-  
-}
 
 export const getCurrentPageNumberByKey = (key) => (state) => state.currentPageNumber[key].lastVisitedPage;
-export const getPageIndexDataOfFoundResultsByKey = (key) => (state) => {
-  const keysToKeep = ["currentPage", "index"];
-  const foundResults = state.toggledElements.searchField[key].foundResults || [];
-  return foundResults.map(result =>
-    Object.fromEntries(Object.entries(result).filter(([k]) => keysToKeep.includes(k)))
-  );
-};
 
 
-// Селектор для будь-якої сторінки
+
+
+
 export const getPageIndexDataOfFoundResultsByPage = (pageName) => (state) => {
-  const keysToKeep = ["currentPage", "index"];
-  
-  // Визначаємо який foundSearchValue використовувати
   const foundSearchValueOfPage = state.toggledElements.searchField[pageName];
-
-  // Якщо даних немає, повертаємо порожній масив
-  if (!foundSearchValueOfPage || !foundSearchValueOfPage.foundResults) return [];
-
-  // Фільтруємо тільки потрібні ключі
-  return foundSearchValueOfPage.foundResults.map(result =>
-    Object.fromEntries(
-      Object.entries(result).filter(([key]) => keysToKeep.includes(key))
-    )
-  );
+  return processFoundResults(foundSearchValueOfPage?.foundResults);
 };
+
 
 
 export const getPhonesCurrentPageNumber = (state) =>
@@ -200,39 +131,25 @@ export const getGovMailsCurretPageNumber = (state) =>
 export const isPagesNavbarLinkElementOnCurrentPagePressed = (state) =>
   state.toggledElements.pagesNavbarLinkElementOnCurrentPage.isPressed;
 
-export const isPreviousPageWasFoundResult = (state)=>{
-  let page = activeMenu(state);
-  let baseLink;
-  switch(page){
-    case "Lotus":
-          baseLink = "/mails/Lotus"
-    break;
-    case "Gov-ua":
-          baseLink = "/mails/Gov-ua"
-    break;
-    case "phones":
-        baseLink = "/phones"  
+export const isPreviousPageWasFoundResult = (state) => {
+  const page = activeMenu(state);
+  const baseLink = getBaseLinkByMenu(page);
+  return state.currentPageNumber.previousLocation === `${baseLink}/foundResults`;
+};
+
+
+
+
+export const getCountOfFoundResults = (state, typeOfPage) => {
+  const results = state.toggledElements?.searchField?.[typeOfPage]?.foundResults ?? [];
+ debugger;
+  if (typeOfPage === "phones") {
+    return results.filter(r => r.elementType === "user").length;
   }
-  
-  return state.currentPageNumber.previousLocation ==  `${baseLink}/foundResults`;
 
-}
+  return results.length;
+};
 
-
-
-export const getCountOfFoundResults = (state, typeOfPage) =>{
-  let results= state.toggledElements?.searchField?.[typeOfPage]?.foundResults;
-  if(typeOfPage == "phones"){
-    let count =0;
-    results.forEach(resultElement => {
-    if(resultElement.elementType =="user"){
-      count++;
-    }    
-   });
-   return count;
-  }
- return results.length ?? 0;
-}
   
 
 // //////////////////////////////////////////
@@ -258,27 +175,10 @@ export const getCountsForActiveMenu = createSelector(
 
 
 
-export const getDepartmentsAndSectionsPerPage = (state,activeMenu) => {
-  let data =[];
-  if(activeMenu!=="phones") return [];
-  if(isFilterAppliedSelector(activeMenu)(state)){
-    data = getIndexesOfFiltredResults(state, activeMenu);
-  }
-  else{
-     data = getPhones(state) || [];
-  }
-  
-
-  return data.map(page => {
-    let count = 0;
-    page.rows.forEach(row => {
-      if (row.type === "department" || row.type === "section") {
-        count++;
-      }
-    });
-    return count;
-  });
-};
+export const getDepartmentsAndSectionsPerPage = createSelector(
+  [getPhones],
+  (phones) => countDepartmentsAndSections(phones)
+);
 
 
 export const getFilteredState = (state, activeMenu) => {
@@ -301,37 +201,10 @@ export const isFilterAppliedSelector = (menu) => (state) =>
 export const getCurentFilterPage = (state, activeMenu) =>
   state.currentPageNumber?.[activeMenu]?.filterPage ?? 1;
 
-export const getPositionsAndTypesOfUsers = (state) => {
-  const contactTypes = [];
-  const userPositions = [];
-  const data = getPhones(state);
-
-  if (!Array.isArray(data) || data.length === 0) {
-    return { contactTypes: [], userPositions: [] };
-  }
-
-  data.forEach(element => {
-    if (!Array.isArray(element.rows)) return;
-
-    element.rows.forEach(row => {
-      if (row.type === "user") {
-        if (!contactTypes.includes(row.userType)) {
-          contactTypes.push(row.userType);
-        }
-
-        if (row.userType === "Користувач") {
-          if (!userPositions.includes(row.userPosition)) {
-            if (row.userPosition === undefined) console.log("Пустий рядок:", row);
-            userPositions.push(row.userPosition);
-          }
-        }
-      }
-    });
-  });
-
-  return { contactTypes, userPositions };
-};
-
+export const getPositionsAndTypesOfUsers = createSelector(
+  [getPhones],
+  (phones) => extractPositionsAndTypes(phones)
+);
 
 
 export const getSubFilters = (state) =>

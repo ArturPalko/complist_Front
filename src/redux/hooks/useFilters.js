@@ -9,7 +9,6 @@ import { redirectToCurrentPage as redirectUtil } from "./useFiltersFunctions/red
 import { handleOnCheckboxChangeHandler } from "./useFiltersFunctions/handlers/handleOnCheckboxChange";
 import { handleOnClearFormButtonClickHandler } from "./useFiltersFunctions/handlers/handleOnClearFormButtonClick";
 
-const CHUNK_SIZE = 18;
 
 export const useFilters = (props = {}) => {
   const {
@@ -160,8 +159,7 @@ export const useFilters = (props = {}) => {
       getGovUaMails,
       getLotusMails,
       getPhones,
-      conditions,
-      chunkSize: CHUNK_SIZE
+      conditions
     });
 
     if (JSON.stringify(chunks) !== JSON.stringify(prevChunks.current)) {

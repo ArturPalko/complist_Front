@@ -1,5 +1,6 @@
 import { getPhones } from "./selectors/selector";
 import { createFetchThunk } from "./fetchDataThunkCreator";
+import { rowsPerPage as limitRows } from "./selectors/selector";
 
 
 const ADD_PHONES = "ADD_PHONES";
@@ -12,7 +13,6 @@ const initialState = {};
 export const phonesReducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_PHONES: {
-      const limitRows = 18;
       let countRows = 0;
       let pageIndex = 1;
       let pages = [];
