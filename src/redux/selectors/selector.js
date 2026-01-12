@@ -111,7 +111,7 @@ export const getCurrentPageNumberByKey = (key) => (state) => state.currentPageNu
 
 
 export const getPageIndexDataOfFoundResultsByPage = (pageName) => (state) => {
-  const foundSearchValueOfPage = state.toggledElements.searchField[pageName];
+  const foundSearchValueOfPage = state.toggledElements.searchField[pageName.toLowerCase()];
   return processFoundResults(foundSearchValueOfPage?.foundResults);
 };
 
@@ -142,7 +142,6 @@ export const isPreviousPageWasFoundResult = (state) => {
 
 export const getCountOfFoundResults = (state, typeOfPage) => {
   const results = state.toggledElements?.searchField?.[typeOfPage]?.foundResults ?? [];
- debugger;
   if (typeOfPage === "phones") {
     return results.filter(r => r.elementType === "user").length;
   }

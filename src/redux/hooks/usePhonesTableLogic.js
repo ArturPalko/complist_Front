@@ -37,7 +37,7 @@ export const usePhonesTableLogic = ({
     : isFilterApplied
       ? filteredPageData?.[pageNumber - 1]?.rows ?? []
       : phonesData?.[pageNumber - 1]?.rows ?? [];
-  debugger;
+
   const phoneColumns = columns.find(c => c.key === "phones")?.subLabels.length || 0;
   const indexDecrementFromPreviousPages = departmentsAndSectionsPerPage
     .slice(0, pageNumber - 1)
@@ -60,17 +60,6 @@ export const usePhonesTableLogic = ({
       isPreviousPageWasFoundResult,
     });
 
-  // Синхронізація висот рядків
-  // const syncHeights = () => {
-  //   rowRefs.current.forEach((tr, i) => {
-  //     if (tr && colNumbersRef.current[i]) {
-  //       const td = tr.querySelector(`td[data-key='${tr.dataset.key}']`) || tr.querySelector("td");
-  //       if (td) {
-  //         colNumbersRef.current[i].style.height = `${td.offsetHeight}px`;
-  //       }
-  //     }
-  //   });
-  // };
 
   useRowHeights(rowRefs, colNumbersRef, [pageData],headerRef,titleRef);
 

@@ -75,6 +75,7 @@ const MailsTable = ({
                 showPreviousPageHighlight
                   ? `${s.searchedRow} ${(index + 1) % 2 === 0 ? s.even : s.odd}`
                   : "";
+                  
               const rowClassFromPressed =
                 indexesOfFoundResultsForCurrentPage?.includes(index + 1) &&
                 isPagesNavbarLinkElementOnCurrentPagePressed

@@ -69,7 +69,6 @@ export const filterDataReducer = (state = initialState, action) => {
         [filter]: !state[menu].usedFilters[filter] // toggle
     };
     let checking = Object.values(newUsedFilters).some(Boolean);
-    debugger;
 
     return {
         ...state,

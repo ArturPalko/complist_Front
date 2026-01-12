@@ -15,7 +15,7 @@ import { useMemo } from "react";
 import { SearchToggleContext, PasswordsToggleContext } from "../hocs/withToggleElements";
 
 import { activeMenu as activeMenuSelector, getIndexesOfFiltredResults, getGovUaMails, getLotusMails } from "../selectors/selector";
-
+import { createSelector } from '@reduxjs/toolkit';
 
 
 export const usePageNumber = () => {
@@ -60,22 +60,32 @@ export const useCurrentPageIndexData = (activeMenu) => {
 
 
 
+
+
 export const useIndexesForPage = (pageKey) => {
-  // поточна сторінка для конкретного меню
+  const pageNumber = useSelector(
+    createSelector(
+      state => state,
+      state => pageKey,
+      (state, pageKey) => getCurrentPageNumberByKey(pageKey)(state)
+    )
+  );
 
+  const data = useSelector(
+    createSelector(
+      state => state,
+      state => pageKey,
+      (state, pageKey) => getPageIndexDataOfFoundResultsByPage(pageKey)(state) || []
+    )
+  );
 
-  const pageNumber = useSelector(state => getCurrentPageNumberByKey(pageKey)(state));
-
-  // знайдені результати для цієї сторінки
-  const data = useSelector(state => getPageIndexDataOfFoundResultsByPage(pageKey)(state)) || [];
-
-  // відбираємо індекси для поточної сторінки
   const indexes = data
     .filter(item => Number(item.currentPage) === Number(pageNumber))
     .map(item => item.index);
 
   return indexes;
 };
+
 
 export const useRowHighlighting = (
   indexDataOfFoundResultsForFoundResultsPage,
@@ -164,9 +174,20 @@ export const usePasswordsToggle = () => useContext(PasswordsToggleContext);
 
 
 
+
+
 export const useFilteredPageData = (mailsData) => {
   const activeMenu = useSelector(activeMenuSelector);
-  const filtredChunks = useSelector(state => getIndexesOfFiltredResults(state, activeMenu));
+
+  // мемоізований селектор прямо тут
+  const filtredChunks = useSelector(
+    createSelector(
+      state => state,
+      state => activeMenu,
+      (state, activeMenu) => getIndexesOfFiltredResults(state, activeMenu)
+    )
+  );
+
   const isFilterApplied = useSelector(isFilterAppliedSelector(activeMenu));
 
   return useMemo(() => {
@@ -189,6 +210,7 @@ export const useFilteredPageData = (mailsData) => {
           return rows.length > 0 ? { pageIndex: chunk.pageIndex, rows } : null;
         })
         .filter(Boolean);
+
       return { data: mappedChunks, isFilterApplied: true };
     }
 

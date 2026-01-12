@@ -15,6 +15,7 @@ const LotusPage = (props) => {
   const pageName = "Lotus"; 
   const indexesOfFoundResultsForCurrentPage = useIndexesForPage(pageName);
 
+
   return (
     <>
       <TopTableBar

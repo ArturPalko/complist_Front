@@ -6,7 +6,6 @@ export const selectUniqueCount = (phones) =>
 
 // Підрахунок телефонів з деталізацією по типах та ролях
 export const countPhoneData = (phonesData = []) => {
-    debugger;
   let internalPhones = [];
   let landLinePhones = [];
   let ciscoPhones = [];
