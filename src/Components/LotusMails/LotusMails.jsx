@@ -1,20 +1,17 @@
-import { rowsPerPage, useState/*, compose */} from "../CommonInjection/Dependencies/ComponentImports";
-import { getLotusMails, isLotusDataFetching, isLotusDataLoaded } from "../../redux/selectors/selector";
-import { getMailsData } from "../../redux/mails-reducer";
-import MailsTable from "../MalisTable/MailsTable";
-import withDataLoader from "../../redux/hocs/withDataLoader";
-import TopTableBar from "../TopTableBar/TopTableBar";
-import withToggleElements from "../../redux/hocs/withToggleElements";
-import { useEffect } from "../CommonInjection/Dependencies/ComponentImports";
-import { useDataLoader, useIndexesForPage } from "../../redux/hooks/hooks";
+import React from "react";
 import { compose } from "redux";
-import { usePageNumber } from "../../redux/hooks/hooks";
+import MailsTable from "../MalisTable/MailsTable";
+import TopTableBar from "../TopTableBar/TopTableBar";
+import { rowsPerPage } from "../CommonInjection/Dependencies/ComponentImports";
+import { useIndexesForPage, usePageNumber } from "../../redux/hooks/hooks";
+import withToggleElements from "../../redux/hocs/withToggleElements";
+import withDataLoaderForMenu from "../../redux/hocs/withDataLoader";
+import { getMailsData } from "../../redux/mails-reducer";
 
 const LotusPage = (props) => {
-
   const pageName = "Lotus"; 
   const indexesOfFoundResultsForCurrentPage = useIndexesForPage(pageName);
-
+  const pageNumber = usePageNumber();
 
   return (
     <>
@@ -32,21 +29,15 @@ const LotusPage = (props) => {
         showPasswords={props.showPasswords}
         passwordsMap={props.passwordsMap}
         rowsPerPage={rowsPerPage}
-        pageNumber={usePageNumber()}
+        pageNumber={pageNumber}
         indexesOfFoundResultsForCurrentPage={indexesOfFoundResultsForCurrentPage}
-        
       />
     </>
   );
 };
 
 export default compose(
-  withDataLoader(
-    isLotusDataLoaded,
-    isLotusDataFetching,
-    getLotusMails,
-    getMailsData,
-    "Lotus"
-  ),
+  // Використовуємо універсальний HOC
+  withDataLoaderForMenu("Lotus", getMailsData),
   withToggleElements("Lotus")
 )(LotusPage);

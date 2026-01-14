@@ -82,7 +82,7 @@ const FoundResults = (props) => {
 
   if (presentRows.length > rowsPerPage) return <TooManyResultsOfSearch />;
   if (!ActiveComponent) return null;
-
+debugger;
   return (
     <FoundResultsContext.Provider value={{
       //  foundResults: rowsToPresent || [],
@@ -100,8 +100,8 @@ const mapStateToProps = (state) => ({
   getLotusMails: getLotusMails(state),
   getGovUaMails: getGovUaMails(state),
   foundSearchValueOfPhonesPage: selectSearchValueByPage("phones")(state),
-  foundSearchValueOfLotusMailsPage: selectSearchValueByPage("lotus")(state),
-  foundSearchValueOfGovUaPage: selectSearchValueByPage("gov-ua")(state),
+  foundSearchValueOfLotusMailsPage: selectSearchValueByPage("Lotus")(state),
+  foundSearchValueOfGovUaPage: selectSearchValueByPage("Gov-ua")(state),
   isFilterApplied: isFilterAppliedSelector(state)
 });
 

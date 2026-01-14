@@ -10,6 +10,27 @@ import { getPaginationPages } from "./helpFunctions/getPaginationPages";
 import { processFoundResults } from "./helpFunctions/processFoundResults";
 
 
+
+
+// ===== дані =====
+export const getDataForMenu = (state, menu) => {
+  if (!menu) return [];
+
+  if (menu === "phones") {
+    return state.phones?.pages ?? [];
+  }
+
+  return state.mails?.[menu] ?? [];
+};
+
+// ===== статуси =====
+export const getLoadedForMenu = (state, menu) =>
+  Boolean(state.dataState?.[menu]?.dataIsLoaded);
+
+export const getFetchingForMenu = (state, menu) =>
+  Boolean(state.dataState?.[menu]?.dataIsFetching);
+
+
 export const rowsPerPage = 18;
 export const pages = ["Gov-ua", "Lotus", "phones"];
 
@@ -41,8 +62,7 @@ export const getPhones = (state) => {
 export const selectPaginationPagesCount =
   (activeMenu) =>
   (state) => {
-    let b = getPaginationPages(state, activeMenu)?.length || 0;
-    debugger;
+
     return getPaginationPages(state, activeMenu)?.length || 0;
   };
 
@@ -134,12 +154,18 @@ export const getGovMailsCurretPageNumber = (state) =>
 export const isPagesNavbarLinkElementOnCurrentPagePressed = (state) =>
   state.toggledElements.pagesNavbarLinkElementOnCurrentPage.isPressed;
 
-export const isPreviousPageWasFoundResult = (state) => {
-  const page = activeMenu(state);
-  const baseLink = getBaseLinkByMenu(page);
+// export const isPreviousPageWasFoundResult = (state) => {
+//   const page = activeMenu(state);
+//   const baseLink = getBaseLinkByMenu(page);
+//   return state.currentPageNumber.previousLocation === `${baseLink}/foundResults`;
+// };
+
+export const isPreviousPageWasFoundResult = (menu) => (state) => {
+  if (!menu) return false;
+
+  const baseLink = getBaseLinkByMenu(menu);
   return state.currentPageNumber.previousLocation === `${baseLink}/foundResults`;
 };
-
 
 
 

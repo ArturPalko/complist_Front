@@ -8,24 +8,32 @@ import { foundSearchValueOfPhonesPage , getPhonesPageIndexDataOfFoundResults,
      getLotusMailsPageIndexDataOfFoundResults, getGovUaMails,
       getGovUaMailsPageIndexDataOfFoundResults,getGovMailsCurretPageNumber } from "../selectors/selector";
 import { createContext } from "react";
+// Універсальні селектори для всіх меню
+import { getDataForMenu, getLoadedForMenu, getFetchingForMenu } from  "../selectors/selector";
 
 
+// import React, { useState, useEffect, createContext } from "react";
+// import { connect } from "react-redux";
+// import { useNavigate } from "react-router-dom";
+// import Preloader from "../../Components/Preloader/Preloader";
+
+// Контекст для передачі даних
 export const DataLoaderContext = createContext(null);
 
-const withDataLoader = (
-  isDataLoadedselector,
-  isDataFetchingselector,
-  dataSelector,
-  fetchAction,
-  type,
-  fetchUrl,
-  actionCreator
-) => (WrappedComponent) => {
+
+
+// menuName: "phones" | "Lotus" | "Gov-ua"
+// fetchAction: санка для fetch
+const withDataLoaderForMenu = (menuName, fetchAction) => (WrappedComponent) => {
   const HOC = (props) => {
     const navigate = useNavigate();
     const [count, setCount] = useState(10);
     const [showPreloader, setShowPreloader] = useState(false);
 
+    const data = props.data;
+    const isLoaded = props.isLoaded;
+
+    // Таймер Preloader
     useEffect(() => {
       if (!showPreloader) return;
 
@@ -43,52 +51,47 @@ const withDataLoader = (
       return () => clearInterval(timerId);
     }, [showPreloader]);
 
+    // Fetch даних
     useEffect(() => {
-      if (props.isDataLoaded) return;
+      if (isLoaded) return;
 
       setShowPreloader(true);
       setCount(10);
-      console.log("Викона запит за:",type)
 
       const doFetch = async () => {
         try {
-          await props.fetchAction(type);
+          await props.fetchAction(menuName);
         } catch (error) {
           navigate("/error", { state: { message: error.message } });
-
-        }
-        finally{
+        } finally {
           setShowPreloader(false);
         }
       };
 
       doFetch();
+    }, [isLoaded, props.fetchAction, menuName, navigate]);
 
-  
-    }, [props.isDataLoaded, props.fetchAction, fetchUrl, actionCreator, type]);
-
-    
-    return showPreloader ? <Preloader count={count} /> : <DataLoaderContext.Provider 
-                                                          value={{ 
-                                                            data: props.data, 
-                                                            isPreviousPageWasFoundResult: props.isPreviousPageWasFoundResult 
-                                                          }}
-                                                        >
-                                                             <WrappedComponent />
-                                                        </DataLoaderContext.Provider>
-
-                                                        };
+    return showPreloader ? (
+      <Preloader count={count} />
+    ) : (
+      <DataLoaderContext.Provider value={{ data  ,
+        isPreviousPageWasFoundResult:props.isPreviousPageWasFoundResult
+      } }>
+        <WrappedComponent {...props} />
+      </DataLoaderContext.Provider>
+    );
+  };
 
   const mapStateToProps = (state) => ({
-    isDataLoaded: isDataLoadedselector(state),
-    isDataFetching: isDataFetchingselector(state, type),
-    data: dataSelector(state),
-    isPreviousPageWasFoundResult:isPreviousPageWasFoundResult(state)
+    data: getDataForMenu(state, menuName),
+    isLoaded: getLoadedForMenu(state, menuName),
+    isFetching: getFetchingForMenu(state, menuName),
+    isPreviousPageWasFoundResult: isPreviousPageWasFoundResult(menuName)(state)
+ 
+
   });
 
-  const mapDispatchToProps = { fetchAction}
-
-  return connect(mapStateToProps, mapDispatchToProps)(HOC);
+  return connect(mapStateToProps, { fetchAction })(HOC);
 };
 
-export default withDataLoader;
+export default withDataLoaderForMenu;

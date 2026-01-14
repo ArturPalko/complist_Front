@@ -1,31 +1,29 @@
-import {  rowsPerPage, connect, useState, useEffect, withDataLoader,setDataIsLoadedActionCreator,compose} from "../CommonInjection/Dependencies/ComponentImports";
+import React, { useRef } from "react";
+import { compose } from "redux";
 import MailsTable from "../MalisTable/MailsTable";
-import { getGovUaMails, isGovUaDataFetching, isGovUaDataLoaded } from "../../redux/selectors/selector";
-import { getMailsData } from "../../redux/mails-reducer";
 import TopTableBar from "../TopTableBar/TopTableBar";
+import { rowsPerPage } from "../CommonInjection/Dependencies/ComponentImports";
+import { useIndexesForPage, usePageNumber } from "../../redux/hooks/hooks";
 import withToggleElements from "../../redux/hocs/withToggleElements";
-import { useIndexesForPage } from "../../redux/hooks/hooks";
-import { usePageNumber } from "../../redux/hooks/hooks";
-import { useRef } from "react";
-
-  // const pageName = "Gov-ua";
-
+import withDataLoaderForMenu from "../../redux/hocs/withDataLoader";
+import { getMailsData } from "../../redux/mails-reducer";
 
 const GovUAPage = (props) => {
   const pageName = "Gov-ua";
   const indexesOfFoundResultsForCurrentPage = useIndexesForPage(pageName);
+  const pageNumber = usePageNumber();
 
-  const titleRef = useRef(null); // додали ref
+  const titleRef = useRef(null);
 
   return (
     <>
       <TopTableBar
         ref={titleRef}
         title="Поштові скриньки customs.gov.ua"
-        mailType={pageName}
+        mailType={pageName.toLowerCase()}
       />
       <MailsTable
-        titleRef={titleRef} 
+        titleRef={titleRef}
         mailType={pageName}
         columns={[
           { key: "mailName", label: "найменування скриньки" },
@@ -35,7 +33,7 @@ const GovUAPage = (props) => {
         showPasswords={props.showPasswords}        // береться з HOC
         passwordsMap={props.passwordsMap}          // береться з HOC
         rowsPerPage={rowsPerPage}
-        pageNumber={usePageNumber()}
+        pageNumber={pageNumber}
         indexesOfFoundResultsForCurrentPage={indexesOfFoundResultsForCurrentPage}
       />
     </>
@@ -43,12 +41,7 @@ const GovUAPage = (props) => {
 };
 
 export default compose(
-  withDataLoader(
-    isGovUaDataLoaded,
-    isGovUaDataFetching,
-    getGovUaMails,
-    getMailsData,
-    "Gov-ua"
-  ),
-  withToggleElements("Gov-ua")   // параметризований HOC
+  // Використовуємо універсальний HOC для Gov-ua
+  withDataLoaderForMenu("Gov-ua", getMailsData),
+  withToggleElements("Gov-ua")
 )(GovUAPage);
