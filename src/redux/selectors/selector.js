@@ -11,7 +11,7 @@ import { processFoundResults } from "./helpFunctions/processFoundResults";
 
 
 export const rowsPerPage = 18;
-export const pages = ["gov-ua", "lotus", "phones"];
+export const pages = ["Gov-ua", "Lotus", "phones"];
 
 export const selectSearchValueByPage = (page) => (state) =>
   state.toggledElements.searchField[page];
@@ -25,12 +25,13 @@ export const foundSearchValueOnAnyPage = (pagesArray) => (state) => {
 };
 
 
+
 export const getLotusMails = (state) => {
-    return state.mails.lotus 
+    return state.mails.Lotus 
 }
 
 export const getGovUaMails = (state) => {
-    return state.mails["gov-ua"] 
+    return state.mails["Gov-ua"] 
 }
 
 export const getPhones = (state) => {
@@ -40,6 +41,8 @@ export const getPhones = (state) => {
 export const selectPaginationPagesCount =
   (activeMenu) =>
   (state) => {
+    let b = getPaginationPages(state, activeMenu)?.length || 0;
+    debugger;
     return getPaginationPages(state, activeMenu)?.length || 0;
   };
 
@@ -53,20 +56,20 @@ export const phonesCurrentPage = createCurrentPageSelector({
 
 export const lotusCurrentPage = createCurrentPageSelector({
   key: "Lotus",
-  foundSelector: selectSearchValueByPage("lotus"),
+  foundSelector: selectSearchValueByPage("Lotus"),
 });
 
 export const GovUaCurrentPage = createCurrentPageSelector({
   key: "Gov-ua",
-  foundSelector: selectSearchValueByPage("gov-ua"),
+  foundSelector: selectSearchValueByPage("Gov-ua"),
 });
 
 export const isLotusDataLoaded = (state) =>{
-        return state.dataState.lotus.dataIsLoaded
+        return state.dataState.Lotus.dataIsLoaded
 }
 
 export const isGovUaDataLoaded = (state) =>{
-        return state.dataState["gov-ua"].dataIsLoaded
+        return state.dataState["Gov-ua"].dataIsLoaded
 }
 
 export const isPhonesDataLoaded = (state) =>{
@@ -74,10 +77,10 @@ export const isPhonesDataLoaded = (state) =>{
 }
 
 export const isLotusDataFetching = (state) => {
-  return state.dataState.lotus.dataIsFetching;
+  return state.dataState.Lotus.dataIsFetching;
 };
 export const isGovUaDataFetching = (state) => {
-  return state.dataState["gov-ua"].dataIsFetching;
+  return state.dataState["Gov-ua"].dataIsFetching;
 };
 export const isPhonesDataFetching = (state) => {
   return state.dataState.phones.dataIsFetching;
@@ -111,7 +114,7 @@ export const getCurrentPageNumberByKey = (key) => (state) => state.currentPageNu
 
 
 export const getPageIndexDataOfFoundResultsByPage = (pageName) => (state) => {
-  const foundSearchValueOfPage = state.toggledElements.searchField[pageName.toLowerCase()];
+  const foundSearchValueOfPage = state.toggledElements.searchField[pageName];
   return processFoundResults(foundSearchValueOfPage?.foundResults);
 };
 
@@ -163,10 +166,10 @@ export const getGovUaCount = createSelector([getGovUaMails], countMailData);
 export const getCountsForActiveMenu = createSelector(
   [activeMenu, getPhonesCount, getLotusCount, getGovUaCount],
   (menu, phonesCount, lotusCount, govUaCount) => {
-    switch (menu.toLowerCase()) {
+    switch (menu) {
       case 'phones': return phonesCount;
-      case 'lotus': return lotusCount;
-      case 'gov-ua': return govUaCount;
+      case 'Lotus': return lotusCount;
+      case 'Gov-ua': return govUaCount;
       default: return {};
     }
   }

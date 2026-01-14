@@ -131,8 +131,8 @@ const mapStateToProps = (state) => ({
   activeMenu: activeMenu(state),
   pagesCount: selectPaginationPagesCount(activeMenu(state))(state),
 
-  searchValue: selectSearchValueByPage(activeMenu(state).toLowerCase())(state),
-  isSearchValueFound: isSearchValueFoundByPage(activeMenu(state).toLowerCase())(state),
+  searchValue: selectSearchValueByPage(activeMenu(state))(state),
+  isSearchValueFound: isSearchValueFoundByPage(activeMenu(state))(state),
 
   countFiltred: (menu) => getCountOfPageForFiltredResults(state, menu),
   isFilterApplied: (menu) => isFilterAppliedSelector(menu)(state),

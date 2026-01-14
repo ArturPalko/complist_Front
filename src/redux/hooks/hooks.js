@@ -43,8 +43,8 @@ export const useTrackLocation = () => {
 
 export const useCurrentPageIndexData = (activeMenu) => {
   const phonesData = useSelector(getPageIndexDataOfFoundResultsByPage("phones")) || [];
-  const lotusData = useSelector(getPageIndexDataOfFoundResultsByPage("lotus")) || [];
-  const govUaData = useSelector(getPageIndexDataOfFoundResultsByPage("gov-ua")) || [];
+  const lotusData = useSelector(getPageIndexDataOfFoundResultsByPage("Lotus")) || [];
+  const govUaData = useSelector(getPageIndexDataOfFoundResultsByPage("Gov-ua")) || [];
 
   switch(activeMenu) {
     case "phones":

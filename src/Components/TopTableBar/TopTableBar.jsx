@@ -26,7 +26,7 @@ const TopTableBar = React.forwardRef(({ title, mailType }, ref) => {
           </div>
         </div>
 
-        {(mailType === "lotus" || mailType === "gov-ua") && (
+        {(mailType === "Lotus" || mailType === "Gov-ua") && (
           <div className={s.switchWrapper}>
             <div>
               <label className={s.switch}>

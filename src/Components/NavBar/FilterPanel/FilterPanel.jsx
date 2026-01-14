@@ -40,8 +40,8 @@ const getCountOfUsersByMenu = (state, menuName) => {
 };
 
 const getCountOfMailsByMenu = (state, menuName) => {
-  if (menuName.toLowerCase() === "lotus") return getLotusCount(state).countOfMails || 0;
-  if (menuName.toLowerCase() === "gov-ua") return getGovUaCount(state).countOfMails || 0;
+  if (menuName === "Lotus") return getLotusCount(state).countOfMails || 0;
+  if (menuName === "Gov-ua") return getGovUaCount(state).countOfMails || 0;
   return 0;
 };
 
@@ -70,10 +70,10 @@ const FilterPanel = (props) => {
   });
 
   const dataFromStore = useMemo(() => {
-    switch (props.activeMenu.toLowerCase()) {
-      case "gov-ua":
+    switch (props.activeMenu) {
+      case "Gov-ua":
         return props.getGovUaMails;
-      case "lotus":
+      case "Lotus":
         return props.getLotusMails;
       default:
         return props.getPhones;
@@ -87,13 +87,13 @@ const FilterPanel = (props) => {
 
   const contactsCount = useMemo(() => {
     if (!props.isFilterApplied) {
-      switch (props.activeMenu.toLowerCase()) {
+      switch (props.activeMenu) {
         case "phones":
           return getCountOfUsersByMenu(props.state, "phones");
-        case "lotus":
-          return getCountOfMailsByMenu(props.state, "lotus");
-        case "gov-ua":
-          return getCountOfMailsByMenu(props.state, "gov-ua");
+        case "Lotus":
+          return getCountOfMailsByMenu(props.state, "Lotus");
+        case "Gov-ua":
+          return getCountOfMailsByMenu(props.state, "Gov-ua");
         default:
           return 0;
       }
@@ -141,7 +141,7 @@ const FilterPanel = (props) => {
           </fieldset>
         ))}
 
-        {props.activeMenu.toLowerCase() === "phones" && (
+        {props.activeMenu === "phones" && (
           <CustomDropDown menus={phonesSubConditions} />
         )}
       </div>

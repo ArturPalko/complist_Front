@@ -3,10 +3,5 @@ export const getPaginationPages = (state, activeMenu) => {
     return state.phones?.pages;
   }
 
-  const mailsMap = {
-    Lotus: "lotus",
-    "Gov-ua": "gov-ua",
-  };
-
-  return state.mails?.[mailsMap[activeMenu]];
+  return state.mails?.[activeMenu];
 };

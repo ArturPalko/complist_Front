@@ -11,15 +11,15 @@ const StatusBar = ({ counts, activeMenu }) => {
   return (
     <div>
       {activeMenu === "phones" && <PhonesSVG counts={counts} />}
-      {activeMenu === "lotus" && <ConvertForLotusSVG counts={counts} aca={aca} />}
-      {activeMenu === "gov-ua" && <ConverForGovUaSVG counts={counts} />}
+      {activeMenu === "Lotus" && <ConvertForLotusSVG counts={counts} aca={aca} />}
+      {activeMenu === "Gov-ua" && <ConverForGovUaSVG counts={counts} />}
     </div>
   );
 };
 
 const mapStateToProps = (state) => ({
   counts: getCountsForActiveMenu(state),
-  activeMenu: getActiveMenu(state).toLowerCase()
+  activeMenu: getActiveMenu(state)
 });
 
 export default connect(mapStateToProps)(StatusBar);

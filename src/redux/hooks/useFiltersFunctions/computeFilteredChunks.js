@@ -15,8 +15,8 @@ export const computeFilteredChunks = ({
     .map(([key]) => key);
 
   const dataFromStore =
-    activeMenu?.toLowerCase() === "gov-ua" ? getGovUaMails
-    : activeMenu?.toLowerCase() === "lotus" ? getLotusMails
+    activeMenu === "Gov-ua" ? getGovUaMails
+    : activeMenu === "Lotus" ? getLotusMails
     : getPhones;
 
   const allFilteredIndexes = [];

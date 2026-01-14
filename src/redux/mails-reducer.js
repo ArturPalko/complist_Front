@@ -11,15 +11,15 @@ let fetchUrl = '';
 
 function switchFetchUrl(mailType){
     switch(mailType){
-        case "lotus":
+        case "Lotus":
             return fetchUrlLotus
-        case "gov-ua":
+        case "Gov-ua":
             return fetchUrlGovUa
     }
 }
 
 const initialState = {
-    lotus:[], ["gov-ua"]:[]
+    Lotus:[], ["Gov-ua"]:[]
 };
 
 export const mailsReducer = (state = initialState, action) => {

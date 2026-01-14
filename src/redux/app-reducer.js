@@ -2,8 +2,8 @@ const SET_DATA_IS_LOADED = "SET_DATA_IS_LOADED";
 const TOGGLE_DATA_IS_FETCHING = "TOGGLE_DATA_IS_FETCHING";
 
 const initialState = {
-  "gov-ua": { dataIsLoaded: false, dataIsFetching: false },
-  lotus: { dataIsLoaded: false, dataIsFetching: false },
+  "Gov-ua": { dataIsLoaded: false, dataIsFetching: false },
+  Lotus: { dataIsLoaded: false, dataIsFetching: false },
   phones: { dataIsLoaded: false, dataIsFetching: false }
 };
 

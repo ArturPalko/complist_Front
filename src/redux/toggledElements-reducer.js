@@ -11,8 +11,8 @@ const initialState = {
   showFilterPanel: { isActive: false },
   pagesNavbarLinkElementOnCurrentPage: {isPressed:false},
   searchField: {
-    "gov-ua": { draftValue: "", searchValue: "", foundResults: [] },
-    lotus: { draftValue: "", searchValue: "", foundResults: [] },
+    "Gov-ua": { draftValue: "", searchValue: "", foundResults: [] },
+    Lotus: { draftValue: "", searchValue: "", foundResults: [] },
     phones: {draftValue: "", searchValue: "", foundResults: [] }
   }
 };
@@ -113,7 +113,7 @@ case ADD_FOUND_ITEMS:
     return {
       ...state,
       searchField: {
-        "gov-ua": { searchValue: "", foundResults: [] },
+        "Gov-ua": { searchValue: "", foundResults: [] },
         lotus: { searchValue: "", foundResults: [] },
         phones: { searchValue: "", foundResults: [] }
       }

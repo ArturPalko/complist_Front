@@ -16,7 +16,7 @@ import SearchForm from "./SearchForm/SearchForm.jsx";
 import { useFilteredPageData } from "../../../redux/hooks/hooks.js";
 
 const Search = (props) => {
-  const activeMenuStr = props.activeMenu ? props.activeMenu.toLowerCase() : "";
+  const activeMenuStr = props.activeMenu ? props.activeMenu : "";
   const [showNotFound, setShowNotFound] = useState(false);
   const [userSearchedOnce, setUserSearchedOnce] = useState(false);
   const [lastSearchFound, setLastSearchFound] = useState(true);
@@ -32,8 +32,8 @@ const Search = (props) => {
 
   const searchArea = (() => {
     switch (activeMenuStr) {
-      case "gov-ua": return props.getGovUaMails;
-      case "lotus": return props.getLotusMails;
+      case "Gov-ua": return props.getGovUaMails;
+      case "Lotus": return props.getLotusMails;
       case "phones": return props.getPhones;
       default: return [];
     }
@@ -138,8 +138,8 @@ const mapStateToProps = (state) => {
     getCountOfFoundResults: (m) => getCountOfFoundResults(state, m),
     getIndexesOfFiltredResults: getIndexesOfFiltredResults(state, menu),
     // старі селектори замінені на універсальний
-    isGovUaSearchValueFounded: isSearchValueFoundByPage("gov-ua")(state),
-    isLotusSearchValueFounded: isSearchValueFoundByPage("lotus")(state),
+    isGovUaSearchValueFounded: isSearchValueFoundByPage("Gov-ua")(state),
+    isLotusSearchValueFounded: isSearchValueFoundByPage("Lotus")(state),
     isPhonesSearchValueFound: isSearchValueFoundByPage("phones")(state)
   };
 };

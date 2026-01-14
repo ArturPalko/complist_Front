@@ -8,7 +8,7 @@ import { useIndexesForPage } from "../../redux/hooks/hooks";
 import { usePageNumber } from "../../redux/hooks/hooks";
 import { useRef } from "react";
 
-
+  // const pageName = "Gov-ua";
 
 
 const GovUAPage = (props) => {
@@ -22,7 +22,7 @@ const GovUAPage = (props) => {
       <TopTableBar
         ref={titleRef}
         title="Поштові скриньки customs.gov.ua"
-        mailType={pageName.toLocaleLowerCase()}
+        mailType={pageName}
       />
       <MailsTable
         titleRef={titleRef} 
@@ -48,7 +48,7 @@ export default compose(
     isGovUaDataFetching,
     getGovUaMails,
     getMailsData,
-    "gov-ua"
+    "Gov-ua"
   ),
   withToggleElements("Gov-ua")   // параметризований HOC
 )(GovUAPage);

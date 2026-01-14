@@ -182,7 +182,7 @@ export const useFilters = (props = {}) => {
 
   // ---------------- UI HELPERS ----------------
   const filterPointsForCurrentMenu = (filterPoints || []).filter((p) =>
-    p.pages.includes((activeMenu || "").toLowerCase())
+    p.pages.includes((activeMenu || ""))
   );
 
   const groupedFilterPoints = filterPointsForCurrentMenu.reduce((acc, item) => {

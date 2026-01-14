@@ -13,8 +13,8 @@ const RedirectToCurrentPage = ({ selector, buildPath, redirectMenu }) => {
 
   // Використовуємо універсальні селектори для всіх сторінок
   const isPhonesFound = useSelector(isSearchValueFoundByPage("phones"));
-  const isLotusFound = useSelector(isSearchValueFoundByPage("lotus"));
-  const isGovUaFound = useSelector(isSearchValueFoundByPage("gov-ua"));
+  const isLotusFound = useSelector(isSearchValueFoundByPage("Lotus"));
+  const isGovUaFound = useSelector(isSearchValueFoundByPage("Gov-ua"));
 
   let currentPage = isApplied ? currentPageFromFilter : currentPageFromSelector;
 

@@ -12,7 +12,7 @@ export const countMailData = (data) => {
   let passwordKnown = 0;
   let hasResponsibleUser = 0;
 
-  data.forEach(element => {
+  data?.forEach(element => {
     countOfMails += element.rows.length;
     element.rows.forEach(row => {
       if (row.name != null) hasNewPostName++;

@@ -20,7 +20,7 @@ const LotusPage = (props) => {
     <>
       <TopTableBar
         title="Поштові скриньки Lotus"
-        mailType={pageName.toLocaleLowerCase()}
+        mailType={pageName}
       />
       <MailsTable
         mailType={pageName}
@@ -46,7 +46,7 @@ export default compose(
     isLotusDataFetching,
     getLotusMails,
     getMailsData,
-    "lotus"
+    "Lotus"
   ),
   withToggleElements("Lotus")
 )(LotusPage);
