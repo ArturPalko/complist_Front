@@ -1,6 +1,7 @@
 import { 
-  activeMenu, getPhones, getGovUaMails, getLotusMails,
- selectSearchValueByPage, rowsPerPage, isFilterAppliedSelector
+  activeMenu, 
+ selectSearchValueByPage, rowsPerPage, isFilterAppliedSelector,
+ getDataForMenu
 } from "../../redux/selectors/selector";
 import { connect } from "react-redux";
 import { useEffect, useState, createContext } from "react";
@@ -9,6 +10,7 @@ import LotusMails from "../LotusMails/LotusMails";
 import GovUaMails from "../GovUaMails/GovUaMails";
 import TooManyResultsOfSearch from "../TooManyResultsOfSearch/TooManyResultsOFSearch";
 import { useFilteredPageData } from "../../redux/hooks/hooks";
+
 
 export const FoundResultsContext = createContext(null);
 
@@ -23,14 +25,7 @@ const FoundResults = (props) => {
   };
 
   // Вибір даних по активному меню
-  const dataFromStore = (() => {
-    switch (props.activeMenu) {
-      case "phones": return props.getPhones;
-      case "Lotus": return props.getLotusMails;
-      case "Gov-ua": return props.getGovUaMails;
-      default: return [];
-    }
-  })();
+  const dataFromStore = props.data;
 
   const foundResultsForCurrentMenu = (() => {
     switch (props.activeMenu) {
@@ -94,15 +89,34 @@ debugger;
   );
 };
 
-const mapStateToProps = (state) => ({
-  activeMenu: activeMenu(state),
-  getPhones: getPhones(state),
-  getLotusMails: getLotusMails(state),
-  getGovUaMails: getGovUaMails(state),
-  foundSearchValueOfPhonesPage: selectSearchValueByPage("phones")(state),
-  foundSearchValueOfLotusMailsPage: selectSearchValueByPage("Lotus")(state),
-  foundSearchValueOfGovUaPage: selectSearchValueByPage("Gov-ua")(state),
-  isFilterApplied: isFilterAppliedSelector(state)
-});
+
+
+// const mapStateToProps = (state) => {
+//   const menu = activeMenu(state);
+
+//   return {
+//     activeMenu: menu,
+//   data: getDataForMenu(state, menu),
+//   foundSearchValueOfPhonesPage: selectSearchValueByPage("phones")(state),
+//   foundSearchValueOfLotusMailsPage: selectSearchValueByPage("Lotus")(state),
+//   foundSearchValueOfGovUaPage: selectSearchValueByPage("Gov-ua")(state),
+//   isFilterApplied: isFilterAppliedSelector(state)
+//   };
+// };
+
+
+const mapStateToProps = (state) => {
+  const menu = activeMenu(state);
+
+  return {
+    activeMenu: menu,
+    data: getDataForMenu(state, menu), // ← 1 ВХІД ДЛЯ ВСІХ МЕНЮ
+    foundSearchValueOfPhonesPage: selectSearchValueByPage("phones")(state),
+    foundSearchValueOfLotusMailsPage: selectSearchValueByPage("Lotus")(state),
+    foundSearchValueOfGovUaPage: selectSearchValueByPage("Gov-ua")(state),
+    isFilterApplied: isFilterAppliedSelector(state)
+  };
+};
+
 
 export default connect(mapStateToProps)(FoundResults);

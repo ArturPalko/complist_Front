@@ -3,78 +3,112 @@ import { connect } from "react-redux";
 import {
   activeMenu,
   isPresentedSearchField,
-  getGovUaMails,
-  getLotusMails,
-  getPhones,
   getCountOfFoundResults,
   getIndexesOfFiltredResults,
   selectSearchValueByPage,
-  isSearchValueFoundByPage
+  isSearchValueFoundByPage,
+  getDataForMenu
 } from "../../../redux/selectors/selector.js";
-import { addFoundItems, clearSearchForm, updateDraftValue } from "../../../redux/toggledElements-reducer";
+
+import {
+  addFoundItems,
+  clearSearchForm,
+  updateDraftValue
+} from "../../../redux/toggledElements-reducer";
+
 import SearchForm from "./SearchForm/SearchForm.jsx";
 import { useFilteredPageData } from "../../../redux/hooks/hooks.js";
 
 const Search = (props) => {
-  const activeMenuStr = props.activeMenu ? props.activeMenu : "";
+  const activeMenuStr = props.activeMenu || "";
+
   const [showNotFound, setShowNotFound] = useState(false);
   const [userSearchedOnce, setUserSearchedOnce] = useState(false);
   const [lastSearchFound, setLastSearchFound] = useState(true);
+
   const inputRef = useRef(null);
 
   const draftValue = props.draftValue(activeMenuStr);
   const searchValue = props.searchFieldValue(activeMenuStr);
-  const inputValue = showNotFound ? "Не знайдено" : draftValue || searchValue || "";
+
+  const inputValue =
+    showNotFound ? "Не знайдено" : draftValue || searchValue || "";
 
   useEffect(() => {
-    if (!showNotFound && inputRef.current) inputRef.current.focus();
+    if (!showNotFound && inputRef.current) {
+      inputRef.current.focus();
+    }
   }, [showNotFound, activeMenuStr]);
 
-  const searchArea = (() => {
-    switch (activeMenuStr) {
-      case "Gov-ua": return props.getGovUaMails;
-      case "Lotus": return props.getLotusMails;
-      case "phones": return props.getPhones;
-      default: return [];
-    }
-  })();
+  // ✅ ДАНІ ДЛЯ ПОШУКУ (універсальний селектор)
+  const searchArea = props.dataForMenu;
 
-  const { data: filteredPageData, isFilterApplied } = useFilteredPageData(searchArea);
+  const { data: filteredPageData, isFilterApplied } =
+    useFilteredPageData(searchArea);
 
   const runSearch = () => {
     const searchValueTrimmed = draftValue.trim();
     if (searchValueTrimmed.length < 3) return;
 
-    const searchTarget = isFilterApplied ? filteredPageData : searchArea;
+    const searchTarget = isFilterApplied
+      ? filteredPageData
+      : searchArea;
 
     const excludedKeys = [
-      "type", "userId", "userTypeId", "userTypePriority",
-      "userPositionPriority", "departmentId", "departmentPriority",
-      "sectionId", "sectionPriority"
+      "type",
+      "userId",
+      "userTypeId",
+      "userTypePriority",
+      "userPositionPriority",
+      "departmentId",
+      "departmentPriority",
+      "sectionId",
+      "sectionPriority"
     ];
 
     const foundResults = [];
 
-    searchTarget.forEach(element => {
-      if (!element?.rows) return;
+    searchTarget.forEach(page => {
+      if (!page?.rows) return;
 
-      element.rows.forEach((rowElement, rowIndex) => {
-        if (!rowElement) return;
+      page.rows.forEach((row, rowIndex) => {
+        if (!row) return;
+
         const index = rowIndex + 1;
         let foundInRow = false;
 
-        for (const [key, value] of Object.entries(rowElement)) {
-          if (!excludedKeys.includes(key) && typeof value === "string" && value.toLowerCase().includes(searchValueTrimmed.toLowerCase())) {
-            foundResults.push({ elementType: rowElement.type, dataKey: key, dataValue: value, currentPage: element.pageIndex, index });
+        for (const [key, value] of Object.entries(row)) {
+          if (
+            !excludedKeys.includes(key) &&
+            typeof value === "string" &&
+            value.toLowerCase().includes(searchValueTrimmed.toLowerCase())
+          ) {
+            foundResults.push({
+              elementType: row.type,
+              dataKey: key,
+              dataValue: value,
+              currentPage: page.pageIndex,
+              index
+            });
             foundInRow = true;
             break;
           }
         }
 
-        if (!foundInRow && Array.isArray(rowElement.phones)) {
-          rowElement.phones.forEach(phone => {
-            if (phone?.phoneName?.toLowerCase().includes(searchValueTrimmed.toLowerCase())) {
-              foundResults.push({ elementType: rowElement.type, dataKey: "phoneName", dataValue: phone.phoneName, currentPage: element.pageIndex, index });
+        if (!foundInRow && Array.isArray(row.phones)) {
+          row.phones.forEach(phone => {
+            if (
+              phone?.phoneName
+                ?.toLowerCase()
+                .includes(searchValueTrimmed.toLowerCase())
+            ) {
+              foundResults.push({
+                elementType: row.type,
+                dataKey: "phoneName",
+                dataValue: phone.phoneName,
+                currentPage: page.pageIndex,
+                index
+              });
             }
           });
         }
@@ -114,12 +148,16 @@ const Search = (props) => {
       showNotFound={showNotFound}
       inputValue={inputValue}
       setInputValue={(value) =>
-        value !== "" ? props.updateDraftValue(activeMenuStr, value) : props.clearSearchForm(activeMenuStr)
+        value !== ""
+          ? props.updateDraftValue(activeMenuStr, value)
+          : props.clearSearchForm(activeMenuStr)
       }
       isPresentedSearchField={props.isPresentedSearchField}
       handleOnSearchButtonClick={handleOnSearchButtonClick}
       handleOnClearSearchFormButtonClick={handleOnClearSearchFormButtonClick}
-      getCountOfFoundResults={() => props.getCountOfFoundResults(activeMenuStr)}
+      getCountOfFoundResults={() =>
+        props.getCountOfFoundResults(activeMenuStr)
+      }
     />
   );
 };
@@ -130,20 +168,37 @@ const mapStateToProps = (state) => {
   return {
     activeMenu: menu,
     isPresentedSearchField: isPresentedSearchField(state),
-    getGovUaMails: getGovUaMails(state),
-    getLotusMails: getLotusMails(state),
-    getPhones: getPhones(state),
-    searchFieldValue: (m) => state.toggledElements.searchField[m]?.searchValue || "",
-    draftValue: (m) => state.toggledElements.searchField[m]?.draftValue || "",
-    getCountOfFoundResults: (m) => getCountOfFoundResults(state, m),
-    getIndexesOfFiltredResults: getIndexesOfFiltredResults(state, menu),
-    // старі селектори замінені на універсальний
-    isGovUaSearchValueFounded: isSearchValueFoundByPage("Gov-ua")(state),
-    isLotusSearchValueFounded: isSearchValueFoundByPage("Lotus")(state),
-    isPhonesSearchValueFound: isSearchValueFoundByPage("phones")(state)
+
+    // ✅ універсальний селектор
+    dataForMenu: getDataForMenu(state, menu),
+
+    searchFieldValue: (m) =>
+      state.toggledElements.searchField[m]?.searchValue || "",
+    draftValue: (m) =>
+      state.toggledElements.searchField[m]?.draftValue || "",
+
+    getCountOfFoundResults: (m) =>
+      getCountOfFoundResults(state, m),
+
+    getIndexesOfFiltredResults:
+      getIndexesOfFiltredResults(state, menu),
+
+    isGovUaSearchValueFounded:
+      isSearchValueFoundByPage("Gov-ua")(state),
+    isLotusSearchValueFounded:
+      isSearchValueFoundByPage("Lotus")(state),
+    isPhonesSearchValueFound:
+      isSearchValueFoundByPage("phones")(state),
   };
 };
 
-const mapDispatchToProps = { addFoundItems, clearSearchForm, updateDraftValue };
+const mapDispatchToProps = {
+  addFoundItems,
+  clearSearchForm,
+  updateDraftValue
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(Search);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Search);

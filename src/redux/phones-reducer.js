@@ -1,4 +1,3 @@
-import { getPhones } from "./selectors/selector";
 import { createFetchThunk } from "./fetchDataThunkCreator";
 import { rowsPerPage as limitRows } from "./selectors/selector";
 

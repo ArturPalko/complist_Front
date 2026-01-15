@@ -2,7 +2,7 @@ import userEvent from "@testing-library/user-event";
 import { selectUniqueCount,countMailData } from "./helpFunctions/countMailsData";
 import { createSelector } from "@reduxjs/toolkit";
 import { countPhoneData } from "./helpFunctions/countPhonesData";
-import {createCurrentPageSelector} from "./selectorFabrics/createCurrentPageSelector";
+import {createCurrentPageSelector} from "./selectorFabrics/createCurrentPageSelector"
 import { extractPositionsAndTypes } from "./helpFunctions/extractPositionsAndTypes";
 import { countDepartmentsAndSections } from "./helpFunctions/countDepartmentsAndSections";
 import { getBaseLinkByMenu } from './helpFunctions/getBaseLinkByMenu'; 
@@ -84,27 +84,27 @@ export const GovUaCurrentPage = createCurrentPageSelector({
   foundSelector: selectSearchValueByPage("Gov-ua"),
 });
 
-export const isLotusDataLoaded = (state) =>{
-        return state.dataState.Lotus.dataIsLoaded
-}
+// export const isLotusDataLoaded = (state) =>{
+//         return state.dataState.Lotus.dataIsLoaded
+// }
 
-export const isGovUaDataLoaded = (state) =>{
-        return state.dataState["Gov-ua"].dataIsLoaded
-}
+// export const isGovUaDataLoaded = (state) =>{
+//         return state.dataState["Gov-ua"].dataIsLoaded
+// }
 
-export const isPhonesDataLoaded = (state) =>{
-        return state.dataState.phones.dataIsLoaded
-}
+// export const isPhonesDataLoaded = (state) =>{
+//         return state.dataState.phones.dataIsLoaded
+// }
 
-export const isLotusDataFetching = (state) => {
-  return state.dataState.Lotus.dataIsFetching;
-};
-export const isGovUaDataFetching = (state) => {
-  return state.dataState["Gov-ua"].dataIsFetching;
-};
-export const isPhonesDataFetching = (state) => {
-  return state.dataState.phones.dataIsFetching;
-};
+// export const isLotusDataFetching = (state) => {
+//   return state.dataState.Lotus.dataIsFetching;
+// };
+// export const isGovUaDataFetching = (state) => {
+//   return state.dataState["Gov-ua"].dataIsFetching;
+// };
+// export const isPhonesDataFetching = (state) => {
+//   return state.dataState.phones.dataIsFetching;
+// };
 
 export const isPresentedSearchField = (state) =>{
   return state.toggledElements.showSearchField.isActive ;

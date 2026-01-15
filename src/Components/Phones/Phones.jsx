@@ -5,7 +5,6 @@ import PhonesTable from "../PhonesTable/PhonesTable";
 import TopTableBar from "../TopTableBar/TopTableBar";
 import { rowsPerPage } from "../CommonInjection/Dependencies/ComponentImports";
 import {
-  getPhones,
   isPhonesDataLoaded,
   isPhonesDataFetching,
   getDepartmentsAndSectionsPerPage
@@ -15,16 +14,7 @@ import { useIndexesForPage, usePageNumber } from "../../redux/hooks/hooks";
 import withDataLoaderForMenu from "../../redux/hocs/withDataLoader";
 import withToggleElements from "../../redux/hocs/withToggleElements";
 
-// import React, { useRef } from "react";
-// import { compose, connect } from "redux";
-// import PhonesTable from "../PhonesTable/PhonesTable";
-// import TopTableBar from "../TopTableBar/TopTableBar";
-// import { rowsPerPage } from "../CommonInjection/Dependencies/ComponentImports";
-// import { useIndexesForPage, usePageNumber } from "../../redux/hooks/hooks";
-// import withToggleElements from "../../redux/hocs/withToggleElements";
-// import withDataLoaderForMenu from "../../redux/hocs/withDataLoaderForMenu";
-// import { getPhonesData } from "../../redux/phones-reducer";
-// import { getDepartmentsAndSectionsPerPage } from "../../redux/selectors/selector";
+
 
 const PhonesPage = (props) => {
   const pageName = "phones";
