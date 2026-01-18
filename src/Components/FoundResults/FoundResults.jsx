@@ -77,7 +77,7 @@ const FoundResults = (props) => {
 
   if (presentRows.length > rowsPerPage) return <TooManyResultsOfSearch />;
   if (!ActiveComponent) return null;
-debugger;
+
   return (
     <FoundResultsContext.Provider value={{
       //  foundResults: rowsToPresent || [],

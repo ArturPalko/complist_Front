@@ -8,12 +8,17 @@ import withToggleElements from "../../redux/hocs/withToggleElements";
 import withDataLoaderForMenu from "../../redux/hocs/withDataLoader";
 import { getMailsData } from "../../redux/mails-reducer";
 
+
+
+import { getDataByMenu } from "../../redux/data-reducer"; // 👈 універсальний thunk
+
 const GovUAPage = (props) => {
   const pageName = "Gov-ua";
-  const indexesOfFoundResultsForCurrentPage = useIndexesForPage(pageName);
-  const pageNumber = usePageNumber();
 
   const titleRef = useRef(null);
+  const pageNumber = usePageNumber();
+  const indexesOfFoundResultsForCurrentPage =
+    useIndexesForPage(pageName);
 
   return (
     <>
@@ -22,6 +27,7 @@ const GovUAPage = (props) => {
         title="Поштові скриньки customs.gov.ua"
         mailType={pageName.toLowerCase()}
       />
+
       <MailsTable
         titleRef={titleRef}
         mailType={pageName}
@@ -30,18 +36,19 @@ const GovUAPage = (props) => {
           { key: "departmentOrSection", label: "найменування підрозділу" },
           { key: "responsibleUser", label: "відповідальна особа" },
         ]}
-        showPasswords={props.showPasswords}        // береться з HOC
-        passwordsMap={props.passwordsMap}          // береться з HOC
+        showPasswords={props.showPasswords}
+        passwordsMap={props.passwordsMap}
         rowsPerPage={rowsPerPage}
         pageNumber={pageNumber}
-        indexesOfFoundResultsForCurrentPage={indexesOfFoundResultsForCurrentPage}
+        indexesOfFoundResultsForCurrentPage={
+          indexesOfFoundResultsForCurrentPage
+        }
       />
     </>
   );
 };
 
 export default compose(
-  // Використовуємо універсальний HOC для Gov-ua
-  withDataLoaderForMenu("Gov-ua", getMailsData),
+  withDataLoaderForMenu("Gov-ua", getDataByMenu), // 👈 ТЕ САМЕ, що у phones
   withToggleElements("Gov-ua")
 )(GovUAPage);

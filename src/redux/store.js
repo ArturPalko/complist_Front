@@ -6,9 +6,11 @@ import { thunk } from "redux-thunk";
 import { appReducer } from "./app-reducer";
 import { toggledElemetsReducer } from "./toggledElements-reducer";
 import { filterDataReducer } from "./selectors/filterData-reducer";
+import { dataReducer } from "./data-reducer";
 
 
 let reducers = combineReducers({
+    data: dataReducer,           
     "mails": mailsReducer,
     "phones": phonesReducer,
     "currentPageNumber":pagesNavbarReducer,

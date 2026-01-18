@@ -1,63 +1,51 @@
-
-import { getGovUaMails, getLotusMails } from "./selectors/selector";
 import { createFetchThunk } from "./fetchDataThunkCreator";
 import { rowsPerPage as limitRows } from "./selectors/selector";
+import { paginateData } from "../redux/reducersHelpunctions/pagination.js"; // імпортуємо винесену функцію пагінації
 
+const ADD_MAILS = "ADD_MAILS";
 
-const ADD_MAILS = "ADD_MAILS"
-const fetchUrlLotus="http://localhost:5114/mails/Lotus";
-const fetchUrlGovUa="http://localhost:5114/mails/Gov-ua";
-let fetchUrl = '';
+const fetchUrlLotus = "http://localhost:5114/mails/Lotus";
+const fetchUrlGovUa = "http://localhost:5114/mails/Gov-ua";
 
-function switchFetchUrl(mailType){
-    switch(mailType){
-        case "Lotus":
-            return fetchUrlLotus
-        case "Gov-ua":
-            return fetchUrlGovUa
-    }
+function switchFetchUrl(mailType) {
+  switch (mailType) {
+    case "Lotus":
+      return fetchUrlLotus;
+    case "Gov-ua":
+      return fetchUrlGovUa;
+    default:
+      return "";
+  }
 }
 
 const initialState = {
-    Lotus:[], ["Gov-ua"]:[]
+  Lotus: [],
+  "Gov-ua": []
 };
 
+// ====================== reducer ======================
 export const mailsReducer = (state = initialState, action) => {
-    switch(action.type) {
-        case ADD_MAILS  :
-                let countRows = 0;
-                let pageIndex = 1;
-                let pages = [];
-                let page = { pageIndex, rows: [] };
-                function savePage() {
-                pages.push(page);
-                page = { pageIndex: ++pageIndex, rows: [] };
-                countRows = 0;
-            }
+  switch (action.type) {
+    case ADD_MAILS: {
+      const { mailType, data } = action;
 
-                for(const mail of action.data){
-                    page.rows.push(mail)
-                    countRows++
-                    if (countRows >= limitRows) savePage();
-
-                }
-                if (page.rows.length > 0) {
-                    pages.push(page);
-      }
-            return {
-                    ...state,
-                    [action.mailType]: pages
-                };
-            default:
-                return state;
+      return {
+        ...state,
+        [mailType]: paginateData(data, mailType, limitRows)
+      };
     }
+    default:
+      return state;
+  }
 };
 
+// ====================== action creator ======================
 export const addMailsActionCreator = (mailType, data) => ({
-    type: ADD_MAILS ,
-    mailType,
-    data
+  type: ADD_MAILS,
+  mailType,
+  data
 });
 
+// ====================== thunk ======================
 export const getMailsData = (mailType) =>
-  createFetchThunk(switchFetchUrl(mailType), addMailsActionCreator,mailType);
+  createFetchThunk(switchFetchUrl(mailType), addMailsActionCreator, mailType);

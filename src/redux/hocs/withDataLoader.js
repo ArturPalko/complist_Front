@@ -31,6 +31,8 @@ const withDataLoaderForMenu = (menuName, fetchAction) => (WrappedComponent) => {
     const [showPreloader, setShowPreloader] = useState(false);
 
     const data = props.data;
+    debugger;
+    
     const isLoaded = props.isLoaded;
 
     // Таймер Preloader
@@ -71,6 +73,7 @@ const withDataLoaderForMenu = (menuName, fetchAction) => (WrappedComponent) => {
       doFetch();
     }, [isLoaded, props.fetchAction, menuName, navigate]);
 
+console.log("GovUa data:", data)
     return showPreloader ? (
       <Preloader count={count} />
     ) : (

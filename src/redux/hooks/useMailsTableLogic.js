@@ -21,6 +21,7 @@ export const useMailsTableLogic = ({
   const colNumbersRef = useRef([]);
 
   const { data: mailsData, isPreviousPageWasFoundResult } = useDataLoader();
+  
   const { isPagesNavbarLinkElementOnCurrentPagePressed } = useSearchToggle();
 
   const safeFoundResults = foundResults || [];
@@ -29,7 +30,7 @@ export const useMailsTableLogic = ({
   const isFoundResults = useSelector(isCurrentPageFoundResult(menu));
 
   const { data: filteredPageData, isFilterApplied } = useFilteredPageData(mailsData);
-
+  
   const pageData = isFoundResults
     ? safeFoundResults
     : isFilterApplied

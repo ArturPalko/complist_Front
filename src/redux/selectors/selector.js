@@ -13,15 +13,7 @@ import { processFoundResults } from "./helpFunctions/processFoundResults";
 
 
 // ===== дані =====
-export const getDataForMenu = (state, menu) => {
-  if (!menu) return [];
-
-  if (menu === "phones") {
-    return state.phones?.pages ?? [];
-  }
-
-  return state.mails?.[menu] ?? [];
-};
+export const getDataForMenu = (state, menu) =>  state.data?.[menu] ?? [];
 
 // ===== статуси =====
 export const getLoadedForMenu = (state, menu) =>
@@ -48,22 +40,22 @@ export const foundSearchValueOnAnyPage = (pagesArray) => (state) => {
 
 
 export const getLotusMails = (state) => {
-    return state.mails.Lotus 
+    return state.data.Lotus 
 }
 
 export const getGovUaMails = (state) => {
-    return state.mails["Gov-ua"] 
+    return state.data["Gov-ua"] 
 }
 
 export const getPhones = (state) => {
-    return state.phones.pages
+    return state.data.phones
 }
 
 export const selectPaginationPagesCount =
   (activeMenu) =>
   (state) => {
 
-    return getPaginationPages(state, activeMenu)?.length || 0;
+    return getDataForMenu(state,activeMenu).length || 0;
   };
 
   
@@ -84,27 +76,6 @@ export const GovUaCurrentPage = createCurrentPageSelector({
   foundSelector: selectSearchValueByPage("Gov-ua"),
 });
 
-// export const isLotusDataLoaded = (state) =>{
-//         return state.dataState.Lotus.dataIsLoaded
-// }
-
-// export const isGovUaDataLoaded = (state) =>{
-//         return state.dataState["Gov-ua"].dataIsLoaded
-// }
-
-// export const isPhonesDataLoaded = (state) =>{
-//         return state.dataState.phones.dataIsLoaded
-// }
-
-// export const isLotusDataFetching = (state) => {
-//   return state.dataState.Lotus.dataIsFetching;
-// };
-// export const isGovUaDataFetching = (state) => {
-//   return state.dataState["Gov-ua"].dataIsFetching;
-// };
-// export const isPhonesDataFetching = (state) => {
-//   return state.dataState.phones.dataIsFetching;
-// };
 
 export const isPresentedSearchField = (state) =>{
   return state.toggledElements.showSearchField.isActive ;
@@ -154,11 +125,6 @@ export const getGovMailsCurretPageNumber = (state) =>
 export const isPagesNavbarLinkElementOnCurrentPagePressed = (state) =>
   state.toggledElements.pagesNavbarLinkElementOnCurrentPage.isPressed;
 
-// export const isPreviousPageWasFoundResult = (state) => {
-//   const page = activeMenu(state);
-//   const baseLink = getBaseLinkByMenu(page);
-//   return state.currentPageNumber.previousLocation === `${baseLink}/foundResults`;
-// };
 
 export const isPreviousPageWasFoundResult = (menu) => (state) => {
   if (!menu) return false;

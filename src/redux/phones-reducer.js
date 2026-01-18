@@ -1,74 +1,31 @@
 import { createFetchThunk } from "./fetchDataThunkCreator";
 import { rowsPerPage as limitRows } from "./selectors/selector";
-
+import { paginateData } from "../redux/reducersHelpunctions/pagination.js"; // імпортуємо універсальну функцію
 
 const ADD_PHONES = "ADD_PHONES";
-const fetchUrl="http://localhost:5114/phones";
+const fetchUrl = "http://localhost:5114/phones";
 
-const initialState = {};
+const initialState = { pages: [] };
 
-
-
+// ====================== reducer ======================
 export const phonesReducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_PHONES: {
-      let countRows = 0;
-      let pageIndex = 1;
-      let pages = [];
-      let page = { pageIndex, rows: [] };
-
-      function savePage() {
-        pages.push(page);
-        page = { pageIndex: ++pageIndex, rows: [] };
-        countRows = 0;
-      }
-
-      for (const dep of action.data) {
-        // рядок департаменту
-        page.rows.push({ type: "department", ...dep });
-        countRows++;
-        if (countRows >= limitRows) savePage();
-
-        // користувачі департаменту
-        for (const user of dep.users || []) {
-          page.rows.push({ type: "user", ...user, phones: user.phones || [] });
-          countRows++;
-          if (countRows >= limitRows) savePage();
-        }
-
-        // секції департаменту
-        for (const section of dep.sections || []) {
-          page.rows.push({ type: "section", ...section });
-          countRows++;
-          if (countRows >= limitRows) savePage();
-
-          // користувачі секції
-          for (const user of section.users || []) {
-            page.rows.push({ type: "user", ...user });
-            countRows++;
-            if (countRows >= limitRows) savePage();
-          }
-        }
-      }
-
-      // додати останню сторінку, якщо там є рядки
-      if (page.rows.length > 0) {
-        pages.push(page);
-      }
-
-       return { ...state, pages};
+      // використовуємо paginateData, передаємо "phones" як menuKey
+      const pages = paginateData(action.data, "phones", limitRows);
+      return { ...state, pages };
     }
-
     default:
       return state;
   }
 };
 
+// ====================== action creator ======================
 export const addPhonesActionCreator = (data) => ({
   type: ADD_PHONES,
   data
 });
 
-
+// ====================== thunk ======================
 export const getPhonesData = () =>
   createFetchThunk(fetchUrl, addPhonesActionCreator, "phones");

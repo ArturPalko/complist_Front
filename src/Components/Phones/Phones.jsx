@@ -16,17 +16,23 @@ import withToggleElements from "../../redux/hocs/withToggleElements";
 
 
 
+
+import { getDataByMenu } from "../../redux/data-reducer";
+
 const PhonesPage = (props) => {
   const pageName = "phones";
-  const indexesOfFoundResultsForCurrentPage = useIndexesForPage(pageName);
-  const pageNumber = usePageNumber();
-  const departmentsAndSectionsPerPage = props.getDepartmentsAndSectionsPerPage(pageName);
 
   const titleRef = useRef(null);
+  const pageNumber = usePageNumber();
+  const indexesOfFoundResultsForCurrentPage = useIndexesForPage(pageName);
+
+  const departmentsAndSectionsPerPage =
+    props.getDepartmentsAndSectionsPerPage(pageName);
 
   return (
     <>
       <TopTableBar ref={titleRef} title="Телефони" />
+
       <PhonesTable
         titleRef={titleRef}
         columns={[
@@ -52,11 +58,12 @@ const PhonesPage = (props) => {
 };
 
 const mapStateToProps = (state) => ({
-  getDepartmentsAndSectionsPerPage: (menu) => getDepartmentsAndSectionsPerPage(state, menu),
+  getDepartmentsAndSectionsPerPage: (menu) =>
+    getDepartmentsAndSectionsPerPage(state, menu),
 });
 
 export default compose(
-  withDataLoaderForMenu("phones", getPhonesData),
+  withDataLoaderForMenu("phones", getDataByMenu), // 👈 новий thunk
   withToggleElements("phones"),
   connect(mapStateToProps)
 )(PhonesPage);

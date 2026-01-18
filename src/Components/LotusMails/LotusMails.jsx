@@ -8,10 +8,14 @@ import withToggleElements from "../../redux/hocs/withToggleElements";
 import withDataLoaderForMenu from "../../redux/hocs/withDataLoader";
 import { getMailsData } from "../../redux/mails-reducer";
 
+
+
+import { getDataByMenu } from "../../redux/data-reducer"; // 👈 універсальний thunk
+
 const LotusPage = (props) => {
   const pageName = "Lotus"; 
-  const indexesOfFoundResultsForCurrentPage = useIndexesForPage(pageName);
   const pageNumber = usePageNumber();
+  const indexesOfFoundResultsForCurrentPage = useIndexesForPage(pageName);
 
   return (
     <>
@@ -37,7 +41,6 @@ const LotusPage = (props) => {
 };
 
 export default compose(
-  // Використовуємо універсальний HOC
-  withDataLoaderForMenu("Lotus", getMailsData),
+  withDataLoaderForMenu("Lotus", getDataByMenu), // 👈 новий thunk
   withToggleElements("Lotus")
 )(LotusPage);

@@ -36,6 +36,7 @@ const MailsTable = ({
      titleRef,
       headerRef,
    });
+   
   return (
     <div className={s.content}>
       <div className={s.tableWrapper + " " + showDigitsFromPressed}>
