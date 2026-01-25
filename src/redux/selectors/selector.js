@@ -8,6 +8,7 @@ import { countDepartmentsAndSections } from "./helpFunctions/countDepartmentsAnd
 import { getBaseLinkByMenu } from './helpFunctions/getBaseLinkByMenu'; 
 import { getPaginationPages } from "./helpFunctions/getPaginationPages";
 import { processFoundResults } from "./helpFunctions/processFoundResults";
+import { countContacts } from "../../Components/NavBar/FilterPanel/countContacts";
 
 
 
@@ -75,6 +76,16 @@ export const GovUaCurrentPage = createCurrentPageSelector({
   key: "Gov-ua",
   foundSelector: selectSearchValueByPage("Gov-ua"),
 });
+export const currentPageByMenu = (state, menu) => {
+  const hasFilter = menu === "phones";
+
+  return createCurrentPageSelector({
+    key: menu,
+    foundSelector: selectSearchValueByPage(menu),
+    hasFilter,
+  })(state);
+};
+
 
 
 export const isPresentedSearchField = (state) =>{
@@ -144,7 +155,23 @@ export const getCountOfFoundResults = (state, typeOfPage) => {
   return results.length;
 };
 
-  
+const menuSelectors = {
+  phones: state => getPhonesCount(state).countOfUsers || 0,
+  Lotus: state => getLotusCount(state).countOfMails || 0,
+  "Gov-ua": state => getGovUaCount(state).countOfMails || 0,
+};
+
+// універсальна функція для компонента
+export const getContactsCount = ({ state, activeMenu, isFilterApplied, filteredChunks, dataByMenu }) => {
+  if (!isFilterApplied) {
+    const selector = menuSelectors[activeMenu];
+    return selector ? selector(state) : 0;
+  }
+  debugger;
+
+  // якщо застосовано фільтр, викликаємо твою існуючу функцію countContacts
+  return countContacts({ filteredChunks, dataByMenu });
+};
 
 // //////////////////////////////////////////
 //////////////////////////////////////////
@@ -166,6 +193,7 @@ export const getCountsForActiveMenu = createSelector(
     }
   }
 );
+
 
 
 

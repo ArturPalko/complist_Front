@@ -1,38 +1,45 @@
 import { passesFiltersForRow } from "./passesFiltersForRow";
-import { rowsPerPage as chunkSize } from "../../selectors/selector";
+import { rowsPerPage as defaultChunkSize } from "../../selectors/selector";
 
 export const computeFilteredChunks = ({
   state = {},
   subConditions = {},
   activeMenu,
-  getGovUaMails = [],
-  getLotusMails = [],
-  getPhones = [],
-  conditions
+  dataForMenu = [],
+  conditions,
+  chunkSize = defaultChunkSize
 }) => {
+  // Визначаємо активні фільтри
   const activeFilters = Object.entries(state)
     .filter(([key, v]) => v && conditions[key])
     .map(([key]) => key);
 
-  const dataFromStore =
-    activeMenu === "Gov-ua" ? getGovUaMails
-    : activeMenu === "Lotus" ? getLotusMails
-    : getPhones;
-
   const allFilteredIndexes = [];
 
-  dataFromStore.forEach((element, pageIndex) => {
+  // Для menus крім phones саб-фільтри завжди порожні
+  const effectiveSubConditions = activeMenu === "phones" ? subConditions : {};
+
+  dataForMenu.forEach((element, pageIndex) => {
     const rows = element?.rows || [];
     rows.forEach((row, rowIndex) => {
-      if (passesFiltersForRow(row, activeFilters, subConditions)) {
-        allFilteredIndexes.push({ page: pageIndex + 1, index: rowIndex, type: row.type });
+      if (passesFiltersForRow(row, activeFilters, effectiveSubConditions)) {
+        allFilteredIndexes.push({
+          page: pageIndex + 1,
+          index: rowIndex,
+          type: row.type
+        });
       }
     });
   });
 
+  // Розбиваємо на чанки
   const chunks = [];
   for (let i = 0; i < allFilteredIndexes.length; i += chunkSize) {
-    chunks.push({ pageIndex: chunks.length + 1, rows: allFilteredIndexes.slice(i, i + chunkSize) });
+    chunks.push({
+      pageIndex: chunks.length + 1,
+      rows: allFilteredIndexes.slice(i, i + chunkSize)
+    });
   }
+
   return chunks;
 };

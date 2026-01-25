@@ -1,34 +1,28 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 
-import { getLastVisitedPage } from "../selectors/selector";
 import { filterGroups, conditions, filterPoints } from "./useFiltersFunctions/filtersLogics";
 import { computeFilteredChunks } from "./useFiltersFunctions/computeFilteredChunks";
 import { redirectToCurrentPage as redirectUtil } from "./useFiltersFunctions/redirectToCurrentPage";
 import { handleOnCheckboxChangeHandler } from "./useFiltersFunctions/handlers/handleOnCheckboxChange";
 import { handleOnClearFormButtonClickHandler } from "./useFiltersFunctions/handlers/handleOnClearFormButtonClick";
 
-
 export const useFilters = (props = {}) => {
   const {
     activeMenu,
-    getGovUaMails,
-    getLotusMails,
-    getPhones,
-    getSubFilters,
+    dataForMenu, // готові дані для активного меню
     addIndexesOfFiltredResults,
     addFilter,
     clearCurrentForm,
-    GovUaCurrentPage,
-    lotusCurrentPage,
-    phonesCurrentPage,
-    isPresentedFielterPanel
+    currentPage,
+    isPresentedFielterPanel,
+    isFilterApplied,
+    getSubFilters
   } = props;
 
   const navigate = useNavigate();
-  const lastPage = useSelector((state) => getLastVisitedPage(state, activeMenu));
 
+  // ---------------- STATE ----------------
   const [phonesSubConditions, setPhonesSubConditions] = useState({});
   const [lotusFilters, setLotusFilters] = useState({});
   const [govUaFilters, setGovUaFilters] = useState({});
@@ -65,17 +59,15 @@ export const useFilters = (props = {}) => {
     redirectUtil({
       filters,
       subConditions,
-      lastPage,
+      lastPage: null,
       hasAnyFiltersFn: hasAnyFilters,
       navigate,
       activeMenu,
-      GovUaCurrentPage,
-      lotusCurrentPage,
-      phonesCurrentPage
+      currentPage
     });
   };
 
-  // ---------------- SYNC SUBCONDITIONS & REDIRECT ----------------
+  // ---------------- SYNC SUBCONDITIONS ----------------
   useEffect(() => {
     if (activeMenu !== "phones") return;
 
@@ -99,12 +91,8 @@ export const useFilters = (props = {}) => {
       });
     });
 
-    // Оновлюємо саб-фільтри
     setPhonesSubConditions(result);
-
-    // Редирект з актуальними саб-фільтрами
     redirectToCurrentPage(currentFilters, result);
-
   }, [getSubFilters, activeMenu, currentFilters]);
 
   // ---------------- HANDLERS ----------------
@@ -142,7 +130,7 @@ export const useFilters = (props = {}) => {
     }
   };
 
-  // ---------------- FILTERING & DISPATCH ----------------
+  // ---------------- FILTERING ----------------
   const filteredChunks = useMemo(() => {
     if (!hasAnyFilters(currentFilters, phonesSubConditions)) {
       prevChunks.current = [];
@@ -152,13 +140,12 @@ export const useFilters = (props = {}) => {
       return [];
     }
 
+    // тепер використовуємо лише dataForMenu
     const chunks = computeFilteredChunks({
       state: currentFilters,
       subConditions: phonesSubConditions,
       activeMenu,
-      getGovUaMails,
-      getLotusMails,
-      getPhones,
+      dataForMenu, // універсальні дані для активного меню
       conditions
     });
 
@@ -174,15 +161,13 @@ export const useFilters = (props = {}) => {
     currentFilters,
     phonesSubConditions,
     activeMenu,
-    getGovUaMails,
-    getLotusMails,
-    getPhones,
+    dataForMenu,
     addIndexesOfFiltredResults
   ]);
 
   // ---------------- UI HELPERS ----------------
   const filterPointsForCurrentMenu = (filterPoints || []).filter((p) =>
-    p.pages.includes((activeMenu || ""))
+    p.pages.includes(activeMenu)
   );
 
   const groupedFilterPoints = filterPointsForCurrentMenu.reduce((acc, item) => {
@@ -191,7 +176,6 @@ export const useFilters = (props = {}) => {
     return acc;
   }, {});
 
-  // ---------------- RESET WHEN PANEL HIDDEN ----------------
   useEffect(() => {
     if (!isPresentedFielterPanel) {
       setLotusFilters({});
@@ -205,7 +189,6 @@ export const useFilters = (props = {}) => {
     }
   }, [isPresentedFielterPanel]);
 
-  // ---------------- RETURN ----------------
   return {
     filteredChunks,
     groupedFilterPoints,

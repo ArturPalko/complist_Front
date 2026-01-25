@@ -2,26 +2,18 @@
 export const redirectToPage = ({
   navigate,
   activeMenu,
-  GovUaCurrentPage,
-  lotusCurrentPage,
-  phonesCurrentPage 
+  currentPage = 1
 }) => {
-  let page = 1;
-  
   switch (activeMenu) {
     case "Gov-ua":
-      page = GovUaCurrentPage || 1;
-      navigate(`/mails/Gov-ua/${page}`);
-      break;
     case "Lotus":
-      page = lotusCurrentPage || 1;
-      navigate(`/mails/Lotus/${page}`);
+      navigate(`/mails/${activeMenu}/${currentPage}`);
       break;
+
     case "phones":
-      page = phonesCurrentPage ||1 ;
-      
-      navigate(`/phones/${page}`);
+      navigate(`/phones/${currentPage}`);
       break;
+
     default:
       navigate(`/`);
   }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import FilterPanel from "../FilterPanel/FilterPanel";
+import FilterPanel from "../FilterPanel/FilterPanelContainer";
 import { activeMenu, isPresentedFielterPanel, GovUaCurrentPage, lotusCurrentPage, phonesCurrentPage } from "../../../redux/selectors/selector";
 import { toggleFielterPanelElement } from "../../../redux/toggledElements-reducer";
 import { clearFiltredData } from "../../../redux/selectors/filterData-reducer";

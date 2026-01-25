@@ -7,23 +7,22 @@ export const redirectToCurrentPage = ({
   hasAnyFiltersFn,
   navigate,
   activeMenu,
-  GovUaCurrentPage,
-  lotusCurrentPage,
-  phonesCurrentPage
+  currentPage
 }) => {
   if (lastPage === "foundResults") return;
 
   const hasFilters = hasAnyFiltersFn(filters, subConditions);
-  
 
-  const pageParams = { navigate, activeMenu, GovUaCurrentPage, lotusCurrentPage, phonesCurrentPage };
+  const nextPage = hasFilters ? 1 : currentPage;
+  debugger;
 
-  if (hasFilters) {
-    if (activeMenu === "Gov-ua") pageParams.GovUaCurrentPage = 1;
-    else if (activeMenu === "Lotus") pageParams.lotusCurrentPage = 1;
-    else if (activeMenu === "phones") pageParams.phonesCurrentPage = 1;
-  }
-  
-  redirectToPage(pageParams,activeMenu,navigate);
-  
+  redirectToPage(
+    {
+      navigate,
+      activeMenu,
+      currentPage: nextPage
+    },
+    activeMenu,
+    navigate
+  );
 };
