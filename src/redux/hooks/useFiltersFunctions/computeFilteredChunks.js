@@ -1,5 +1,5 @@
 import { passesFiltersForRow } from "./passesFiltersForRow";
-import { rowsPerPage as defaultChunkSize } from "../../selectors/selector";
+import { rowsPerPage as defaultChunkSize } from "../../selectors/constants.js";
 
 export const computeFilteredChunks = ({
   state = {},

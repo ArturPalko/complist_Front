@@ -1,18 +1,14 @@
 import { combineReducers, createStore, applyMiddleware } from "redux";
-import { mailsReducer } from "./mails-reducer";
-import { phonesReducer } from "./phones-reducer";
 import {pagesNavbarReducer} from "./pagesNavbar-reducer";
 import { thunk } from "redux-thunk";
 import { appReducer } from "./app-reducer";
 import { toggledElemetsReducer } from "./toggledElements-reducer";
-import { filterDataReducer } from "./selectors/filterData-reducer";
+import { filterDataReducer } from "./filterData-reducer";
 import { dataReducer } from "./data-reducer";
 
 
 let reducers = combineReducers({
-    data: dataReducer,           
-    "mails": mailsReducer,
-    "phones": phonesReducer,
+    "data": dataReducer,           
     "currentPageNumber":pagesNavbarReducer,
     "dataState":appReducer,
     "toggledElements": toggledElemetsReducer,

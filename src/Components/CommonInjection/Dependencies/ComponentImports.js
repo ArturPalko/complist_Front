@@ -1,5 +1,5 @@
 // export { usePageNumber } from "../../../redux/hooks/hooks";
-export { rowsPerPage } from "../../../redux/selectors/selector";
+export { rowsPerPage } from "../../../redux/selectors/constants.js";
 export { connect } from "react-redux";
 export { useState, useEffect } from "react";
 export {setDataIsLoadedActionCreator} from "../../../redux//app-reducer"

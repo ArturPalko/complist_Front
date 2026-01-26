@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+
 import FilterPanel from "../FilterPanel/FilterPanelContainer";
-import { activeMenu, isPresentedFielterPanel, GovUaCurrentPage, lotusCurrentPage, phonesCurrentPage } from "../../../redux/selectors/selector";
+import {
+  activeMenu,
+  isPresentedFielterPanel,
+  currentPageByMenu
+} from "../../../redux/selectors/selector";
+
 import { toggleFielterPanelElement } from "../../../redux/toggledElements-reducer";
-import { clearFiltredData } from "../../../redux/selectors/filterData-reducer";
+import { clearFiltredData } from "../../../redux/filterData-reducer";
 import { redirectToPage } from "../commonFunctions";
 
 const Filter = () => {
@@ -13,9 +19,9 @@ const Filter = () => {
 
   const currentMenu = useSelector(activeMenu);
   const isFilterPanelVisibleFromStore = useSelector(isPresentedFielterPanel);
-  const govUaPage = useSelector(GovUaCurrentPage);
-  const lotusPage = useSelector(lotusCurrentPage);
-  const phonesPage = useSelector(phonesCurrentPage);
+  const currentPage = useSelector((state) =>
+    currentPageByMenu(state, currentMenu)
+  );
 
   const [isOpen, setIsOpen] = useState(isFilterPanelVisibleFromStore);
 
@@ -26,17 +32,15 @@ const Filter = () => {
   const togglePanel = () => {
     const newState = !isOpen;
     setIsOpen(newState);
+
     dispatch(toggleFielterPanelElement(newState));
     dispatch(clearFiltredData());
 
-    // Якщо панель закривається — редірект на актуальну сторінку
     if (!newState) {
       redirectToPage({
         navigate,
         activeMenu: currentMenu,
-        GovUaCurrentPage: govUaPage,
-        lotusCurrentPage: lotusPage,
-        phonesCurrentPage: phonesPage
+        currentPage
       });
     }
   };

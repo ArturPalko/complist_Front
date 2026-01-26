@@ -15,7 +15,7 @@ import {
   addFilter,
   clearCurrentForm,
   addIndexesOfFiltredResults
-} from "../../../redux/selectors/filterData-reducer.js";
+} from "../../../redux/filterData-reducer.js";
 
 import { useFilters } from "../../../redux/hooks/useFilters.js";
 import FilterPanelView from "./FilterPanel.view";
@@ -40,20 +40,14 @@ const FilterPanelContainer = (props) => {
     isPresentedFielterPanel: props.isPresentedFielterPanel
   });
 
-  const contactsCount = useMemo(() => {
-    return getContactsCount({
-      state: props.state,
-      activeMenu: props.activeMenu,
-      isFilterApplied: props.isFilterApplied,
-      filteredChunks,
-      dataByMenu: props.getDataForMenu
-    });
-  }, [
-    props.activeMenu,
-    props.isFilterApplied,
-    filteredChunks,
-    props.getDataForMenu
-  ]);
+const contactsCount = getContactsCount({
+  state: props.state,
+  activeMenu: props.activeMenu,
+  isFilterApplied: props.isFilterApplied,
+  filteredChunks,
+  dataByMenu: props.getDataForMenu
+});
+
 
   return (
     <FilterPanelView

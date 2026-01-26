@@ -1,31 +1,52 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { getCurentFilterPage, isFilterAppliedSelector, getLastVisitedPage, isSearchValueFoundByPage } from "../redux/selectors/selector";
 
-const RedirectToCurrentPage = ({ selector, buildPath, redirectMenu }) => {
-  const menu = redirectMenu;
+import {
+  activeMenu,
+  currentPageByMenu,
+  getCurentFilterPage,
+  getLastVisitedPage,
+  isFilterAppliedSelector,
+  isSearchValueFoundByPage
+} from "../redux/selectors/selector";
+import { Pages } from "../redux/selectors/constants";
 
-  const isApplied = useSelector(state => isFilterAppliedSelector(menu)(state));
-  const currentPageFromFilter = useSelector(state => getCurentFilterPage(state, menu));
-  const currentPageFromSelector = useSelector(selector);
-  const lastVisitedPage = useSelector(state => getLastVisitedPage(state, menu));
+const RedirectToCurrentPage = ({ buildPath, redirectMenu }) => {
+  const menuFromStore = useSelector(activeMenu);
+  const menu = redirectMenu || menuFromStore;
 
-  // Використовуємо універсальні селектори для всіх сторінок
-  const isPhonesFound = useSelector(isSearchValueFoundByPage("phones"));
-  const isLotusFound = useSelector(isSearchValueFoundByPage("Lotus"));
-  const isGovUaFound = useSelector(isSearchValueFoundByPage("Gov-ua"));
+  const isFilterApplied = useSelector(state =>
+    isFilterAppliedSelector(menu)(state)
+  );
 
-  let currentPage = isApplied ? currentPageFromFilter : currentPageFromSelector;
+  const pageFromSelector = useSelector(state =>
+    currentPageByMenu(state, menu)
+  );
 
-  // Якщо будь-яка сторінка містить foundResults
-  if (isPhonesFound || isLotusFound || isGovUaFound) {
-    currentPage = lastVisitedPage;
+  const pageFromFilter = useSelector(state =>
+    getCurentFilterPage(state, menu)
+  );
+
+  const lastVisitedPage = useSelector(state =>
+    getLastVisitedPage(state, menu)
+  );
+
+  // Перевірка, чи є знайдені результати на будь-якій сторінці
+  const hasFoundResultsOnAnyPage = useSelector(state =>
+    Object.values(Pages).some(pageKey => isSearchValueFoundByPage(pageKey)(state))
+  );
+
+  let page = isFilterApplied ? pageFromFilter : pageFromSelector;
+
+  // Якщо знайдені результати є на будь-якій сторінці — редиректимо на lastVisitedPage
+  if (hasFoundResultsOnAnyPage) {
+    page = lastVisitedPage;
   }
 
-  if (!currentPage) return null;
+  if (!page) return null;
 
-  return <Navigate to={buildPath(currentPage)} replace />;
+  return <Navigate to={buildPath(page)} replace />;
 };
 
 export default RedirectToCurrentPage;

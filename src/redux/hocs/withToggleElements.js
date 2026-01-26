@@ -1,20 +1,20 @@
 import { connect } from "react-redux";
-import { useState } from "react";
+import { useState, createContext } from "react";
 import { useNavigate } from "react-router-dom";
+
 import {
   toggleSearchFieldActionCreator,
   clearSearchFieldsAndFoundResults
 } from "../toggledElements-reducer";
+
 import {
   isPresentedSearchField,
   isPagesNavbarLinkElementOnCurrentPagePressed,
   isFilterAppliedSelector,
   activeMenu,
-  GovUaCurrentPage,
-  lotusCurrentPage,
-  phonesCurrentPage
+  currentPageByMenu
 } from "../../redux/selectors/selector";
-import { createContext } from "react";
+
 import { redirectToPage } from "../../Components/NavBar/commonFunctions.js";
 
 export const SearchToggleContext = createContext(null);
@@ -23,10 +23,13 @@ export const PasswordsToggleContext = createContext(null);
 const withToggleElements = (type) => (WrappedComponent) => {
   const HOC = (props) => {
     const navigate = useNavigate();
-    const activeMenu = props.activeMenu;
-  const  GovUaCurrentPage = props.GovUaCurrentPage;
-  const      lotusCurrentPage = props.lotusCurrentPage;
-  const phonesCurrentPage=  props.phonesCurrentPage;
+
+    const {
+      activeMenu,
+      currentPage,
+      isFilterApplied
+    } = props;
+
     /* ===== SEARCH (Redux) ===== */
     const handleToggleSearchField = (e) => {
       const checked = e?.target?.checked ?? false;
@@ -35,20 +38,18 @@ const withToggleElements = (type) => (WrappedComponent) => {
       if (!checked) {
         props.clearSearchFieldsAndFoundResults();
 
-        // Редірект тільки якщо застосовані фільтри
-        if (props.isFilterApplied) {
+        // редірект тільки якщо були застосовані фільтри
+        if (isFilterApplied) {
           redirectToPage({
             navigate,
             activeMenu,
-            GovUaCurrentPage,
-            lotusCurrentPage,
-            phonesCurrentPage: props.phonesCurrentPage
+            currentPage
           });
         }
       }
     };
 
-    /* ===== PASSWORDS (локальний state) ===== */
+    /* ===== PASSWORDS (local state) ===== */
     const [showPasswords, setShowPasswords] = useState(false);
     const [passwordsMap, setPasswordsMap] = useState({});
 
@@ -63,7 +64,7 @@ const withToggleElements = (type) => (WrappedComponent) => {
 
       try {
         const urlMap = {
-          "Lotus": "http://localhost:5114/mails/Lotus/passwords",
+          Lotus: "http://localhost:5114/mails/Lotus/passwords",
           "Gov-ua": "http://localhost:5114/mails/Gov-ua/passwords"
         };
 
@@ -106,17 +107,15 @@ const withToggleElements = (type) => (WrappedComponent) => {
   };
 
   const mapStateToProps = (state) => {
-    const active = activeMenu(state);
+    const menu = activeMenu(state);
 
     return {
-      activeMenu: active,
+      activeMenu: menu,
+      currentPage: currentPageByMenu(state, menu),
       isPresentedSearchField: !!isPresentedSearchField(state),
       isPagesNavbarLinkElementOnCurrentPagePressed:
         !!isPagesNavbarLinkElementOnCurrentPagePressed(state),
-      isFilterApplied: isFilterAppliedSelector(state, active), // boolean
-      GovUaCurrentPage: GovUaCurrentPage(state),
-      lotusCurrentPage: lotusCurrentPage(state),
-      phonesCurrentPage: phonesCurrentPage(state)
+      isFilterApplied: isFilterAppliedSelector(state, menu)
     };
   };
 

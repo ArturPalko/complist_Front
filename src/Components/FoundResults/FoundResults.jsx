@@ -1,86 +1,26 @@
-import { 
-  activeMenu, 
- selectSearchValueByPage, rowsPerPage, isFilterAppliedSelector,
- getDataForMenu
-} from "../../redux/selectors/selector";
 import { connect } from "react-redux";
-import { useEffect, useState, createContext } from "react";
-import PhonesPage from "../Phones/Phones";
-import LotusMails from "../LotusMails/LotusMails";
-import GovUaMails from "../GovUaMails/GovUaMails";
+import { createContext } from "react";
 import TooManyResultsOfSearch from "../TooManyResultsOfSearch/TooManyResultsOFSearch";
-import { useFilteredPageData } from "../../redux/hooks/hooks";
 
+import { Pages } from "../../redux/selectors/constants.js";
+import { activeMenu, getDataForMenu, selectSearchValueByPage, isFilterAppliedSelector } from "../../redux/selectors/selector";
+import { useFoundResults } from "../../redux/hooks/useFoundResults.js"
+import { getPageComponent } from "../../redux/selectors/pageComponent.js";
 
 export const FoundResultsContext = createContext(null);
 
-const FoundResults = (props) => {
-  //const [rowsToPresent, setRowsToPresent] = useState([]);
- // const [indexDataOfFoundResultsForFoundResultsPage, setIndexDataOfFoundResultsForFoundResultsPage] = useState([]);
+const FoundResults = ({ activeMenu, data, foundSearchValues, isFilterApplied }) => {
+  const { presentRows, indexDataOfFoundResultsForFoundResultsPage, tooManyResults } =
+    useFoundResults(data, foundSearchValues, activeMenu, isFilterApplied);
 
-  const pageComponents = {
-    phones: PhonesPage,
-    govUa: GovUaMails,
-    Lotus: LotusMails
-  };
+  const ActiveComponent = getPageComponent(activeMenu);
 
-  // Вибір даних по активному меню
-  const dataFromStore = props.data;
 
-  const foundResultsForCurrentMenu = (() => {
-    switch (props.activeMenu) {
-      case "phones": return props.foundSearchValueOfPhonesPage?.foundResults || [];
-      case "Lotus": return props.foundSearchValueOfLotusMailsPage?.foundResults || [];
-      case "Gov-ua": return props.foundSearchValueOfGovUaPage?.foundResults || [];
-      default: return [];
-    }
-  })();
-
-  const { data: filteredPageData } = useFilteredPageData(dataFromStore);
-  const dataToSearch = props.isFilterApplied ? filteredPageData : dataFromStore;
-
-  const activeMenuKey = props.activeMenu === "Gov-ua" ? "govUa" : props.activeMenu;
-
-  // useEffect(() => {
-  //   if (!dataToSearch || !foundResultsForCurrentMenu.length) {
-  //     setRowsToPresent([]);
-  //     setIndexDataOfFoundResultsForFoundResultsPage([]);
-  //     return;
-  //   }
-
-    const presentRows = dataToSearch.flatMap(item =>
-      item.rows.filter(row =>
-        foundResultsForCurrentMenu.some(result =>
-          item.pageIndex === result.currentPage &&
-          (Object.values(row).includes(result.dataValue) ||
-            (row.phones && row.phones.some(phoneObj => phoneObj.phoneName === result.dataValue)))
-        )
-      )
-    );
-
-   // setRowsToPresent(presentRows);
- 
-    //setIndexDataOfFoundResultsForFoundResultsPage(foundResultsForCurrentMenu.map(r => r.currentPage));
-    const indexDataOfFoundResultsForFoundResultsPage =
-  foundResultsForCurrentMenu.map((r, index) => ({
-    currentPage: r.currentPage,
-    index: r.index
-  }));
-
-    
-  // }, [
-  //   dataToSearch,
-  //   foundResultsForCurrentMenu
-  // ]);
-
-  const ActiveComponent = pageComponents[activeMenuKey];
-
-  if (presentRows.length > rowsPerPage) return <TooManyResultsOfSearch />;
+  if (tooManyResults) return <TooManyResultsOfSearch />;
   if (!ActiveComponent) return null;
 
   return (
-    <FoundResultsContext.Provider value={{
-      //  foundResults: rowsToPresent || [],
+    <FoundResultsContext.Provider value={{ 
       foundResults: presentRows,
       indexDataOfFoundResultsForFoundResultsPage
     }}>
@@ -89,34 +29,21 @@ const FoundResults = (props) => {
   );
 };
 
-
-
-// const mapStateToProps = (state) => {
-//   const menu = activeMenu(state);
-
-//   return {
-//     activeMenu: menu,
-//   data: getDataForMenu(state, menu),
-//   foundSearchValueOfPhonesPage: selectSearchValueByPage("phones")(state),
-//   foundSearchValueOfLotusMailsPage: selectSearchValueByPage("Lotus")(state),
-//   foundSearchValueOfGovUaPage: selectSearchValueByPage("Gov-ua")(state),
-//   isFilterApplied: isFilterAppliedSelector(state)
-//   };
-// };
-
-
+// ===== Redux =====
 const mapStateToProps = (state) => {
   const menu = activeMenu(state);
 
+  const foundSearchValues = Object.values(Pages).reduce((acc, pageKey) => {
+    acc[pageKey] = selectSearchValueByPage(pageKey)(state);
+    return acc;
+  }, {});
+
   return {
     activeMenu: menu,
-    data: getDataForMenu(state, menu), // ← 1 ВХІД ДЛЯ ВСІХ МЕНЮ
-    foundSearchValueOfPhonesPage: selectSearchValueByPage("phones")(state),
-    foundSearchValueOfLotusMailsPage: selectSearchValueByPage("Lotus")(state),
-    foundSearchValueOfGovUaPage: selectSearchValueByPage("Gov-ua")(state),
-    isFilterApplied: isFilterAppliedSelector(state)
+    data: getDataForMenu(state, menu),
+    foundSearchValues,
+    isFilterApplied: isFilterAppliedSelector(menu)(state)
   };
 };
-
 
 export default connect(mapStateToProps)(FoundResults);

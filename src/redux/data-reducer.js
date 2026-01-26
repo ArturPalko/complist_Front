@@ -1,5 +1,5 @@
 import { createFetchThunk } from "./fetchDataThunkCreator";
-import { rowsPerPage as limitRows } from "./selectors/selector";
+import { rowsPerPage as limitRows } from "./selectors/constants.js";
 import { paginateData } from "../redux/reducersHelpunctions/pagination.js";
 
 // Action type
@@ -47,8 +47,4 @@ export const getDataByMenu = (key) => {
   return createFetchThunk(fetchUrl, addDataActionCreator, key);
 };
 
-// // Selectors
-// export const getDataForMenu = (state, menuKey) => state.data?.[menuKey] ?? [];
-// export const getGovUaMails = (state) => getDataForMenu(state, "Gov-ua");
-// export const getLotusMails = (state) => getDataForMenu(state, "Lotus");
-// export const getPhones = (state) => getDataForMenu(state, "phones");
+
