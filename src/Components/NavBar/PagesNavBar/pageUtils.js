@@ -1,3 +1,6 @@
+import { pageConfigs } from "../../../redux/selectors/pageConfig";
+import { Pages } from "../../../redux/selectors/constants";
+
 export const handleLastVisitedPage = ({ pageName, pageFromURL, isFilterApplied, searchValue, setLastVisitedPage, setFilterPage, rememberCurrentPage }) => {
   if (!pageName || !pageFromURL) return;
 
@@ -31,24 +34,26 @@ export const handleSearchResults = ({ isSearchValueFound, searchValue, setShowFo
   }
 };
 
+
 export const getPageInfoFromPath = (pathParts) => {
   let pageName = "";
   let basePath = "";
   let pageFromURL = "1";
 
-  if (pathParts[0] === "phones") {
-    pageName = "phones";
-    basePath = "/phones/";
-    pageFromURL = pathParts[1];
+  if (!pathParts || !pathParts.length) return { pageName, basePath, pageFromURL };
+
+  if (pathParts[0] === Pages.PHONES) {
+    pageName = Pages.PHONES;
+    const config = pageConfigs[pageName];
+    basePath = config.basePath;
+    pageFromURL = pathParts[config.pageFromURLIndex];
   } else if (pathParts[0] === "mails") {
-    if (pathParts[1] === "Lotus") {
-      pageName = "Lotus";
-      basePath = "/mails/Lotus/";
-      pageFromURL = pathParts[2];
-    } else if (pathParts[1] === "Gov-ua") {
-      pageName = "Gov-ua";
-      basePath = "/mails/Gov-ua/";
-      pageFromURL = pathParts[2];
+    const mailType = pathParts[1];
+    if (mailType === Pages.LOTUS || mailType === Pages.GOV_UA) {
+      pageName = mailType;
+      const config = pageConfigs[pageName];
+      basePath = config.basePath;
+      pageFromURL = pathParts[config.pageFromURLIndex];
     }
   }
 
@@ -64,3 +69,5 @@ export const getPagesCount = ({ countFiltred, pagesCount, activeMenu, isFilterAp
 
   return count;
 };
+
+

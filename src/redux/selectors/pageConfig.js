@@ -2,6 +2,8 @@ import PhonesTable from "../../Components/PhonesTable/PhonesTable";
 import MailsTable from "../../Components/MalisTable/MailsTable"
 import { Pages } from "../../redux/selectors/constants";
 
+
+
 export const pageConfigs = {
   [Pages.PHONES]: {
     title: "Телефони",
@@ -19,7 +21,9 @@ export const pageConfigs = {
         ],
       },
     ],
-    needsDepartments: true
+    needsDepartments: true,
+    basePath: "/phones/",
+    pageFromURLIndex: 1
   },
 
   [Pages.GOV_UA]: {
@@ -30,7 +34,9 @@ export const pageConfigs = {
       { key: "mailName", label: "найменування скриньки" },
       { key: "departmentOrSection", label: "найменування підрозділу" },
       { key: "responsibleUser", label: "відповідальна особа" },
-    ]
+    ],
+    basePath: "/mails/Gov-ua/",
+    pageFromURLIndex: 1
   },
 
   [Pages.LOTUS]: {
@@ -41,6 +47,8 @@ export const pageConfigs = {
       { key: "previousName", label: "Стара назва скриньки" },
       { key: "name", label: "Нова назва скриньки" },
       { key: "owner", label: "Назва підрозділу" },
-    ]
+    ],
+    basePath: "/mails/Lotus/",
+    pageFromURLIndex: 1
   }
 };

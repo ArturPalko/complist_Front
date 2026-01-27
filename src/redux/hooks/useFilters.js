@@ -10,7 +10,7 @@ import { handleOnClearFormButtonClickHandler } from "./useFiltersFunctions/handl
 export const useFilters = (props = {}) => {
   const {
     activeMenu,
-    dataForMenu, // готові дані для активного меню
+    dataForMenu,
     addIndexesOfFiltredResults,
     addFilter,
     clearCurrentForm,
@@ -131,39 +131,30 @@ export const useFilters = (props = {}) => {
   };
 
   // ---------------- FILTERING ----------------
+  // useMemo — тільки для обчислення
   const filteredChunks = useMemo(() => {
-    if (!hasAnyFilters(currentFilters, phonesSubConditions)) {
-      prevChunks.current = [];
-      if (typeof addIndexesOfFiltredResults === "function") {
-        addIndexesOfFiltredResults(activeMenu, []);
-      }
-      return [];
-    }
+    if (!hasAnyFilters(currentFilters, phonesSubConditions)) return [];
 
-    // тепер використовуємо лише dataForMenu
-    const chunks = computeFilteredChunks({
+    return computeFilteredChunks({
       state: currentFilters,
       subConditions: phonesSubConditions,
       activeMenu,
-      dataForMenu, // універсальні дані для активного меню
+      dataForMenu,
       conditions
     });
+  }, [currentFilters, phonesSubConditions, activeMenu, dataForMenu]);
 
-    if (JSON.stringify(chunks) !== JSON.stringify(prevChunks.current)) {
-      if (typeof addIndexesOfFiltredResults === "function") {
-        addIndexesOfFiltredResults(activeMenu, chunks);
+  // useEffect — диспатч у Redux тільки коли chunks змінилися
+  useEffect(() => {
+    if (typeof addIndexesOfFiltredResults === "function") {
+      // уникнення повторних диспатчів через порівняння
+      const prev = prevChunks.current;
+      if (JSON.stringify(prev) !== JSON.stringify(filteredChunks)) {
+        addIndexesOfFiltredResults(activeMenu, filteredChunks);
+        prevChunks.current = filteredChunks;
       }
-      prevChunks.current = chunks;
     }
-
-    return chunks;
-  }, [
-    currentFilters,
-    phonesSubConditions,
-    activeMenu,
-    dataForMenu,
-    addIndexesOfFiltredResults
-  ]);
+  }, [filteredChunks, activeMenu, addIndexesOfFiltredResults]);
 
   // ---------------- UI HELPERS ----------------
   const filterPointsForCurrentMenu = (filterPoints || []).filter((p) =>

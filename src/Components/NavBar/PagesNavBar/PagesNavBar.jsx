@@ -48,6 +48,7 @@ const PagesNavBar = (props) => {
   ========================== */
   const pathParts = location.pathname.split("/").filter(Boolean);
   const { pageName, basePath, pageFromURL } = getPageInfoFromPath(pathParts);
+  debugger;
   const isFoundResultsPage = pageFromURL === "foundResults";
 
   /* =========================
