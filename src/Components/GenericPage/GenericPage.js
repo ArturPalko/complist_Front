@@ -37,6 +37,7 @@ const GenericPage = ({
       />
 
       <config.TableComponent
+        mailType={config.mailType}
         titleRef={titleRef}
         columns={config.columns}
         rowsPerPage={rowsPerPage}

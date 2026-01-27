@@ -27,6 +27,7 @@ export const useMailsTableLogic = ({
   const safeFoundResults = foundResults || [];
   const safeIndexData = indexDataOfFoundResultsForFoundResultsPage || [];
   const menu = mailType;
+  debugger;
   const isFoundResults = useSelector(isCurrentPageFoundResult(menu));
 
   const { data: filteredPageData, isFilterApplied } = useFilteredPageData(mailsData);

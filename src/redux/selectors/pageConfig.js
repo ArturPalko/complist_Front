@@ -36,7 +36,7 @@ export const pageConfigs = {
       { key: "responsibleUser", label: "відповідальна особа" },
     ],
     basePath: "/mails/Gov-ua/",
-    pageFromURLIndex: 1
+    pageFromURLIndex: 2
   },
 
   [Pages.LOTUS]: {
@@ -49,6 +49,6 @@ export const pageConfigs = {
       { key: "owner", label: "Назва підрозділу" },
     ],
     basePath: "/mails/Lotus/",
-    pageFromURLIndex: 1
+    pageFromURLIndex: 2
   }
 };

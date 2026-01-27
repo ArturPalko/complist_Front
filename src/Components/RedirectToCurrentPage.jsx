@@ -10,9 +10,12 @@ import {
   isFilterAppliedSelector,
   isSearchValueFoundByPage
 } from "../redux/selectors/selector";
-import { Pages } from "../redux/selectors/constants";
 
-const RedirectToCurrentPage = ({ buildPath, redirectMenu }) => {
+import { Pages } from "../redux/selectors/constants";
+import { pageConfigs } from "../redux/selectors/pageConfig";
+
+const RedirectToCurrentPage = ({ redirectMenu }) => {
+
   const menuFromStore = useSelector(activeMenu);
   const menu = redirectMenu || menuFromStore;
 
@@ -32,21 +35,30 @@ const RedirectToCurrentPage = ({ buildPath, redirectMenu }) => {
     getLastVisitedPage(state, menu)
   );
 
-  // Перевірка, чи є знайдені результати на будь-якій сторінці
   const hasFoundResultsOnAnyPage = useSelector(state =>
-    Object.values(Pages).some(pageKey => isSearchValueFoundByPage(pageKey)(state))
+    Object.values(Pages).some(pageKey =>
+      isSearchValueFoundByPage(pageKey)(state)
+    )
   );
 
+  /* =========================
+     config
+  ========================= */
+  const config = pageConfigs[menu];
+  if (!config) return null;
+
+  /* =========================
+     page resolve
+  ========================= */
   let page = isFilterApplied ? pageFromFilter : pageFromSelector;
 
-  // Якщо знайдені результати є на будь-якій сторінці — редиректимо на lastVisitedPage
   if (hasFoundResultsOnAnyPage) {
     page = lastVisitedPage;
   }
 
   if (!page) return null;
 
-  return <Navigate to={buildPath(page)} replace />;
+  return <Navigate to={`${config.basePath}${page}`} replace />;
 };
 
 export default RedirectToCurrentPage;

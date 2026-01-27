@@ -119,6 +119,7 @@ const handleClick = (index) => {
     requestAnimationFrame(() => {
       // 3. Навігація після тривалості анімації
       setTimeout(() => {
+        debugger;
         navigate(url);
       }, 300); // тривалість анімації moveRight
     });

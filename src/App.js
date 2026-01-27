@@ -1,15 +1,18 @@
-import './App.css';
-import Header from './Components/Header/Header';
-import NavBar from './Components/NavBar/NavBar';
-import { Route, Routes } from 'react-router-dom';
+import "./App.css";
+import Header from "./Components/Header/Header";
+import NavBar from "./Components/NavBar/NavBar";
+import { Route, Routes } from "react-router-dom";
 
-import GovUaMails from './Components/GovUaMails/GovUaMails';
-import LotusMails from './Components/LotusMails/LotusMails';
-import Phones from './Components/Phones/Phones';
-import RedirectToCurrentPage from './Components/RedirectToCurrentPage';
-import Error from './Components/Error/Error';
-import FoundResults from './Components/FoundResults/FoundResults';
-import { useTrackLocation } from './redux/hooks/hooks';
+import GovUaMails from "./Components/GovUaMails/GovUaMails";
+import LotusMails from "./Components/LotusMails/LotusMails";
+import Phones from "./Components/Phones/Phones";
+import RedirectToCurrentPage from "./Components/RedirectToCurrentPage";
+import Error from "./Components/Error/Error";
+import FoundResults from "./Components/FoundResults/FoundResults";
+
+import { useTrackLocation } from "./redux/hooks/hooks";
+import { Pages } from "./redux/selectors/constants";
+
 
 function App() {
   useTrackLocation();
@@ -21,18 +24,13 @@ function App() {
 
       <div className="app-wrapper-content">
         <Routes>
-
+          {/* Error */}
           <Route path="/error" element={<Error />} />
 
           {/* root → Gov-ua */}
           <Route
             path="/"
-            element={
-              <RedirectToCurrentPage
-                redirectMenu="Gov-ua"
-                buildPath={(page) => `/mails/Gov-ua/${page}`}
-              />
-            }
+            element={<RedirectToCurrentPage redirectMenu={Pages.GOV_UA} />}
           />
 
           {/* Phones */}
@@ -42,45 +40,36 @@ function App() {
             <Route
               index
               element={
-                <RedirectToCurrentPage
-                  redirectMenu="phones"
-                  buildPath={(page) => `/phones/${page}`}
-                />
+                <RedirectToCurrentPage redirectMenu={Pages.PHONES} />
               }
             />
           </Route>
 
           {/* Mails */}
           <Route path="/mails">
-
+            {/* Gov-ua */}
             <Route path="Gov-ua">
+              <Route path="foundResults" element={<FoundResults />} />
               <Route path=":pageNumber" element={<GovUaMails />} />
-              <Route path="foundResults" element={<FoundResults />} />
               <Route
                 index
                 element={
-                  <RedirectToCurrentPage
-                    redirectMenu="Gov-ua"
-                    buildPath={(page) => `/mails/Gov-ua/${page}`}
-                  />
+                  <RedirectToCurrentPage redirectMenu={Pages.GOV_UA} />
                 }
               />
             </Route>
 
+            {/* Lotus */}
             <Route path="Lotus">
-              <Route path=":pageNumber" element={<LotusMails />} />
               <Route path="foundResults" element={<FoundResults />} />
+              <Route path=":pageNumber" element={<LotusMails />} />
               <Route
                 index
                 element={
-                  <RedirectToCurrentPage
-                    redirectMenu="Lotus"
-                    buildPath={(page) => `/mails/Lotus/${page}`}
-                  />
+                  <RedirectToCurrentPage redirectMenu={Pages.LOTUS} />
                 }
               />
             </Route>
-
           </Route>
         </Routes>
       </div>
