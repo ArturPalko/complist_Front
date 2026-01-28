@@ -1,11 +1,14 @@
 import PhonesTable from "../../Components/PhonesTable/PhonesTable";
 import MailsTable from "../../Components/MalisTable/MailsTable"
 import { Pages } from "../../redux/selectors/constants";
-
+import EllipsesForPhonesSVG from "../../assets/Spinner/SVG/EllipsesForPhonesSVG"
+import ConverForLotusSVG from "../../assets/Spinner/SVG/ConverForLotusSVG.js";
+import ConverForGovUaSVG from "../../assets/Spinner/SVG/ConverForGovUaSVG.js"
 
 
 export const pageConfigs = {
   [Pages.PHONES]: {
+    StatusDiagram: EllipsesForPhonesSVG,
     title: "Телефони",
     TableComponent: PhonesTable,
     columns: [
@@ -27,6 +30,7 @@ export const pageConfigs = {
   },
 
   [Pages.GOV_UA]: {
+    StatusDiagram: ConverForGovUaSVG,
     title: "Поштові скриньки customs.gov.ua",
     TableComponent: MailsTable,
     mailType: Pages.GOV_UA,
@@ -40,6 +44,7 @@ export const pageConfigs = {
   },
 
   [Pages.LOTUS]: {
+    StatusDiagram: ConverForLotusSVG,
     title: "Поштові скриньки Lotus",
     TableComponent: MailsTable,
     mailType: Pages.LOTUS,

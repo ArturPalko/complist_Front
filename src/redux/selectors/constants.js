@@ -6,3 +6,10 @@ export const Pages = {
 };
 
 export const rowsPerPage = 18;
+
+// Групи фільтрів
+export const FILTER_GROUPS_NAMES = {
+  OWNER: "Власник",
+  POSITIVE: "Позитивна властивість",
+  NEGATIVE: "Негативна властивість",
+};

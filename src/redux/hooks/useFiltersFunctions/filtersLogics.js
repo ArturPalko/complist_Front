@@ -1,50 +1,114 @@
- export const conditions = {
-    personalMails: (el) => el.ownerType === "User",
-    departmentMails: (el) => el.ownerType === "Department",
-    sectionMails: (el) => el.ownerType === "Section",
-    hasResponsible: (el) => el.responsibleUser !== "",
-    passwordKnown: (el) => el.passwordKnown === true,
-    hasPrevioustName: (el) => el.previousName !== null,
-    hasNoResponsible: (el) => el.responsibleUser === "",
-    hasNewPostName: (el) => el.name != null,
-    passwordUnKnown: (el) => el.passwordKnown === false,
-    NOThasNewPostName: (el) => el.name == null,
-    NOThasPrevioustName: (el) => el.previousName === null,
-    hasLandlinePhone: (el) => el.phones?.some(p => p.phoneType === "Міський"),
-    NOThasLandlinePhone: (el) => !el.phones?.some(p => p.phoneType === "Міський"),
-    hasInternalPhone: (el) => el.phones?.some(p => p.phoneType === "Внутрішній"),
-    NOThasInternalPhone: (el) => !el.phones?.some(p => p.phoneType === "Внутрішній"),
-    hasCiscoPhone: (el) => el.phones?.some(p => p.phoneType === "IP (Cisco)"),
-    NOThasCiscoPhone: (el) => !el.phones?.some(p => p.phoneType === "IP (Cisco)"),
-  };
+import { Pages, FILTER_GROUPS_NAMES } from "../../selectors/constants";
 
-  export const filterGroups = {
-    personalMails: ["departmentMails", "sectionMails"],
-    hasResponsible: ["hasNoResponsible"],
-    passwordKnown: ["passwordUnKnown"],
-    hasNewPostName: ["NOThasNewPostName"],
-    hasPrevioustName: ["NOThasPrevioustName"],
-    hasLandlinePhone: ["NOThasLandlinePhone"],
-    hasInternalPhone: ["NOThasInternalPhone"],
-    hasCiscoPhone: ["NOThasCiscoPhone"]
-  };
+// -------------------- CONDITIONS --------------------
+const conditionsWithoutNegative = {
+  personalMails: (el) => el.ownerType === "User",
+  departmentMails: (el) => el.ownerType === "Department",
+  sectionMails: (el) => el.ownerType === "Section",
+};
 
-  export const filterPoints = [
-    { pages: ["Gov-ua", "Lotus"], groupName: "Власник", key: "personalMails", label: "Персональні" },
-    { pages: ["Gov-ua", "Lotus"], groupName: "Власник", key: "departmentMails", label: "Самостійного підрозділу" },
-    { pages: ["Gov-ua", "Lotus"], groupName: "Власник", key: "sectionMails", label: "(Не) самостійного підрозділу" },
-    { pages: ["Gov-ua"], groupName: "Позитивна властивість", key: "hasResponsible", label: "Має відповідальну особу" },
-    { pages: ["Lotus"], groupName: "Позитивна властивість", key: "hasNewPostName", label: "Має нову назву" },
-    { pages: ["Lotus"], groupName: "Позитивна властивість", key: "hasPrevioustName", label: "Має стару назву" },
-    { pages: ["Gov-ua", "Lotus"], groupName: "Позитивна властивість", key: "passwordKnown", label: "Пароль відомий" },
-    { pages: ["Gov-ua"], groupName: "Негативна властивість", key: "hasNoResponsible", label: "(Не) має відповідальну особу" },
-    { pages: ["Lotus"], groupName: "Негативна властивість", key: "NOThasNewPostName", label: "(Не) має нову назву" },
-    { pages: ["Lotus"], groupName: "Негативна властивість", key: "NOThasPrevioustName", label: "(Не) має стару назву" },
-    { pages: ["Gov-ua", "Lotus"], groupName: "Негативна властивість", key: "passwordUnKnown", label: "Пароль не відомий" },
-    { pages: ["phones"], groupName: "Позитивна властивість", key: "hasLandlinePhone", label: "має Міський телефон" },
-    { pages: ["phones"], groupName: "Позитивна властивість", key: "hasInternalPhone", label: "має Внутрішній телефон" },
-    { pages: ["phones"], groupName: "Позитивна властивість", key: "hasCiscoPhone", label: "має IP Cisco телефон" },
-    { pages: ["phones"], groupName: "Негативна властивість", key: "NOThasLandlinePhone", label: "(НЕ) має Міський телефон" },
-    { pages: ["phones"], groupName: "Негативна властивість", key: "NOThasInternalPhone", label: "(НЕ) має Внутрішній телефон" },
-    { pages: ["phones"], groupName: "Негативна властивість", key: "NOThasCiscoPhone", label: "(НЕ) має IP Cisco телефон" },
-  ];
+const conditionsWithNegative = {
+  hasResponsible: (el) => el.responsibleUser !== "",
+  passwordKnown: (el) => el.passwordKnown === true,
+  hasNewPostName: (el) => el.name != null,
+  hasPrevioustName: (el) => el.previousName !== null,
+  hasLandlinePhone: (el) => el.phones?.some((p) => p.phoneType === "Міський"),
+  hasInternalPhone: (el) => el.phones?.some((p) => p.phoneType === "Внутрішній"),
+  hasCiscoPhone: (el) => el.phones?.some((p) => p.phoneType === "IP (Cisco)"),
+};
+
+// -------------------- NEGATIVE CONDITIONS --------------------
+const negativeConditions = Object.fromEntries(
+  Object.entries(conditionsWithNegative).map(([key, fn]) => [
+    `NOT${key.charAt(0).toUpperCase() + key.slice(1)}`,
+    (el) => !fn(el),
+  ])
+);
+
+// -------------------- EXPORT CONDITIONS --------------------
+export const conditions = {
+  ...conditionsWithoutNegative,
+  ...conditionsWithNegative,
+  ...negativeConditions,
+};
+
+// -------------------- FILTER GROUPS --------------------
+const manualGroups = {
+  personalMails: ["departmentMails", "sectionMails"],
+};
+
+const autoGroups = Object.fromEntries(
+  Object.keys(conditionsWithNegative).map((key) => [
+    key,
+    [`NOT${key.charAt(0).toUpperCase() + key.slice(1)}`],
+  ])
+);
+
+export const filterGroups = {
+  ...manualGroups,
+  ...autoGroups,
+};
+
+// -------------------- FRIENDLY LABELS --------------------
+const friendlyLabels = {
+  personalMails: "Персональні",
+  departmentMails: "Самостійного підрозділу",
+  sectionMails: "(Не) самостійного підрозділу",
+  hasResponsible: "Має відповідальну особу",
+  passwordKnown: "Пароль відомий",
+  hasPrevioustName: "Має стару назву",
+  hasNewPostName: "Має нову назву",
+  hasLandlinePhone: "має Міський телефон",
+  hasInternalPhone: "має Внутрішній телефон",
+  hasCiscoPhone: "має IP Cisco телефон",
+};
+
+// -------------------- OWNER FILTERS --------------------
+const ownerFilters = ["personalMails", "departmentMails", "sectionMails"];
+
+// -------------------- PAGE-BASED KEYS --------------------
+const pageFiltersKeys = {
+  [Pages.GOV_UA]: [
+    "personalMails",
+    "departmentMails",
+    "sectionMails",
+    "hasResponsible",
+    "passwordKnown",
+  ],
+  [Pages.LOTUS]: [
+    "personalMails",
+    "departmentMails",
+    "sectionMails",
+    "hasNewPostName",
+    "hasPrevioustName",
+    "passwordKnown",
+  ],
+  [Pages.PHONES]: ["hasLandlinePhone", "hasInternalPhone", "hasCiscoPhone"],
+};
+
+// -------------------- GENERATE FILTER POINTS --------------------
+export const filterPoints = Object.fromEntries(
+  Object.entries(pageFiltersKeys).map(([page, keys]) => {
+    const owner = keys
+      .filter((k) => ownerFilters.includes(k))
+      .map((k) => ({ key: k, label: friendlyLabels[k] }));
+
+    const positive = keys
+      .filter((k) => conditionsWithNegative[k])
+      .map((k) => ({ key: k, label: friendlyLabels[k] }));
+
+    const negative = keys
+      .filter((k) => conditionsWithNegative[k])
+      .map((k) => {
+        const negKey = `NOT${k.charAt(0).toUpperCase() + k.slice(1)}`;
+        return { key: negKey, label: `(НЕ) ${friendlyLabels[k]}` };
+      });
+
+    const result = {};
+    if (owner.length) result[FILTER_GROUPS_NAMES.OWNER] = owner;
+    if (positive.length) result[FILTER_GROUPS_NAMES.POSITIVE] = positive;
+    if (negative.length) result[FILTER_GROUPS_NAMES.NEGATIVE] = negative;
+
+    return [page, result];
+  })
+);

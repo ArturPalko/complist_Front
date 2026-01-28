@@ -2,6 +2,7 @@ import React from "react";
 import s from "./FilterPanel.module.css";
 import CustomCheckbox from "./CustomCheckbox/CustomCheckBox.jsx";
 import CustomDropDown from "./CustomDropDown/CustomDropDown.jsx";
+import { Pages } from "../../../redux/selectors/constants.js";
 
 const FilterPanelView = ({
   contactsCount,
@@ -46,7 +47,7 @@ const FilterPanelView = ({
           </fieldset>
         ))}
 
-        {activeMenu === "phones" && (
+        {activeMenu === Pages.PHONES && (
           <CustomDropDown menus={phonesSubConditions} />
         )}
       </div>

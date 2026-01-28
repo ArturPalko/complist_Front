@@ -1,7 +1,7 @@
 import React from "react";
 import contacts from "../../../assets/contacts.png";
 
-const PhonesSVG = ({ counts }) => (
+const EllipsesForPhonesSVG = ({ counts }) => (
   <div style={{ display: "flex", gap: "10px" }}>
     {/* Підрозділи */}
     <svg width="400" height="60">
@@ -84,4 +84,4 @@ const PhonesSVG = ({ counts }) => (
   </div>
 );
 
-export default PhonesSVG;
+export default EllipsesForPhonesSVG;

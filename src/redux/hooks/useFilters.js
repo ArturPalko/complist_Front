@@ -7,6 +7,9 @@ import { redirectToCurrentPage as redirectUtil } from "./useFiltersFunctions/red
 import { handleOnCheckboxChangeHandler } from "./useFiltersFunctions/handlers/handleOnCheckboxChange";
 import { handleOnClearFormButtonClickHandler } from "./useFiltersFunctions/handlers/handleOnClearFormButtonClick";
 
+// ==========================
+// useFilters hook
+// ==========================
 export const useFilters = (props = {}) => {
   const {
     activeMenu,
@@ -131,7 +134,6 @@ export const useFilters = (props = {}) => {
   };
 
   // ---------------- FILTERING ----------------
-  // useMemo — тільки для обчислення
   const filteredChunks = useMemo(() => {
     if (!hasAnyFilters(currentFilters, phonesSubConditions)) return [];
 
@@ -144,10 +146,8 @@ export const useFilters = (props = {}) => {
     });
   }, [currentFilters, phonesSubConditions, activeMenu, dataForMenu]);
 
-  // useEffect — диспатч у Redux тільки коли chunks змінилися
   useEffect(() => {
     if (typeof addIndexesOfFiltredResults === "function") {
-      // уникнення повторних диспатчів через порівняння
       const prev = prevChunks.current;
       if (JSON.stringify(prev) !== JSON.stringify(filteredChunks)) {
         addIndexesOfFiltredResults(activeMenu, filteredChunks);
@@ -157,15 +157,9 @@ export const useFilters = (props = {}) => {
   }, [filteredChunks, activeMenu, addIndexesOfFiltredResults]);
 
   // ---------------- UI HELPERS ----------------
-  const filterPointsForCurrentMenu = (filterPoints || []).filter((p) =>
-    p.pages.includes(activeMenu)
-  );
-
-  const groupedFilterPoints = filterPointsForCurrentMenu.reduce((acc, item) => {
-    if (!acc[item.groupName]) acc[item.groupName] = [];
-    acc[item.groupName].push(item);
-    return acc;
-  }, {});
+  // нова структура filterPoints: { [Pages.*]: { groupName: [...] } }
+  const groupedFilterPoints = filterPoints[activeMenu] || {};
+  const filterPointsForCurrentMenu = Object.values(groupedFilterPoints).flat();
 
   useEffect(() => {
     if (!isPresentedFielterPanel) {
@@ -183,13 +177,11 @@ export const useFilters = (props = {}) => {
   return {
     filteredChunks,
     groupedFilterPoints,
+    filterPointsForCurrentMenu,
     handleOnClearFormButtonClick,
     getAlternativeKeys,
     currentFilters,
     handleCheckboxChange,
     phonesSubConditions,
-    filterPoints,
-    filterGroups,
-    filterPointsForCurrentMenu
   };
 };

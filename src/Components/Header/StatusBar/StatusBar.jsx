@@ -1,25 +1,20 @@
+import React from "react";
 import { connect } from "react-redux";
-import { getCountsForActiveMenu } from "../../../redux/selectors/selector"; // новий селектор
-import { activeMenu as getActiveMenu } from "../../../redux/selectors/selector"; // твій активний menu селектор
-import s from "./StatusBar.module.css";
-import aca from "../../../assets/aca.png";
-import ConvertForLotusSVG from "../../../assets/Spinner/SVG/ConverForLotusSVG";
-import ConverForGovUaSVG from "../../../assets/Spinner/SVG/ConverForGovUaSVG";
-import PhonesSVG from "../../../assets/Spinner/SVG/PhonesSVG";
+import { activeMenu as getActiveMenu ,getCountsForActiveMenu } from "../../../redux/selectors/selector.js"
+import { pageConfigs } from "../../../redux/selectors/pageConfig";
 
 const StatusBar = ({ counts, activeMenu }) => {
-  return (
-    <div>
-      {activeMenu === "phones" && <PhonesSVG counts={counts} />}
-      {activeMenu === "Lotus" && <ConvertForLotusSVG counts={counts} aca={aca} />}
-      {activeMenu === "Gov-ua" && <ConverForGovUaSVG counts={counts} />}
-    </div>
-  );
+  
+  const Diagram = pageConfigs[activeMenu]?.StatusDiagram;
+
+  if (!Diagram) return null; 
+
+  return <Diagram counts={counts} />;
 };
 
 const mapStateToProps = (state) => ({
   counts: getCountsForActiveMenu(state),
-  activeMenu: getActiveMenu(state)
+  activeMenu: getActiveMenu(state),
 });
 
 export default connect(mapStateToProps)(StatusBar);
