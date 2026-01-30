@@ -16,16 +16,19 @@ import {
 } from "../../redux/selectors/selector";
 
 import { redirectToPage } from "../../Components/NavBar/commonFunctions.js";
+import { fetchPasswordsByType } from "../../redux/api/api"; // через Axios
 
+// Контексти для Search та Passwords
 export const SearchToggleContext = createContext(null);
 export const PasswordsToggleContext = createContext(null);
 
+// HOC
 const withToggleElements = (type) => (WrappedComponent) => {
   const HOC = (props) => {
     const navigate = useNavigate();
 
     const {
-      activeMenu,
+      activeMenu: menuFromProps,
       currentPage,
       isFilterApplied
     } = props;
@@ -42,7 +45,7 @@ const withToggleElements = (type) => (WrappedComponent) => {
         if (isFilterApplied) {
           redirectToPage({
             navigate,
-            activeMenu,
+            activeMenu: menuFromProps,
             currentPage
           });
         }
@@ -63,20 +66,11 @@ const withToggleElements = (type) => (WrappedComponent) => {
       }
 
       try {
-        const urlMap = {
-          Lotus: "http://localhost:5114/mails/Lotus/passwords",
-          "Gov-ua": "http://localhost:5114/mails/Gov-ua/passwords"
-        };
-
-        const response = await fetch(urlMap[type]);
-        if (!response.ok) throw new Error("Passwords fetch failed");
-
-        const data = await response.json();
-        const map = {};
-        data.forEach(item => (map[item.id] = item.password));
+        // Використовуємо Axios з api.js
+        const map = await fetchPasswordsByType(type);
         setPasswordsMap(map);
       } catch (err) {
-        console.error(err);
+        console.error("Помилка завантаження паролів:", err.message);
       }
     };
 
@@ -106,6 +100,7 @@ const withToggleElements = (type) => (WrappedComponent) => {
     );
   };
 
+  /* ===== Redux mapState & mapDispatch ===== */
   const mapStateToProps = (state) => {
     const menu = activeMenu(state);
 
