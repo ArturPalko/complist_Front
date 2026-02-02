@@ -1,26 +1,24 @@
-import React from "react";
+import React, { useRef } from "react";
 import s from "./PhonesTable.module.css";
 import { usePhonesTableLogic } from "../../redux/hooks/usePhonesTableLogic";
 import { useFoundResults } from "../../redux/hooks/hooks";
-import  { useRef } from "react";
-
-
+import TableWrapper from "../CommonInjection/TableWrapper";
 
 const PhonesTable = ({
   titleRef,
-  isDataFetching,
   columns,
   pageNumber,
   rowsPerPage,
   indexesOfFoundResultsForCurrentPage,
-  isRenderFromFoundResultsPage,
-  departmentsAndSectionsPerPage
+  departmentsAndSectionsPerPage,
 }) => {
-  // Рефи для заголовка таблиці та title
   const headerRef = useRef(null);
 
   const { foundResults, indexDataOfFoundResultsForFoundResultsPage } =
-    useFoundResults() || { foundResults: [], indexDataOfFoundResultsForFoundResultsPage: [] };
+    useFoundResults() || {
+      foundResults: [],
+      indexDataOfFoundResultsForFoundResultsPage: [],
+    };
 
   const {
     pageData,
@@ -32,7 +30,7 @@ const PhonesTable = ({
     isPagesNavbarLinkElementOnCurrentPagePressed,
     phoneColumns,
     indexDecrementFromPreviousPages,
-    shouldShowColNumbers
+    shouldShowColNumbers,
   } = usePhonesTableLogic({
     columns,
     pageNumber,
@@ -42,129 +40,142 @@ const PhonesTable = ({
     foundResults,
     indexDataOfFoundResultsForFoundResultsPage,
     headerRef,
-    titleRef
+    titleRef,
   });
 
-  let indexDecrement = 0;
-  // const titleRef = useRef(null);  // реф для заголовка сторінки або секції
-  console.log("indexes:", indexesOfFoundResultsForCurrentPage);
-console.log("foundResults:", foundResults);
-console.log("showPreviousPageHighlight:", showPreviousPageHighlight);
+  /* ===== HEADER ===== */
+  const renderHeader = () => (
+    <>
+      <tr>
+        {indexDataOfFoundResultsForFoundResultsPage && (
+          <th rowSpan="2" className={s.indexesColumnHeader}>
+            Індекси
+          </th>
+        )}
+        <th rowSpan="2">№ п/п</th>
+
+        {columns.map((col) =>
+          col.key === "phones" ? (
+            <th key={col.key} colSpan={col.subLabels.length}>
+              {col.label}
+            </th>
+          ) : (
+            <th key={col.key} rowSpan="2">
+              {col.label}
+            </th>
+          )
+        )}
+      </tr>
+
+      <tr>
+        {columns
+          .filter((c) => c.key === "phones")
+          .flatMap((col) =>
+            col.subLabels.map((sub) => (
+              <th key={sub.key}>{sub.label}</th>
+            ))
+          )}
+      </tr>
+    </>
+  );
+
+  /* ===== ROW CELLS ===== */
+  const renderRowCells = (row, index) => {
+    const nonUserRowsBefore = pageData
+      .slice(0, index)
+      .filter((r) => r.type !== "user")
+      .length;
+
+    const hideClass =
+      indexesOfFoundResultsForCurrentPage.length !== 0 &&
+      showPreviousPageHighlight
+        ? s.hideBright
+        : "";
+
+    const hideClassFromPressed =
+      indexesOfFoundResultsForCurrentPage.length !== 0 &&
+      isPagesNavbarLinkElementOnCurrentPagePressed
+        ? s.hideBrightWhenPagesLinkOnCurrentPagePressed
+        : "";
+
+    switch (row.type) {
+      case "department":
+        return (
+          <td
+            className={`${s.mainDepartment} ${hideClass} ${hideClassFromPressed}`}
+            colSpan={columns.length + phoneColumns}
+          >
+            {row.departmentName}
+          </td>
+        );
+
+      case "section":
+        return (
+          <td
+            className={`${s.section} ${hideClass} ${hideClassFromPressed}`}
+            colSpan={columns.length + phoneColumns}
+          >
+            {row.sectionName}
+          </td>
+        );
+
+      case "user":
+        return (
+          <>
+            <td>
+              {(pageNumber - 1) * rowsPerPage +
+                index +
+                1 -
+                nonUserRowsBefore -
+                indexDecrementFromPreviousPages}
+            </td>
+
+            {row.userTypeId !== 1 ? (
+              <>
+                <td>{row.userName}</td>
+                <td />
+              </>
+            ) : (
+              <>
+                <td>{row.userPosition}</td>
+                <td>{row.userName}</td>
+              </>
+            )}
+
+            {columns
+              .find((c) => c.key === "phones")
+              ?.subLabels.map((sub) => {
+                const phone = row.phones?.find(
+                  (p) => p.phoneType === sub.label
+                );
+                return <td key={sub.key}>{phone?.phoneName || ""}</td>;
+              })}
+          </>
+        );
+
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className={s.content}>
-      <div className={s.tableWrapper + " " + showDigitsFromPressed}>
-        {shouldShowColNumbers && (
-          <div className={s.colNumbers}>
-            {Array.from({ length: pageData.length }, (_, i) => (
-              <div key={i} ref={el => (colNumbersRef.current[i] = el)}>
-                {i + 1}
-              </div>
-            ))}
-          </div>
-        )}
-
-        <table>
-          <thead ref={headerRef}>
-            <tr>
-              {indexDataOfFoundResultsForFoundResultsPage && <th rowSpan="2" className={s.indexesColumnHeader}>Індекси</th>}
-              <th rowSpan="2">№ п/п</th>
-              {columns.map(col =>
-                col.key === "phones" ? (
-                  <th key={col.key} colSpan={col.subLabels.length}>{col.label}</th>
-                ) : (
-                  <th key={col.key} rowSpan="2">{col.label}</th>
-                )
-              )}
-            </tr>
-            <tr>
-              {columns
-                .filter(c => c.key === "phones")
-                .flatMap(col =>
-                  col.subLabels.map(sub => <th key={sub.key}>{sub.label}</th>)
-                )}
-            </tr>
-          </thead>
-          <tbody>
-            {pageData.map((row, index) => {
-              const rowClass = indexesOfFoundResultsForCurrentPage?.includes(index + 1) && showPreviousPageHighlight
-                ? `${s.searchedRow} ${(index + 1) % 2 === 0 ? s.even : s.odd}`
-                : "";
-              const rowClassFromPressed = indexesOfFoundResultsForCurrentPage?.includes(index + 1) && isPagesNavbarLinkElementOnCurrentPagePressed
-                ? s.focusOnsearchedResultsWhenPagesLinkOnCurrentPagePressed
-                : "";
-
-              const hideClass = indexesOfFoundResultsForCurrentPage.length !== 0 && showPreviousPageHighlight ? s.hideBright : "";
-              const hideClassFromPressed = indexesOfFoundResultsForCurrentPage.length !== 0 && isPagesNavbarLinkElementOnCurrentPagePressed ? s.hideBrightWhenPagesLinkOnCurrentPagePressed : "";
-
-              const refCallback = el => (rowRefs.current[index] = el);
-              let key = index;
-
-              switch (row.type) {
-                case "department":
-                  indexDecrement++;
-                  return (
-                    <tr key={`dep-${row.departmentId}`} ref={refCallback}>
-                      {renderIndexCell(index)}
-                      <td
-                        className={`${s.mainDepartment} ${hideClass} ${hideClassFromPressed}`}
-                        colSpan={columns.length + phoneColumns}
-                        style={{ whiteSpace: "normal", wordBreak: "break-word" }}
-                        data-key={`department--${index}`}
-                      >
-                        {row.departmentName}
-                      </td>
-                    </tr>
-                  );
-                case "section":
-                  indexDecrement++;
-                  return (
-                    <tr key={`sec-${row.sectionId}`} ref={refCallback}>
-                      {renderIndexCell(index)}
-                      <td
-                        className={`${s.section} ${hideClass} ${hideClassFromPressed}`}
-                        colSpan={columns.length + phoneColumns}
-                        style={{ whiteSpace: "normal", wordBreak: "break-word" }}
-                        data-key={`section--${index}`}
-                      >
-                        {row.sectionName}
-                      </td>
-                    </tr>
-                  );
-                case "user":
-                  return (
-                    <tr
-                      key={`user-${row.userId}`}
-                      className={`${rowClass} ${rowClassFromPressed}`}
-                      data-index={index}
-                      ref={refCallback}
-                      data-key={`user--${index}`}
-                    >
-                      {renderIndexCell(index)}
-                      <td>{(pageNumber - 1) * rowsPerPage + index + 1 - indexDecrement - indexDecrementFromPreviousPages}</td>
-                      {row.userTypeId !== 1 ? (
-                        <>
-                          <td>{row.userName}</td>
-                          <td></td>
-                        </>
-                      ) : (
-                        <>
-                          <td>{row.userPosition}</td>
-                          <td>{row.userName}</td>
-                        </>
-                      )}
-                      {columns.find(c => c.key === "phones")?.subLabels.map(sub => {
-                        const phone = row.phones?.find(p => p.phoneType === sub.label);
-                        return <td key={sub.key}>{phone ? phone.phoneName : ""}</td>;
-                      })}
-                    </tr>
-                  );
-                default:
-                  return null;
-              }
-            })}
-          </tbody>
-        </table>
-      </div>
+      <TableWrapper
+        pageData={pageData}
+        showDigitsFromPressed={showDigitsFromPressed}
+        shouldShowColNumbers={shouldShowColNumbers}
+        colNumbersRef={colNumbersRef}
+        headerRef={headerRef}
+        indexesOfFoundResultsForCurrentPage={indexesOfFoundResultsForCurrentPage}
+        showPreviousPageHighlight={showPreviousPageHighlight}
+        isPagesNavbarLinkElementOnCurrentPagePressed={
+          isPagesNavbarLinkElementOnCurrentPagePressed
+        }
+        renderIndexCell={renderIndexCell}
+        renderHeader={renderHeader}
+        renderRowCells={renderRowCells}
+        rowRefs={rowRefs}
+      />
     </div>
   );
 };

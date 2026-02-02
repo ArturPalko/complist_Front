@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { useDataLoader, useRowHighlighting, useFilteredPageData, useSearchToggle } from "../../redux/hooks/hooks";
 import s from "../../Components/PhonesTable/PhonesTable.module.css";
 import { useSelector } from "react-redux";
-import { isCurrentPageFoundResult } from "../selectors/selector";
+import { getDepartmentsAndSectionsPerPage, isCurrentPageFoundResult } from "../selectors/selector";
 import { useRowHeights } from "./useSyncRowHeights";
 import { useFoundResultsColNumbersLogic } from "./hooks"; // універсальний хук
 
@@ -39,9 +39,9 @@ export const usePhonesTableLogic = ({
       : phonesData?.[pageNumber - 1]?.rows ?? [];
 
   const phoneColumns = columns.find(c => c.key === "phones")?.subLabels.length || 0;
-  const indexDecrementFromPreviousPages = departmentsAndSectionsPerPage
-    .slice(0, pageNumber - 1)
-    .reduce((acc, val) => acc + val, 0);
+const indexDecrementFromPreviousPages = useSelector(getDepartmentsAndSectionsPerPage)
+  .slice(0, pageNumber - 1)
+  .reduce((acc, val) => acc + val, 0);
 
   const { renderIndexCell } = useRowHighlighting(
     indexDataOfFoundResultsForFoundResultsPage,
@@ -62,6 +62,9 @@ export const usePhonesTableLogic = ({
 
 
   useRowHeights(rowRefs, colNumbersRef, [pageData],headerRef,titleRef);
+
+ 
+
 
   return {
     pageData,

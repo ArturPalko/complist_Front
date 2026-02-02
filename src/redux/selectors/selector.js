@@ -96,9 +96,11 @@ export const getPositionsAndTypesOfUsers = createSelector(
 );
 
 export const getDepartmentsAndSectionsPerPage = createSelector(
-  [getDataForMenu],
-  (data) => countDepartmentsAndSections(data[Pages.PHONES] || [])
+  [(state) => getDataForMenu(state, Pages.PHONES)],
+  (phonesData) => countDepartmentsAndSections(phonesData)
 );
+
+
 
 export const getFilteredState = (state, activeMenu) => state.filters?.[activeMenu]?.usedFilters || {};
 export const getIndexesOfFiltredResults = (state, activeMenu) => state.filters?.[activeMenu]?.filtredResults || [];
@@ -137,3 +139,6 @@ export const getPageIndexDataOfFoundResultsByPage = (pageName) => (state) => {
 export const selectPaginationPagesCount = (menu) => (state) => getDataForMenu(state, menu).length || 0;
 export const isCurrentPageFoundResult = (menu) => (state) =>
   state.currentPageNumber?.[menu]?.lastVisitedPage === "foundResults";
+
+
+
