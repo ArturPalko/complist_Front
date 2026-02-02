@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { connect } from "react-redux";
 import s from "./CustomDropDown.module.css";
 import { activeMenu, getPositionsAndTypesOfUsers, getSubFilters } from "../../../../redux/selectors/selector";
-import { addFilteredDataSubconditions } from "../../../../redux/filterData-reducer";
+import { addFilteredDataSubconditions } from "../../../../redux/reducers/filterData-reducer";
 
 const CustomDropDown = (props) => {
   const [open, setOpen] = useState(false);

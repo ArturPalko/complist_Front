@@ -2,7 +2,7 @@ export const countContacts = ({ filteredChunks = [], dataByMenu = [] }) => {
   if (!Array.isArray(filteredChunks)) return 0;
 
   let totalContacts = 0;
-  debugger;
+
 
   filteredChunks.forEach((chunk) => {
     chunk.rows.forEach((pos) => {

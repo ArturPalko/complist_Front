@@ -5,7 +5,8 @@ import GenericPage from "./GenericPage";
 
 import withDataLoaderForMenu from "../../redux/hocs/withDataLoader";
 import withToggleElements from "../../redux/hocs/withToggleElements";
-import { getDataByMenu } from "../../redux/data-reducer";
+import { getDataByMenu } from '../../redux/reducers/data-reducer/data-reducer';
+
 
 /**
  * Фабрика сторінок

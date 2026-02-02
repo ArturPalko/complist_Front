@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import {
   toggleSearchFieldActionCreator,
   clearSearchFieldsAndFoundResults
-} from "../toggledElements-reducer";
+} from "../reducers/toggledElements-reducer.js";
 
 import {
   isPresentedSearchField,
@@ -16,7 +16,7 @@ import {
 } from "../../redux/selectors/selector";
 
 import { redirectToPage } from "../../Components/NavBar/commonFunctions.js";
-import { fetchPasswordsByType } from "../../redux/api/api"; // через Axios
+import { fetchPasswordsByType } from "../../dal/api.js"; // через Axios
 
 // Контексти для Search та Passwords
 export const SearchToggleContext = createContext(null);

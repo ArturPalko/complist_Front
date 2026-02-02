@@ -1,6 +1,6 @@
 import React from "react";
 import s from "../../Components/PhonesTable/PhonesTable.module.css";
-import "./MailsTable.css";
+import "../CommonInjection/Css/Table.css";
 import { useMailsTableLogic } from "../../redux/hooks/useMailsTableLogic"; // шлях до нового хука
 import { useFoundResults } from "../../redux/hooks/hooks";
 import { useRef } from "react";

@@ -1,9 +1,9 @@
-import PhonesTable from "../../Components/PhonesTable/PhonesTable";
-import MailsTable from "../../Components/MalisTable/MailsTable"
-import { Pages } from "../../redux/selectors/constants";
-import EllipsesForPhonesSVG from "../../assets/Spinner/SVG/EllipsesForPhonesSVG"
-import ConverForLotusSVG from "../../assets/Spinner/SVG/ConverForLotusSVG.js";
-import ConverForGovUaSVG from "../../assets/Spinner/SVG/ConverForGovUaSVG.js"
+import PhonesTable from "../Components/PhonesTable/PhonesTable.jsx";
+import MailsTable from "../Components/MalisTable/MailsTable.jsx"
+import { Pages } from "./constants.js";
+import EllipsesForPhonesSVG from "../assets/Spinner/SVG/EllipsesForPhonesSVG.js"
+import ConverForLotusSVG from "../assets/Spinner/SVG/ConverForLotusSVG.js";
+import ConverForGovUaSVG from "../assets/Spinner/SVG/ConverForGovUaSVG.js"
 
 
 export const pageConfigs = {

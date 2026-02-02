@@ -11,8 +11,8 @@ import {
   isSearchValueFoundByPage
 } from "../redux/selectors/selector";
 
-import { Pages } from "../redux/selectors/constants";
-import { pageConfigs } from "../redux/selectors/pageConfig";
+import { Pages } from "../configs/constants";
+import { pageConfigs } from "../configs/pageConfig";
 
 const RedirectToCurrentPage = ({ redirectMenu }) => {
 

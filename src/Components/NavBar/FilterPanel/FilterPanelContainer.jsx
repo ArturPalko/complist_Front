@@ -15,9 +15,9 @@ import {
   addFilter,
   clearCurrentForm,
   addIndexesOfFiltredResults
-} from "../../../redux/filterData-reducer.js";
+} from "../../../redux/reducers/filterData-reducer.js";
 
-import { useFilters } from "../../../redux/hooks/useFilters.js";
+import { useFilters } from "../../../redux/hooks/useFilters/useFilters.js";
 import FilterPanelView from "./FilterPanel.view";
 
 const FilterPanelContainer = (props) => {

@@ -31,7 +31,7 @@ const withDataLoaderForMenu = (menuName, fetchAction) => (WrappedComponent) => {
     const [showPreloader, setShowPreloader] = useState(false);
 
     const data = props.data;
-    debugger;
+
     
     const isLoaded = props.isLoaded;
 

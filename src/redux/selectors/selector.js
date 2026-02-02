@@ -1,6 +1,6 @@
 // selectors.js
 import { createSelector } from "@reduxjs/toolkit";
-import { Pages } from "./constants";
+import { Pages } from "../../configs/constants";
 import { createCurrentPageSelector } from "./selectorFabrics/createCurrentPageSelector";
 import { countContacts } from "../../Components/NavBar/FilterPanel/countContacts";
 import { makeGetCountByMenu } from "./selectorFabrics/makeGetCountForMenu";

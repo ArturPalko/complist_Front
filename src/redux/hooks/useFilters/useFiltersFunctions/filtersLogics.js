@@ -1,5 +1,5 @@
 // filters/index.js
-import { FILTER_GROUPS_NAMES } from "../../selectors/constants";
+import { FILTER_GROUPS_NAMES } from "../../../../configs/constants"
 
 import {
   conditionsWithoutNegative,

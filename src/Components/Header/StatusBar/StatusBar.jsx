@@ -1,10 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
 import { activeMenu as getActiveMenu ,getCountsForActiveMenu } from "../../../redux/selectors/selector.js"
-import { pageConfigs } from "../../../redux/selectors/pageConfig";
+import { pageConfigs } from "../../../configs/pageConfig.js";
 
 const StatusBar = ({ counts, activeMenu }) => {
-  
+
   const Diagram = pageConfigs[activeMenu]?.StatusDiagram;
 
   if (!Diagram) return null; 

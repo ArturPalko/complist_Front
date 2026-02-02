@@ -1,5 +1,5 @@
 import { useSearchToggle, usePasswordsToggle } from "../../redux/hooks/hooks.js";
-import { Pages } from "../../redux/selectors/constants.js";
+import { Pages } from "../../configs/constants.js";
 
 export const useTopTableBarState = (mailType) => {
   const { handleToggleSearchField, valueOfSearchCheckBox } = useSearchToggle();

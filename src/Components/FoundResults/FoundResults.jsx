@@ -2,10 +2,10 @@ import { connect } from "react-redux";
 import { createContext } from "react";
 import TooManyResultsOfSearch from "../TooManyResultsOfSearch/TooManyResultsOFSearch";
 
-import { Pages } from "../../redux/selectors/constants.js";
+import { Pages } from "../../configs/constants.js";
 import { activeMenu, getDataForMenu, selectSearchValueByPage, isFilterAppliedSelector } from "../../redux/selectors/selector";
 import { useFoundResults } from "../../redux/hooks/useFoundResults.js"
-import { getPageComponent } from "../../redux/selectors/pageComponent.js";
+import {getPageComponent} from "../../configs/pageComponent.js"
 
 export const FoundResultsContext = createContext(null);
 

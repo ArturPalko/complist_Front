@@ -1,10 +1,10 @@
 import { combineReducers, createStore, applyMiddleware } from "redux";
-import {pagesNavbarReducer} from "./pagesNavbar-reducer";
+import {pagesNavbarReducer} from "./reducers/pagesNavbar-reducer";
 import { thunk } from "redux-thunk";
-import { appReducer } from "./app-reducer";
-import { toggledElemetsReducer } from "./toggledElements-reducer";
-import { filterDataReducer } from "./filterData-reducer";
-import { dataReducer } from "./data-reducer";
+import { appReducer } from "./reducers/app-reducer";
+import { toggledElemetsReducer } from "./reducers/toggledElements-reducer";
+import { filterDataReducer } from "./reducers/filterData-reducer";
+import { dataReducer } from "./reducers/data-reducer/data-reducer";
 
 
 let reducers = combineReducers({

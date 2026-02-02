@@ -1,4 +1,4 @@
-import { redirectToPage } from "../../../Components/NavBar/commonFunctions.js";
+import { redirectToPage } from "../../../../Components/NavBar/commonFunctions";
 
 export const redirectToCurrentPage = ({
   filters = {},
@@ -14,7 +14,7 @@ export const redirectToCurrentPage = ({
   const hasFilters = hasAnyFiltersFn(filters, subConditions);
 
   const nextPage = hasFilters ? 1 : currentPage;
-  debugger;
+
 
   redirectToPage(
     {

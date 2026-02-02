@@ -1,12 +1,12 @@
 import { toggleDataIsFetchingActionCreator } from "./app-reducer";
 import {setDataIsLoadedActionCreator} from "./app-reducer";
-import { api } from "./api/api";
+import { api } from "../../dal/api";
 
 export const createFetchThunk = (endpoint, actionCreator, menu) => async (dispatch) => {
   dispatch(toggleDataIsFetchingActionCreator(true, menu));
 
   try {
-    debugger;
+  
     const { data } = await api.get(endpoint);
     dispatch(actionCreator(menu, data));
     dispatch(setDataIsLoadedActionCreator(true, menu));

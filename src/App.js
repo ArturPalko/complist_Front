@@ -11,8 +11,7 @@ import Error from "./Components/Error/Error";
 import FoundResults from "./Components/FoundResults/FoundResults";
 
 import { useTrackLocation } from "./redux/hooks/hooks";
-import { Pages } from "./redux/selectors/constants";
-
+import { Pages } from "./configs/constants";
 
 function App() {
   useTrackLocation();

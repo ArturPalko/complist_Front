@@ -5,8 +5,8 @@ import s from "./NavBar.module.css";
 import PagesNavBar from "./PagesNavBar/PagesNavBar";
 import Filter from "./Filter/Filter";
 
-import { Pages } from "../../redux/selectors/constants";
-import { pageConfigs } from "../../redux/selectors/pageConfig";
+import { Pages } from "../../configs/constants";
+import { pageConfigs } from "../../configs/pageConfig";
 
 function NavBar() {
   const [showDropdown, setShowDropdown] = useState(true);

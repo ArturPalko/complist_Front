@@ -15,26 +15,14 @@ import {
   rememberCurrentPagesActionCreator,
   setFilterPage,
   setLastVisitedPage,
-} from "../../../redux/pagesNavbar-reducer";
+} from "../../../redux/reducers/pagesNavbar-reducer";
 
-import { togglepagesNavbarLinkElementOnCurrentPage } from "../../../redux/toggledElements-reducer";
+import { togglepagesNavbarLinkElementOnCurrentPage } from "../../../redux/reducers/toggledElements-reducer";
 
 import PagesNavBarView from "./PagesNavbarView/PagesNavbarView";
-import { 
-  handleLastVisitedPage, 
-  handleSearchResults, 
-  getPageInfoFromPath, 
-  getPagesCount 
-} from "./pageUtils";
-
-/* =========================
-   PagesNavBar Component
-========================= */
+import { handleLastVisitedPage, handleSearchResults, getPageInfoFromPath, getPagesCount } from "./pageUtils";
 
 const PagesNavBar = (props) => {
-  /* =========================
-     state & refs
-  ========================== */
   const location = useLocation();
   const pressTimer = useRef(null);
   const isPressed = useRef(false);
@@ -43,17 +31,15 @@ const PagesNavBar = (props) => {
   const [showFoundResultPage, setShowFoundResultsPage] = useState(false);
   const [indexes, setIndexes] = useState([]);
 
-  /* =========================
-     path parsing
-  ========================== */
+  // --- Ref для останньої обробленої сторінки
+  const lastPageRef = useRef({ pageName: null, pageFromURL: null });
+
+  // --- Витягуємо pageName, basePath, pageFromURL
   const pathParts = location.pathname.split("/").filter(Boolean);
   const { pageName, basePath, pageFromURL } = getPageInfoFromPath(pathParts);
-  debugger;
   const isFoundResultsPage = pageFromURL === "foundResults";
 
-  /* =========================
-     pages count
-  ========================== */
+  // --- Кількість сторінок
   const count = getPagesCount({
     countFiltred: props.countFiltred,
     pagesCount: props.pagesCount,
@@ -62,9 +48,7 @@ const PagesNavBar = (props) => {
     pageName,
   });
 
-  /* =========================
-     mouse handlers
-  ========================== */
+  // --- Обробники натискання на NavLink
   const handleNavLinkPressed = (e) => {
     if (pageFromURL === e.currentTarget.textContent) {
       pressTimer.current = setTimeout(() => {
@@ -82,24 +66,31 @@ const PagesNavBar = (props) => {
     }
   };
 
-  /* =========================
-     remember last page
-  ========================== */
+  // --- Effect для оновлення останньої відвіданої сторінки
   useEffect(() => {
+    if (!pageName || !pageFromURL) return;
+
+    // Якщо ця сторінка вже оброблена, нічого не робимо
+    if (
+      lastPageRef.current.pageName === pageName &&
+      lastPageRef.current.pageFromURL === pageFromURL
+    ) return;
+
     handleLastVisitedPage({
       pageName,
       pageFromURL,
       isFilterApplied: props.isFilterApplied,
-      searchValue: props.searchValue,
+      lastVisitedPage: props.lastVisitedPage,
+      currentFilterPage: props.currentFilterPage,
       setLastVisitedPage: props.setLastVisitedPage,
       setFilterPage: props.setFilterPage,
       rememberCurrentPage: props.rememberCurrentPage,
     });
-  }, [location.pathname, props.searchValue, pageName, pageFromURL]);
 
-  /* =========================
-     search logic
-  ========================== */
+    lastPageRef.current = { pageName, pageFromURL };
+  }, [pageName, pageFromURL]); // тільки стабільні залежності
+
+  // --- Effect для обробки пошуку
   useEffect(() => {
     handleSearchResults({
       isSearchValueFound: props.isSearchValueFound,
@@ -109,9 +100,6 @@ const PagesNavBar = (props) => {
     });
   }, [props.isSearchValueFound, props.searchValue]);
 
-  /* =========================
-     render
-  ========================== */
   return (
     <PagesNavBarView
       basePath={basePath}
@@ -125,9 +113,7 @@ const PagesNavBar = (props) => {
   );
 };
 
-/* =========================
-   redux
-========================= */
+// --- Redux
 const mapStateToProps = (state) => ({
   activeMenu: activeMenu(state),
   pagesCount: selectPaginationPagesCount(activeMenu(state))(state),

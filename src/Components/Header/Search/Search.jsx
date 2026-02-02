@@ -14,7 +14,7 @@ import {
   addFoundItems,
   clearSearchForm,
   updateDraftValue
-} from "../../../redux/toggledElements-reducer";
+} from "../../../redux//reducers/toggledElements-reducer.js";
 
 import SearchForm from "./SearchForm/SearchForm.jsx";
 import { useFilteredPageData } from "../../../redux/hooks/hooks.js";

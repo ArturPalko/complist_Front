@@ -2,7 +2,7 @@ import { redirect, useParams } from "react-router-dom";
 import { useEffect, useRef, useState, useContext } from "react";
 import { useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { rememberPreviousLocationActionCreator } from "../pagesNavbar-reducer";
+import { rememberPreviousLocationActionCreator } from "../reducers/pagesNavbar-reducer";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {getPageIndexDataOfFoundResultsByPage, getCurrentPageNumberByKey,
@@ -119,7 +119,6 @@ const handleClick = (index) => {
     requestAnimationFrame(() => {
       // 3. Навігація після тривалості анімації
       setTimeout(() => {
-        debugger;
         navigate(url);
       }, 300); // тривалість анімації moveRight
     });

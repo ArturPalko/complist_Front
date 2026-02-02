@@ -9,8 +9,8 @@ import {
   currentPageByMenu
 } from "../../../redux/selectors/selector";
 
-import { toggleFielterPanelElement } from "../../../redux/toggledElements-reducer";
-import { clearFiltredData } from "../../../redux/filterData-reducer";
+import { toggleFielterPanelElement } from "../../../redux/reducers/toggledElements-reducer";
+import { clearFiltredData } from "../../../redux/reducers/filterData-reducer";
 import { redirectToPage } from "../commonFunctions";
 
 const Filter = () => {

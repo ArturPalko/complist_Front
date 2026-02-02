@@ -1,6 +1,6 @@
-import { createFetchThunk } from "./fetchDataThunkCreator";
-import { rowsPerPage as limitRows } from "./selectors/constants.js";
-import { paginateData } from "../redux/reducersHelpunctions/pagination.js";
+import { createFetchThunk } from "../fetchDataThunkCreator.js";
+import { rowsPerPage as limitRows } from "../../../configs/constants.js";
+import { paginateData } from "./data-reducerFunctions/pagination.js";
 
 // Action type
 const ADD_DATA = "ADD_DATA";

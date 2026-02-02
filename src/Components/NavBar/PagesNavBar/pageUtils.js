@@ -1,5 +1,5 @@
-import { pageConfigs } from "../../../redux/selectors/pageConfig";
-import { Pages } from "../../../redux/selectors/constants";
+import { pageConfigs } from "../../../configs/pageConfig";
+import { Pages } from "../../../configs/constants";
 
 export const handleLastVisitedPage = ({ pageName, pageFromURL, isFilterApplied, searchValue, setLastVisitedPage, setFilterPage, rememberCurrentPage }) => {
   if (!pageName || !pageFromURL) return;
