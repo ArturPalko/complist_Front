@@ -1,5 +1,6 @@
 import React from "react";
-import s from "../../Components/PhonesTable/PhonesTable.module.css";
+// import s from "../../Components/PhonesTable/PhonesTable.module.css";
+import s from "../CommonInjection/TableWrapper.module.css"
 
 const TableWrapper = ({
   pageData,
@@ -16,19 +17,20 @@ const TableWrapper = ({
   renderHeader = () => null,
   renderRowCells,
   rowRefs,
+indexDataOfFoundResultsForFoundResultsPage
 }) => {
   // Функція для класів рядків
   const getRowClass = (index) => {
     const baseClass =
       indexesOfFoundResultsForCurrentPage?.includes(index + 1) &&
       showPreviousPageHighlight
-        ? `${s.searchedRow} ${(index + 1) % 2 === 0 ? s.even : s.odd}`
+        ? `${s.focusOnSearchedRowFade} ${(index + 1) % 2 === 0 ? s.even : s.odd}`
         : "";
 
     const pressedClass =
       indexesOfFoundResultsForCurrentPage?.includes(index + 1) &&
       isPagesNavbarLinkElementOnCurrentPagePressed
-        ? s.focusOnsearchedResultsWhenPagesLinkOnCurrentPagePressed
+        ? s.focusOnSearchedRow
         : "";
 
     return `${baseClass} ${pressedClass}`;
@@ -51,7 +53,18 @@ const TableWrapper = ({
       )}
 
       <table>
-        <thead ref={headerRef}>{renderHeader()}</thead>
+        
+      <thead ref={headerRef}>
+      <tr>
+        {indexDataOfFoundResultsForFoundResultsPage && (
+          <th rowSpan="3" className={s.indexesColumnHeader}>
+            Індекси
+          </th>
+        )}
+      </tr>
+      {renderHeader?.()}
+    </thead>
+    
 
         <tbody>
           {pageData.map((item, index) => (
@@ -72,3 +85,4 @@ const TableWrapper = ({
 };
 
 export default TableWrapper;
+

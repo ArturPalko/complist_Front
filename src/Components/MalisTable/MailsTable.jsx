@@ -43,9 +43,6 @@ const MailsTable = ({
   // Функція для рендеру шапки
   const renderHeader = () => (
     <tr>
-      {indexDataOfFoundResultsForFoundResultsPage && (
-        <th className={s.indexesColumnHeader}>Індекси</th>
-      )}
       <th>№ п/п</th>
       {columns.map((col) => (
         <th key={col.key}>{col.label}</th>
@@ -66,7 +63,6 @@ const MailsTable = ({
   );
 
   return (
-    <div className={s.content}>
       <TableWrapper
         pageData={pageData}
         showDigitsFromPressed={showDigitsFromPressed}
@@ -82,8 +78,8 @@ const MailsTable = ({
         renderHeader={renderHeader}
         renderRowCells={renderRowCells}
         rowRefs={rowRefs}
+        indexDataOfFoundResultsForFoundResultsPage={indexDataOfFoundResultsForFoundResultsPage}
       />
-    </div>
   );
 };
 

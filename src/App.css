@@ -36,4 +36,5 @@ html, body {
   background-color: rgb(220, 220, 224);
   height: 100%; /* контент займає весь ряд */
   overflow: auto;
+  
 }

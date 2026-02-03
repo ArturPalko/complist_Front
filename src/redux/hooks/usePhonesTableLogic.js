@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useDataLoader, useRowHighlighting, useFilteredPageData, useSearchToggle } from "../../redux/hooks/hooks";
-import s from "../../Components/PhonesTable/PhonesTable.module.css";
+ //import s from "../../Components/PhonesTable/PhonesTable.module.css";
+import b from "../../Components/CommonInjection/Arrow.module.css"
 import { useSelector } from "react-redux";
 import { getDepartmentsAndSectionsPerPage, isCurrentPageFoundResult } from "../selectors/selector";
 import { useRowHeights } from "./useSyncRowHeights";
@@ -45,7 +46,7 @@ const indexDecrementFromPreviousPages = useSelector(getDepartmentsAndSectionsPer
 
   const { renderIndexCell } = useRowHighlighting(
     indexDataOfFoundResultsForFoundResultsPage,
-    s,
+    b,
     "phones",
     rowRefs,
     safeIndexData

@@ -47,11 +47,6 @@ const PhonesTable = ({
   const renderHeader = () => (
     <>
       <tr>
-        {indexDataOfFoundResultsForFoundResultsPage && (
-          <th rowSpan="2" className={s.indexesColumnHeader}>
-            Індекси
-          </th>
-        )}
         <th rowSpan="2">№ п/п</th>
 
         {columns.map((col) =>
@@ -89,13 +84,13 @@ const PhonesTable = ({
     const hideClass =
       indexesOfFoundResultsForCurrentPage.length !== 0 &&
       showPreviousPageHighlight
-        ? s.hideBright
+        ? s.hideBrightLinesFade
         : "";
 
     const hideClassFromPressed =
       indexesOfFoundResultsForCurrentPage.length !== 0 &&
       isPagesNavbarLinkElementOnCurrentPagePressed
-        ? s.hideBrightWhenPagesLinkOnCurrentPagePressed
+        ? s.hideBrightLines
         : "";
 
     switch (row.type) {
@@ -159,7 +154,6 @@ const PhonesTable = ({
   };
 
   return (
-    <div className={s.content}>
       <TableWrapper
         pageData={pageData}
         showDigitsFromPressed={showDigitsFromPressed}
@@ -175,8 +169,9 @@ const PhonesTable = ({
         renderHeader={renderHeader}
         renderRowCells={renderRowCells}
         rowRefs={rowRefs}
+        indexDataOfFoundResultsForFoundResultsPage={indexDataOfFoundResultsForFoundResultsPage}
+        
       />
-    </div>
   );
 };
 

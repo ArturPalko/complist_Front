@@ -1,0 +1,83 @@
+/* ==============================
+   1 Загальні таблиці та колонки
+   ============================== */
+.tableWrapper {
+  display: flex;
+  align-items: flex-start;
+  padding: 20px;
+  padding-top: 0px;
+  font-family: Arial, sans-serif;
+}
+
+.indexesColumnHeader {
+  background: blue;
+  color: white;
+}
+
+.colNumbers div {
+  display: flex;             /* flex layout */
+  align-items: center;       /* вертикально по центру */
+  justify-content: center;   /* горизонтально по центру */
+  height: 100%;              /* займає всю висоту стовпця */
+  margin-right: 8px;         /* відступ між цифрами */
+  font-weight: bolder;       /* товщина шрифту */
+  color: red;                /* колір цифр */
+}
+
+/* ==============================
+   2 Заголовки таблиць
+   ============================== */
+thead th {
+  text-align: center;
+  background-color: greenyellow;
+}
+
+
+/* ==============================
+   3 Підсвічування рядків (анімації)
+   ============================== */
+@keyframes highlight-even {
+  0% { background-color: #b2ebf2; }
+  100% { background-color: #f9f9f9; } /* кінцевий колір для парних рядків */
+}
+
+@keyframes highlight-odd {
+  0% { background-color: #b2ebf2; }
+  100% { background-color: #ffffff; } /* кінцевий колір для непарних рядків */
+}
+
+/* класи для підсвічування рядків */
+.focusOnSearchedRowFade.even {
+  animation: highlight-even 3s step-end forwards;
+}
+
+.focusOnSearchedRowFade.odd {
+  animation: highlight-odd 3s step-end forwards;
+}
+
+/* ==============================
+   4 Згасання / зменшення підсвітки
+   ============================== */
+@keyframes light {
+  0% { background-color: #d6ddde; }
+  100% { background-color: inherit; }
+}
+
+/* клас для згасання фону */
+.hideBright {
+  animation: light 3s step-end;
+}
+
+/* ==============================
+   5 Підсвітка активного результату
+   ============================== */
+.focusOnSearchedRow {
+  background-color: #b2ebf2 !important;
+}
+
+/* ==============================
+   6 Приховування цифр (анімація)
+   ============================== */
+@keyframes hideDigits {
+  100% { display: none; }
+}
