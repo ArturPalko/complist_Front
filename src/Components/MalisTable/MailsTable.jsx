@@ -3,7 +3,7 @@ import s from "../../Components/PhonesTable/PhonesTable.module.css";
 import "../CommonInjection/Css/Table.css";
 import { useMailsTableLogic } from "../../redux/hooks/useMailsTableLogic";
 import { useFoundResults } from "../../redux/hooks/hooks";
-import TableWrapper from "../CommonInjection/TableWrapper";
+import TableWrapper from "../CommonInjection/TableWrapper/TableWrapper";
 
 const MailsTable = ({
   titleRef,

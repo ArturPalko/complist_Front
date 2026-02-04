@@ -9,11 +9,11 @@
   background-color: rgb(252, 195, 89);
 }
 
-.hideBrightLines{
+.dimGroupRow{
    background-color: #d6ddde;
 }
 
-.hideBrightLinesFade  {
+.dimGroupRowFade  {
   animation: light 3s step-end ;
 }
 @keyframes light {

@@ -28,6 +28,19 @@ const GenericPage = ({
       getDepartmentsAndSectionsPerPage(pageName);
   }
 
+    const tableProps = {
+    titleRef,
+    columns: config.columns,
+    rowsPerPage,
+    pageNumber,
+    indexesOfFoundResultsForCurrentPage: indexes,
+    ...extraProps,
+    ...(config.mailType && { mailType: config.mailType }),
+    ...(showPasswords !== undefined && { showPasswords }),
+    ...(passwordsMap !== undefined && { passwordsMap }),
+  };
+
+
   return (
     <>
       <TopTableBar
@@ -35,18 +48,7 @@ const GenericPage = ({
         title={config.title}
         mailType={config.mailType}
       />
-
-      <config.TableComponent
-        mailType={config.mailType}
-        titleRef={titleRef}
-        columns={config.columns}
-        rowsPerPage={rowsPerPage}
-        pageNumber={pageNumber}
-        indexesOfFoundResultsForCurrentPage={indexes}
-        showPasswords={showPasswords}
-        passwordsMap={passwordsMap}
-        {...extraProps}
-      />
+      <config.TableComponent {...tableProps} />
     </>
   );
 };

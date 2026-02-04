@@ -2,7 +2,15 @@ import React, { useRef } from "react";
 import s from "./PhonesTable.module.css";
 import { usePhonesTableLogic } from "../../redux/hooks/usePhonesTableLogic";
 import { useFoundResults } from "../../redux/hooks/hooks";
-import TableWrapper from "../CommonInjection/TableWrapper";
+import TableWrapper from "../CommonInjection/TableWrapper/TableWrapper";
+
+
+
+import {
+  countNonUserRowsBefore,
+  getUserRowIndex,
+  getDimGroupRowClasses,
+} from "./phonesTableHelpers"
 
 const PhonesTable = ({
   titleRef,
@@ -76,28 +84,23 @@ const PhonesTable = ({
 
   /* ===== ROW CELLS ===== */
   const renderRowCells = (row, index) => {
-    const nonUserRowsBefore = pageData
-      .slice(0, index)
-      .filter((r) => r.type !== "user")
-      .length;
+    const nonUserRowsBefore = countNonUserRowsBefore(pageData, index);
 
-    const hideClass =
-      indexesOfFoundResultsForCurrentPage.length !== 0 &&
-      showPreviousPageHighlight
-        ? s.hideBrightLinesFade
-        : "";
-
-    const hideClassFromPressed =
-      indexesOfFoundResultsForCurrentPage.length !== 0 &&
-      isPagesNavbarLinkElementOnCurrentPagePressed
-        ? s.hideBrightLines
-        : "";
+    const {
+      dimAfterSearchNavigationClass,
+      dimAfterPageNumberPressedClass,
+    } = getDimGroupRowClasses({
+      hasFoundResults: indexesOfFoundResultsForCurrentPage.length !== 0,
+      showPreviousPageHighlight,
+      isPagesNavbarLinkElementOnCurrentPagePressed,
+      styles: s,
+    });
 
     switch (row.type) {
       case "department":
         return (
           <td
-            className={`${s.mainDepartment} ${hideClass} ${hideClassFromPressed}`}
+            className={`${s.mainDepartment} ${dimAfterSearchNavigationClass} ${dimAfterPageNumberPressedClass}`}
             colSpan={columns.length + phoneColumns}
           >
             {row.departmentName}
@@ -107,23 +110,25 @@ const PhonesTable = ({
       case "section":
         return (
           <td
-            className={`${s.section} ${hideClass} ${hideClassFromPressed}`}
+            className={`${s.section} ${dimAfterSearchNavigationClass} ${dimAfterPageNumberPressedClass}`}
             colSpan={columns.length + phoneColumns}
           >
             {row.sectionName}
           </td>
         );
 
-      case "user":
+      case "user": {
+        const userRowIndex = getUserRowIndex({
+          pageNumber,
+          rowsPerPage,
+          index,
+          nonUserRowsBefore,
+          indexDecrementFromPreviousPages,
+        });
+
         return (
           <>
-            <td>
-              {(pageNumber - 1) * rowsPerPage +
-                index +
-                1 -
-                nonUserRowsBefore -
-                indexDecrementFromPreviousPages}
-            </td>
+            <td>{userRowIndex}</td>
 
             {row.userTypeId !== 1 ? (
               <>
@@ -147,6 +152,7 @@ const PhonesTable = ({
               })}
           </>
         );
+      }
 
       default:
         return null;
@@ -154,24 +160,25 @@ const PhonesTable = ({
   };
 
   return (
-      <TableWrapper
-        pageData={pageData}
-        showDigitsFromPressed={showDigitsFromPressed}
-        shouldShowColNumbers={shouldShowColNumbers}
-        colNumbersRef={colNumbersRef}
-        headerRef={headerRef}
-        indexesOfFoundResultsForCurrentPage={indexesOfFoundResultsForCurrentPage}
-        showPreviousPageHighlight={showPreviousPageHighlight}
-        isPagesNavbarLinkElementOnCurrentPagePressed={
-          isPagesNavbarLinkElementOnCurrentPagePressed
-        }
-        renderIndexCell={renderIndexCell}
-        renderHeader={renderHeader}
-        renderRowCells={renderRowCells}
-        rowRefs={rowRefs}
-        indexDataOfFoundResultsForFoundResultsPage={indexDataOfFoundResultsForFoundResultsPage}
-        
-      />
+    <TableWrapper
+      pageData={pageData}
+      showDigitsFromPressed={showDigitsFromPressed}
+      shouldShowColNumbers={shouldShowColNumbers}
+      colNumbersRef={colNumbersRef}
+      headerRef={headerRef}
+      indexesOfFoundResultsForCurrentPage={indexesOfFoundResultsForCurrentPage}
+      showPreviousPageHighlight={showPreviousPageHighlight}
+      isPagesNavbarLinkElementOnCurrentPagePressed={
+        isPagesNavbarLinkElementOnCurrentPagePressed
+      }
+      renderIndexCell={renderIndexCell}
+      renderHeader={renderHeader}
+      renderRowCells={renderRowCells}
+      rowRefs={rowRefs}
+      indexDataOfFoundResultsForFoundResultsPage={
+        indexDataOfFoundResultsForFoundResultsPage
+      }
+    />
   );
 };
 
