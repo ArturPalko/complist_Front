@@ -1,6 +1,7 @@
 import React from "react";
-import { useTopTableBarState } from "../../redux/hooks/useTopTableLogic";
+import { useTopTableBarLogic } from "../../redux/hooks/useTopTableBarLogic";
 import s from "./TopTableBar.module.css";
+import CheckboxToggle from "./subComponent/CheckboxToggle";
 
 const TopTableBar = React.forwardRef(({ title, mailType }, ref) => {
   const {
@@ -8,37 +9,30 @@ const TopTableBar = React.forwardRef(({ title, mailType }, ref) => {
     handleToggleSearchField,
     valueOfpasswordCheckbox,
     handleTogglePasswords,
+    showSearchToggle,
     showPasswordsToggle
-  } = useTopTableBarState(mailType);
+  } = useTopTableBarLogic(mailType);
 
   return (
     <div ref={ref} className={s.headerPanel}>
       <h2>{title}</h2>
       <div className={s.buttonsBar}>
-        <div className={s.switchWrapper}>
-          <label className={s.switch}>
-            <input
-              type="checkbox"
-              checked={valueOfSearchCheckBox}
-              onChange={handleToggleSearchField}
-            />
-            <span className={`${s.slider} ${s.blue}`}></span>
-          </label>
-          <div className={s.sliderDesc}>Показати пошук</div>
-        </div>
+        {showSearchToggle && (
+          <CheckboxToggle
+            checked={valueOfSearchCheckBox}
+            onChange={handleToggleSearchField}
+            color="blue"
+            label="Показати пошук"
+          />
+        )}
 
         {showPasswordsToggle && (
-          <div className={s.switchWrapper}>
-            <label className={s.switch}>
-              <input
-                type="checkbox"
-                onChange={handleTogglePasswords}
-                checked={valueOfpasswordCheckbox}
-              />
-              <span className={`${s.slider} ${s.green}`}></span>
-            </label>
-            <div className={s.sliderDesc}>Показати паролі</div>
-          </div>
+          <CheckboxToggle
+            checked={valueOfpasswordCheckbox}
+            onChange={handleTogglePasswords}
+            color="green"
+            label="Показати паролі"
+          />
         )}
       </div>
     </div>

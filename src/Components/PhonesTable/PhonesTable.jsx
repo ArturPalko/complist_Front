@@ -1,16 +1,17 @@
-import React, { useRef } from "react";
+// PhonesTable.js
+import React from "react";
 import s from "./PhonesTable.module.css";
 import { usePhonesTableLogic } from "../../redux/hooks/usePhonesTableLogic";
-import { useFoundResults } from "../../redux/hooks/hooks";
-import TableWrapper from "../CommonInjection/TableWrapper/TableWrapper";
-
-
+import { createTableComponent } from "../CommonInjection/TableWrapper/tableFactory";
 
 import {
   countNonUserRowsBefore,
   getUserRowIndex,
   getDimGroupRowClasses,
-} from "./phonesTableHelpers"
+} from "./phonesTableHelpers";
+
+// Створюємо базовий компонент через фабрику та передаємо свої стилі
+const BasePhonesTable = createTableComponent(usePhonesTableLogic, s);
 
 const PhonesTable = ({
   titleRef,
@@ -20,43 +21,11 @@ const PhonesTable = ({
   indexesOfFoundResultsForCurrentPage,
   departmentsAndSectionsPerPage,
 }) => {
-  const headerRef = useRef(null);
-
-  const { foundResults, indexDataOfFoundResultsForFoundResultsPage } =
-    useFoundResults() || {
-      foundResults: [],
-      indexDataOfFoundResultsForFoundResultsPage: [],
-    };
-
-  const {
-    pageData,
-    rowRefs,
-    colNumbersRef,
-    renderIndexCell,
-    showDigitsFromPressed,
-    showPreviousPageHighlight,
-    isPagesNavbarLinkElementOnCurrentPagePressed,
-    phoneColumns,
-    indexDecrementFromPreviousPages,
-    shouldShowColNumbers,
-  } = usePhonesTableLogic({
-    columns,
-    pageNumber,
-    rowsPerPage,
-    indexesOfFoundResultsForCurrentPage,
-    departmentsAndSectionsPerPage,
-    foundResults,
-    indexDataOfFoundResultsForFoundResultsPage,
-    headerRef,
-    titleRef,
-  });
-
-  /* ===== HEADER ===== */
+  // ===== Рендер шапки =====
   const renderHeader = () => (
     <>
       <tr>
         <th rowSpan="2">№ п/п</th>
-
         {columns.map((col) =>
           col.key === "phones" ? (
             <th key={col.key} colSpan={col.subLabels.length}>
@@ -74,25 +43,23 @@ const PhonesTable = ({
         {columns
           .filter((c) => c.key === "phones")
           .flatMap((col) =>
-            col.subLabels.map((sub) => (
-              <th key={sub.key}>{sub.label}</th>
-            ))
+            col.subLabels.map((sub) => <th key={sub.key}>{sub.label}</th>)
           )}
       </tr>
     </>
   );
 
-  /* ===== ROW CELLS ===== */
-  const renderRowCells = (row, index) => {
-    const nonUserRowsBefore = countNonUserRowsBefore(pageData, index);
+  // ===== Рендер рядків =====
+  const renderRowCells = (row, index, tableLogic) => {
+    const nonUserRowsBefore = countNonUserRowsBefore(tableLogic.pageData, index);
 
     const {
       dimAfterSearchNavigationClass,
       dimAfterPageNumberPressedClass,
     } = getDimGroupRowClasses({
       hasFoundResults: indexesOfFoundResultsForCurrentPage.length !== 0,
-      showPreviousPageHighlight,
-      isPagesNavbarLinkElementOnCurrentPagePressed,
+      showPreviousPageHighlight: tableLogic.showPreviousPageHighlight,
+      isPagesNavbarLinkElementOnCurrentPagePressed: tableLogic.isPagesNavbarLinkElementOnCurrentPagePressed,
       styles: s,
     });
 
@@ -101,7 +68,7 @@ const PhonesTable = ({
         return (
           <td
             className={`${s.mainDepartment} ${dimAfterSearchNavigationClass} ${dimAfterPageNumberPressedClass}`}
-            colSpan={columns.length + phoneColumns}
+            colSpan={columns.length + tableLogic.phoneColumns}
           >
             {row.departmentName}
           </td>
@@ -111,7 +78,7 @@ const PhonesTable = ({
         return (
           <td
             className={`${s.section} ${dimAfterSearchNavigationClass} ${dimAfterPageNumberPressedClass}`}
-            colSpan={columns.length + phoneColumns}
+            colSpan={columns.length + tableLogic.phoneColumns}
           >
             {row.sectionName}
           </td>
@@ -123,13 +90,12 @@ const PhonesTable = ({
           rowsPerPage,
           index,
           nonUserRowsBefore,
-          indexDecrementFromPreviousPages,
+          indexDecrementFromPreviousPages: tableLogic.indexDecrementFromPreviousPages,
         });
 
         return (
           <>
             <td>{userRowIndex}</td>
-
             {row.userTypeId !== 1 ? (
               <>
                 <td>{row.userName}</td>
@@ -141,13 +107,10 @@ const PhonesTable = ({
                 <td>{row.userName}</td>
               </>
             )}
-
             {columns
               .find((c) => c.key === "phones")
               ?.subLabels.map((sub) => {
-                const phone = row.phones?.find(
-                  (p) => p.phoneType === sub.label
-                );
+                const phone = row.phones?.find((p) => p.phoneType === sub.label);
                 return <td key={sub.key}>{phone?.phoneName || ""}</td>;
               })}
           </>
@@ -160,24 +123,15 @@ const PhonesTable = ({
   };
 
   return (
-    <TableWrapper
-      pageData={pageData}
-      showDigitsFromPressed={showDigitsFromPressed}
-      shouldShowColNumbers={shouldShowColNumbers}
-      colNumbersRef={colNumbersRef}
-      headerRef={headerRef}
+    <BasePhonesTable
+      titleRef={titleRef}
+      columns={columns}
+      pageNumber={pageNumber}
+      rowsPerPage={rowsPerPage}
       indexesOfFoundResultsForCurrentPage={indexesOfFoundResultsForCurrentPage}
-      showPreviousPageHighlight={showPreviousPageHighlight}
-      isPagesNavbarLinkElementOnCurrentPagePressed={
-        isPagesNavbarLinkElementOnCurrentPagePressed
-      }
-      renderIndexCell={renderIndexCell}
+      departmentsAndSectionsPerPage={departmentsAndSectionsPerPage}
       renderHeader={renderHeader}
       renderRowCells={renderRowCells}
-      rowRefs={rowRefs}
-      indexDataOfFoundResultsForFoundResultsPage={
-        indexDataOfFoundResultsForFoundResultsPage
-      }
     />
   );
 };

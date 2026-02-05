@@ -6,6 +6,8 @@ import ConverForLotusSVG from "../assets/Spinner/SVG/ConverForLotusSVG.js";
 import ConverForGovUaSVG from "../assets/Spinner/SVG/ConverForGovUaSVG.js"
 
 
+
+
 export const pageConfigs = {
   [Pages.PHONES]: {
     StatusDiagram: EllipsesForPhonesSVG,
@@ -26,7 +28,9 @@ export const pageConfigs = {
     ],
     needsDepartments: true,
     basePath: "/phones/",
-    pageFromURLIndex: 1
+    pageFromURLIndex: 1,
+    showSearchToggle: true,      
+    showPasswordsToggle: false   
   },
 
   [Pages.GOV_UA]: {
@@ -40,7 +44,9 @@ export const pageConfigs = {
       { key: "responsibleUser", label: "відповідальна особа" },
     ],
     basePath: "/mails/Gov-ua/",
-    pageFromURLIndex: 2
+    pageFromURLIndex: 2,
+    showSearchToggle: true,      
+    showPasswordsToggle: true    
   },
 
   [Pages.LOTUS]: {
@@ -54,6 +60,8 @@ export const pageConfigs = {
       { key: "owner", label: "Назва підрозділу" },
     ],
     basePath: "/mails/Lotus/",
-    pageFromURLIndex: 2
+    pageFromURLIndex: 2,
+    showSearchToggle: true,      
+    showPasswordsToggle: true    
   }
 };

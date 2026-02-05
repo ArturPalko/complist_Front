@@ -1,9 +1,10 @@
-import React, { useRef } from "react";
-import s from "../../Components/PhonesTable/PhonesTable.module.css";
-import "../CommonInjection/Css/Table.css";
+import React from "react";
 import { useMailsTableLogic } from "../../redux/hooks/useMailsTableLogic";
-import { useFoundResults } from "../../redux/hooks/hooks";
-import TableWrapper from "../CommonInjection/TableWrapper/TableWrapper";
+import { createTableComponent } from "../CommonInjection/TableWrapper/tableFactory";
+import s from "../../Components/PhonesTable/PhonesTable.module.css"; // свої стилі
+
+// Створюємо базовий компонент через фабрику та передаємо свої стилі
+const BaseMailsTable = createTableComponent(useMailsTableLogic, s);
 
 const MailsTable = ({
   titleRef,
@@ -15,32 +16,8 @@ const MailsTable = ({
   pageNumber,
   indexesOfFoundResultsForCurrentPage,
 }) => {
-  const headerRef = useRef(null);
 
-  const { foundResults, indexDataOfFoundResultsForFoundResultsPage } =
-    useFoundResults() || { foundResults: [], indexDataOfFoundResultsForFoundResultsPage: [] };
-
-  const {
-    pageData,
-    rowRefs,
-    colNumbersRef,
-    renderIndexCell,
-    showDigitsFromPressed,
-    showPreviousPageHighlight,
-    isPagesNavbarLinkElementOnCurrentPagePressed,
-    shouldShowColNumbers,
-  } = useMailsTableLogic({
-    mailType,
-    pageNumber,
-    rowsPerPage,
-    foundResults,
-    indexesOfFoundResultsForCurrentPage,
-    indexDataOfFoundResultsForFoundResultsPage,
-    titleRef,
-    headerRef,
-  });
-
-  // Функція для рендеру шапки
+  // ===== Рендер шапки =====
   const renderHeader = () => (
     <tr>
       <th>№ п/п</th>
@@ -51,7 +28,7 @@ const MailsTable = ({
     </tr>
   );
 
-  // Функція для рендеру рядків
+  // ===== Рендер рядків =====
   const renderRowCells = (item, index) => (
     <>
       <td>{(pageNumber - 1) * rowsPerPage + index + 1}</td>
@@ -63,23 +40,18 @@ const MailsTable = ({
   );
 
   return (
-      <TableWrapper
-        pageData={pageData}
-        showDigitsFromPressed={showDigitsFromPressed}
-        shouldShowColNumbers={shouldShowColNumbers}
-        colNumbersRef={colNumbersRef}
-        headerRef={headerRef}
-        pageNumber={pageNumber}
-        rowsPerPage={rowsPerPage}
-        indexesOfFoundResultsForCurrentPage={indexesOfFoundResultsForCurrentPage}
-        showPreviousPageHighlight={showPreviousPageHighlight}
-        isPagesNavbarLinkElementOnCurrentPagePressed={isPagesNavbarLinkElementOnCurrentPagePressed}
-        renderIndexCell={renderIndexCell}
-        renderHeader={renderHeader}
-        renderRowCells={renderRowCells}
-        rowRefs={rowRefs}
-        indexDataOfFoundResultsForFoundResultsPage={indexDataOfFoundResultsForFoundResultsPage}
-      />
+    <BaseMailsTable
+      titleRef={titleRef}
+      mailType={mailType}
+      columns={columns}
+      showPasswords={showPasswords}
+      passwordsMap={passwordsMap}
+      rowsPerPage={rowsPerPage}
+      pageNumber={pageNumber}
+      indexesOfFoundResultsForCurrentPage={indexesOfFoundResultsForCurrentPage}
+      renderHeader={renderHeader}
+      renderRowCells={renderRowCells}
+    />
   );
 };
 

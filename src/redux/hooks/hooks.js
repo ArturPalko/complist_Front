@@ -162,7 +162,6 @@ export const useFoundResults = () => {
   return context ?? { foundResults: null, indexDataOfFoundResultsForFoundResultsPage: null };
 };
 
-
 // для чекбокса пошуку
 export const useSearchToggle = () => useContext(SearchToggleContext);
 

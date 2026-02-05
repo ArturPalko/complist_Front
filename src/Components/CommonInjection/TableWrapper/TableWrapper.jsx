@@ -4,6 +4,7 @@ import ColNumbers from "./subComponents/ColNumbers";
 import TableWrapperHead from "./subComponents/TableWrapperHead";
 import TableWrapperBody from "./subComponents/TableWrapperBody";
 import { getRowClass } from "./helpers";
+import "../Css/Table.css"
 
 
 const TableWrapper = ({
@@ -19,7 +20,8 @@ const TableWrapper = ({
   renderHeader = () => null,
   renderRowCells,
   rowRefs,
-  indexDataOfFoundResultsForFoundResultsPage
+  indexDataOfFoundResultsForFoundResultsPage,
+  
 }) => (
   <div className={`${s.tableWrapper} ${showDigitsFromPressed}`}>
     {shouldShowColNumbers && <ColNumbers pageData={pageData} colNumbersRef={colNumbersRef} />}
