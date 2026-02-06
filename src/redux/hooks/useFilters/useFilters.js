@@ -1,44 +1,29 @@
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useMemo } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import { filterGroups, conditions, filterPoints } from "./useFiltersFunctions/filtersLogics";
 import { computeFilteredChunks } from "./useFiltersFunctions/computeFilteredChunks";
 import { redirectToCurrentPage as redirectUtil } from "./useFiltersFunctions/redirectToCurrentPage";
-import { handleOnCheckboxChangeHandler } from "./useFiltersFunctions/handlers/handleOnCheckboxChange";
-import { handleOnClearFormButtonClickHandler } from "./useFiltersFunctions/handlers/handleOnClearFormButtonClick";
 
-// ==========================
-// useFilters hook
-// ==========================
-export const useFilters = (props = {}) => {
-  const {
-    activeMenu,
-    dataForMenu,
-    addIndexesOfFiltredResults,
-    addFilter,
-    clearCurrentForm,
-    currentPage,
-    isPresentedFielterPanel,
-    isFilterApplied,
-    getSubFilters
-  } = props;
+import {
+  addFilter,
+  addFilteredDataSubconditions,
+  clearCurrentForm,
+  addIndexesOfFiltredResults
+} from "../../reducers/filterData-reducer";
 
+import { selectFiltersForMenu, selectPhonesSubcondions } from "../../selectors/selector";
+
+import React from "react";
+
+export const useFilters = ({ activeMenu, dataForMenu, currentPage, isPresentedFielterPanel }) => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // ---------------- STATE ----------------
-  const [phonesSubConditions, setPhonesSubConditions] = useState({});
-  const [lotusFilters, setLotusFilters] = useState({});
-  const [govUaFilters, setGovUaFilters] = useState({});
-  const [phonesFilters, setPhonesFilters] = useState({});
-
-  const currentFilters =
-    activeMenu === "Lotus"
-      ? lotusFilters
-      : activeMenu === "Gov-ua"
-      ? govUaFilters
-      : phonesFilters;
-
-  const prevChunks = useRef([]);
+  // ---------------- SELECTORS ----------------
+  const filtersFromRedux = useSelector(selectFiltersForMenu(activeMenu)) || {};
+  const subFiltersFromRedux = useSelector(selectPhonesSubcondions) || { contactType: [], userPosition: [] };
 
   // ---------------- HELPERS ----------------
   const getAlternativeKeys = (key) => {
@@ -49,19 +34,103 @@ export const useFilters = (props = {}) => {
     return [...direct, ...reverse];
   };
 
-  const hasAnyFilters = (filters = {}, subConditions = {}) => {
-    const hasMain = Object.values(filters).some(v => v === true);
-    const hasSub = Object.values(subConditions).some(
-      group => group && Object.values(group).some(v => v === true || typeof v === "function")
-    );
-    return hasMain || hasSub;
-  };
+const hasAnyFilters = (filtersObj = {}, subconditionsObj = {}) => {
 
-  // ---------------- REDIRECT ----------------
-  const redirectToCurrentPage = (filters = {}, subConditions = phonesSubConditions) => {
-    redirectUtil({
-      filters,
+  const hasMain = Object
+    .entries(filtersObj)
+    .filter(([key]) => key !== "subFilters")
+    .some(([, value]) => value === true);
+
+  const hasSub = Object
+    .values(subconditionsObj)
+    .some(group =>
+      group &&
+      Object.values(group).some(value => value === true)
+    );
+
+  return hasMain || hasSub;
+};
+
+
+
+  // ---------------- SUBCONDITIONS ----------------
+  const phonesSubConditions = useMemo(() => {
+    if (activeMenu !== "phones") return {};
+
+    const result = {};
+    Object.entries(subFiltersFromRedux).forEach(([category, keysObj]) => {
+      if (!keysObj || Object.keys(keysObj).length === 0) return;
+
+      result[category] = {};
+      Object.entries(keysObj).forEach(([key, isActive]) => {
+        if (!isActive) return;
+        result[category][key] = (row) => {
+          if (category === "contactType") return row.userType === key;
+          if (category === "userPosition") return row.userPosition === key;
+          return false;
+        };
+      });
+
+      if (Object.keys(result[category]).length === 0) {
+        delete result[category];
+      }
+    });
+
+    return result;
+  }, [subFiltersFromRedux, activeMenu]);
+
+  // ---------------- FILTERING ----------------
+  const filteredChunks = useMemo(() => {
+    const subConditions = activeMenu === "phones" ? phonesSubConditions : {};
+    if (!hasAnyFilters(filtersFromRedux, subConditions)) return [];
+
+    return computeFilteredChunks({
+      state: filtersFromRedux,
       subConditions,
+      activeMenu,
+      dataForMenu,
+      conditions
+    });
+  }, [filtersFromRedux, phonesSubConditions, activeMenu, dataForMenu]);
+
+  // ---------------- UPDATE STORE ----------------
+  // завжди оновлюємо індекси відфільтрованих результатів
+  React.useEffect(() => {
+    if (!activeMenu) return;
+    dispatch(addIndexesOfFiltredResults(activeMenu, filteredChunks));
+  }, [filteredChunks, activeMenu, dispatch]);
+
+  // ---------------- HANDLERS ----------------
+  const handleCheckboxChange = (key, category) => {
+    let updatedFilters = { ...filtersFromRedux };
+    let updatedSubConditions = { ...phonesSubConditions };
+
+    if (activeMenu === "phones" && category) {
+      dispatch(addFilteredDataSubconditions(key, category));
+      // передаємо очікуваний новий стан вручну
+      updatedSubConditions = {
+        ...phonesSubConditions,
+        [category]: {
+          ...phonesSubConditions[category],
+          [key]: (row) => {
+            if (category === "contactType") return row.userType === key;
+            if (category === "userPosition") return row.userPosition === key;
+            return false;
+          }
+        }
+      };
+    } else {
+      dispatch(addFilter(activeMenu, key));
+      updatedFilters = {
+        ...filtersFromRedux,
+        [key]: !filtersFromRedux[key]
+      };
+    }
+
+    // 🔹 викликаємо редірект відразу з очікуваним станом
+    redirectUtil({
+      filters: updatedFilters,
+      subConditions: updatedSubConditions,
       lastPage: null,
       hasAnyFiltersFn: hasAnyFilters,
       navigate,
@@ -70,109 +139,35 @@ export const useFilters = (props = {}) => {
     });
   };
 
-  // ---------------- SYNC SUBCONDITIONS ----------------
-  useEffect(() => {
-    if (activeMenu !== "phones") return;
-
-    const storedSubFilters = getSubFilters || {};
-    const result = {};
-
-    Object.entries(storedSubFilters).forEach(([category, keysObj]) => {
-      const activeKeys = Object.entries(keysObj || {})
-        .filter(([, v]) => v === true)
-        .map(([k]) => k);
-
-      if (!activeKeys.length) return;
-
-      result[category] = {};
-      activeKeys.forEach((key) => {
-        result[category][key] = (row) => {
-          if (category === "contactType") return row.userType === key;
-          if (category === "userPosition") return row.userPosition === key;
-          return false;
-        };
-      });
-    });
-
-    setPhonesSubConditions(result);
-    redirectToCurrentPage(currentFilters, result);
-  }, [getSubFilters, activeMenu, currentFilters]);
-
-  // ---------------- HANDLERS ----------------
-  const handleCheckboxChange = (key) =>
-    handleOnCheckboxChangeHandler({
-      key,
-      activeMenu,
-      lotusFilters,
-      setLotusFilters,
-      setPhonesSubConditions,
-      govUaFilters,
-      setGovUaFilters,
-      phonesFilters,
-      setPhonesFilters,
-      phonesSubConditions,
-      addFilter,
-      redirectToCurrentPage,
-      hasAnyFilters,
-      clearCurrentForm
-    });
-
   const handleOnClearFormButtonClick = () => {
-    handleOnClearFormButtonClickHandler({
+    // очищаємо Redux
+    dispatch(clearCurrentForm(activeMenu));
+    dispatch(addIndexesOfFiltredResults(activeMenu, []));
+
+    // 🔹 формуємо очікуваний очищений стан
+    const clearedFilters = activeMenu === "phones"
+      ? { ...filtersFromRedux, subFilters: { contactType: {}, userPosition: {} } }
+      : Object.fromEntries(Object.keys(filtersFromRedux).map(k => [k, false]));
+
+    const clearedSubConditions = activeMenu === "phones"
+      ? { contactType: {}, userPosition: {} }
+      : {};
+
+    // 🔹 редірект після скидання фільтрів
+    redirectUtil({
+      filters: clearedFilters,
+      subConditions: clearedSubConditions,
+      lastPage: null,
+      hasAnyFiltersFn: hasAnyFilters,
+      navigate,
       activeMenu,
-      setLotusFilters,
-      setGovUaFilters,
-      setPhonesFilters,
-      setPhonesSubConditions,
-      clearCurrentForm,
-      redirectToCurrentPage
+      currentPage
     });
-    prevChunks.current = [];
-    if (typeof addIndexesOfFiltredResults === "function") {
-      addIndexesOfFiltredResults(activeMenu, []);
-    }
   };
 
-  // ---------------- FILTERING ----------------
-  const filteredChunks = useMemo(() => {
-    if (!hasAnyFilters(currentFilters, phonesSubConditions)) return [];
-
-    return computeFilteredChunks({
-      state: currentFilters,
-      subConditions: phonesSubConditions,
-      activeMenu,
-      dataForMenu,
-      conditions
-    });
-  }, [currentFilters, phonesSubConditions, activeMenu, dataForMenu]);
-
-  useEffect(() => {
-    if (typeof addIndexesOfFiltredResults === "function") {
-      const prev = prevChunks.current;
-      if (JSON.stringify(prev) !== JSON.stringify(filteredChunks)) {
-        addIndexesOfFiltredResults(activeMenu, filteredChunks);
-        prevChunks.current = filteredChunks;
-      }
-    }
-  }, [filteredChunks, activeMenu, addIndexesOfFiltredResults]);
-
   // ---------------- UI HELPERS ----------------
-  // нова структура filterPoints: { [Pages.*]: { groupName: [...] } }
   const groupedFilterPoints = filterPoints[activeMenu] || {};
   const filterPointsForCurrentMenu = Object.values(groupedFilterPoints).flat();
-
-  useEffect(() => {
-    if (!isPresentedFielterPanel) {
-      setLotusFilters({});
-      setGovUaFilters({});
-      setPhonesFilters({});
-      setPhonesSubConditions({});
-      prevChunks.current = [];
-      if (typeof addIndexesOfFiltredResults === "function") {
-        addIndexesOfFiltredResults(activeMenu, []);
-      }
-    }
-  }, [isPresentedFielterPanel]);
 
   return {
     filteredChunks,
@@ -180,7 +175,7 @@ export const useFilters = (props = {}) => {
     filterPointsForCurrentMenu,
     handleOnClearFormButtonClick,
     getAlternativeKeys,
-    currentFilters,
+    currentFilters: filtersFromRedux,
     handleCheckboxChange,
     phonesSubConditions,
   };

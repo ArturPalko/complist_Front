@@ -12,7 +12,7 @@ const GenericPage = ({
   passwordsMap,
   getDepartmentsAndSectionsPerPage
 }) => {
-  // 🔹 ХУКИ — ЗАВЖДИ ПЕРШІ
+
   const titleRef = useRef(null);
   const pageNumber = usePageNumber();
   const indexes = useIndexesForPage(pageName);
@@ -28,26 +28,25 @@ const GenericPage = ({
       getDepartmentsAndSectionsPerPage(pageName);
   }
 
-    const tableProps = {
+  const tableProps = {
     titleRef,
     columns: config.columns,
     rowsPerPage,
     pageNumber,
     indexesOfFoundResultsForCurrentPage: indexes,
     ...extraProps,
-    ...(config.mailType && { mailType: config.mailType }),
     ...(showPasswords !== undefined && { showPasswords }),
     ...(passwordsMap !== undefined && { passwordsMap }),
   };
-
 
   return (
     <>
       <TopTableBar
         ref={titleRef}
         title={config.title}
-        mailType={config.mailType}
+        pageName={pageName}
       />
+
       <config.TableComponent {...tableProps} />
     </>
   );

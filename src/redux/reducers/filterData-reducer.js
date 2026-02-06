@@ -124,19 +124,38 @@ export const filterDataReducer = (state = initialState, action) => {
 
 
 
-        case CLEAR_FILTRED_STATE_FOR_CURRENT_FORM: {
-            const clearedFilters = Object.fromEntries(
-                Object.keys(state[action.menu].usedFilters).map(key => [key, false])
-            );
-            return {
-                ...state,
-                [action.menu]: {
-                    usedFilters: clearedFilters,
-                    filtredResults: [],
-                    isFilterApplied: false
-                }
-            };
+      case CLEAR_FILTRED_STATE_FOR_CURRENT_FORM: {
+    if (action.menu === "phones") {
+        return {
+            ...state,
+            phones: {
+                usedFilters: {
+                    ...Object.fromEntries(
+                        Object.keys(state.phones.usedFilters)
+                            .filter(k => k !== "subFilters")
+                            .map(key => [key, false])
+                    ),
+                    subFilters: { contactType: {}, userPosition: {} } // скидаємо сабкондішини
+                },
+                filtredResults: [],
+                isFilterApplied: false
+            }
+        };
+    }
+
+    const clearedFilters = Object.fromEntries(
+        Object.keys(state[action.menu].usedFilters).map(key => [key, false])
+    );
+    return {
+        ...state,
+        [action.menu]: {
+            usedFilters: clearedFilters,
+            filtredResults: [],
+            isFilterApplied: false
         }
+    };
+}
+
 
         case ADD_INDEXES_OF_FILTRED_RESULTS: {
             const currentStateForMenu = state[action.menu] ?? { usedFilters: {}, filtredResults: [], isFilterApplied: false };

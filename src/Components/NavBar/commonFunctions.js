@@ -4,6 +4,7 @@ export const redirectToPage = ({
   activeMenu,
   currentPage = 1
 }) => {
+  debugger;
   switch (activeMenu) {
     case "Gov-ua":
     case "Lotus":

@@ -140,5 +140,11 @@ export const selectPaginationPagesCount = (menu) => (state) => getDataForMenu(st
 export const isCurrentPageFoundResult = (menu) => (state) =>
   state.currentPageNumber?.[menu]?.lastVisitedPage === "foundResults";
 
+export const selectFiltersForMenu = (menu) => (state) => {
+  if (!menu || !state.filters[menu]) return {};
+  return state.filters[menu].usedFilters;
+};
 
-
+export const selectPhonesSubcondions = (state) => {
+  return state.filters.phones?.usedFilters?.subFilters || {};
+};

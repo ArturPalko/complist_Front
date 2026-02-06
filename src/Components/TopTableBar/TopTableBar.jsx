@@ -3,7 +3,7 @@ import { useTopTableBarLogic } from "../../redux/hooks/useTopTableBarLogic";
 import s from "./TopTableBar.module.css";
 import CheckboxToggle from "./subComponent/CheckboxToggle";
 
-const TopTableBar = React.forwardRef(({ title, mailType }, ref) => {
+const TopTableBar = React.forwardRef(({ title, pageName }, ref) => {
   const {
     valueOfSearchCheckBox,
     handleToggleSearchField,
@@ -11,7 +11,7 @@ const TopTableBar = React.forwardRef(({ title, mailType }, ref) => {
     handleTogglePasswords,
     showSearchToggle,
     showPasswordsToggle
-  } = useTopTableBarLogic(mailType);
+  } = useTopTableBarLogic(pageName);
 
   return (
     <div ref={ref} className={s.headerPanel}>

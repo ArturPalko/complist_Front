@@ -30,14 +30,13 @@ export const pageConfigs = {
     basePath: "/phones/",
     pageFromURLIndex: 1,
     showSearchToggle: true,      
-    showPasswordsToggle: false   
+    
   },
 
   [Pages.GOV_UA]: {
     StatusDiagram: ConverForGovUaSVG,
     title: "Поштові скриньки customs.gov.ua",
     TableComponent: MailsTable,
-    mailType: Pages.GOV_UA,
     columns: [
       { key: "mailName", label: "найменування скриньки" },
       { key: "departmentOrSection", label: "найменування підрозділу" },
@@ -53,7 +52,6 @@ export const pageConfigs = {
     StatusDiagram: ConverForLotusSVG,
     title: "Поштові скриньки Lotus",
     TableComponent: MailsTable,
-    mailType: Pages.LOTUS,
     columns: [
       { key: "previousName", label: "Стара назва скриньки" },
       { key: "name", label: "Нова назва скриньки" },
