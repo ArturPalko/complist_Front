@@ -57,27 +57,32 @@ export const filterDataReducer = (state = initialState, action) => {
                     phones: { ...initialState["phones"] }
                 };
 
- case ADD_FILTRED_DATA: {
-    const { menu, filter } = action;
+case ADD_FILTRED_DATA: {
+  const { menu, filter } = action;
 
-    // 🔹 якщо menu немає або filter немає — нічого не робимо
-      if (!menu || menu === "" || !state[menu] || !filter) {
-        return state;
+
+
+  const { subFilters, ...restFilters } = state[menu].usedFilters;
+
+  const newUsedFilters = {
+    ...restFilters,
+    [filter]: !restFilters[filter] 
+  };
+
+  
+  const isFilterApplied = Object.values(newUsedFilters).some(Boolean);
+
+  return {
+    ...state,
+    [menu]: {
+      ...state[menu],
+      usedFilters: {
+        ...newUsedFilters,
+        subFilters 
+      },
+      isFilterApplied
     }
-    const newUsedFilters = {
-        ...state[menu].usedFilters,
-        [filter]: !state[menu].usedFilters[filter] // toggle
-    };
-    let checking = Object.values(newUsedFilters).some(Boolean);
-
-    return {
-        ...state,
-        [menu]: {
-            ...state[menu],
-            usedFilters: newUsedFilters,
-            isFilterApplied: Object.values(newUsedFilters).some(Boolean)
-        }
-    };
+  };
 }
 
 
@@ -110,7 +115,6 @@ export const filterDataReducer = (state = initialState, action) => {
     .some(category =>
       Object.values(category || {}).some(Boolean)
     );
-
   return {
     ...state,
     phones: {

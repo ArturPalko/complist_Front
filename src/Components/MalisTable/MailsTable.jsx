@@ -8,7 +8,7 @@ const BaseMailsTable = createTableComponent(useMailsTableLogic, s);
 
 const MailsTable = ({
   titleRef,
-  mailType,
+  pageName,
   columns,
   showPasswords,
   passwordsMap,
@@ -42,7 +42,7 @@ const MailsTable = ({
   return (
     <BaseMailsTable
       titleRef={titleRef}
-      mailType={mailType}
+      pageName={pageName}
       columns={columns}
       showPasswords={showPasswords}
       passwordsMap={passwordsMap}

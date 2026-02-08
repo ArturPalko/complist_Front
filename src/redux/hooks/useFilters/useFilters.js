@@ -14,44 +14,35 @@ import {
 } from "../../reducers/filterData-reducer";
 
 import { selectFiltersForMenu, selectPhonesSubcondions } from "../../selectors/selector";
+import { isCurrentPageFoundResult } from "../../selectors/selector";
 
-import React from "react";
-
-export const useFilters = ({ activeMenu, dataForMenu, currentPage, isPresentedFielterPanel }) => {
+export const useFilters = ({ activeMenu, dataForMenu, currentPage }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   // ---------------- SELECTORS ----------------
+   const isFoundResults = useSelector(isCurrentPageFoundResult(activeMenu));
   const filtersFromRedux = useSelector(selectFiltersForMenu(activeMenu)) || {};
-  const subFiltersFromRedux = useSelector(selectPhonesSubcondions) || { contactType: [], userPosition: [] };
+  const subFiltersFromRedux = useSelector(selectPhonesSubcondions) || { contactType: {}, userPosition: {} };
 
   // ---------------- HELPERS ----------------
   const getAlternativeKeys = (key) => {
     const direct = filterGroups[key] || [];
-    const reverse = Object.keys(filterGroups).filter((k) =>
-      filterGroups[k]?.includes(key)
-    );
+    const reverse = Object.keys(filterGroups).filter(k => filterGroups[k]?.includes(key));
     return [...direct, ...reverse];
   };
 
-const hasAnyFilters = (filtersObj = {}, subconditionsObj = {}) => {
+  const hasAnyFilters = (filtersObj = {}, subconditionsObj = {}) => {
+    const hasMain = Object.entries(filtersObj)
+      .filter(([key]) => key !== "subFilters")
+      .some(([, value]) => value === true);
 
-  const hasMain = Object
-    .entries(filtersObj)
-    .filter(([key]) => key !== "subFilters")
-    .some(([, value]) => value === true);
-
-  const hasSub = Object
-    .values(subconditionsObj)
-    .some(group =>
-      group &&
-      Object.values(group).some(value => value === true)
+    const hasSub = Object.values(subconditionsObj).some(category =>
+      category && Object.keys(category).length > 0
     );
 
-  return hasMain || hasSub;
-};
-
-
+    return hasMain || hasSub;
+  };
 
   // ---------------- SUBCONDITIONS ----------------
   const phonesSubConditions = useMemo(() => {
@@ -71,9 +62,7 @@ const hasAnyFilters = (filtersObj = {}, subconditionsObj = {}) => {
         };
       });
 
-      if (Object.keys(result[category]).length === 0) {
-        delete result[category];
-      }
+      if (Object.keys(result[category]).length === 0) delete result[category];
     });
 
     return result;
@@ -95,7 +84,7 @@ const hasAnyFilters = (filtersObj = {}, subconditionsObj = {}) => {
 
   // ---------------- UPDATE STORE ----------------
   // завжди оновлюємо індекси відфільтрованих результатів
-  React.useEffect(() => {
+  useMemo(() => {
     if (!activeMenu) return;
     dispatch(addIndexesOfFiltredResults(activeMenu, filteredChunks));
   }, [filteredChunks, activeMenu, dispatch]);
@@ -104,9 +93,11 @@ const hasAnyFilters = (filtersObj = {}, subconditionsObj = {}) => {
   const handleCheckboxChange = (key, category) => {
     let updatedFilters = { ...filtersFromRedux };
     let updatedSubConditions = { ...phonesSubConditions };
-
+  debugger;
     if (activeMenu === "phones" && category) {
+      debugger;
       dispatch(addFilteredDataSubconditions(key, category));
+
       // передаємо очікуваний новий стан вручну
       updatedSubConditions = {
         ...phonesSubConditions,
@@ -120,6 +111,7 @@ const hasAnyFilters = (filtersObj = {}, subconditionsObj = {}) => {
         }
       };
     } else {
+      debugger;
       dispatch(addFilter(activeMenu, key));
       updatedFilters = {
         ...filtersFromRedux,
@@ -127,11 +119,11 @@ const hasAnyFilters = (filtersObj = {}, subconditionsObj = {}) => {
       };
     }
 
-    // 🔹 викликаємо редірект відразу з очікуваним станом
+    // 🔹 редірект відразу з очікуваним станом
     redirectUtil({
       filters: updatedFilters,
       subConditions: updatedSubConditions,
-      lastPage: null,
+      lastPageWasFoundResults: isFoundResults,
       hasAnyFiltersFn: hasAnyFilters,
       navigate,
       activeMenu,
@@ -140,11 +132,9 @@ const hasAnyFilters = (filtersObj = {}, subconditionsObj = {}) => {
   };
 
   const handleOnClearFormButtonClick = () => {
-    // очищаємо Redux
     dispatch(clearCurrentForm(activeMenu));
     dispatch(addIndexesOfFiltredResults(activeMenu, []));
 
-    // 🔹 формуємо очікуваний очищений стан
     const clearedFilters = activeMenu === "phones"
       ? { ...filtersFromRedux, subFilters: { contactType: {}, userPosition: {} } }
       : Object.fromEntries(Object.keys(filtersFromRedux).map(k => [k, false]));
@@ -153,11 +143,10 @@ const hasAnyFilters = (filtersObj = {}, subconditionsObj = {}) => {
       ? { contactType: {}, userPosition: {} }
       : {};
 
-    // 🔹 редірект після скидання фільтрів
     redirectUtil({
       filters: clearedFilters,
       subConditions: clearedSubConditions,
-      lastPage: null,
+      lastPage: isCurrentPageFoundResult,
       hasAnyFiltersFn: hasAnyFilters,
       navigate,
       activeMenu,

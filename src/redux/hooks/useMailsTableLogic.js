@@ -9,7 +9,7 @@ import { isCurrentPageFoundResult } from "../selectors/selector";
 import { useFoundResultsColNumbersLogic } from "./hooks"; // універсальний хук
 
 export const useMailsTableLogic = ({
-  mailType,
+  pageName,
   pageNumber,
   rowsPerPage,
   indexesOfFoundResultsForCurrentPage,
@@ -27,10 +27,10 @@ export const useMailsTableLogic = ({
 
   const safeFoundResults = foundResults || [];
   const safeIndexData = indexDataOfFoundResultsForFoundResultsPage || [];
-  const menu = mailType;
+  const menu = pageName;
 
   const isFoundResults = useSelector(isCurrentPageFoundResult(menu));
-
+  debugger;
   const { data: filteredPageData, isFilterApplied } = useFilteredPageData(mailsData);
   
   const pageData = isFoundResults
@@ -56,7 +56,7 @@ export const useMailsTableLogic = ({
     });
 
     useRowHeights(rowRefs, colNumbersRef, [pageData],headerRef,titleRef);
-
+debugger;
   return {
     pageData,
     rowRefs,

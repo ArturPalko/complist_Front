@@ -1,21 +1,14 @@
-// src/components/commonFunctions.js
+import { pageConfigs } from "../../configs/pageConfig"
+
+
 export const redirectToPage = ({
   navigate,
   activeMenu,
   currentPage = 1
 }) => {
-  debugger;
-  switch (activeMenu) {
-    case "Gov-ua":
-    case "Lotus":
-      navigate(`/mails/${activeMenu}/${currentPage}`);
-      break;
+  const config = pageConfigs[activeMenu];
 
-    case "phones":
-      navigate(`/phones/${currentPage}`);
-      break;
 
-    default:
-      navigate(`/`);
-  }
+  const path = `${config.basePath}${currentPage}`;
+  navigate(path);
 };

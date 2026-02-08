@@ -148,3 +148,5 @@ export const selectFiltersForMenu = (menu) => (state) => {
 export const selectPhonesSubcondions = (state) => {
   return state.filters.phones?.usedFilters?.subFilters || {};
 };
+
+

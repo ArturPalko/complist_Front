@@ -34,6 +34,7 @@ const GenericPage = ({
     rowsPerPage,
     pageNumber,
     indexesOfFoundResultsForCurrentPage: indexes,
+    pageName,
     ...extraProps,
     ...(showPasswords !== undefined && { showPasswords }),
     ...(passwordsMap !== undefined && { passwordsMap }),

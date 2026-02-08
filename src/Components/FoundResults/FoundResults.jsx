@@ -18,7 +18,6 @@ const FoundResults = ({ activeMenu, data, foundSearchValues, isFilterApplied }) 
 
   if (tooManyResults) return <TooManyResultsOfSearch />;
   if (!ActiveComponent) return null;
-
   return (
     <FoundResultsContext.Provider value={{ 
       foundResults: presentRows,
