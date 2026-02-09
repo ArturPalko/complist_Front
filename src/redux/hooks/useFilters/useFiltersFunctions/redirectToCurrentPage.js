@@ -1,6 +1,7 @@
 import { redirectToPage } from "../../../../Components/NavBar/commonFunctions";
 
 export const redirectToCurrentPage = ({
+  hasFilters,
   filters = {},
   subConditions = {},
   lastPageWasFoundResults,
@@ -14,11 +15,11 @@ export const redirectToCurrentPage = ({
   if (lastPageWasFoundResults) return;
 
   // перевіряємо, чи є активні фільтри
-  const hasFilters = hasAnyFiltersFn(filters, subConditions);
+  // const hasFilters = hasAnyFiltersFn(filters, subConditions);
 
   // якщо фільтри є, переходимо на сторінку 1, інакше залишаємося на поточній
   const nextPage = hasFilters ? 1 : currentPage;
-
+debugger;
   // викликаємо функцію редіректу
   redirectToPage(
     {

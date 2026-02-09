@@ -26,14 +26,14 @@ export const usePhonesTableLogic = ({
 
   const safeFoundResults = foundResults || [];
   const safeIndexData = indexDataOfFoundResultsForFoundResultsPage || [];
-  const isFoundResults = useSelector(isCurrentPageFoundResult("phones"));
-  // const isFoundResults =true;
+  const isLastVisitedPageWasFoundResults = useSelector(isCurrentPageFoundResult("phones"));
+  // const isLastVisitedPageWasFoundResults =true;
   
 
   const { data: filteredPageData, isFilterApplied } = useFilteredPageData(phonesData);
 
 
-  const pageData = isFoundResults
+  const pageData = isLastVisitedPageWasFoundResults
     ? safeFoundResults
     : isFilterApplied
       ? filteredPageData?.[pageNumber - 1]?.rows ?? []
@@ -55,7 +55,7 @@ const indexDecrementFromPreviousPages = useSelector(getDepartmentsAndSectionsPer
   // Використання універсального хука для colNumbers та highlight
   const { showDigitsFromPressed, shouldShowColNumbers, showPreviousPageHighlight } =
     useFoundResultsColNumbersLogic({
-      isFoundResults,
+      isLastVisitedPageWasFoundResults,
       indexesOfFoundResultsForCurrentPage,
       isPagesNavbarLinkPressed: isPagesNavbarLinkElementOnCurrentPagePressed,
       isPreviousPageWasFoundResult,

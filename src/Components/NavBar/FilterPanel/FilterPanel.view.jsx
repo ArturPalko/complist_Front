@@ -47,9 +47,14 @@ const FilterPanelView = ({
           </fieldset>
         ))}
 
-        {activeMenu === Pages.PHONES && (
-          <CustomDropDown menus={phonesSubConditions} />
-        )}
+   {activeMenu === Pages.PHONES && (
+  <CustomDropDown
+    menus={phonesSubConditions}
+    handleCheckboxChange={handleCheckboxChange} // передаємо з useFilters
+    activeMenu={activeMenu}
+  />
+)}
+
       </div>
     </div>
   );

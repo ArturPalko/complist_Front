@@ -29,11 +29,11 @@ export const useMailsTableLogic = ({
   const safeIndexData = indexDataOfFoundResultsForFoundResultsPage || [];
   const menu = pageName;
 
-  const isFoundResults = useSelector(isCurrentPageFoundResult(menu));
+  const isLastVisitedPageWasFoundResults = useSelector(isCurrentPageFoundResult(menu));
   debugger;
   const { data: filteredPageData, isFilterApplied } = useFilteredPageData(mailsData);
   
-  const pageData = isFoundResults
+  const pageData = isLastVisitedPageWasFoundResults
     ? safeFoundResults
     : isFilterApplied
       ? filteredPageData?.[pageNumber - 1]?.rows ?? []
@@ -49,7 +49,7 @@ export const useMailsTableLogic = ({
 
   const { showDigitsFromPressed, shouldShowColNumbers, showPreviousPageHighlight } =
     useFoundResultsColNumbersLogic({
-      isFoundResults,
+      isLastVisitedPageWasFoundResults,
       indexesOfFoundResultsForCurrentPage,
       isPagesNavbarLinkPressed: isPagesNavbarLinkElementOnCurrentPagePressed,
       isPreviousPageWasFoundResult,

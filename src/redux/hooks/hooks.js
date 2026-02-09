@@ -220,7 +220,7 @@ export const useFilteredPageData = (mailsData) => {
 
 
 export const useFoundResultsColNumbersLogic = ({
-  isFoundResults,
+  isLastVisitedPageWasFoundResults,
   indexesOfFoundResultsForCurrentPage = [],
   isPagesNavbarLinkPressed,
   isPreviousPageWasFoundResult,
@@ -229,7 +229,7 @@ export const useFoundResultsColNumbersLogic = ({
 
   // Клас для анімації колонки
   const showDigitsFromPressed =
-    isFoundResults &&
+    isLastVisitedPageWasFoundResults &&
     indexesOfFoundResultsForCurrentPage.length > 0 &&
     isPagesNavbarLinkPressed
       ? "showColnumbersWhenPagesLinkOnCurrentPagePressed"
