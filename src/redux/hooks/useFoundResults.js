@@ -1,5 +1,5 @@
 import { useFilteredPageData } from "../../redux/hooks/hooks";
-import { Pages,rowsPerPage } from "../../configs/constants"
+import { Pages,rowsPerPage } from "../../configs/app/constants"
 
 export const useFoundResults = (data, foundSearchValues, activeMenu, isFilterApplied) => {
   const { data: filteredPageData } = useFilteredPageData(data);

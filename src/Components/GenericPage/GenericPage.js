@@ -1,8 +1,8 @@
 import React, { useRef } from "react";
 import TopTableBar from "../TopTableBar/TopTableBar";
-import { rowsPerPage } from "../../configs/constants";
+import { rowsPerPage } from "../../configs/app/constants";
 import { useIndexesForPage, usePageNumber } from "../../redux/hooks/hooks";
-import {pageConfigs} from "../../configs/pageConfig"
+import { pageConfigs } from "../../configs/app/pageConfig";
 import { connect } from "react-redux";
 import { getDepartmentsAndSectionsPerPage } from "../../redux/selectors/selector";
 

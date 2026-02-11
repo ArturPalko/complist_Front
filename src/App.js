@@ -6,12 +6,12 @@ import { Route, Routes } from "react-router-dom";
 import GovUaMails from "./Components/GovUaMails/GovUaMails";
 import LotusMails from "./Components/LotusMails/LotusMails";
 import Phones from "./Components/Phones/Phones";
-import RedirectToCurrentPage from "./Components/RedirectToCurrentPage";
+import RedirectToCurrentPage from "./Components/CommonInjection/RedirectToCurrentPage/RedirectToCurrentPage";
 import Error from "./Components/Error/Error";
 import FoundResults from "./Components/FoundResults/FoundResults";
 
 import { useTrackLocation } from "./redux/hooks/hooks";
-import { Pages } from "./configs/constants";
+import { Pages } from "./configs/app/constants";
 
 function App() {
   useTrackLocation();

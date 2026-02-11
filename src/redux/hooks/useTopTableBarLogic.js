@@ -1,5 +1,5 @@
 import { useSearchToggle, usePasswordsToggle } from "./hooks.js";
-import { pageConfigs } from "../../configs/pageConfig.js";
+import { pageConfigs } from "../../configs/app/pageConfig.js";
 
 export const useTopTableBarLogic = (pageName) => {
   // Хуки для керування станом чекбоксів

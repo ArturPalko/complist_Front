@@ -40,7 +40,7 @@ const Search = (props) => {
     }
   }, [showNotFound, activeMenuStr]);
 
-  // ✅ ДАНІ ДЛЯ ПОШУКУ (універсальний селектор)
+
   const searchArea = props.dataForMenu;
 
   const { data: filteredPageData, isFilterApplied } =
@@ -169,7 +169,6 @@ const mapStateToProps = (state) => {
     activeMenu: menu,
     isPresentedSearchField: isPresentedSearchField(state),
 
-    // ✅ універсальний селектор
     dataForMenu: getDataForMenu(state, menu),
 
     searchFieldValue: (m) =>
@@ -183,12 +182,12 @@ const mapStateToProps = (state) => {
     getIndexesOfFiltredResults:
       getIndexesOfFiltredResults(state, menu),
 
-    isGovUaSearchValueFounded:
-      isSearchValueFoundByPage("Gov-ua")(state),
-    isLotusSearchValueFounded:
-      isSearchValueFoundByPage("Lotus")(state),
-    isPhonesSearchValueFound:
-      isSearchValueFoundByPage("phones")(state),
+    // isGovUaSearchValueFounded:
+    //   isSearchValueFoundByPage("Gov-ua")(state),
+    // isLotusSearchValueFounded:
+    //   isSearchValueFoundByPage("Lotus")(state),
+    // isPhonesSearchValueFound:
+    //   isSearchValueFoundByPage("phones")(state),
   };
 };
 

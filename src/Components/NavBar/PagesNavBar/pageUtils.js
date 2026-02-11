@@ -1,5 +1,5 @@
-import { pageConfigs } from "../../../configs/pageConfig";
-import { Pages } from "../../../configs/constants";
+import { pageConfigs } from "../../../configs/app/pageConfig";
+import { Pages } from "../../../configs/app/constants";
 
 export const handleLastVisitedPage = ({ pageName, pageFromURL, isFilterApplied, searchValue, setLastVisitedPage, setFilterPage, rememberCurrentPage }) => {
   if (!pageName || !pageFromURL) return;

@@ -9,10 +9,10 @@ import {
   getLastVisitedPage,
   isFilterAppliedSelector,
   isSearchValueFoundByPage
-} from "../redux/selectors/selector";
+} from "../../../redux/selectors/selector";
 
-import { Pages } from "../configs/constants";
-import { pageConfigs } from "../configs/pageConfig";
+import { Pages } from "../../../configs/app/constants";
+import { pageConfigs } from "../../../configs/app/pageConfig";
 
 const RedirectToCurrentPage = ({ redirectMenu }) => {
 

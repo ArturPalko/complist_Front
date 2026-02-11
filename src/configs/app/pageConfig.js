@@ -1,9 +1,10 @@
-import PhonesTable from "../Components/PhonesTable/PhonesTable.jsx";
-import MailsTable from "../Components/MalisTable/MailsTable.jsx"
+import PhonesTable from "../../Components/PhonesTable/PhonesTable.jsx";
+import MailsTable from "../../Components/MalisTable/MailsTable.jsx"
 import { Pages } from "./constants.js";
-import EllipsesForPhonesSVG from "../assets/Spinner/SVG/EllipsesForPhonesSVG.js"
-import ConverForLotusSVG from "../assets/Spinner/SVG/ConverForLotusSVG.js";
-import ConverForGovUaSVG from "../assets/Spinner/SVG/ConverForGovUaSVG.js"
+import EllipsesForPhonesSVG from "../../assets/Spinner/SVG/EllipsesForPhonesSVG.js"
+import ConverForLotusSVG from "../../assets/Spinner/SVG/ConverForLotusSVG.js";
+import ConverForGovUaSVG from "../../assets/Spinner/SVG/ConverForGovUaSVG.js"
+
 
 
 

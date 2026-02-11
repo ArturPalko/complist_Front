@@ -1,5 +1,5 @@
 import { createFetchThunk } from "../fetchDataThunkCreator.js";
-import { rowsPerPage as limitRows } from "../../../configs/constants.js";
+import { rowsPerPage as limitRows } from "../../../configs/app/constants.js";
 import { paginateData } from "./data-reducerFunctions/pagination.js";
 
 // Action type

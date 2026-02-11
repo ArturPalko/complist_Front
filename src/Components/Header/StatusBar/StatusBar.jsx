@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { activeMenu as getActiveMenu ,getCountsForActiveMenu } from "../../../redux/selectors/selector.js"
-import { pageConfigs } from "../../../configs/pageConfig.js";
+import { pageConfigs } from "../../../configs/app/pageConfig.js";
 
 const StatusBar = ({ counts, activeMenu }) => {
 

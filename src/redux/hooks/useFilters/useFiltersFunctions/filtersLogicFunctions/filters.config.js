@@ -1,5 +1,5 @@
 // filters.config.js
-import { Pages } from "../../../../../configs/constants";
+import { Pages } from "../../../../../configs/app/constants";
 
 export const ownerFilters = [
   "personalMails",
