@@ -1,8 +1,8 @@
 import React from "react";
 import s from "./FilterPanel.module.css";
 import CustomCheckbox from "./CustomCheckbox/CustomCheckBox.jsx";
-import CustomDropDown from "./CustomDropDown/CustomDropDown.jsx";
 import { Pages } from "../../../configs/constants.js";
+import CustomDropDownContainer from "./CustomDropDown/CustomDropDownContainer.jsx";
 
 const FilterPanelView = ({
   contactsCount,
@@ -48,7 +48,7 @@ const FilterPanelView = ({
         ))}
 
    {activeMenu === Pages.PHONES && (
-  <CustomDropDown
+  <CustomDropDownContainer
     menus={phonesSubConditions}
     handleCheckboxChange={handleCheckboxChange} // передаємо з useFilters
     activeMenu={activeMenu}

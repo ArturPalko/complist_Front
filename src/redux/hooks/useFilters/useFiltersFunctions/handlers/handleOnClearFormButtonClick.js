@@ -1,21 +1,7 @@
-// src/redux/hooks/useFiltersHandlers/handleOnClearFormButtonClick.js
-export const handleOnClearFormButtonClickHandler = ({
-  activeMenu,
-  setLotusFilters,
-  setGovUaFilters,
-  setPhonesFilters,
-  setPhonesSubConditions,
-  clearCurrentForm,
-  redirectToCurrentPage
-}) => {
-  if (activeMenu === "Lotus") setLotusFilters({});
-  if (activeMenu === "Gov-ua") setGovUaFilters({});
-  if (activeMenu === "phones") {
-    setPhonesFilters({});
-    setPhonesSubConditions({});
-  }
+import { clearCurrentForm, addIndexesOfFiltredResults } from "../../../../reducers/filterData-reducer";
+export const clearFormHelper = ({ activeMenu, dispatch }) => {
 
-  if (typeof clearCurrentForm === "function") clearCurrentForm(activeMenu);
-
-  redirectToCurrentPage({}, {});
+  dispatch(clearCurrentForm(activeMenu));
+  // обнуляємо індекси відфільтрованих результатів
+  //dispatch(addIndexesOfFiltredResults(activeMenu, []));
 };

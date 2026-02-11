@@ -55,3 +55,9 @@ export const getAlternativeKeysHelper = (key, filterGroups) => {
 
   return [...direct, ...reverse];
 };
+
+
+export const syncFilteredIndexesToRedux = ({ activeMenu, filteredChunks, dispatch,addIndexesOfFiltredResults }) => {
+  if (!activeMenu) return;
+  dispatch(addIndexesOfFiltredResults(activeMenu, filteredChunks));
+};
