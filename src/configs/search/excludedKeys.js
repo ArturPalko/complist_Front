@@ -1,4 +1,4 @@
-export const EXCLUDED_Search_KEYS = [
+export const excludedKeys = [
   "type",
   "userId",
   "userTypeId",
