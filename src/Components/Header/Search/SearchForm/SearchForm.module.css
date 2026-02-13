@@ -1,36 +1,35 @@
 .form {
   display: flex;
-  
   align-items: center;
-  gap: 12px;
+  gap: 9px; /* 12 * 0.75 */
   background: linear-gradient(135deg, #4a90e2, #357abd);
-  padding: 12px 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  width: 500px;
+  padding: 9px 15px; /* 12*0.75 , 20*0.75 */
+  border-radius: 9px; /* 12*0.75 */
+  box-shadow: 0 3px 7.5px rgba(0, 0, 0, 0.15); /* 4*0.75 , 10*0.75 */
+  width: 375px; /* 500*0.75 */
 }
 
 .searchInput {
   flex: 2;
-  padding: 10px 14px;
+  padding: 8.5px 10.5px; /* 10*0.75 , 14*0.75 */
   border: none;
-  border-radius: 8px;
+  border-radius: 6px; /* 8*0.75 */
   outline: none;
-  font-size: 16px;
+  font-size: 12px; /* 16*0.75 */
   transition: all 0.3s ease;
 }
 
 .searchInput:focus {
-  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.4);
+  box-shadow: 0 0 0 2.25px rgba(74, 144, 226, 0.4); /* 3*0.75 */
 }
 
 .searchButton {
-  padding: 10px 18px;
+  padding: 7.5px 13.5px; /* 10*0.75 , 18*0.75 */
   border: none;
-  border-radius: 8px;
+  border-radius: 6px; /* 8*0.75 */
   background: #ff6b6b;
   color: white;
-  font-size: 16px;
+  font-size: 12px; /* 16*0.75 */
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -38,7 +37,7 @@
 
 .searchButton:hover {
   background: #ff4c4c;
-  transform: translateY(-2px);
+  transform: translateY(-1.5px); /* 2*0.75 */
 }
 
 .searchButton:active {
@@ -47,8 +46,8 @@
 
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
-  20%, 60% { transform: translateX(-6px); }
-  40%, 80% { transform: translateX(6px); }
+  20%, 60% { transform: translateX(-4.5px); } /* 6*0.75 */
+  40%, 80% { transform: translateX(4.5px); } /* 6*0.75 */
 }
 
 .shake {
@@ -56,26 +55,23 @@
   color: aquamarine;
 }
 
-
-.searchBlock{
+.searchBlock {
   display: flex;
-  flex:0;
-  gap:10px;
+  flex: 0;
+  gap: 7.5px; /* 10*0.75 */
 }
 
-.resultsInfo{
+.resultsInfo {
   display: flex;
-  flex:1;
+  flex: 1;
   align-items: center;
   position: absolute;
-  padding-top: 7px;
-  margin-left: 590px;
+  padding-top: 5.25px; /* 7*0.75 */
+  margin-left: 442.5px; /* 590*0.75 */
 }
 
-
-.searchInputSupportText{
+.searchInputSupportText {
   background-color: azure;
-  
 }
 
 @media (max-width: 1000px) {

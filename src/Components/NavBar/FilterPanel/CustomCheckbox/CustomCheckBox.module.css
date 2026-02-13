@@ -1,49 +1,69 @@
 .customCheckbox {
-display: flex;
-align-items: center;
-cursor: pointer;
-position: relative;
-margin: 5px 0;
-font-size: 22px;
-user-select: none;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  margin: 3px 0;        /* було 5px */
+  font-size: 16px;      /* було 22px */
+  user-select: none;
+  line-height: 1.2;
 }
 
 .customCheckbox input {
-position: absolute;
-opacity: 0;
-cursor: pointer;
-height: 0;
-width: 0;
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
 }
 
 .checkboxSpan {
-position: relative;
-width: 20px;
-height: 20px;
-background-color: var(--bg-color, white);
-border-radius: 50%; /* кругла форма */
-display: inline-block;
-margin-right: 8px;
-transition: background-color 0.2s;
+  position: relative;
+  width: 16px;          /* було 20px */
+  height: 16px;         /* було 20px */
+  background-color: var(--bg-color, white);
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 6px;    /* було 8px */
+  transition: background-color 0.2s;
 }
 
+/* Галочка */
 .customCheckbox input:checked + .checkboxSpan::after {
-content: '';
-position: absolute;
-left: 5px;
-top: 1px;
-width: 6px;
-height: 12px;
-border: solid var(--check-color, black);
-border-width: 0 3px 3px 0;
-transform: rotate(45deg);
+  content: '';
+  position: absolute;
+  left: 4px;            /* пропорційно зменшено */
+  top: 1px;
+  width: 4px;           /* було 6px */
+  height: 9px;          /* було 12px */
+  border: solid var(--check-color, black);
+  border-width: 0 2px 2px 0; /* тонша лінія */
+  transform: rotate(45deg);
 }
 
 .customCheckbox input:hover + .checkboxSpan {
-filter: brightness(0.9);
+  filter: brightness(0.9);
 }
+
 .customCheckbox input:disabled + .checkboxSpan + .labelText {
   text-decoration: line-through;
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.group {
+   border: 1px solid red;
+  border-radius: 6px;
+  padding: 6px 8px 8px 8px;
+  margin-bottom: 8px;
+}
+
+.legend {
+  font-weight: 600;
+  padding: 0 6px;
+}
+fieldset {
+  
+  border: 0.1px solid #ccc;
+
 }

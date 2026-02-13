@@ -25,3 +25,10 @@ s.menu{
   display:flex;
   flex-direction: row;
 }
+.menu button {
+  padding: 2px 6px;
+  font-size: 0.75rem;   /* було ~0.9rem або 16px */
+  border: 1px solid #ccc;
+  background: #f5f5f5;
+  line-height: 1.1;
+}

@@ -1,5 +1,5 @@
 const ConverForGovUaSVG = ({ counts }) => (
-  <svg width="500" height="60" viewBox="0 0 500 60">
+  <svg width="500" height="45" viewBox="0 0 500 45">
     <defs>
       <linearGradient id="softUkraineFlag" x1="0" y1="0" x2="0" y2="1">
         <stop offset="0%" stopColor="#6ec6ff" />
@@ -20,68 +20,68 @@ const ConverForGovUaSVG = ({ counts }) => (
     </defs>
 
     <path
-      d="M10,5 H490 Q495,5 495,15 V55 Q495,60 490,60 H10 Q5,60 5,55 V15 Q5,5 10,5 Z"
+      d="M7.5,3.75 H367.5 Q371.25,3.75 371.25,11.25 V41.25 Q371.25,45 367.5,45 H7.5 Q3.75,45 3.75,41.25 V11.25 Q3.75,3.75 7.5,3.75 Z"
       fill="url(#softUkraineFlag)"
       stroke="rgba(56, 11, 170, 0.9)"
-      strokeWidth="2"
+      strokeWidth="1.5"
     />
-    <path d="M10,30 L250,55 L490,30" fill="none" stroke="rgba(56, 11, 170, 0.9)" strokeWidth="1.2" />
+    <path d="M7.5,22.5 L187.5,41.25 L367.5,22.5" fill="none" stroke="rgba(56, 11, 170, 0.9)" strokeWidth="0.9" />
 
-    {[100, 180, 320, 400].map(x => (
-      <line key={x} x1={x} y1="15" x2={x} y2="55" stroke="rgba(56, 11, 170, 0.9)" strokeWidth="1" />
+    {[75, 135, 240, 300].map(x => (
+      <line key={x} x1={x} y1="11.25" x2={x} y2="41.25" stroke="rgba(56, 11, 170, 0.9)" strokeWidth="0.75" />
     ))}
 
-    <rect x="180" y="15" width="140" height="45" rx="5" ry="5" fill="white" opacity="0.15" stroke="rgba(56, 11, 170, 0.9)" strokeWidth="1.2" />
-    <text x="210" y="40" textAnchor="middle" fill="black" fontSize="18" fontFamily="Arial" fontWeight="bold">
+    <rect x="135" y="11.25" width="105" height="33.75" rx="3.75" ry="3.75" fill="white" opacity="0.15" stroke="rgba(56, 11, 170, 0.9)" strokeWidth="0.9" />
+    <text x="157.5" y="30" textAnchor="middle" fill="black" fontSize="13.5" fontFamily="Arial" fontWeight="bold">
       {counts.countOfMails}
     </text>
 
-    <text x="55" y="32" textAnchor="middle" fill="black" fontSize="17" fontFamily="Arial" transform="rotate(8 55 32)">
+    <text x="41.25" y="24" textAnchor="middle" fill="black" fontSize="12.75" fontFamily="Arial" transform="rotate(8 41.25 24)">
       Персональні
     </text>
-    <text x="140" y="28" textAnchor="middle" fill="black" fontSize="17" fontFamily="Arial" transform="rotate(8 140 28)">
+    <text x="105" y="21" textAnchor="middle" fill="black" fontSize="12.75" fontFamily="Arial" transform="rotate(8 105 21)">
       Підрозділу
     </text>
 
-    <text x="220" y="20" textAnchor="middle" fill="white" fontSize="17" fontFamily="Arial">
+    <text x="165" y="15" textAnchor="middle" fill="white" fontSize="12.75" fontFamily="Arial">
       <tspan dy="0">gov</tspan>
       <tspan dy="0" fontWeight="bold">.</tspan>
       <tspan dy="0">UA</tspan>
     </text>
-    <text x="290" y="20" textAnchor="middle" fill="black" fontSize="17" fontFamily="Arial">
+    <text x="217.5" y="15" textAnchor="middle" fill="black" fontSize="12.75" fontFamily="Arial">
       Скриньок
     </text>
 
-    <text x="300" y="26" textAnchor="middle" fill="black" fontSize="17" fontFamily="Arial" transform="rotate(-8 360 32)">
-      <tspan x="360" dy="0">Має</tspan>
-      <tspan x="340" dy="14">відпов. особу</tspan>
+    <text x="225" y="19.5" textAnchor="middle" fill="black" fontSize="12.75" fontFamily="Arial" transform="rotate(-8 270 24)">
+      <tspan x="270" dy="0">Має</tspan>
+      <tspan x="255" dy="10.5">відпов. особу</tspan>
     </text>
 
-    <text x="470" y="20" textAnchor="middle" fill="black" fontSize="17" fontFamily="Arial" transform="rotate(-8 445 32)">
-      <tspan x="440" dy="0">Пароль</tspan>
-      <tspan x="460" dy="14">відомий</tspan>
+    <text x="352.5" y="15" textAnchor="middle" fill="black" fontSize="12.75" fontFamily="Arial" transform="rotate(-8 333.75 24)">
+      <tspan x="330" dy="0">Пароль</tspan>
+      <tspan x="345" dy="10.5">відомий</tspan>
     </text>
 
-    <rect x="15" y="35" width="25" height="22" rx="3" ry="3" fill="white" opacity="0.8" />
-    <rect x="375" y="44" width="22" height="14" rx="3" ry="3" fill="white" opacity="0.8" />
-    <rect x="465" y="35" width="25" height="22" rx="3" ry="3" fill="white" opacity="0.8" />
+    <rect x="11.25" y="26.25" width="18.75" height="16.5" rx="2.25" ry="2.25" fill="white" opacity="0.8" />
+    <rect x="281.25" y="33" width="16.5" height="10.5" rx="2.25" ry="2.25" fill="white" opacity="0.8" />
+    <rect x="348.75" y="26.25" width="18.75" height="16.5" rx="2.25" ry="2.25" fill="white" opacity="0.8" />
 
-    <circle cx="120" cy="45" r="14" fill="url(#brightTurquoise)" stroke="black" strokeWidth="2" />
-    <ellipse cx="150" cy="52" rx="13" ry="7" fill="url(#softLavender)" stroke="black" strokeWidth="1" transform="rotate(10 150 55)" />
-    <text x="120" y="45" textAnchor="middle" alignmentBaseline="middle" fill="black" fontSize="12" fontFamily="Arial" fontWeight="bold">
+    <circle cx="90" cy="33.75" r="10.5" fill="url(#brightTurquoise)" stroke="black" strokeWidth="1.5" />
+    <ellipse cx="112.5" cy="39" rx="9.75" ry="5.25" fill="url(#softLavender)" stroke="black" strokeWidth="0.75" transform="rotate(10 112.5 41.25)" />
+    <text x="90" y="33.75" textAnchor="middle" alignmentBaseline="middle" fill="black" fontSize="9" fontFamily="Arial" fontWeight="bold">
       {counts.departmentMails}
     </text>
-    <text x="150" y="53" textAnchor="middle" alignmentBaseline="middle" fill="black" fontSize="10" fontFamily="Arial" fontWeight="bold" transform="rotate(10 150 55)">
+    <text x="112.5" y="39.75" textAnchor="middle" alignmentBaseline="middle" fill="black" fontSize="7.5" fontFamily="Arial" fontWeight="bold" transform="rotate(10 112.5 41.25)">
       {counts.sectionMails}
     </text>
 
-    <text x="28" y="52" textAnchor="middle" fill="black" fontSize="14" fontFamily="Arial">
+    <text x="21" y="39" textAnchor="middle" fill="black" fontSize="10.5" fontFamily="Arial">
       {counts.personalMails}
     </text>
-    <text x="385" y="55" textAnchor="middle" fill="black" fontSize="12" fontFamily="Arial">
+    <text x="288.75" y="41.25" textAnchor="middle" fill="black" fontSize="9" fontFamily="Arial">
       {counts.hasResponsibleUser}
     </text>
-    <text x="478" y="52" textAnchor="middle" fill="black" fontSize="12" fontFamily="Arial">
+    <text x="358.5" y="39" textAnchor="middle" fill="black" fontSize="9" fontFamily="Arial">
       {counts.passwordKnown}
     </text>
   </svg>

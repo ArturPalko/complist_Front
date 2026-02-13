@@ -18,7 +18,7 @@ const FilterPanelView = ({
     <div className={s.panel}>
       <div className={s.panelContent}>
         <div className={s.menu}>
-          <h4>Записів: {contactsCount}</h4>
+          <h5>Записів: {contactsCount}</h5>
           <button onClick={handleOnClearFormButtonClick}>Скинути</button>
         </div>
 

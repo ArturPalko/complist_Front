@@ -31,3 +31,7 @@ td:first-child {
 }
 
 
+th, td {
+  font-size: 0.8rem; /* замість стандартного 1rem або 16px */
+  padding: 6px 12px;  /* зменшили відступи */
+}

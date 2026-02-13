@@ -1,21 +1,21 @@
 nav {
   text-decoration: none;
   color: white;
-  padding-top: 50px;
-  padding-left: 20px;
-  min-width: 300px;
-   max-width: 300px;
+  padding-top: 25px;     /* трохи більше ніж 20px */
+  padding-left: 10px;
+  min-width: 220px;
+  max-width: 220px;
 }
 
 .item {
-  margin-bottom: 10px;
+  margin-bottom: 8px;    /* трохи більше, ніж 6px */
 }
 
 /* Кнопка "Довідники" */
 .dropdownBtn {
   background: none;
   border: none;
-  font-size: 1.7em;
+  font-size: 1.3em;      /* трохи більше, ніж 1.2em */
   cursor: pointer;
   color: white;
   text-align: left;
@@ -29,15 +29,15 @@ nav {
 .dropdownContent {
   display: flex;
   flex-direction: column;
-  margin-left: 20px;
-  margin-top: 5px;
+  margin-left: 12px;     /* трохи більше ніж 10px */
+  margin-top: 5px;       /* трохи більше ніж 3px */
 }
 
 .dropdownContent a {
   color: white;
   text-decoration: none;
-  font-size: 1.5em;
-  margin: 3px 0;
+  font-size: 1.05em;     /* трохи більший шрифт */
+  margin: 3px 0;         /* трохи більший відступ */
 }
 
 .dropdownContent a:hover {
@@ -47,7 +47,7 @@ nav {
 .item a {
   color: white;
   text-decoration: none;
-  font-size: 1.7em;
+  font-size: 1.3em;      /* трохи більше, ніж 1.2em */
 }
 
 .item a:hover {
@@ -57,4 +57,3 @@ nav {
 .item a.activeLink {
   color: rgb(0, 229, 255);
 }
-

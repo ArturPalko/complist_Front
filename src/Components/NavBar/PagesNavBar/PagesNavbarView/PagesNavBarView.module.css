@@ -1,26 +1,21 @@
-.navigationOfPage{
-  margin-top: 10px;
-  display: flex;
-
-  align-items: center;
-  flex-wrap: nowrap;
-
-}
 .navigationOfPage {
   display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  padding: 10px 0;
+  flex-wrap: wrap;      /* щоб елементи переносилися при вузьких екранах */
+  align-items: center;
+  gap: 6px;             /* трохи менше, ніж 8px */
+  padding: 5px 0;       /* менше padding, компактніше */
+  margin-top: 8px;      /* трохи більше ніж 5px для “повітряності” */
 }
 
 .pageNavigator {
-  display: inline-block; /* або block */
-  padding: 6px 12px;
+  display: inline-block;
+  padding: 5px 10px;    /* трохи менше, ніж 6px 12px */
   border-radius: 6px;
   background-color: #f5f5f5;
   color: #333;
   text-decoration: none;
   font-weight: 500;
+  font-size: 0.85rem;   /* компактний шрифт */
   text-align: center;
   transition: all 0.2s ease;
 }
@@ -35,27 +30,28 @@
   color: #fff;
 }
 
-.foundResultsPage{
-  background-color: rgb(190, 101, 101);
-    display: inline-block; /* або block */
-  padding: 6px 12px;
+.foundResultsPage {
+  display: inline-block;
+  padding: 5px 10px;     /* компактніше */
   border-radius: 6px;
+  background-color: rgb(190, 101, 101);
   color: #333;
   text-decoration: none;
   font-weight: 500;
+  font-size: 0.85rem;
   text-align: center;
   transition: all 0.2s ease;
 }
 
-.foundResultsPage:hover{
+.foundResultsPage:hover {
   background-color: rgb(187, 57, 57);
-  color:azure;
-  
-}
-.foundResultsPage.activeLink{
- background-color: red;
+  color: azure;
 }
 
-.containsSearchedValues{
-  border: 4px solid yellow;
+.foundResultsPage.activeLink {
+  background-color: red;
+}
+
+.containsSearchedValues {
+  border: 3px solid yellow;  /* трохи тонше, компактніше */
 }

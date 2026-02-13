@@ -6,21 +6,23 @@
 
 .dropdownToggle {
   width: 100%;
-  padding: 10px;
+  padding: 6px 8px;          /* було 10px */
   cursor: pointer;
   border: 1px solid #ccc;
-  border-radius: 6px;
+  border-radius: 5px;
   background: #fff;
+  font-size: 0.9rem;
+  line-height: 1.2;
 }
 
 .dropdownMenuContainer {
   position: absolute;
-  bottom: 100%; /* відкривається вгору */
+  bottom: 100%;
   left: 0;
   right: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;                  /* було 10px */
   z-index: 1001;
 }
 
@@ -28,61 +30,69 @@
 .dropdownMenuLower {
   background: white;
   border: 1px solid #ccc;
-  border-radius: 6px;
-  max-height: 200px;
+  border-radius: 5px;
+  max-height: 160px;         /* було 200px */
   overflow-y: auto;
-  padding: 10px;
-  box-shadow: 0 -5px 10px rgba(0,0,0,0.1);
+  padding: 6px;              /* було 10px */
+  box-shadow: 0 -4px 8px rgba(0,0,0,0.08);
 }
 
 .group {
   border: none;
   padding: 0;
+  margin: 0;
 }
 
 .legend {
-  font-weight: bold;
-  margin-bottom: 8px;
+  font-weight: 600;
+  margin-bottom: 4px;        /* було 8px */
+  font-size: 0.9rem;
 }
 
 .dropdownItem {
   display: flex;
   align-items: center;
-  padding: 4px 6px;
+  padding: 2px 4px;          /* було 4px 6px */
+  font-size: 0.9rem;
+  line-height: 1.2;
 }
 
 .dropdownItem input {
-  margin-right: 8px;
+  margin-right: 6px;         /* було 8px */
+  transform: scale(0.9);     /* компактніший checkbox */
 }
 
-/* === Звужене вікно (Tablet / Mobile) === */
+/* === Tablet / Mobile === */
 @media (max-width: 1024px) {
+
   .dropdownToggle {
-    padding: 6px; /* менше padding */
-    font-size: 0.95rem; /* менший шрифт */
+    padding: 5px 6px;
+    font-size: 0.85rem;
   }
 
   .dropdownMenuContainer {
-    gap: 6px; /* менший відступ між елементами */
+    gap: 4px;
   }
 
   .dropdownMenuUpper,
   .dropdownMenuLower {
-    padding: 6px;
-    max-height: 150px; /* трохи нижче */
+    padding: 5px;
+    max-height: 130px;
     border-radius: 4px;
   }
 
   .legend {
-    margin-bottom: 4px;
-    font-size: 0.95rem;
+    margin-bottom: 3px;
+    font-size: 0.85rem;
   }
 
   .dropdownItem {
-    padding: 3px 4px;
+    padding: 2px 3px;
+    font-size: 0.85rem;
   }
 
   .dropdownItem input {
-    margin-right: 6px;
+    margin-right: 5px;
+    transform: scale(0.85);
   }
 }

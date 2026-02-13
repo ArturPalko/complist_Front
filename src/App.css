@@ -9,7 +9,7 @@ html, body {
 
 .app-wrapper {
   display: grid;
-  grid-template-rows: 60px 1fr; /* header + решта */
+  grid-template-rows: auto 1fr; /* header + решта */
   grid-template-columns: 2fr 10fr;
   grid-template-areas:
     "h h"

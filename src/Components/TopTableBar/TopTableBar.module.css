@@ -1,7 +1,32 @@
-.headerPanel{
-  padding-right: 20px;
+/* ==============================
+   Панель заголовка
+   ============================== */
+.headerPanel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px 0 15px;
+   /* зменшили padding для економії вертикального простору */
   cursor: default;
 }
+
+/* ==============================
+   Слайдер
+   ============================== */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;       /* трохи менше, ніж 60px */
+  height: 28px;      /* зменшено з 34px */
+ /* margin-bottom: 5px; */
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
 .slider {
   position: absolute;
   cursor: pointer;
@@ -11,16 +36,16 @@
   bottom: 0;
   background-color: #ccc;
   transition: 0.4s;
-  border-radius: 34px;
+  border-radius: 28px;  /* підлаштовано під нову висоту */
 }
 
 .slider:before {
   position: absolute;
   content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
+  height: 22px;      /* зменшено з 26px */
+  width: 22px;       /* зменшено з 26px */
+  left: 3px;         /* трохи менший відступ */
+  bottom: 3px;
   background-color: white;
   transition: 0.4s;
   border-radius: 50%;
@@ -30,53 +55,38 @@ input:checked + .slider.blue {
   background-color: #2196f3;
 }
 input:checked + .slider.blue:before {
-  transform: translateX(26px);
+  transform: translateX(22px); /* підлаштовано під ширину слайдера */
 }
-
 
 input:checked + .slider.green {
   background-color: #4caf50;
 }
 input:checked + .slider.green:before {
-  transform: translateX(26px);
+  transform: translateX(22px); /* підлаштовано під ширину слайдера */
 }
 
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 60px;
-  height: 34px;
-  margin-bottom: 8px;
-}
-
-
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
+/* ==============================
+   Wrapper слайдера з описом
+   ============================== */
 .switchWrapper {
   display: flex;
   align-items: center;
+  gap: 8px;            /* менший відступ між слайдером та описом */
 }
 
 .sliderDesc {
-  margin-left: 10px;
-  padding-bottom: 5px;
+  margin-left: 5px;
+  padding-bottom: 2px;
+  font-size: 0.85rem;   /* трохи менший шрифт */
 }
 
-
-.headerPanel{
-  display:flex;
-  justify-content: space-between;
-  padding-left: 20px;
-  padding-top: 20px;
-}
-
-.buttonsBar{
-  display:flex;
-  justify-content: flex-end;  
-  gap: 30px;
+/* ==============================
+   Панель кнопок
+   ============================== */
+.buttonsBar {
+  display: flex;
+  justify-content: flex-end;
   align-items: center;
+  gap: 15px;          /* зменшили відстань між кнопками */
 }
+

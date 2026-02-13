@@ -1,93 +1,103 @@
 .header {
   display: flex;
   align-items: center;
-  justify-content: flex-start; /* стандартно */
-  padding: 0 20px;
-  height: 100px;
+  justify-content: flex-start;
+  padding: 3px 10px;  /* ще менший padding для економії вертикального простору */
+  height: 60px;       /* компактна висота */
   width: 100%;
 }
 
 .statusBar {
-  display: block;
+  display: block;       
+  font-size: 0.75rem;   /* трохи менший шрифт */
+  margin-right: 10px;
 }
 
 .searchBar {
   flex: 1;
-  width: 500px;
-  margin: 0 10px; /* невеликий відступ */
+  width: 350px;         /* трохи менше для компактності */
+  margin: 0 8px;
+  font-size: 0.85rem;   /* трохи менший шрифт */
 }
 
 .singIn {
   flex-shrink: 0;
   margin: 0;
-  padding-right: 20px;
+  padding-right: 10px;  /* менший відступ */
+  position: relative;
+  left: 0;
+  transition: left 0.2s ease;
 }
 
 /* кнопка */
 .button {
   background: linear-gradient(135deg, #00e5ff, #0099cc);
   border: none;
-  padding: 8px 18px;
-  border-radius: 8px;
+  padding: 5px 12px;      /* компактніший padding */
+  border-radius: 5px;     /* трохи менші кути */
   color: #fff;
-  font-size: 1rem;
+  font-size: 0.85rem;     /* трохи менший шрифт */
   font-weight: 500;
   cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
   transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
 }
 
 .button:hover {
   background: linear-gradient(135deg, #00c0d6, #007a99);
   transform: scale(1.03);
-  box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+  box-shadow: 0 4.5px 10px rgba(0,0,0,0.2);
 }
 
 .button:active {
   transform: scale(0.97);
 }
 
-/* Адаптивність */
+/* ==============================
+   Адаптивність
+   ============================== */
 
-/* При ширині ≤1200px ховаємо StatusBar і розкидаємо елементи */
-@media (max-width: 1800px) {
+/* При ширині ≤1200px - StatusBar ховається */
+@media (max-width: 1200px) {
   .statusBar {
     display: none;
   }
 
   .header {
     justify-content: space-between;
-    padding-left: 0;
-    padding-right: 0;
+    padding-left: 3px;
+    padding-right: 3px;
   }
 
   .searchBar {
+    width: 250px;   /* під вузькі екрани */
     margin: 0;
     padding-left: 0;
   }
 
   .singIn {
     margin-top: 0;
-    right: 0;
   }
 }
 
-/* При ширині ≤576px - StatusBar ховається, Search та кнопка розкидаються */
+/* При ширині ≤576px - адаптивно розкидаємо елементи */
 @media (max-width: 576px) {
-  .statusBar {
-    display: none;
-  }
-
   .header {
     justify-content: space-between;
   }
 
   .searchBar {
-    margin-right: 10px;
+    width: 100%;
+    margin-right: 8px;
+  }
+
+  .button {
+    padding: 4px 8px;
+    font-size: 0.8rem;
   }
 }
 
-/* При дуже вузьких екранах ≤200px повертаємо початкове позиціонування */
+/* Дуже вузькі екрани ≤200px */
 @media (max-width: 200px) {
   .header {
     justify-content: flex-start;
@@ -100,17 +110,6 @@
   }
 
   .singIn {
-    margin-top: 10px;
+    margin-top: 8px;
   }
 }
-
-.singIn {
-  flex-shrink: 0;
-  margin: 0;
-  padding-right: 20px;
-  position: relative;
-  left: 0;
-  transition: left 0.2s ease;
-}
-
-
