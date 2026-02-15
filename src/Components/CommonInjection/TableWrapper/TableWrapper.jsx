@@ -16,7 +16,6 @@ const TableWrapper = ({
   indexesOfFoundResultsForCurrentPage,
   showPreviousPageHighlight,
   isPagesNavbarLinkElementOnCurrentPagePressed,
-  renderIndexCell = () => null,
   renderHeader = () => null,
   renderRowCells,
   rowRefs,
@@ -36,7 +35,6 @@ const TableWrapper = ({
         pageData={pageData}
         rowRefs={rowRefs}
         renderRowCells={renderRowCells}
-        renderIndexCell={renderIndexCell}
         getRowClass={getRowClass}
         rowClassParams={{
           indexesOfFoundResults: indexesOfFoundResultsForCurrentPage,

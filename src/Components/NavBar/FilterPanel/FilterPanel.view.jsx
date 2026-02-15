@@ -18,13 +18,13 @@ const FilterPanelView = ({
     <div className={s.panel}>
       <div className={s.panelContent}>
         <div className={s.menu}>
-          <h5>Записів: {contactsCount}</h5>
+          <h4>Записів: {contactsCount}</h4>
           <button onClick={handleOnClearFormButtonClick}>Скинути</button>
         </div>
 
         {Object.entries(groupedFilterPoints).map(([groupName, items]) => (
           <fieldset key={groupName}>
-            <legend>{groupName}</legend>
+             <legend className={s.legend}>{groupName}</legend>
 
             {items.map((item) => {
               const altKeys = getAlternativeKeys(item.key);

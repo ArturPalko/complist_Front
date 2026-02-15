@@ -1,11 +1,8 @@
-/* ==============================
-   1 Загальні таблиці та колонки
-   ============================== */
 .tableWrapper {
   display: flex;
   align-items: flex-start;
-  padding: 20px;
-  padding-top: 0px;
+  padding: 1.25em;       /* раніше 20px / 16px = 1.25em */
+  padding-top: 0;         /* 0 залишаємо як є */
   font-family: Arial, sans-serif;
 }
 
@@ -15,14 +12,15 @@
 }
 
 .colNumbers div {
-  display: flex;             /* flex layout */
-  align-items: center;       /* вертикально по центру */
-  justify-content: center;   /* горизонтально по центру */
-  height: 100%;              /* займає всю висоту стовпця */
-  margin-right: 8px;         /* відступ між цифрами */
-  font-weight: bolder;       /* товщина шрифту */
-  color: red;                /* колір цифр */
+  display: flex;             
+  align-items: center;       
+  justify-content: center;   
+  height: 100%;              
+  margin-right: 0.5em;      /* раніше 8px / 16px = 0.5em */
+  font-weight: bolder;       
+  color: red;                
 }
+
 
 /* ==============================
    2 Заголовки таблиць

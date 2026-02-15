@@ -1,18 +1,24 @@
 import React from "react";
-import s from "../TableWrapper.module.css"
+import { useIndexCellContext } from "../../../CommonInjection/IndexCell/IndexCellContext"
+import s from "../TableWrapper.module.css";
 
-const TableWrapperHead = ({ headerRef, renderHeader, showIndexes }) => (
-  <thead ref={headerRef}>
-    <tr>
-      {showIndexes?.length > 0 && (
-  <th rowSpan="3" className={s.indexesColumnHeader}>
-    Індекси
-  </th>
-)}
+const TableWrapperHead = ({ headerRef, renderHeader }) => {
+  const { indexDataOfFoundResultsForFoundResultsPage } = useIndexCellContext();
 
-    </tr>
-    {renderHeader?.()}
-  </thead>
-);
+  const hasIndexes = indexDataOfFoundResultsForFoundResultsPage?.length > 0;
+
+  return (
+    <thead ref={headerRef}>
+      <tr>
+        {hasIndexes && (
+          <th rowSpan="3" className={s.indexesColumnHeader}>
+            Індекси
+          </th>
+        )}
+      </tr>
+      {renderHeader?.()}
+    </thead>
+  );
+};
 
 export default TableWrapperHead;

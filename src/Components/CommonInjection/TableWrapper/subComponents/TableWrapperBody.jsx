@@ -1,10 +1,10 @@
 import React from "react";
+import {IndexCell} from "../../../CommonInjection/IndexCell/IndexCell"
 
 const TableWrapperBody = ({
   pageData,
   rowRefs,
   renderRowCells,
-  renderIndexCell = () => null,
   getRowClass,
   rowClassParams
 }) => (
@@ -16,7 +16,7 @@ const TableWrapperBody = ({
         data-key={index}
         ref={(el) => rowRefs?.current && (rowRefs.current[index] = el)}
       >
-        {renderIndexCell(index)}
+        <IndexCell index={index} />
         {renderRowCells(item, index)}
       </tr>
     ))}

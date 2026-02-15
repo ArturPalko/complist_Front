@@ -7,8 +7,9 @@ import { createTableComponent } from "../CommonInjection/TableWrapper/tableFacto
 import {
   countNonUserRowsBefore,
   getUserRowIndex,
-  getDimGroupRowClasses,
 } from "./phonesTableHelpers";
+
+// PhonesTable.js
 
 // Створюємо базовий компонент через фабрику та передаємо свої стилі
 const BasePhonesTable = createTableComponent(usePhonesTableLogic, s);
@@ -38,7 +39,6 @@ const PhonesTable = ({
           )
         )}
       </tr>
-
       <tr>
         {columns
           .filter((c) => c.key === "phones")
@@ -53,22 +53,14 @@ const PhonesTable = ({
   const renderRowCells = (row, index, tableLogic) => {
     const nonUserRowsBefore = countNonUserRowsBefore(tableLogic.pageData, index);
 
-    const {
-      dimAfterSearchNavigationClass,
-      dimAfterPageNumberPressedClass,
-    } = getDimGroupRowClasses({
-      hasFoundResults: indexesOfFoundResultsForCurrentPage.length !== 0,
-      showPreviousPageHighlight: tableLogic.showPreviousPageHighlight,
-      isPagesNavbarLinkElementOnCurrentPagePressed: tableLogic.isPagesNavbarLinkElementOnCurrentPagePressed,
-      styles: s,
-    });
+    const { dimAfterSearchNavigationClass, dimAfterPageNumberPressedClass } = tableLogic.dimClasses;
 
     switch (row.type) {
       case "department":
         return (
           <td
             className={`${s.mainDepartment} ${dimAfterSearchNavigationClass} ${dimAfterPageNumberPressedClass}`}
-            colSpan={columns.length + tableLogic.phoneColumns}
+            colSpan={columns.length + tableLogic.pageColumns}
           >
             {row.departmentName}
           </td>
@@ -78,7 +70,7 @@ const PhonesTable = ({
         return (
           <td
             className={`${s.section} ${dimAfterSearchNavigationClass} ${dimAfterPageNumberPressedClass}`}
-            colSpan={columns.length + tableLogic.phoneColumns}
+            colSpan={columns.length + tableLogic.pageColumns}
           >
             {row.sectionName}
           </td>

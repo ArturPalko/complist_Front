@@ -1,71 +1,16 @@
-import { useEffect, useRef } from "react";
-import { useDataLoader, useFoundResults, useSearchToggle } from "./hooks";
-import { useRowHighlighting, useFilteredPageData } from "./hooks";
-import { useRowHeights } from "./useSyncRowHeights";
-import b from "../../Components/CommonInjection/Css/Arrow.module.css"
+// useMailsTableLogic.js
+import { useTableBaseLogic } from "../../Components/CommonInjection/hooks/useTableBaseLogic";
 import { useSelector } from "react-redux";
-import { isCurrentPageFoundResult } from "../selectors/selector";
-import { useFoundResultsColNumbersLogic } from "./hooks"; // універсальний хук
+import { activeMenu } from "../selectors/selector";
 
-export const useMailsTableLogic = ({
-  pageName,
-  pageNumber,
-  rowsPerPage,
-  indexesOfFoundResultsForCurrentPage,
-  foundResults = [],
-  indexDataOfFoundResultsForFoundResultsPage = [],
-  titleRef,
-  headerRef
-}) => {
-  const rowRefs = useRef([]);
-  const colNumbersRef = useRef([]);
+/**
+ * MailsTable просто використовує базовий хук
+ */
+export const useMailsTableLogic = (props) => {
+  const menu = useSelector(activeMenu);
 
-  const { data: mailsData, isPreviousPageWasFoundResult } = useDataLoader();
-  
-  const { isPagesNavbarLinkElementOnCurrentPagePressed } = useSearchToggle();
-
-  const safeFoundResults = foundResults || [];
-  const safeIndexData = indexDataOfFoundResultsForFoundResultsPage || [];
-  const menu = pageName;
-
-  const isLastVisitedPageWasFoundResults = useSelector(isCurrentPageFoundResult(menu));
-  debugger;
-  const { data: filteredPageData, isFilterApplied } = useFilteredPageData(mailsData);
-  
-  const pageData = isLastVisitedPageWasFoundResults
-    ? safeFoundResults
-    : isFilterApplied
-      ? filteredPageData?.[pageNumber - 1]?.rows ?? []
-      : mailsData?.[pageNumber - 1]?.rows ?? [];
-
-  const { renderIndexCell } = useRowHighlighting(
-    indexDataOfFoundResultsForFoundResultsPage,
-    b,
-    menu,
-    rowRefs,
-    safeIndexData
-  );
-
-  const { showDigitsFromPressed, shouldShowColNumbers, showPreviousPageHighlight } =
-    useFoundResultsColNumbersLogic({
-      isLastVisitedPageWasFoundResults,
-      indexesOfFoundResultsForCurrentPage,
-      isPagesNavbarLinkPressed: isPagesNavbarLinkElementOnCurrentPagePressed,
-      isPreviousPageWasFoundResult,
-    });
-
-    useRowHeights(rowRefs, colNumbersRef, [pageData],headerRef,titleRef);
-debugger;
-  return {
-    pageData,
-    rowRefs,
-    colNumbersRef,
-    renderIndexCell,
-    showDigitsFromPressed,
-    showPreviousPageHighlight,
-    isPagesNavbarLinkElementOnCurrentPagePressed,
-    shouldShowColNumbers,
-    indexDataOfFoundResultsForFoundResultsPage,
-    indexesOfFoundResultsForCurrentPage,
-  };
+  return useTableBaseLogic({
+    ...props,
+    pageName: menu,
+  });
 };

@@ -4,12 +4,13 @@ html, body {
   overflow: hidden; /* відключаємо скрол браузера */
     overflow-x: auto; /* горизонтальний скрол */
   overflow-y: auto; /* вертикальний скрол можна прибрати */
+    font-size: 0.9em; /* базовий шрифт для body */
 
 }
 
 .app-wrapper {
   display: grid;
-  grid-template-rows: auto 1fr; /* header + решта */
+  grid-template-rows: 45px 1fr; /* header + решта */
   grid-template-columns: 2fr 10fr;
   grid-template-areas:
     "h h"
@@ -38,3 +39,4 @@ html, body {
   overflow: auto;
   
 }
+

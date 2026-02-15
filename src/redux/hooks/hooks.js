@@ -40,28 +40,6 @@ export const useTrackLocation = () => {
 
 
 
-
-export const useCurrentPageIndexData = (activeMenu) => {
-  const phonesData = useSelector(getPageIndexDataOfFoundResultsByPage("phones")) || [];
-  const lotusData = useSelector(getPageIndexDataOfFoundResultsByPage("Lotus")) || [];
-  const govUaData = useSelector(getPageIndexDataOfFoundResultsByPage("Gov-ua")) || [];
-
-  switch(activeMenu) {
-    case "phones":
-      return phonesData;
-    case "Lotus":
-      return lotusData;
-    case "Gov-ua":
-      return govUaData;
-    default:
-      return [];
-  }
-};
-
-
-
-
-
 export const useIndexesForPage = (pageKey) => {
   const pageNumber = useSelector(
     createSelector(
@@ -84,75 +62,6 @@ export const useIndexesForPage = (pageKey) => {
     .map(item => item.index);
 
   return indexes;
-};
-
-
-export const useRowHighlighting = (
-  indexDataOfFoundResultsForFoundResultsPage,
-  s,
-  menu,
-  rowRefs,
-  safeIndexData
-) => {
-  const [hoveredRow, setHoveredRow] = useState(null);
-  const [clickedRow, setClickedRow] = useState(null);
-  const navigate = useNavigate();
-
-const handleClick = (index) => {
-  const cellData = indexDataOfFoundResultsForFoundResultsPage?.[index];
-  if (!cellData) return;
-
-  const targetPage = cellData.currentPage;
-
-  let url;
-  if (menu === "phones") {
-    url = `/phones/${targetPage}`;
-  } else {
-    url = `/mails/${menu}/${targetPage}`;
-  }
-
-  // 1. Встановлюємо стан для анімації
-  setClickedRow(index);
-
-  // 2. Використовуємо requestAnimationFrame для гарантованого відмалювання класу
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      // 3. Навігація після тривалості анімації
-      setTimeout(() => {
-        navigate(url);
-      }, 300); // тривалість анімації moveRight
-    });
-  });
-};
-
-
-  const renderIndexCell = (index) => {
-    const cellData = indexDataOfFoundResultsForFoundResultsPage?.[index];
-    if (!cellData) return null;
-
-    return (
-      <td
-        className={s.cell}
-        onMouseEnter={() => setHoveredRow(index)}
-        onMouseLeave={() => setHoveredRow(null)}
-        onClick={() => handleClick(index)}
-      >
-        <div className={s.cellContent}>
-          <span className={`${s.text} ${hoveredRow === index ? s.hideText : ""}`}>
-            Сторінка: {cellData.currentPage}, Стрічка: {cellData.index}
-          </span>
-          <img
-            ref={(el) => (rowRefs.current[index] = el)}
-            src={redArrow}
-            alt="arrow"
-            className={`${s.arrow} ${hoveredRow === index ? s.showArrow : ""} ${clickedRow === index ? s.moveRight : ""}`}
-          />
-        </div>
-      </td>
-    );
-  };
-
-  return { renderIndexCell };
 };
 
 export const useDataLoader = () => useContext(DataLoaderContext);

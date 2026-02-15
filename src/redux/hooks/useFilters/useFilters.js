@@ -1,6 +1,7 @@
 import { useMemo, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { useRef } from "react";
 
 // ---------------- CONFIG ----------------
 import { filterGroups, conditions, filterPoints } from "./useFiltersFunctions/filtersLogics";
@@ -30,11 +31,11 @@ export const useFilters = ({ activeMenu, dataForMenu, currentPage }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+
   // ================== SELECTORS ==================
   const filtersFromRedux = useSelector(selectFiltersForMenu(activeMenu)) || {};
   const subFiltersFromRedux = useSelector(selectPhonesSubcondions) || { contactType: {}, userPosition: {} };
   const isLastVisitedPageWasFoundResults = useSelector(isCurrentPageFoundResult(activeMenu));
-debugger;
   // ================== DERIVED STATE ==================
   const getAlternativeKeys = (key) => getAlternativeKeysHelper(key, filterGroups);
 
@@ -86,8 +87,8 @@ debugger;
   subFiltersFromRedux.contactType,
   subFiltersFromRedux.userPosition,
   filtersFromRedux,
-  isLastVisitedPageWasFoundResults,
-  currentPage
+  //isLastVisitedPageWasFoundResults,
+  // currentPage
 ]);
 
 

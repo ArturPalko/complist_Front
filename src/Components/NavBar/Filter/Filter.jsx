@@ -13,6 +13,8 @@ import { toggleFielterPanelElement } from "../../../redux/reducers/toggledElemen
 import { clearFiltredData } from "../../../redux/reducers/filterData-reducer";
 import { redirectToPage } from "../commonFunctions";
 
+import s from "./Filter.module.css"; // файл стилів
+
 const Filter = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -46,34 +48,15 @@ const Filter = () => {
   };
 
   return (
-    <div style={{ gridArea: "f", position: "relative" }}>
+    <div className={s.filterWrapper}>
       <span
         onClick={togglePanel}
-        style={{
-          position: "absolute",
-          top: "15px",
-          transform: "translateY(-50%)",
-          cursor: "pointer",
-          zIndex: 1000,
-          background: "white",
-          color: "black",
-          padding: "2px 6px",
-          borderRadius: "4px",
-          boxShadow: "0 0 3px rgba(0,0,0,0.3)",
-        }}
+        className={s.toggleButton}
       >
         {isOpen ? "◀" : "▶"}
       </span>
 
-      <div
-        style={{
-          position: "absolute",
-          left: 0,
-          width: "100%",
-          opacity: isOpen ? 1 : 0,
-          zIndex: 100,
-        }}
-      >
+      <div className={`${s.panelContainer} ${isOpen ? s.open : s.closed}`}>
         <FilterPanel />
       </div>
     </div>

@@ -1,16 +1,24 @@
 import React, { useRef } from "react";
 import { useFoundResults } from "../../../redux/hooks/hooks";
 import TableWrapper from "./TableWrapper";
+import { IndexCellProvider } from "../../CommonInjection/IndexCell/IndexCellContext";
 
 export const createTableComponent = (useTableLogic, s) => {
+
   return function TableComponent(props) {
+
     const headerRef = useRef(null);
 
-    // ===== Беремо дані пошуку з контексту =====
-      const { foundResults, indexDataOfFoundResultsForFoundResultsPage } =
-    useFoundResults() || { foundResults: [], indexDataOfFoundResultsForFoundResultsPage: [] };
+    // ===== Беремо дані пошуку =====
+    const {
+      foundResults,
+      indexDataOfFoundResultsForFoundResultsPage
+    } = useFoundResults() || {
+      foundResults: [],
+      indexDataOfFoundResultsForFoundResultsPage: []
+    };
 
-    // ===== Викликаємо конкретний хук логіки таблиці =====
+    // ===== Викликаємо хук логіки =====
     const tableLogic = useTableLogic({
       ...props,
       headerRef,
@@ -22,30 +30,42 @@ export const createTableComponent = (useTableLogic, s) => {
       pageData,
       rowRefs,
       colNumbersRef,
-      renderIndexCell,
+
+      indexCellContextValue, // ✅ НОВЕ
+
       showDigitsFromPressed,
       showPreviousPageHighlight,
       isPagesNavbarLinkElementOnCurrentPagePressed,
       shouldShowColNumbers,
+
     } = tableLogic;
 
     return (
-      <TableWrapper
-        pageData={pageData}
-        showDigitsFromPressed={showDigitsFromPressed}
-        shouldShowColNumbers={shouldShowColNumbers}
-        colNumbersRef={colNumbersRef}
-        headerRef={headerRef}
-        indexesOfFoundResultsForCurrentPage={props.indexesOfFoundResultsForCurrentPage}
-        showPreviousPageHighlight={showPreviousPageHighlight}
-        isPagesNavbarLinkElementOnCurrentPagePressed={isPagesNavbarLinkElementOnCurrentPagePressed}
-        renderIndexCell={renderIndexCell}
-        renderHeader={props.renderHeader}
-        renderRowCells={(row, index) => props.renderRowCells(row, index, tableLogic)}
-        rowRefs={rowRefs}
-        indexDataOfFoundResultsForFoundResultsPage={indexDataOfFoundResultsForFoundResultsPage}
-        s={s} // передаємо стилі
-      />
+
+      <IndexCellProvider value={indexCellContextValue}>
+
+        <TableWrapper
+          pageData={pageData}
+          showDigitsFromPressed={showDigitsFromPressed}
+          shouldShowColNumbers={shouldShowColNumbers}
+          colNumbersRef={colNumbersRef}
+          headerRef={headerRef}
+          indexesOfFoundResultsForCurrentPage={
+            props.indexesOfFoundResultsForCurrentPage
+          }
+          showPreviousPageHighlight={showPreviousPageHighlight}
+          isPagesNavbarLinkElementOnCurrentPagePressed={
+            isPagesNavbarLinkElementOnCurrentPagePressed
+          }
+          renderHeader={props.renderHeader}
+          renderRowCells={(row, index) =>
+            props.renderRowCells(row, index, tableLogic)
+          }
+          rowRefs={rowRefs}
+        />
+
+      </IndexCellProvider>
+
     );
   };
 };

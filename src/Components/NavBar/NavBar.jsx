@@ -54,14 +54,13 @@ function NavBar() {
         <div style={{ position: "relative" }}>
           {showPagesNavigation && <PagesNavBar />}
 
-          <Filter
-            style={{
-              color: "green",
-              position: "absolute",
-              top: "60px",
-              left: 0,
-              zIndex: 100000,
-            }}
+       <Filter
+    style={{
+      position: "absolute",
+      top: "100px", // <-- фіксований відступ під 2 ряди
+      left: 0,
+      zIndex: 1000,
+    }}
           />
         </div>
       </nav>
