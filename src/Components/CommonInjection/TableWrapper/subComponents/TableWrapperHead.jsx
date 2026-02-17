@@ -1,12 +1,8 @@
 import React from "react";
-import { useIndexCellContext } from "../../../CommonInjection/IndexCell/IndexCellContext"
-import s from "../TableWrapper.module.css";
-
-const TableWrapperHead = ({ headerRef, renderHeader }) => {
-  const { indexDataOfFoundResultsForFoundResultsPage } = useIndexCellContext();
-
-  const hasIndexes = indexDataOfFoundResultsForFoundResultsPage?.length > 0;
-
+import s from "../TableWrapper.module.css"
+const TableWrapperHead = ({ headerRef, renderHeader,indexDataOfFoundResultsForFoundResultsPage }) => {
+ const hasIndexes = indexDataOfFoundResultsForFoundResultsPage?.length > 0;
+ 
   return (
     <thead ref={headerRef}>
       <tr>

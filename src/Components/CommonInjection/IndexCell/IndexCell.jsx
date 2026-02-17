@@ -1,14 +1,18 @@
 import redArrow from "../../../assets/red_arrow.png"
+import { useFoundResults } from "../../../redux/hooks/useFoundResults";
+import { FoundResultsContext } from "../../FoundResults/FoundResults";
 import styles from "./IndexCell.module.css"
+import { useContext } from "react";
 
-
-import { useIndexCellContext } from "./IndexCellContext";
 import { useIndexCellLogic } from "./useIndexCellLogic";
 
 export const IndexCell = ({ index }) => {
 
-  const { indexDataOfFoundResultsForFoundResultsPage, pageName } =
-    useIndexCellContext();
+  // ✅ напряму з FoundResultsContext
+  const {
+    indexDataOfFoundResultsForFoundResultsPage,
+    pageName
+  } = useContext(FoundResultsContext) || {}
 
   // Використовуємо хук логіки для конкретного рядка
   const {

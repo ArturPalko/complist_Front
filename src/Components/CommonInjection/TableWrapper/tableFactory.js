@@ -1,15 +1,12 @@
-import React, { useRef } from "react";
+import React, { useRef, useContext } from "react";
 import { useFoundResults } from "../../../redux/hooks/hooks";
 import TableWrapper from "./TableWrapper";
-import { IndexCellProvider } from "../../CommonInjection/IndexCell/IndexCellContext";
+import { PageContext } from "../../GenericPage/GenericPage";
 
 export const createTableComponent = (useTableLogic, s) => {
-
   return function TableComponent(props) {
-
     const headerRef = useRef(null);
 
-    // ===== Беремо дані пошуку =====
     const {
       foundResults,
       indexDataOfFoundResultsForFoundResultsPage
@@ -18,54 +15,44 @@ export const createTableComponent = (useTableLogic, s) => {
       indexDataOfFoundResultsForFoundResultsPage: []
     };
 
-    // ===== Викликаємо хук логіки =====
-    const tableLogic = useTableLogic({
-      ...props,
-      headerRef,
-      foundResults,
-      indexDataOfFoundResultsForFoundResultsPage,
-    });
+    const pageContext = useContext(PageContext);
+
 
     const {
-      pageData,
-      rowRefs,
-      colNumbersRef,
+        titleRef,
+     columns,
+      pageNumber,
+      indexesOfFoundResultsForCurrentPage
+    } = pageContext;
 
-      indexCellContextValue, // ✅ НОВЕ
+    const commonProps = { ...props, headerRef };
 
-      showDigitsFromPressed,
-      showPreviousPageHighlight,
-      isPagesNavbarLinkElementOnCurrentPagePressed,
-      shouldShowColNumbers,
+    const baseLogic = useTableLogic({
+      ...commonProps,
+      foundResults,
+      indexesOfFoundResultsForCurrentPage,
+       titleRef,
+     columns,
+      pageNumber
+    });
 
-    } = tableLogic;
+    const tableLogic = {
+      ...baseLogic,
+      headerRef,
+      indexDataOfFoundResultsForFoundResultsPage,
+      indexesOfFoundResultsForCurrentPage,
+      foundResults
+      
+    };
 
     return (
-
-      <IndexCellProvider value={indexCellContextValue}>
-
-        <TableWrapper
-          pageData={pageData}
-          showDigitsFromPressed={showDigitsFromPressed}
-          shouldShowColNumbers={shouldShowColNumbers}
-          colNumbersRef={colNumbersRef}
-          headerRef={headerRef}
-          indexesOfFoundResultsForCurrentPage={
-            props.indexesOfFoundResultsForCurrentPage
-          }
-          showPreviousPageHighlight={showPreviousPageHighlight}
-          isPagesNavbarLinkElementOnCurrentPagePressed={
-            isPagesNavbarLinkElementOnCurrentPagePressed
-          }
-          renderHeader={props.renderHeader}
-          renderRowCells={(row, index) =>
-            props.renderRowCells(row, index, tableLogic)
-          }
-          rowRefs={rowRefs}
-        />
-
-      </IndexCellProvider>
-
+      <TableWrapper
+        tableLogic={tableLogic}
+        renderHeader={props.renderHeader}
+        renderRowCells={(row, index) =>
+          props.renderRowCells(row, index, tableLogic)
+        }
+      />
     );
   };
 };

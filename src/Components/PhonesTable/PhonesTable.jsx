@@ -9,18 +9,13 @@ import {
   getUserRowIndex,
 } from "./phonesTableHelpers";
 
-// PhonesTable.js
 
-// Створюємо базовий компонент через фабрику та передаємо свої стилі
 const BasePhonesTable = createTableComponent(usePhonesTableLogic, s);
 
 const PhonesTable = ({
-  titleRef,
   columns,
   pageNumber,
   rowsPerPage,
-  indexesOfFoundResultsForCurrentPage,
-  departmentsAndSectionsPerPage,
 }) => {
   // ===== Рендер шапки =====
   const renderHeader = () => (
@@ -116,12 +111,6 @@ const PhonesTable = ({
 
   return (
     <BasePhonesTable
-      titleRef={titleRef}
-      columns={columns}
-      pageNumber={pageNumber}
-      rowsPerPage={rowsPerPage}
-      indexesOfFoundResultsForCurrentPage={indexesOfFoundResultsForCurrentPage}
-      departmentsAndSectionsPerPage={departmentsAndSectionsPerPage}
       renderHeader={renderHeader}
       renderRowCells={renderRowCells}
     />

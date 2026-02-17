@@ -8,20 +8,22 @@ import { useNavigate } from "react-router-dom";
 import {getPageIndexDataOfFoundResultsByPage, getCurrentPageNumberByKey,
   getFilteredState , isFilterAppliedSelector
  } from "../selectors/selector";
-import redArrow from "../../../src/assets/red_arrow.png";
 import { DataLoaderContext } from "../hocs/withDataLoader";
 import { FoundResultsContext } from "../../Components/FoundResults/FoundResults";
 import { useMemo } from "react";
 import { SearchToggleContext, PasswordsToggleContext } from "../hocs/withToggleElements";
 
-import { activeMenu as activeMenuSelector, getIndexesOfFiltredResults, getGovUaMails, getLotusMails } from "../selectors/selector";
+import { activeMenu as activeMenuSelector, getIndexesOfFiltredResults} from "../selectors/selector";
 import { createSelector } from '@reduxjs/toolkit';
+ import { PageContext } from "../../Components/GenericPage/GenericPage";
 
 
 export const usePageNumber = () => {
   const params = useParams();
   return Number(params.pageNumber) || 1;
 };
+// const PageContext = React.createContext(null);
+
 
 
 export const useTrackLocation = () => {
@@ -66,10 +68,41 @@ export const useIndexesForPage = (pageKey) => {
 
 export const useDataLoader = () => useContext(DataLoaderContext);
 // export const useToggleElements = () => useContext(ToggleElementsContext);
+
+
+
 export const useFoundResults = () => {
   const context = useContext(FoundResultsContext);
   return context ?? { foundResults: null, indexDataOfFoundResultsForFoundResultsPage: null };
 };
+
+
+export const usePageContext = () => {
+  const context = useContext(PageContext);
+  if (!context) {
+    throw new Error("usePageContext must be used within PageProvider");
+  }
+  return context;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // для чекбокса пошуку
 export const useSearchToggle = () => useContext(SearchToggleContext);

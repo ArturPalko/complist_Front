@@ -7,14 +7,11 @@ import s from "../../Components/PhonesTable/PhonesTable.module.css"; // свої
 const BaseMailsTable = createTableComponent(useMailsTableLogic, s);
 
 const MailsTable = ({
-  titleRef,
-  pageName,
   columns,
   showPasswords,
   passwordsMap,
   rowsPerPage,
   pageNumber,
-  indexesOfFoundResultsForCurrentPage,
 }) => {
 
   // ===== Рендер шапки =====
@@ -41,14 +38,8 @@ const MailsTable = ({
 
   return (
     <BaseMailsTable
-      titleRef={titleRef}
-      pageName={pageName}
-      columns={columns}
       showPasswords={showPasswords}
       passwordsMap={passwordsMap}
-      rowsPerPage={rowsPerPage}
-      pageNumber={pageNumber}
-      indexesOfFoundResultsForCurrentPage={indexesOfFoundResultsForCurrentPage}
       renderHeader={renderHeader}
       renderRowCells={renderRowCells}
     />

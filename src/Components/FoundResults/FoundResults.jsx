@@ -20,6 +20,7 @@ const FoundResults = ({ activeMenu, data, foundSearchValues, isFilterApplied }) 
   if (!ActiveComponent) return null;
   return (
     <FoundResultsContext.Provider value={{ 
+      pageName:activeMenu,
       foundResults: presentRows,
       indexDataOfFoundResultsForFoundResultsPage
     }}>
