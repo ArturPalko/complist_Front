@@ -1,29 +1,18 @@
-import { redirect, useParams } from "react-router-dom";
-import { useEffect, useRef, useState, useContext } from "react";
-import { useLocation } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useEffect, useRef, useState, useMemo } from "react";
+import { useLocation, useParams } from "react-router-dom";
+import { useDispatch,useSelector } from "react-redux";
 import { rememberPreviousLocationActionCreator } from "../reducers/pagesNavbar-reducer";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import {getPageIndexDataOfFoundResultsByPage, getCurrentPageNumberByKey,
-  getFilteredState , isFilterAppliedSelector
+  isFilterAppliedSelector
  } from "../selectors/selector";
-import { DataLoaderContext } from "../hocs/withDataLoader";
-import { FoundResultsContext } from "../../Components/FoundResults/FoundResults";
-import { useMemo } from "react";
-import { SearchToggleContext, PasswordsToggleContext } from "../hocs/withToggleElements";
-
 import { activeMenu as activeMenuSelector, getIndexesOfFiltredResults} from "../selectors/selector";
 import { createSelector } from '@reduxjs/toolkit';
- import { PageContext } from "../../Components/GenericPage/GenericPage";
 
 
 export const usePageNumber = () => {
   const params = useParams();
   return Number(params.pageNumber) || 1;
 };
-// const PageContext = React.createContext(null);
-
 
 
 export const useTrackLocation = () => {
@@ -65,52 +54,6 @@ export const useIndexesForPage = (pageKey) => {
 
   return indexes;
 };
-
-export const useDataLoader = () => useContext(DataLoaderContext);
-// export const useToggleElements = () => useContext(ToggleElementsContext);
-
-
-
-export const useFoundResults = () => {
-  const context = useContext(FoundResultsContext);
-  return context ?? { foundResults: null, indexDataOfFoundResultsForFoundResultsPage: null };
-};
-
-
-export const usePageContext = () => {
-  const context = useContext(PageContext);
-  if (!context) {
-    throw new Error("usePageContext must be used within PageProvider");
-  }
-  return context;
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// для чекбокса пошуку
-export const useSearchToggle = () => useContext(SearchToggleContext);
-
-// для показу паролів
-export const usePasswordsToggle = () => useContext(PasswordsToggleContext);
-
-
 
 
 

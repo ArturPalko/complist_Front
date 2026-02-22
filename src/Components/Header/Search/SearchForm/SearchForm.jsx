@@ -1,7 +1,7 @@
 import { forwardRef } from "react";
 import s from "./SearchForm.module.css";
-import cross from "../../../../assets/cross.png";
-import loupe from "../../../../assets/loupe.png";
+import cross from "../../../../assets/Img/cross.png";
+import loupe from "../../../../assets/Img/loupe.png";
 
 const SearchForm = forwardRef((props, ref) => {
   const {

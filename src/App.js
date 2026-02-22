@@ -3,11 +3,11 @@ import Header from "./Components/Header/Header";
 import NavBar from "./Components/NavBar/NavBar";
 import { Route, Routes } from "react-router-dom";
 
-import GovUaMails from "./Components/GovUaMails/GovUaMails";
-import LotusMails from "./Components/LotusMails/LotusMails";
-import Phones from "./Components/Phones/Phones";
-import RedirectToCurrentPage from "./Components/CommonInjection/RedirectToCurrentPage/RedirectToCurrentPage";
-import Error from "./Components/Error/Error";
+import GovUaMails from "./Components/Content/Pages/GovUaMails/GovUaMails";
+import LotusMails from "./Components/Content/Pages/LotusMails/LotusMails";
+import Phones from "./Components/Content/Pages/Phones/Phones";
+import RedirectToCurrentPage from "./Components/infrastructure/components/navigation/RedirectToCurrentPage/RedirectToCurrentPage";
+import Error from "./Components/UI/Error/Error";
 import FoundResults from "./Components/FoundResults/FoundResults";
 
 import { useTrackLocation } from "./redux/hooks/hooks";

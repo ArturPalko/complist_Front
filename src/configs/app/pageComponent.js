@@ -1,7 +1,7 @@
 
-import PhonesPage from "../../Components/Phones/Phones.jsx"
-import LotusMails from "../../Components/LotusMails/LotusMails.jsx";
-import GovUaMails from "../../Components/GovUaMails/GovUaMails.jsx";
+import PhonesPage from "../../Components/Content/Pages/Phones/Phones.jsx"
+import LotusMails from "../../Components/Content/Pages/LotusMails/LotusMails.jsx";
+import GovUaMails from "../../Components/Content/Pages/GovUaMails/GovUaMails.jsx";
 import { Pages } from "./constants.js";
 export const pageComponents = {
   [Pages.PHONES]: PhonesPage,
