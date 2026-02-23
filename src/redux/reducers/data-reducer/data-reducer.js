@@ -1,18 +1,11 @@
-import { createFetchThunk } from "../fetchDataThunkCreator.js";
+import { fetchDataThunk } from "../../../dal/thunks.js";
 import { rowsPerPage as limitRows } from "../../../configs/app/constants.js";
 import { paginateData } from "./data-reducerFunctions/pagination.js";
+
 
 // Action type
 const ADD_DATA = "ADD_DATA";
 
-// Fetch URLs
-const fetchUrls = {
-  "Gov-ua": "http://localhost:5114/mails/Gov-ua",
-  Lotus: "http://localhost:5114/mails/Lotus",
-  phones: "http://localhost:5114/phones"
-};
-
-// Initial state
 const initialState = {
   "Gov-ua": [],
   Lotus: [],
@@ -40,11 +33,4 @@ export const addDataActionCreator = (key, data) => ({
   payload: { key, data }
 });
 
-// Universal thunk
-export const getDataByMenu = (key) => {
-  const fetchUrl = fetchUrls[key];
-  if (!fetchUrl) throw new Error(`No fetch URL defined for menuKey "${key}"`);
-  return createFetchThunk(fetchUrl, addDataActionCreator, key);
-};
-
-
+export const getDataByMenu = (key) => fetchDataThunk(addDataActionCreator, key);

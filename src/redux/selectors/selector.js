@@ -36,6 +36,14 @@ export const foundSearchValueOnAnyPage = (pagesArray) => (state) => {
 export const isSearchValueFoundByPage = (page) => (state) =>
   Boolean(selectFoundResults(state, page)?.length);
 
+
+export const selectSearchStateByMenu = (state, menu) =>
+  state.toggledElements.searchField[menu] || {
+    draftValue: "",
+    searchValue: "",
+    foundResults: []
+  };
+
 // ===================================
 // ===== Меню =====
 export const activeMenu = (state) => state.currentPageNumber.activeMenu;

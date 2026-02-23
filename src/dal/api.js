@@ -1,5 +1,6 @@
 import axios from "axios";
 import axiosRetry from "axios-retry";
+import { passwordUrls } from "./urls";
 
 export const api = axios.create({
   baseURL: "http://localhost:5114", 
@@ -25,16 +26,3 @@ api.interceptors.response.use(
 );
 
 
-export const fetchPasswordsByType = async (type) => {
-  const urlMap = {
-    Lotus: "/mails/Lotus/passwords",
-    "Gov-ua": "/mails/Gov-ua/passwords"
-  };
-
-  if (!urlMap[type]) throw new Error(`No password URL for type "${type}"`);
-
-  const { data } = await api.get(urlMap[type]);
-  const map = {};
-  data.forEach(item => (map[item.id] = item.password));
-  return map;
-};

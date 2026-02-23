@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import { NavLink } from "react-router-dom";
 import s from "./NavBar.module.css";
 
@@ -54,14 +54,7 @@ function NavBar() {
         <div style={{ position: "relative" }}>
           {showPagesNavigation && <PagesNavBar />}
 
-       <Filter
-    style={{
-      position: "absolute",
-      top: "100px", // <-- фіксований відступ під 2 ряди
-      left: 0,
-      zIndex: 1000,
-    }}
-          />
+       <Filter/>
         </div>
       </nav>
     </div>

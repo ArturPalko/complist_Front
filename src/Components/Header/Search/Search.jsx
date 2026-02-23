@@ -1,201 +1,108 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { connect } from "react-redux";
 
 import {
   activeMenu,
   isPresentedSearchField,
   getCountOfFoundResults,
+  getDataForMenu,
   getIndexesOfFiltredResults,
-  getDataForMenu
+  selectSearchStateByMenu
 } from "../../../redux/selectors/selector.js";
 
-import {
-  addFoundItems,
-  clearSearchForm,
-  updateDraftValue
-} from "../../../redux/reducers/toggledElements-reducer.js";
+import { addFoundItems, clearSearchForm, updateDraftValue } from "../../../redux/reducers/toggledElements-reducer.js";
 
 import SearchForm from "./SearchForm/SearchForm.jsx";
 import { useFilteredPageData } from "../../../redux/hooks/hooks.js";
-
 import { runSearch } from "./searchUtils.js";
 
 
-const Search = (props) => {
 
-  const activeMenuStr = props.activeMenu || "";
-
-  const [showNotFound, setShowNotFound] = useState(false);
-  const [userSearchedOnce, setUserSearchedOnce] = useState(false);
-  const [lastSearchFound, setLastSearchFound] = useState(true);
-
+const Search = ({
+  activeMenu: activeMenuStr,
+  searchState,
+  dataForMenu,
+  isPresentedSearchField,
+  getCountOfFoundResults,
+  getIndexesOfFiltredResults,
+  addFoundItems,
+  clearSearchForm,
+  updateDraftValue
+}) => {
   const inputRef = useRef(null);
+  const [showNotFound, setShowNotFound] = useState(false);
 
-  const draftValue = props.draftValue(activeMenuStr);
-  const searchValue = props.searchFieldValue(activeMenuStr);
+  const { draftValue = "", searchValue = "", userSearchedOnce = false, lastSearchFound = true } = searchState;
 
-  const inputValue =
-    showNotFound ? "Не знайдено" : draftValue || searchValue || "";
+  const inputValue = showNotFound ? "Не знайдено" : draftValue || searchValue || "";
 
-
-  useEffect(() => {
-    setUserSearchedOnce(true)
-  }, [ activeMenuStr]);
-
+  // Фокус на input
   useEffect(() => {
     if (!showNotFound && inputRef.current) {
       inputRef.current.focus();
     }
   }, [showNotFound, activeMenuStr]);
 
-  
+  // Пошук при зміні індексів фільтрованих результатів
   useEffect(() => {
-
     if (!userSearchedOnce) return;
-
     if (!lastSearchFound) return;
-    debugger;
+
     executeSearch();
+  }, [getIndexesOfFiltredResults]);
 
-  }, [props.getIndexesOfFiltredResults]);
-
-
-  const searchArea = props.dataForMenu;
-
-  const { data: filteredPageData, isFilterApplied } =
-    useFilteredPageData(searchArea);
-
-
+  const { data: filteredPageData, isFilterApplied } = useFilteredPageData(dataForMenu);
 
   const executeSearch = () => {
+    const searchTarget = isFilterApplied ? filteredPageData : dataForMenu;
+    const results = runSearch({ searchValue: draftValue, searchTarget });
 
-    const searchTarget = isFilterApplied
-      ? filteredPageData
-      : searchArea;
-
-    const foundResults = runSearch({
-      searchValue: draftValue,
-      searchTarget
-    });
-
-
-    if (!foundResults.length) {
-debugger
+    if (!results.length) {
       setShowNotFound(true);
-
       setTimeout(() => setShowNotFound(false), 1000);
-
-      setLastSearchFound(false);
-
-    } else {
-
-      setLastSearchFound(true);
-
     }
 
-
-    props.addFoundItems(
-      activeMenuStr,
-      draftValue.trim(),
-      foundResults
-    );
+    addFoundItems(activeMenuStr, draftValue.trim(), results);
   };
-
-
-
-  const handleOnSearchButtonClick = (e) => {
-
-    e.preventDefault();
-
-    executeSearch();
-
-    setUserSearchedOnce(true);
-
-  };
-
-
-
-  const handleOnClearSearchFormButtonClick = () => {
-
-    props.clearSearchForm(activeMenuStr);
-
-  };
-
-
 
   return (
-
     <SearchForm
       ref={inputRef}
-
       showNotFound={showNotFound}
-
       inputValue={inputValue}
-
       setInputValue={(value) =>
         value !== ""
-          ? props.updateDraftValue(activeMenuStr, value)
-          : props.clearSearchForm(activeMenuStr)
+          ? updateDraftValue(activeMenuStr, value)
+          : clearSearchForm(activeMenuStr)
       }
-
-      isPresentedSearchField={props.isPresentedSearchField}
-
-      handleOnSearchButtonClick={handleOnSearchButtonClick}
-
-      handleOnClearSearchFormButtonClick={handleOnClearSearchFormButtonClick}
-
-      getCountOfFoundResults={() =>
-        props.getCountOfFoundResults(activeMenuStr)
-      }
+      isPresentedSearchField={isPresentedSearchField}
+      handleOnSearchButtonClick={(e) => {
+        e.preventDefault();
+        executeSearch();
+      }}
+      handleOnClearSearchFormButtonClick={() => clearSearchForm(activeMenuStr)}
+      getCountOfFoundResults={() => getCountOfFoundResults(activeMenuStr)}
     />
-
   );
-
 };
 
-
-
 const mapStateToProps = (state) => {
-
   const menu = activeMenu(state);
 
   return {
-
     activeMenu: menu,
-
     isPresentedSearchField: isPresentedSearchField(state),
-
     dataForMenu: getDataForMenu(state, menu),
-
-    searchFieldValue: (m) =>
-      state.toggledElements.searchField[m]?.searchValue || "",
-
-    draftValue: (m) =>
-      state.toggledElements.searchField[m]?.draftValue || "",
-
-    getCountOfFoundResults: (m) =>
-      getCountOfFoundResults(state, m),
-
-    getIndexesOfFiltredResults:
-      getIndexesOfFiltredResults(state, menu),
-
+    searchState: selectSearchStateByMenu(state, menu),
+    getCountOfFoundResults: (m) => getCountOfFoundResults(state, m),
+    getIndexesOfFiltredResults: getIndexesOfFiltredResults(state, menu)
   };
-
 };
 
-
-
 const mapDispatchToProps = {
-
   addFoundItems,
   clearSearchForm,
   updateDraftValue
-
 };
 
-
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Search);
+export default connect(mapStateToProps, mapDispatchToProps)(Search);

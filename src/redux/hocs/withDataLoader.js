@@ -59,7 +59,6 @@ const withDataLoaderForMenu = (menuName, fetchAction) => (WrappedComponent) => {
       doFetch();
     }, [isLoaded, props.fetchAction, menuName, navigate]);
 
-console.log("GovUa data:", data)
     return showPreloader ? (
       <Preloader count={count} />
     ) : (
