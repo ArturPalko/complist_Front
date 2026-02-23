@@ -1,9 +1,9 @@
 // usePhonesTableLogic.js
 import { useSelector } from "react-redux";
-import { useTableBaseLogic } from "../../Components/CommonInjection/hooks/useTableBaseLogic";
+import { useTableBaseLogic } from "../../Components/infrastructure/hooks/useTableBaseLogic";
 import { getDepartmentsAndSectionsPerPage } from "../selectors/selector";
-import { getDimGroupRowClasses } from "../../Components/PhonesTable/phonesTableHelpers";
-import s from "../../Components/PhonesTable/PhonesTable.module.css";
+import { getDimGroupRowClasses } from "../../Components/Content/Tables/PhonesTable/phonesTableHelpers";
+import s from "../../Components/Content/Tables/PhonesTable/PhonesTable.module.css"
 
 export const usePhonesTableLogic = (props) => {
   // ===== Викликаємо базовий хук для універсальної логіки =====

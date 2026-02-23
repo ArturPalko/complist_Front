@@ -1,13 +1,12 @@
 import { connect } from "react-redux";
-import { createContext } from "react";
-import TooManyResultsOfSearch from "../TooManyResultsOfSearch/TooManyResultsOFSearch";
+import TooManyResultsOfSearch from "../UI/TooManyResultsOfSearch/TooManyResultsOFSearch.jsx"
 
 import { Pages } from "../../configs/app/constants.js";
 import { activeMenu, getDataForMenu, selectSearchValueByPage, isFilterAppliedSelector } from "../../redux/selectors/selector";
 import { useFoundResults } from "../../redux/hooks/useFoundResults.js"
 import { getPageComponent } from "../../configs/app/pageComponent.js";
+import { FoundResultsContext } from "../../redux/contexts/useConetxt.js";
 
-export const FoundResultsContext = createContext(null);
 
 const FoundResults = ({ activeMenu, data, foundSearchValues, isFilterApplied }) => {
   const { presentRows, indexDataOfFoundResultsForFoundResultsPage, tooManyResults } =

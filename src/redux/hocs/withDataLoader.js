@@ -1,29 +1,15 @@
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useEffect} from "react";
 import { connect } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import Preloader from "../../Components/Preloader/Preloader";
-import { foundSearchValueOfPhonesPage , getPhonesPageIndexDataOfFoundResults,
-   getPhonesCurrentPageNumber, isPreviousPageWasFoundResult, foundSearchValueOfLotusMailsPage,
-    foundSearchValueOfGovUaPage, getLotusMails, getLotusMailsCurretPageNumber,
-     getLotusMailsPageIndexDataOfFoundResults, getGovUaMails,
-      getGovUaMailsPageIndexDataOfFoundResults,getGovMailsCurretPageNumber } from "../selectors/selector";
-import { createContext } from "react";
-// Універсальні селектори для всіх меню
-import { getDataForMenu, getLoadedForMenu, getFetchingForMenu } from  "../selectors/selector";
+import Preloader from "../../Components/UI/Preloader/Preloader";
+import { 
+   getDataForMenu, 
+   getLoadedForMenu,
+   getFetchingForMenu, 
+   isPreviousPageWasFoundResult } from  "../selectors/selector";
+import { DataLoaderContext } from "../contexts/useConetxt";
 
 
-// import React, { useState, useEffect, createContext } from "react";
-// import { connect } from "react-redux";
-// import { useNavigate } from "react-router-dom";
-// import Preloader from "../../Components/Preloader/Preloader";
-
-// Контекст для передачі даних
-export const DataLoaderContext = createContext(null);
-
-
-
-// menuName: "phones" | "Lotus" | "Gov-ua"
-// fetchAction: санка для fetch
 const withDataLoaderForMenu = (menuName, fetchAction) => (WrappedComponent) => {
   const HOC = (props) => {
     const navigate = useNavigate();

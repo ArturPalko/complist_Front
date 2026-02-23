@@ -1,0 +1,19 @@
+.info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4rem;            
+  margin-top: 12rem;    
+  padding: 0 2rem;
+  flex-wrap: wrap;      
+}
+
+.infoImg {
+  max-width: 100%;
+  height: auto;
+}
+
+.description {
+  font-size: 1.7rem;    
+  max-width: 40rem;
+}

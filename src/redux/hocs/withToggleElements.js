@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import { useState, createContext } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -14,13 +14,11 @@ import {
   activeMenu,
   currentPageByMenu
 } from "../../redux/selectors/selector";
+import {SearchToggleContext, PasswordsToggleContext} from "../contexts/useConetxt.js"
 
 import { redirectToPage } from "../../Components/NavBar/commonFunctions.js";
-import { fetchPasswordsByType } from "../../dal/api.js"; // через Axios
+import { fetchPasswordsByType } from "../../dal/api.js"; 
 
-// Контексти для Search та Passwords
-export const SearchToggleContext = createContext(null);
-export const PasswordsToggleContext = createContext(null);
 
 // HOC
 const withToggleElements = (type) => (WrappedComponent) => {

@@ -38,6 +38,9 @@ const Search = (props) => {
     showNotFound ? "Не знайдено" : draftValue || searchValue || "";
 
 
+  useEffect(() => {
+    setUserSearchedOnce(true)
+  }, [ activeMenuStr]);
 
   useEffect(() => {
     if (!showNotFound && inputRef.current) {
@@ -51,7 +54,7 @@ const Search = (props) => {
     if (!userSearchedOnce) return;
 
     if (!lastSearchFound) return;
-
+    debugger;
     executeSearch();
 
   }, [props.getIndexesOfFiltredResults]);
@@ -77,7 +80,7 @@ const Search = (props) => {
 
 
     if (!foundResults.length) {
-
+debugger
       setShowNotFound(true);
 
       setTimeout(() => setShowNotFound(false), 1000);

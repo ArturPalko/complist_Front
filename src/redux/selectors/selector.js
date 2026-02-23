@@ -9,6 +9,13 @@ import { countDepartmentsAndSections } from "./helpFunctions/countDepartmentsAnd
 import { getBaseLinkByMenu } from "./helpFunctions/getBaseLinkByMenu";
 import { processFoundResults } from "./helpFunctions/processFoundResults";
 
+// =====Допоміжні селектори=======================
+
+const selectPageNumberState = (state, menu) => state.currentPageNumber[menu];
+const selectFoundResults = (state, menu) => selectSearchValueByPage(menu)(state)?.foundResults ?? [];
+
+
+
 // ===================================
 // ===== Дані =====
 export const getDataForMenu = (state, menu) => state.data?.[menu] ?? [];
@@ -27,7 +34,7 @@ export const foundSearchValueOnAnyPage = (pagesArray) => (state) => {
   return null;
 };
 export const isSearchValueFoundByPage = (page) => (state) =>
-  Boolean(state.toggledElements.searchField[page]?.foundResults?.length);
+  Boolean(selectFoundResults(state, page)?.length);
 
 // ===================================
 // ===== Меню =====
@@ -35,13 +42,13 @@ export const activeMenu = (state) => state.currentPageNumber.activeMenu;
 
 export const currentPageByMenu = (state, menu) => {
   if (!menu) return 1;
-  const hasFilter = menu === Pages.PHONES;
-  const selector = createCurrentPageSelector({
-    key: menu,
-    foundSelector: selectSearchValueByPage(menu),
-    hasFilter,
-  });
-  return selector(state) ?? 1;
+
+  const isFilterApplied = isFilterAppliedSelector(menu)(state); 
+  const pageState = selectPageNumberState(state, menu);
+  const foundResults = selectFoundResults(state, menu);
+
+
+  return createCurrentPageSelector({ isFilterApplied, pageState, foundResults }) ?? 1;
 };
 
 export const searchFieldValue = (state, menu) => state.toggledElements.searchField[menu]?.searchValue || "";
@@ -123,22 +130,22 @@ export const isPreviousPageWasFoundResult = (menu) => (state) => {
   return state.currentPageNumber.previousLocation === `${baseLink}/foundResults`;
 };
 
+
 // ===================================
 // ===== Підрахунок знайдених результатів =====
-export const getCountOfFoundResults = (state, typeOfPage) => {
-  const results = state.toggledElements?.searchField?.[typeOfPage]?.foundResults ?? [];
-  if (typeOfPage === Pages.PHONES) return results.filter((r) => r.elementType === "user").length;
-  return results.length;
-};
+export const getCountOfFoundResults = (state, typeOfPage) =>
+  typeOfPage === Pages.PHONES
+    ? selectFoundResults(state, typeOfPage)
+        .filter(r => r.elementType === "user").length
+    : selectFoundResults(state, typeOfPage).length;
 
 export const getPageIndexDataOfFoundResultsByPage = (pageName) => (state) => {
-  const foundResults = state.toggledElements.searchField[pageName]?.foundResults ?? [];
-  return processFoundResults(foundResults);
+  return processFoundResults(selectFoundResults(state, pageName));
 };
 
 export const selectPaginationPagesCount = (menu) => (state) => getDataForMenu(state, menu).length || 0;
 export const isCurrentPageFoundResult = (menu) => (state) =>
-  state.currentPageNumber?.[menu]?.lastVisitedPage === "foundResults";
+  selectPageNumberState(state,menu)?.lastVisitedPage === "foundResults";
 
 export const selectFiltersForMenu = (menu) => (state) => {
   if (!menu || !state.filters[menu]) return {};
