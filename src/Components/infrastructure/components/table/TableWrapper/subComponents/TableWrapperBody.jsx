@@ -15,7 +15,7 @@ const TableWrapperBody = ({
         data-key={index}
         ref={(el) => rowRefs?.current && (rowRefs.current[index] = el)}
       >
-        <IndexCell index={index} />
+        <IndexCell index={index} isNonUserRowType={item.type!= "user"} />
         {renderRowCells(item, index)}
       </tr>
     ))}

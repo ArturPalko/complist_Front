@@ -2,33 +2,40 @@
 import { useState, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { pageConfigs } from "../../../../../configs/app/pageConfig";
-
-export const useIndexCellLogic = (index, indexData, pageName) => {
+import { addIndexesFromIndexCell } from "../../../../../redux/reducers/toggledElements-reducer";
+import { useDispatch } from "react-redux";
+export const useIndexCellLogic = (index, indexData, pageName, isNonUserRowType) => {
   const [hoveredRow, setHoveredRow] = useState(false);
   const [clickedRow, setClickedRow] = useState(false);
 
   const rowRef = useRef(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const cellData = indexData?.[index];
 
   const handleMouseEnter = useCallback(() => setHoveredRow(true), []);
   const handleMouseLeave = useCallback(() => setHoveredRow(false), []);
 
-  const handleClick = useCallback(() => {
-    if (!cellData) return;
 
-    const targetPage = cellData.currentPage;
+const handleClick = useCallback(() => {
+  if (!cellData) return;
+
+  const targetPage = cellData.currentPage;
   const config = pageConfigs[pageName];
   const url = config ? `${config.basePath}${targetPage}` : "/"; 
-    setClickedRow(true);
 
+  setClickedRow(true);
+
+if (!isNonUserRowType)  dispatch(addIndexesFromIndexCell([cellData.index]));
+
+  requestAnimationFrame(() => {
     requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        setTimeout(() => navigate(url), 300);
-      });
+      setTimeout(() => navigate(url), 300);
     });
-  }, [cellData, pageName, navigate]);
+  });
+}, [cellData, pageName, navigate, dispatch]);
+
 
   return {
     cellData,

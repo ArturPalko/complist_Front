@@ -34,7 +34,7 @@ export const useTrackLocation = () => {
 export const useIndexesForPage = (pageKey) => {
   const dispatch = useDispatch();
 
-  const indexesFromIndexCell = useSelector(selectIndexesFromCell);
+  const indexesFromIndexCell = useSelector(state => selectIndexesFromCell(state));
 
   const indexesFromPage = useSelector(
     createSelector(
@@ -49,10 +49,11 @@ export const useIndexesForPage = (pageKey) => {
       }
     )
   );
-
-  const indexes = indexesFromIndexCell?.length ? indexesFromIndexCell : indexesFromPage;
-
-
+const indexes =
+  indexesFromIndexCell.length == 1
+    ? indexesFromIndexCell // обгортаємо число в масив
+    : indexesFromPage;
+debugger;
   return indexes;
 };
 

@@ -8,6 +8,8 @@ import {selectIndexesFromCell} from "../../../../../redux/selectors/selector";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { addIndexesFromIndexCell } from "../../../../../redux/reducers/toggledElements-reducer";
+import { useEffect } from "react";
+
 
 const TableWrapper = ({ tableLogic, renderHeader = () => null, renderRowCells }) => {
   const {
@@ -22,10 +24,12 @@ const TableWrapper = ({ tableLogic, renderHeader = () => null, renderRowCells })
     isPagesNavbarLinkElementOnCurrentPagePressed,
     shouldRenderIndexesHeader
   } = tableLogic;
-
-const dispatch = useDispatch();
+  const dispatch = useDispatch();
+  debugger;
+  // ✅ викликаємо hook тут
+  const indexes = useSelector(selectIndexesFromCell);
   useEffect(() => {
-    const indexes= useSelector(selectIndexesFromCell)
+    
   if (indexes) {
     const timer = setTimeout(() => dispatch(addIndexesFromIndexCell([])), 2000);
     return () => clearTimeout(timer);

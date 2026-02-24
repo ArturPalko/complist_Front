@@ -166,5 +166,5 @@ export const selectPhonesSubcondions = (state) => {
 
 ///////////
 export const selectIndexesFromCell = (state) => {
-  return state.toggledElements.indexesFomIndexCell || []
+  return state.toggledElements.indexesFromIndexCell || []
 }

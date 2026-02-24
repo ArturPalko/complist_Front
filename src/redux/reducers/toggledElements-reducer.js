@@ -19,7 +19,7 @@ const initialState = {
   showSearchField: { isActive: false },
   showFilterPanel: { isActive: false },
   pagesNavbarLinkElementOnCurrentPage: { isPressed: false },
-  indexesFomIndexCell: [],
+  indexesFromIndexCell: [],
   searchField: {
     "Gov-ua": createSearchState(),
     Lotus: createSearchState(),
@@ -34,7 +34,7 @@ export const toggledElemetsReducer = (state = initialState, action) => {
     case ADD_INDEXES_FROM_INDEXCELL:
       return{
         ...state,
-        indexesFomIndexCell:[action.indexes]
+        indexesFromIndexCell:action.indexes
 
       }
 
