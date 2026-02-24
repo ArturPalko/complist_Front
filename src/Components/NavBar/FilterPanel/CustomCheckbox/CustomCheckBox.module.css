@@ -3,8 +3,8 @@
   align-items: center;
   cursor: pointer;
   position: relative;
-  margin: 3px 0;        /* було 5px */
-  font-size: 16px;      /* було 22px */
+  margin: 3px 0;       
+  font-size: 16px;      
   user-select: none;
   line-height: 1.2;
 }
@@ -19,12 +19,12 @@
 
 .checkboxSpan {
   position: relative;
-  width: 16px;          /* було 20px */
-  height: 16px;         /* було 20px */
+  width: 16px;          
+  height: 16px;        
   background-color: var(--bg-color, white);
   border-radius: 50%;
   display: inline-block;
-  margin-right: 6px;    /* було 8px */
+  margin-right: 6px;    
   transition: background-color 0.2s;
 }
 
@@ -32,12 +32,12 @@
 .customCheckbox input:checked + .checkboxSpan::after {
   content: '';
   position: absolute;
-  left: 4px;            /* пропорційно зменшено */
+  left: 4px;            
   top: 1px;
-  width: 4px;           /* було 6px */
-  height: 9px;          /* було 12px */
+  width: 4px;           
+  height: 9px;          
   border: solid var(--check-color, black);
-  border-width: 0 2px 2px 0; /* тонша лінія */
+  border-width: 0 2px 2px 0;
   transform: rotate(45deg);
 }
 

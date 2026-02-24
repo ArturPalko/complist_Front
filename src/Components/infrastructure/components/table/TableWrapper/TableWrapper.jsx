@@ -4,6 +4,10 @@ import TableWrapperHead from "./subComponents/TableWrapperHead";
 import TableWrapperBody from "./subComponents/TableWrapperBody";
 import { getRowClass } from "./helpers";
 import "../../../Css/Table.css";
+import {selectIndexesFromCell} from "../../../../../redux/selectors/selector";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { addIndexesFromIndexCell } from "../../../../../redux/reducers/toggledElements-reducer";
 
 const TableWrapper = ({ tableLogic, renderHeader = () => null, renderRowCells }) => {
   const {
@@ -18,6 +22,15 @@ const TableWrapper = ({ tableLogic, renderHeader = () => null, renderRowCells })
     isPagesNavbarLinkElementOnCurrentPagePressed,
     shouldRenderIndexesHeader
   } = tableLogic;
+
+const dispatch = useDispatch();
+  useEffect(() => {
+    const indexes= useSelector(selectIndexesFromCell)
+  if (indexes) {
+    const timer = setTimeout(() => dispatch(addIndexesFromIndexCell([])), 2000);
+    return () => clearTimeout(timer);
+  }
+}, [indexes]);
 
   return (
     <div className={`${s.tableWrapper} ${showDigitsFromPressed}`}>

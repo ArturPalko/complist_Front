@@ -1,4 +1,3 @@
-// hooks/useContexts.js
 import { createContext, useContext } from "react";
 
 /**

@@ -1,4 +1,3 @@
-import React from "react";
 import s from "./FilterPanel.module.css";
 import CustomCheckbox from "./CustomCheckbox/CustomCheckBox.jsx";
 import { Pages } from "../../../configs/app/constants.js";

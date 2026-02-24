@@ -1,64 +1,58 @@
 import { excludedKeys } from "../../../configs/search/excludedKeys"
 
-export const runSearch = ({
-  searchValue,
-  searchTarget,
-}) => {
-  const searchValueTrimmed = searchValue.trim();
-
-  if (searchValueTrimmed.length < 3) {
-    return [];
-  }
+export const runSearch = ({ searchValue, searchTarget }) => {
+  const trimmedLower = searchValue.trim().toLowerCase();
+  if (trimmedLower.length < 3) return [];
 
   const foundResults = [];
 
-  searchTarget.forEach(page => {
-    if (!page?.rows) return;
+  for (const page of searchTarget) {
+    const rows = page?.rows;
+    if (!rows) continue;
 
-    page.rows.forEach((row, rowIndex) => {
-      if (!row) return;
+    for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
+      const row = rows[rowIndex];
+      if (!row) continue;
 
       const index = rowIndex + 1;
-      let foundInRow = false;
 
-      for (const [key, value] of Object.entries(row)) {
-        if (
+      // Перевіряємо ключі рядка
+      const matchedKey = Object.entries(row).find(
+        ([key, value]) =>
           !excludedKeys.includes(key) &&
           typeof value === "string" &&
-          value.toLowerCase().includes(searchValueTrimmed.toLowerCase())
-        ) {
-          foundResults.push({
-            elementType: row.type,
-            dataKey: key,
-            dataValue: value,
-            currentPage: page.pageIndex,
-            index,
-          });
+          value.toLowerCase().includes(trimmedLower)
+      );
 
-          foundInRow = true;
-          break;
-        }
+      if (matchedKey) {
+        const [key, value] = matchedKey;
+        foundResults.push({
+          elementType: row.type,
+          dataKey: key,
+          dataValue: value,
+          currentPage: page.pageIndex,
+          index,
+        });
+        continue; // одразу йдемо до наступного рядка
       }
 
-      if (!foundInRow && Array.isArray(row.phones)) {
-        row.phones.forEach(phone => {
-          if (
-            phone?.phoneName
-              ?.toLowerCase()
-              .includes(searchValueTrimmed.toLowerCase())
-          ) {
+      // Перевіряємо телефони, якщо ключі не дали збігів
+      if (Array.isArray(row.phones)) {
+        for (const phone of row.phones) {
+          const phoneName = phone?.phoneName;
+          if (phoneName?.toLowerCase().includes(trimmedLower)) {
             foundResults.push({
               elementType: row.type,
               dataKey: "phoneName",
-              dataValue: phone.phoneName,
+              dataValue: phoneName,
               currentPage: page.pageIndex,
               index,
             });
           }
-        });
+        }
       }
-    });
-  });
+    }
+  }
 
   return foundResults;
 };

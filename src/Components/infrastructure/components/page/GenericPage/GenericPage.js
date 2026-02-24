@@ -17,6 +17,7 @@ const GenericPage = ({
   const titleRef = useRef(null);
   const pageNumber = usePageNumber();
   const indexes = useIndexesForPage(pageName);
+  debugger;
 
   const config = pageConfigs[pageName];
 

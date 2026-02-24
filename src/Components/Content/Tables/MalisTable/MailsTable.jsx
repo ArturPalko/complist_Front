@@ -1,7 +1,6 @@
 import { useMailsTableLogic } from "../../../../redux/hooks/useMailsTableLogic";
 import { createTableComponent } from "../../../../Components/infrastructure/components/table/TableWrapper/tableFactory";
 
-// Створюємо базовий компонент через фабрику та передаємо свої стилі
 const BaseMailsTable = createTableComponent(useMailsTableLogic);
 
 const MailsTable = ({

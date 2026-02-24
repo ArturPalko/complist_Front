@@ -10,7 +10,7 @@ export const redirectToPage = ({ navigate, activeMenu, currentPage = 1 }) => {
 
 
   const path = `${config.basePath}${currentPage}`;
-  debugger;
+
   navigate(path);
 };
 

@@ -1,4 +1,3 @@
-import React, { useMemo } from "react";
 import { connect } from "react-redux";
 
 import {

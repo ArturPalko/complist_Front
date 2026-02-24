@@ -88,7 +88,7 @@ const PagesNavBar = (props) => {
     });
 
     lastPageRef.current = { pageName, pageFromURL };
-  }, [pageName, pageFromURL]); // тільки стабільні залежності
+  }, [pageName, pageFromURL]);
 
   // --- Effect для обробки пошуку
   useEffect(() => {

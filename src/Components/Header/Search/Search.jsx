@@ -32,7 +32,8 @@ const Search = ({
   const inputRef = useRef(null);
   const [showNotFound, setShowNotFound] = useState(false);
 
-  const { draftValue = "", searchValue = "", userSearchedOnce = false, lastSearchFound = true } = searchState;
+  
+   const { draftValue, searchValue, userSearchedOnce, lastSearchFound} = searchState;
 
   const inputValue = showNotFound ? "Не знайдено" : draftValue || searchValue || "";
 

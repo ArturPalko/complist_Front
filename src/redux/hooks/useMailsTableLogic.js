@@ -1,4 +1,3 @@
-// useMailsTableLogic.js
 import { useTableBaseLogic } from "../../Components/infrastructure/hooks/useTableBaseLogic";
 import { useSelector } from "react-redux";
 import { activeMenu } from "../selectors/selector";

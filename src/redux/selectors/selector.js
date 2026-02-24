@@ -164,4 +164,7 @@ export const selectPhonesSubcondions = (state) => {
   return state.filters.phones?.usedFilters?.subFilters || {};
 };
 
-
+///////////
+export const selectIndexesFromCell = (state) => {
+  return state.toggledElements.indexesFomIndexCell || []
+}

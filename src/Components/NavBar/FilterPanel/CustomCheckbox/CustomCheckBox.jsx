@@ -1,4 +1,3 @@
-import React from "react";
 import s from "./CustomCheckBox.module.css"
 
 const CustomCheckbox = ({ label, bgColor = "white", checkColor = "white", checked, onChange,disabled }) => {

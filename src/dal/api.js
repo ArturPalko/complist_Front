@@ -26,3 +26,17 @@ api.interceptors.response.use(
 );
 
 
+export const fetchPasswordsByType = async (type) => {
+  const endpoint = passwordUrls[type];
+  if (!endpoint) {
+    throw new Error(`No password URL defined for menu "${type}"`);
+  }
+
+  const { data } = await api.get(endpoint);
+
+  return data.reduce((acc, item) => {
+    acc[item.id] = item.password;
+  
+    return acc;
+  }, {});
+};

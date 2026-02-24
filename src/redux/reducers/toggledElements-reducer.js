@@ -5,6 +5,7 @@ const ADD_FOUND_ITEMS = "ADD_FOUND_ITEMS";
 const CLEAR_SEARCH_FORM = "CLEAR_SEARCH_FORM";
 const CLEAR_SEARCH_FIELDS_AND_FOUND_RESULTS = "CLEAR_SEARCH_FIELDS_AND_FOUND_RESULTS";
 const UPDATE_DRAFT_VALUE = "UPDATE_DRAFT_VALUE";
+const ADD_INDEXES_FROM_INDEXCELL = "ADD_INDEXES_FROM_INDEXCELL";
 
 const createSearchState = () => ({
   draftValue: "",
@@ -18,6 +19,7 @@ const initialState = {
   showSearchField: { isActive: false },
   showFilterPanel: { isActive: false },
   pagesNavbarLinkElementOnCurrentPage: { isPressed: false },
+  indexesFomIndexCell: [],
   searchField: {
     "Gov-ua": createSearchState(),
     Lotus: createSearchState(),
@@ -27,6 +29,14 @@ const initialState = {
 
 export const toggledElemetsReducer = (state = initialState, action) => {
   switch (action.type) {
+
+
+    case ADD_INDEXES_FROM_INDEXCELL:
+      return{
+        ...state,
+        indexesFomIndexCell:[action.indexes]
+
+      }
 
     case TOGGLE_FIELTER_PANEL_ELEMENT:
       return {
@@ -150,4 +160,9 @@ export const clearSearchForm = (activeMenu) => ({
 
 export const clearSearchFieldsAndFoundResults = () => ({
   type: CLEAR_SEARCH_FIELDS_AND_FOUND_RESULTS
+});
+
+export const addIndexesFromIndexCell = (indexes) => ({
+  type: ADD_INDEXES_FROM_INDEXCELL,
+  indexes
 });

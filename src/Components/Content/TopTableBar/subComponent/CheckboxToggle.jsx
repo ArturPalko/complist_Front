@@ -1,4 +1,3 @@
-import React from "react";
 import s from "../TopTableBar.module.css";
 
 const CheckboxToggle = ({ checked, onChange, color, label }) => {

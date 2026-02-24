@@ -7,6 +7,7 @@ import {getPageIndexDataOfFoundResultsByPage, getCurrentPageNumberByKey,
  } from "../selectors/selector";
 import { activeMenu as activeMenuSelector, getIndexesOfFiltredResults} from "../selectors/selector";
 import { createSelector } from '@reduxjs/toolkit';
+import { selectIndexesFromCell } from "../selectors/selector";
 
 
 export const usePageNumber = () => {
@@ -30,30 +31,31 @@ export const useTrackLocation = () => {
 
 
 
-
 export const useIndexesForPage = (pageKey) => {
-  const pageNumber = useSelector(
+  const dispatch = useDispatch();
+
+  const indexesFromIndexCell = useSelector(selectIndexesFromCell);
+
+  const indexesFromPage = useSelector(
     createSelector(
       state => state,
       state => pageKey,
-      (state, pageKey) => getCurrentPageNumberByKey(pageKey)(state)
+      (state, pageKey) => {
+        const pageNumber = getCurrentPageNumberByKey(pageKey)(state);
+        const data = getPageIndexDataOfFoundResultsByPage(pageKey)(state) || [];
+        return data
+          .filter(item => Number(item.currentPage) === Number(pageNumber))
+          .map(item => item.index);
+      }
     )
   );
 
-  const data = useSelector(
-    createSelector(
-      state => state,
-      state => pageKey,
-      (state, pageKey) => getPageIndexDataOfFoundResultsByPage(pageKey)(state) || []
-    )
-  );
+  const indexes = indexesFromIndexCell?.length ? indexesFromIndexCell : indexesFromPage;
 
-  const indexes = data
-    .filter(item => Number(item.currentPage) === Number(pageNumber))
-    .map(item => item.index);
 
   return indexes;
 };
+
 
 
 
@@ -141,4 +143,3 @@ export const useFoundResultsColNumbersLogic = ({
     showPreviousPageHighlight,
   };
 };
-

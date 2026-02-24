@@ -1,4 +1,3 @@
-// usePhonesTableLogic.js
 import { useSelector } from "react-redux";
 import { useTableBaseLogic } from "../../Components/infrastructure/hooks/useTableBaseLogic";
 import { getDepartmentsAndSectionsPerPage } from "../selectors/selector";
@@ -25,6 +24,6 @@ export const usePhonesTableLogic = (props) => {
   return {
     ...tableLogic,
     indexDecrementFromPreviousPages,
-    dimClasses, // { dimAfterSearchNavigationClass, dimAfterPageNumberPressedClass }
+    dimClasses
   };
 };
