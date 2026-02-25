@@ -51,11 +51,11 @@ function NavBar() {
           )}
         </div>
 
-        <div style={{ position: "relative" }}>
+        {/* <div style={{ position: "relative" }}> */}
           {showPagesNavigation && <PagesNavBar />}
 
        <Filter/>
-        </div>
+        {/* </div> */}
       </nav>
     </div>
   );

@@ -27,7 +27,10 @@ const handleClick = useCallback(() => {
 
   setClickedRow(true);
 
-if (!isNonUserRowType)  dispatch(addIndexesFromIndexCell([cellData.index]));
+const hery = isNonUserRowType;
+
+if (!hery)  dispatch(addIndexesFromIndexCell([cellData.index]));
+debugger;
 
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {

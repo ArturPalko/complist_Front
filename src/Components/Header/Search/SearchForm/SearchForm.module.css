@@ -1,35 +1,35 @@
 .form {
   display: flex;
   align-items: center;
-  gap: 9px; /* 12 * 0.75 */
+  gap: 9px; 
   background: linear-gradient(135deg, #4a90e2, #357abd);
-  padding: 6px 15px; /* 12*0.75 , 20*0.75 */
-  border-radius: 9px; /* 12*0.75 */
-  box-shadow: 0 3px 7.5px rgba(0, 0, 0, 0.15); /* 4*0.75 , 10*0.75 */
+  padding: 6px 15px; 
+  border-radius: 9px;
+  box-shadow: 0 3px 7.5px rgba(0, 0, 0, 0.15);
   width: 375px; /* 500*0.75 */
 }
 
 .searchInput {
   flex: 2;
-  padding: 8px 10.5px; /* 10*0.75 , 14*0.75 */
+  padding: 8px 10.5px;
   border: none;
-  border-radius: 6px; /* 8*0.75 */
+  border-radius: 6px; 
   outline: none;
-  font-size: 12px; /* 16*0.75 */
+  font-size: 12px;
   transition: all 0.3s ease;
 }
 
 .searchInput:focus {
-  box-shadow: 0 0 0 2.25px rgba(74, 144, 226, 0.4); /* 3*0.75 */
+  box-shadow: 0 0 0 2.25px rgba(74, 144, 226, 0.4); 
 }
 
 .searchButton {
-  padding: 7.5px 13.5px; /* 10*0.75 , 18*0.75 */
+  padding: 7.5px 13.5px; 
   border: none;
-  border-radius: 6px; /* 8*0.75 */
+  border-radius: 6px;
   background: #ff6b6b;
   color: white;
-  font-size: 12px; /* 16*0.75 */
+  font-size: 12px; 
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -37,7 +37,7 @@
 
 .searchButton:hover {
   background: #ff4c4c;
-  transform: translateY(-1.5px); /* 2*0.75 */
+  transform: translateY(-1.5px);
 }
 
 .searchButton:active {
@@ -46,8 +46,8 @@
 
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
-  20%, 60% { transform: translateX(-4.5px); } /* 6*0.75 */
-  40%, 80% { transform: translateX(4.5px); } /* 6*0.75 */
+  20%, 60% { transform: translateX(-4.5px); } 
+  40%, 80% { transform: translateX(4.5px); } 
 }
 
 .shake {
@@ -58,7 +58,7 @@
 .searchBlock {
   display: flex;
   flex: 0;
-  gap: 7.5px; /* 10*0.75 */
+  gap: 7.5px;
 }
 
 .resultsInfo {
@@ -66,8 +66,8 @@
   flex: 1;
   align-items: center;
   position: absolute;
-  padding-top: 5.25px; /* 7*0.75 */
-  margin-left: 442.5px; /* 590*0.75 */
+  padding-top: 5.25px; 
+  margin-left: 442.5px;
 }
 
 .searchInputSupportText {

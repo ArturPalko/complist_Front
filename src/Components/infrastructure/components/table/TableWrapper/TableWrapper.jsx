@@ -24,17 +24,7 @@ const TableWrapper = ({ tableLogic, renderHeader = () => null, renderRowCells })
     isPagesNavbarLinkElementOnCurrentPagePressed,
     shouldRenderIndexesHeader
   } = tableLogic;
-  const dispatch = useDispatch();
-  debugger;
-  // ✅ викликаємо hook тут
-  const indexes = useSelector(selectIndexesFromCell);
-  useEffect(() => {
-    
-  if (indexes) {
-    const timer = setTimeout(() => dispatch(addIndexesFromIndexCell([])), 2000);
-    return () => clearTimeout(timer);
-  }
-}, [indexes]);
+
 
   return (
     <div className={`${s.tableWrapper} ${showDigitsFromPressed}`}>
