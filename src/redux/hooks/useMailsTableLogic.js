@@ -1,4 +1,4 @@
-import { useTableBaseLogic } from "../../Components/infrastructure/hooks/useTableBaseLogic";
+import { useTableBaseLogic } from "../../shared/hooks/useTableBaseLogic";
 import { useSelector } from "react-redux";
 import { activeMenu } from "../selectors/selector";
 

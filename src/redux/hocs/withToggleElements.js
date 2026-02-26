@@ -16,7 +16,7 @@ import {
 } from "../../redux/selectors/selector";
 import {SearchToggleContext, PasswordsToggleContext} from "../contexts/useConetxt.js"
 
-import { redirectToPage } from "../../Components/NavBar/commonFunctions.js";
+import { redirectToPage } from "../../shared/functions/redirectToPage.js";
 import { fetchPasswordsByType } from "../../dal/api.js"; 
 
 

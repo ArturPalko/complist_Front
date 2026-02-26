@@ -168,3 +168,4 @@ export const selectPhonesSubcondions = (state) => {
 export const selectIndexesFromCell = (state) => {
   return state.toggledElements.indexesFromIndexCell || []
 }
+

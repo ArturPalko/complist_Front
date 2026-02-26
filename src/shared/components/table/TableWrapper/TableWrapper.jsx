@@ -4,11 +4,6 @@ import TableWrapperHead from "./subComponents/TableWrapperHead";
 import TableWrapperBody from "./subComponents/TableWrapperBody";
 import { getRowClass } from "./helpers";
 import "../../../Css/Table.css";
-import {selectIndexesFromCell} from "../../../../../redux/selectors/selector";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import { addIndexesFromIndexCell } from "../../../../../redux/reducers/toggledElements-reducer";
-import { useEffect } from "react";
 
 
 const TableWrapper = ({ tableLogic, renderHeader = () => null, renderRowCells }) => {

@@ -11,7 +11,7 @@ import {
 
 import { toggleFielterPanelElement } from "../../../redux/reducers/toggledElements-reducer";
 import { clearFiltredData } from "../../../redux/reducers/filterData-reducer";
-import { redirectToPage } from "../commonFunctions";
+import { redirectToPage } from "../../../shared/functions/redirectToPage";
 
 import s from "./Filter.module.css"; // файл стилів
 

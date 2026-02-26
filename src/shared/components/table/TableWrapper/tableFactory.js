@@ -1,7 +1,7 @@
 import { useRef, useMemo, useCallback } from "react";
-import { useFoundResults, usePageContext } from "../../../../../redux/contexts/useConetxt";
+import { useFoundResults, usePageContext } from "../../../../redux/contexts/useConetxt";
 import TableWrapper from "./TableWrapper";
-import { useRedirectHighlight } from "../../../../../redux/hooks/useRedirectHighLight";
+import { useRedirectHighlight } from "../../../../redux/hooks/useRedirectHighLight";
 
 export const createTableComponent = (useTableLogic) => {
   return function TableComponent(props) {

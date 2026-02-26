@@ -1,11 +1,11 @@
 import  { useRef, useMemo } from "react";
-import TopTableBar from "../../../../Content/TopTableBar/TopTableBar";
-import { rowsPerPage } from "../../../../../configs/app/constants";
-import { useIndexesForPage, usePageNumber } from "../../../../../redux/hooks/hooks";
-import { pageConfigs } from "../../../../../configs/app/pageConfig";
+import TopTableBar from "../../../../Components/Content/TopTableBar/TopTableBar";
+import { rowsPerPage } from "../../../../configs/app/constants";
+import { useIndexesForPage, usePageNumber } from "../../../../redux/hooks/hooks";
+import { pageConfigs } from "../../../../configs/app/pageConfig";
 import { connect } from "react-redux";
-import { getDepartmentsAndSectionsPerPage } from "../../../../../redux/selectors/selector";
-import { PageContext } from "../../../../../redux/contexts/useConetxt";
+import { getDepartmentsAndSectionsPerPage } from "../../../../redux/selectors/selector";
+import { PageContext } from "../../../../redux/contexts/useConetxt";
 
 
 const GenericPage = ({
@@ -16,6 +16,7 @@ const GenericPage = ({
 }) => {
   const titleRef = useRef(null);
   const pageNumber = usePageNumber();
+  // const indexes = useIndexesForPage(pageName);
   const indexes = useIndexesForPage(pageName);
   
 

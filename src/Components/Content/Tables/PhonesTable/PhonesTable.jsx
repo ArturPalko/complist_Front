@@ -1,7 +1,6 @@
-// PhonesTable.js
 import s from "./PhonesTable.module.css";
 import { usePhonesTableLogic } from "../../../../redux/hooks/usePhonesTableLogic";
-import { createTableComponent } from "../../../infrastructure/components/table/TableWrapper/tableFactory";
+import { createTableComponent } from "../../../../shared/components/table/TableWrapper/tableFactory";
 
 import {
   countNonUserRowsBefore,

@@ -6,7 +6,7 @@ import { Route, Routes } from "react-router-dom";
 import GovUaMails from "./Components/Content/Pages/GovUaMails/GovUaMails";
 import LotusMails from "./Components/Content/Pages/LotusMails/LotusMails";
 import Phones from "./Components/Content/Pages/Phones/Phones";
-import RedirectToCurrentPage from "./Components/infrastructure/components/navigation/RedirectToCurrentPage/RedirectToCurrentPage";
+import RedirectToCurrentPage from "./shared/components/navigation/RedirectToCurrentPage/RedirectToCurrentPage";
 import Error from "./Components/UI/Error/Error";
 import FoundResults from "./Components/FoundResults/FoundResults";
 

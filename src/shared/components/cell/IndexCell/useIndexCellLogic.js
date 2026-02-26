@@ -1,8 +1,8 @@
 
 import { useState, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { pageConfigs } from "../../../../../configs/app/pageConfig";
-import { addIndexesFromIndexCell } from "../../../../../redux/reducers/toggledElements-reducer";
+import { pageConfigs } from "../../../../configs/app/pageConfig";
+import { addIndexesFromIndexCell } from "../../../../redux/reducers/toggledElements-reducer";
 import { useDispatch } from "react-redux";
 export const useIndexCellLogic = (index, indexData, pageName, isNonUserRowType) => {
   const [hoveredRow, setHoveredRow] = useState(false);

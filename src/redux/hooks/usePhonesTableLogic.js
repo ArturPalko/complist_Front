@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { useTableBaseLogic } from "../../Components/infrastructure/hooks/useTableBaseLogic";
+import { useTableBaseLogic } from "../../shared/hooks/useTableBaseLogic";
 import { getDepartmentsAndSectionsPerPage } from "../selectors/selector";
 import { getDimGroupRowClasses } from "../../Components/Content/Tables/PhonesTable/phonesTableHelpers";
 import s from "../../Components/Content/Tables/PhonesTable/PhonesTable.module.css"

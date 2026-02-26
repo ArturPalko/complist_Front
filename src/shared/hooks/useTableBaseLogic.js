@@ -1,20 +1,19 @@
-// useTableBaseLogic.js
 import { useRef, useMemo } from "react";
 import { useSelector } from "react-redux";
 
 import {
   useFilteredPageData,
   useFoundResultsColNumbersLogic,
-} from "../../../redux/hooks/hooks";
+} from "../../redux/hooks/hooks";
 
-import { useRowHeights } from "../../../redux/hooks/useSyncRowHeights";
+import { useRowHeights } from "../../redux/hooks/useSyncRowHeights";
 
 import {
   activeMenu,
   isCurrentPageFoundResult,
-} from "../../../redux/selectors/selector";
+} from "../../redux/selectors/selector";
 
-import { useDataLoader, useSearchToggle } from "../../../redux/contexts/useConetxt";
+import { useDataLoader, useSearchToggle } from "../../redux/contexts/useConetxt";
 
 export const useTableBaseLogic = ({
   columns,

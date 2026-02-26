@@ -1,5 +1,5 @@
 import { useMailsTableLogic } from "../../../../redux/hooks/useMailsTableLogic";
-import { createTableComponent } from "../../../../Components/infrastructure/components/table/TableWrapper/tableFactory";
+import { createTableComponent } from "../../../../shared/components/table/TableWrapper/tableFactory";
 
 const BaseMailsTable = createTableComponent(useMailsTableLogic);
 

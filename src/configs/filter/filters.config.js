@@ -1,4 +1,3 @@
-// filters.config.js
 import { Pages } from "../app/constants";
 
 export const FilterKeys = {

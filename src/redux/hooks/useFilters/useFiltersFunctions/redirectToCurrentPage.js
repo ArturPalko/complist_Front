@@ -1,4 +1,4 @@
-import { redirectToPage } from "../../../../Components/NavBar/commonFunctions";
+import { redirectToPage } from "../../../../shared/functions/redirectToPage";
 
 // Зберігаємо попереднє меню на рівні замикання модуля
 let prevMenu = null;

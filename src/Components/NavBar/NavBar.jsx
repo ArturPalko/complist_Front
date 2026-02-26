@@ -50,12 +50,8 @@ function NavBar() {
             </div>
           )}
         </div>
-
-        {/* <div style={{ position: "relative" }}> */}
           {showPagesNavigation && <PagesNavBar />}
-
-       <Filter/>
-        {/* </div> */}
+          <Filter/>
       </nav>
     </div>
   );

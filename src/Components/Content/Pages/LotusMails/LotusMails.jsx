@@ -1,4 +1,4 @@
 import { Pages } from "../../../../configs/app/constants";
-import { createPage } from "../../../infrastructure/components/page/GenericPage/pageFactory";
+import {createPage} from "../../../../shared/components/page/GenericPage/pageFactory"
 
 export default createPage(Pages.LOTUS);

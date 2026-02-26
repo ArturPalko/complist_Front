@@ -1,5 +1,5 @@
-import redArrowImg from "../../../../../assets/Img/red_arrow.png"
-import { FoundResultsContext } from "../../../../../redux/contexts/useConetxt";
+import redArrowImg from "../../../../assets/Img/red_arrow.png"
+import { FoundResultsContext } from "../../../../redux/contexts/useConetxt";
 import styles from "./IndexCell.module.css"
 import { useContext } from "react";
 
