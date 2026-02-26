@@ -8,6 +8,7 @@ import { extractPositionsAndTypes } from "./helpFunctions/extractPositionsAndTyp
 import { countDepartmentsAndSections } from "./helpFunctions/countDepartmentsAndSections";
 import { getBaseLinkByMenu } from "./helpFunctions/getBaseLinkByMenu";
 import { processFoundResults } from "./helpFunctions/processFoundResults";
+import {findDashedBlocks} from "./helpFunctions/findDashedBlocks";
 
 // =====Допоміжні селектори=======================
 
@@ -168,4 +169,9 @@ export const selectPhonesSubcondions = (state) => {
 export const selectIndexesFromCell = (state) => {
   return state.toggledElements.indexesFromIndexCell || []
 }
+//////************** */
+export const selectDashedBlocks = createSelector(
+  [(state) => getDataForMenu(state, "phones")],
+  (pages) => findDashedBlocks(pages)
+);
 
