@@ -1,19 +1,19 @@
 import { useSelector } from "react-redux";
 import { useTableBaseLogic } from "../../shared/hooks/useTableBaseLogic";
-import { getDepartmentsAndSectionsPerPage } from "../selectors/selector";
+import { getDepartmentsAndSectionsPerPage, selectDashedBlocks } from "../selectors/selector";
 import { getDimGroupRowClasses } from "../../Components/Content/Tables/PhonesTable/phonesTableHelpers";
-import s from "../../Components/Content/Tables/PhonesTable/PhonesTable.module.css"
+import s from "../../Components/Content/Tables/PhonesTable/PhonesTable.module.css";
 
 export const usePhonesTableLogic = (props) => {
-  // ===== Викликаємо базовий хук для універсальної логіки =====
+  // ===== Базова логіка =====
   const tableLogic = useTableBaseLogic({ ...props });
 
-  // ===== Специфічна логіка тільки для PhonesTable =====
+  // ===== Обчислення індексів для номера користувача =====
   const indexDecrementFromPreviousPages = useSelector(getDepartmentsAndSectionsPerPage)
     .slice(0, props.pageNumber - 1)
     .reduce((acc, val) => acc + val, 0);
 
-  // ===== Обчислення dim-класів для рендеру рядків =====
+  // ===== dim-класи для рендеру рядків =====
   const dimClasses = getDimGroupRowClasses({
     hasFoundResults: props.indexesOfFoundResultsForCurrentPage?.length > 0,
     showPreviousPageHighlight: tableLogic.showPreviousPageHighlight,
@@ -21,9 +21,13 @@ export const usePhonesTableLogic = (props) => {
     styles: s,
   });
 
+  // ===== Нове: розриви департаментів і секцій =====
+  const dashedBlocks = useSelector(selectDashedBlocks); // { departments: [], sections: [] }
+
   return {
     ...tableLogic,
     indexDecrementFromPreviousPages,
-    dimClasses
+    dimClasses,
+    dashedBlocks, // додаємо сюди
   };
 };

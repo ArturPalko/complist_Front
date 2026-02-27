@@ -27,8 +27,8 @@
 
 
 .breakImage {
-  float: left;       /* вирівнювання праворуч всередині td */
-  height: 15px;       /* висота картинки, підкоригуй під дизайн */
-  width: auto;        /* зберігаємо пропорції */
-  margin-left: 18px;   /* відступ від тексту */
+  float: left;        
+  height: 1.3em;        
+  width: auto;        
+  margin-left: 1.7em; 
 }

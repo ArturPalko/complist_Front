@@ -12,6 +12,7 @@ import FoundResults from "./Components/FoundResults/FoundResults";
 
 import { useTrackLocation } from "./redux/hooks/hooks";
 import { Pages } from "./configs/app/constants";
+import Login from "./Components/Content/Pages/Login/Login.jsx"
 
 function App() {
   useTrackLocation();
@@ -25,6 +26,9 @@ function App() {
         <Routes>
           {/* Error */}
           <Route path="/error" element={<Error />} />
+
+             {/* Error */}
+          <Route path="/login" element={<Login />} />
 
           {/* root → Gov-ua */}
           <Route

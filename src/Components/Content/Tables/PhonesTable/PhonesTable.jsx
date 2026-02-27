@@ -1,16 +1,13 @@
 import s from "./PhonesTable.module.css";
-import { useSelector } from "react-redux";
 import { usePhonesTableLogic } from "../../../../redux/hooks/usePhonesTableLogic";
 import { createTableComponent } from "../../../../shared/components/table/TableWrapper/tableFactory";
 import { countNonUserRowsBefore, getUserRowIndex } from "./phonesTableHelpers";
 import torn_pageImg from "../../../../assets/Img/torn_page.png";
-import { selectDashedBlocks } from "../../../../redux/selectors/selector";
 
 const BasePhonesTable = createTableComponent(usePhonesTableLogic);
 
 const PhonesTable = ({ columns, pageNumber, rowsPerPage }) => {
 
-  const dashedBlocks = useSelector(selectDashedBlocks);
 
   const renderHeader = () => (
     <>
@@ -44,8 +41,8 @@ const PhonesTable = ({ columns, pageNumber, rowsPerPage }) => {
         const className = isDepartment ? s.mainDepartment : s.section;
 
         const showBreak = isDepartment
-          ? dashedBlocks.departments.some(d => d === name)
-          : dashedBlocks.sections.includes(name);
+          ? tableLogic.dashedBlocks.departments.some(d => d === name)
+          : tableLogic.dashedBlocks.sections.includes(name);
         return (
           <td
             className={`${className} ${dimAfterSearchNavigationClass} ${dimAfterPageNumberPressedClass}`}
