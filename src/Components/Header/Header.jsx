@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import s from './Header.module.css';
 import Search from './Search/Search';
 import StatusBar from './StatusBar/StatusBar.jsx';
+import AuthPanel from './AuthPanel/AuthPanel.jsx';
 
 // Обгортка для передачі navigate в класовий компонент
 function withNavigation(Component) {
@@ -28,12 +29,7 @@ class Header extends React.Component {
                     <Search />
                 </div>
                 <div className={s.singIn}>
-                    <button 
-                        className={s.button} 
-                        onClick={this.handleLoginClick}
-                    >
-                        Вхід
-                    </button>
+                   <AuthPanel />
                 </div>
             </div>
         );

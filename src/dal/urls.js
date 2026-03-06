@@ -13,3 +13,5 @@ export const dataUrls = {
   [Pages.LOTUS]: pageConfigs[Pages.LOTUS].basePath,
   [Pages.GOV_UA]: pageConfigs[Pages.GOV_UA].basePath,
 };
+
+export const loginUrl = "/login";

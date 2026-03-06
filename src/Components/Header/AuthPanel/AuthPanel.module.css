@@ -1,0 +1,74 @@
+/* контейнер авторизації */
+.singIn {
+  flex-shrink: 0;
+  margin: 0;
+  padding-right: 10px;
+  position: relative;
+  left: 0;
+  transition: left 0.2s ease;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* блок користувача */
+.userBlock {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ім'я користувача */
+.userName {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #333;
+  white-space: nowrap;
+}
+
+/* кнопка входу */
+.button {
+  background: linear-gradient(135deg, #00e5ff, #0099cc);
+  border: none;
+  padding: 5px 12px;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+}
+
+.button:hover {
+  background: linear-gradient(135deg, #00c0d6, #007a99);
+  transform: scale(1.03);
+  box-shadow: 0 4.5px 10px rgba(0,0,0,0.2);
+}
+
+.button:active {
+  transform: scale(0.97);
+}
+
+/* кнопка виходу */
+.logoutButton {
+  background: linear-gradient(135deg, #ff6b6b, #d9363e);
+  border: none;
+  padding: 4px 10px;
+  border-radius: 5px;
+  color: white;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+}
+
+.logoutButton:hover {
+  background: linear-gradient(135deg, #ff4d4f, #b71c1c);
+  transform: scale(1.03);
+  box-shadow: 0 4px 9px rgba(0,0,0,0.2);
+}
+
+.logoutButton:active {
+  transform: scale(0.97);
+}

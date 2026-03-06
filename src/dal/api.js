@@ -1,12 +1,17 @@
 import axios from "axios";
 import axiosRetry from "axios-retry";
-import { passwordUrls } from "./urls";
+import { passwordUrls, loginUrl } from "./urls";
+import { loginSuccess, loginFailure } from "../redux/reducers/auth-reducer";
 
 export const api = axios.create({
   baseURL: "http://localhost:5114", 
-  timeout: 10000 
+  timeout: 10000
 });
-
+export const apiPrivate = axios.create({
+  baseURL: "http://localhost:5114",
+  timeout: 10000,
+  withCredentials: true, // критично для отримання cookie
+});
 // Автоматичні повтори запитів при помилках
 axiosRetry(api, {
   retries: 3, // кількість повторів
@@ -32,11 +37,25 @@ export const fetchPasswordsByType = async (type) => {
     throw new Error(`No password URL defined for menu "${type}"`);
   }
 
-  const { data } = await api.get(endpoint);
+  const { data } = await apiPrivate.get(endpoint);
 
   return data.reduce((acc, item) => {
     acc[item.id] = item.password;
   
     return acc;
   }, {});
+};
+
+export const loginUser = (data) => async (dispatch) => {
+  try {
+    const response = await apiPrivate.post(loginUrl, data);
+    console.log(response);
+debugger;
+    dispatch(loginSuccess(response.data));
+
+  } catch (err) {
+    debugger;
+    const message = err.response?.data || "Login failed";
+    dispatch(loginFailure(message));
+  }
 };

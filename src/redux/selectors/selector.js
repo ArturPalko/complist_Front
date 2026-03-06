@@ -175,3 +175,14 @@ export const selectDashedBlocks = createSelector(
   (pages) => findDashedBlocks(pages)
 );
 
+export const formMessage = (state) => {
+  return state.auth.message;
+}
+
+export const authUserName = (state) => {
+  return state.auth.userName;
+}
+
+export const isUserAuthed = (state) => {
+  return state.auth.isLoggedIn;
+}
