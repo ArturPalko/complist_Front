@@ -30,7 +30,7 @@ const handleClick = useCallback(() => {
 const hery = isNonUserRowType;
 
 if (!hery)  dispatch(addIndexesFromIndexCell([cellData.index]));
-debugger;
+
 
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {

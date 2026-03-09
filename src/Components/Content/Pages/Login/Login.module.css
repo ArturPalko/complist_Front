@@ -1,114 +1,53 @@
-.form {
-    width: 100%;
-    max-width: 18.75em;      /* ~300px */
-    margin: 7.5em auto 0 auto; /* 120px зверху -> 7.5em, по горизонталі auto */
-    padding: 1.875em;        /* ~30px */
-    background: #fff;
-    border-radius: 0.75em;   /* ~12px */
-    box-shadow: 0 0.25em 0.9375em rgba(0,0,0,0.1); /* ~4px 15px */
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
+/* --- Blur фону --- */
+.blurred {
+  filter: blur(5px);
+  pointer-events: none;
+  user-select: none; 
 }
 
-.title {
-    text-align: center;
-    margin-bottom: 1.25em; /* ~20px */
-    font-family: sans-serif;
-    font-size: 1.25em; /* відносний до базового шрифту */
+/* --- Overlay --- */
+.loginOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.35); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; 
 }
 
-.inputGroup {
-    position: relative;
-    margin-bottom: 1.25em; /* ~20px */
+/* --- Модалка --- */
+.loginModal {
+  background: #fff;
+  border-radius: 12px;
+  padding: 30px 40px;
+  min-width: 320px;
+  max-width: 400px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  position: relative;
+  z-index: 10000; 
 }
 
-.inputGroup input {
-    width: 100%;
-    padding: 0.75em 0.625em; /* ~12px 10px */
-    font-size: 1em;          /* базовий шрифт */
-    border: 0.0625em solid #ccc; /* ~1px */
-    border-radius: 0.5em;    /* ~8px */
-    outline: none;
-    transition: border 0.3s;
-    box-sizing: border-box;
+/* --- Кнопка закриття модалки --- */
+.closeButton {
+  align-self: flex-end;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 10px;
 }
 
-.inputGroup input:focus {
-    border-color: #007bff;
+.closeButton:hover {
+  background-color: #0056b3;
 }
 
-/* Плаваючий label */
-.inputGroup label {
-    position: absolute;
-    left: 0.75em; /* ~12px */
-    top: 0.75em;  /* ~12px */
-    color: #aaa;
-    font-size: 1em; /* базовий шрифт */
-    pointer-events: none;
-    transition: 0.3s ease;
-    background: white;
-    padding: 0 0.25em; /* ~4px */
-}
-
-/* Піднімання label при фокусі або якщо поле заповнене */
-.inputGroup input:focus + label,
-.inputGroup label.filled {
-    top: -0.5em;     /* ~-8px */
-    left: 0.5em;     /* ~8px */
-    font-size: 0.75em; /* ~12px */
-    color: #007bff;
-}
-
-.togglePassword {
-    position: absolute;
-    right: 0.625em;  /* ~10px */
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    font-size: 0.75em; /* ~12px */
-    cursor: pointer;
-    color: #007bff;
-    display: flex;
-    align-items: center;
-    gap: 0.25em;
-}
-
-.submitButton {
-    padding: 0.75em;       /* ~12px */
-    border: none;
-    border-radius: 0.5em;  /* ~8px */
-    background-color: #007bff;
-    color: white;
-    font-size: 1em;        /* ~16px */
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.submitButton:hover {
-    background-color: #0056b3;
-}
-
-/* Підсвітка при помилках */
-.error input {
-    border-color: #ff4d4f;
-}
-
-.error label {
-    color: #ff4d4f;
-}
-
-.icon {
-    width: 1em;  /* відносно шрифту */
-    height: 1em;
-    object-fit: contain;
-}
-
-.formError {
-    color: #ff4d4f;
-    text-align: center;
-    margin-bottom: 12px;
-    font-weight: bold;
-    font-size: 0.9rem;
-}

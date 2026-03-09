@@ -53,7 +53,6 @@ const indexes =
   indexesFromIndexCell.length == 1
     ? indexesFromIndexCell // обгортаємо число в масив
     : indexesFromPage;
- debugger;
   return indexes;
 };
 

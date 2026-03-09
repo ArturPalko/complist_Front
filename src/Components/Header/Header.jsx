@@ -15,9 +15,9 @@ function withNavigation(Component) {
 }
 
 class Header extends React.Component {
-    handleLoginClick = () => {
-        this.props.navigate('/login');
-    }
+    // handleLoginClick = () => {
+    //     this.props.navigate('/login');
+    // }
 
     render() {
         return (

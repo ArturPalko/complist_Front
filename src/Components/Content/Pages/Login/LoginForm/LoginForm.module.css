@@ -1,0 +1,114 @@
+.form {
+    width: 100%;
+    max-width: 18.75em;      
+    margin: 7.5em auto 0 auto; 
+    padding: 1.875em;  
+    background: #fff;
+    border-radius: 0.75em; 
+    box-shadow: 0 0.25em 0.9375em rgba(0,0,0,0.1); 
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.title {
+    text-align: center;
+    margin-bottom: 1.25em; 
+    font-family: sans-serif;
+    font-size: 1.25em; 
+}
+
+.inputGroup {
+    position: relative;
+    margin-bottom: 1.25em; 
+}
+
+.inputGroup input {
+    width: 100%;
+    padding: 0.75em 0.625em; 
+    font-size: 1em;         
+    border: 0.0625em solid #ccc; 
+    border-radius: 0.5em;    
+    outline: none;
+    transition: border 0.3s;
+    box-sizing: border-box;
+}
+
+.inputGroup input:focus {
+    border-color: #007bff;
+}
+
+/* Плаваючий label */
+.inputGroup label {
+    position: absolute;
+    left: 0.75em; 
+    top: 0.75em;  
+    color: #aaa;
+    font-size: 1em; 
+    pointer-events: none;
+    transition: 0.3s ease;
+    background: white;
+    padding: 0 0.25em;
+}
+
+/* Піднімання label при фокусі або якщо поле заповнене */
+.inputGroup input:focus + label,
+.inputGroup label.filled {
+    top: -0.5em;     
+    left: 0.5em;     
+    font-size: 0.75em; 
+    color: #007bff;
+}
+
+.togglePassword {
+    position: absolute;
+    right: 0.625em;  
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 0.75em; 
+    cursor: pointer;
+    color: #007bff;
+    display: flex;
+    align-items: center;
+    gap: 0.25em;
+}
+
+.submitButton {
+    padding: 0.75em;       
+    border: none;
+    border-radius: 0.5em;  
+    background-color: #007bff;
+    color: white;
+    font-size: 1em;       
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.submitButton:hover {
+    background-color: #0056b3;
+}
+
+/* Підсвітка при помилках */
+.error input {
+    border-color: #ff4d4f;
+}
+
+.error label {
+    color: #ff4d4f;
+}
+
+.icon {
+    width: 1em; 
+    height: 1em;
+    object-fit: contain;
+}
+
+.formError {
+    color: #ff4d4f;
+    text-align: center;
+    margin-bottom: 12px;
+    font-weight: bold;
+    font-size: 0.9rem;
+}

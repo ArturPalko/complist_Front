@@ -1,17 +1,17 @@
-import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { connect } from "react-redux";
 import s from "./AuthPanel.module.css";
 import { authUserName, isUserAuthed } from "../../../redux/selectors/selector";
+import { logoutUser } from "../../../dal/api";
+import { openLogin, closeLogin } from "../../../redux/reducers/ui-reducer";
 
-
-const AuthPanel = () => {
-    const navigate = useNavigate();
-
-    const userName = useSelector(authUserName);
-    const isAuth = useSelector(isUserAuthed);
-
+const AuthPanel = ({ userName, isAuth, openLogin, closeLogin, logoutUser }) => {
     const handleLoginClick = () => {
-        navigate("/login");
+        openLogin();
+    };
+
+    const handleLogoutClick = () => {
+        logoutUser();
+        closeLogin();
     };
 
     if (!isAuth) {
@@ -24,15 +24,23 @@ const AuthPanel = () => {
 
     return (
         <div className={s.userBlock}>
-            <span className={s.userName}>
-                Привіт, {userName}
-            </span>
-
-            <button className={s.logout}>
+            <span className={s.userName}>Привіт, {userName}</span>
+            <button className={s.logout} onClick={handleLogoutClick}>
                 Вийти
             </button>
         </div>
     );
 };
 
-export default AuthPanel;
+const mapStateToProps = (state) => ({
+    userName: authUserName(state),
+    isAuth: isUserAuthed(state),
+});
+
+const mapDispatchToProps = {
+    openLogin,
+    closeLogin,
+    logoutUser,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(AuthPanel);

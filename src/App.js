@@ -12,10 +12,15 @@ import FoundResults from "./Components/FoundResults/FoundResults";
 
 import { useTrackLocation } from "./redux/hooks/hooks";
 import { Pages } from "./configs/app/constants";
-import Login from "./Components/Content/Pages/Login/Login.jsx"
+
+import Login from "./Components/Content/Pages/Login/Login";
+
+import { useSelector } from "react-redux";
 
 function App() {
   useTrackLocation();
+
+  const isLoginOpen = useSelector((state) => state.ui.isLoginOpen);
 
   return (
     <div className="app-wrapper">
@@ -23,58 +28,61 @@ function App() {
       <NavBar />
 
       <div className="app-wrapper-content">
-        <Routes>
-          {/* Error */}
-          <Route path="/error" element={<Error />} />
+        {/* Контент який буде blur */}
+        <div className={isLoginOpen ? "content-blur" : ""}>
+          <Routes>
+            {/* Error */}
+            <Route path="/error" element={<Error />} />
 
-             {/* Error */}
-          <Route path="/login" element={<Login />} />
-
-          {/* root → Gov-ua */}
-          <Route
-            path="/"
-            element={<RedirectToCurrentPage redirectMenu={Pages.GOV_UA} />}
-          />
-
-          {/* Phones */}
-          <Route path="/phones">
-            <Route path="foundResults" element={<FoundResults />} />
-            <Route path=":pageNumber" element={<Phones />} />
+            {/* root → Gov-ua */}
             <Route
-              index
-              element={
-                <RedirectToCurrentPage redirectMenu={Pages.PHONES} />
-              }
+              path="/"
+              element={<RedirectToCurrentPage redirectMenu={Pages.GOV_UA} />}
             />
-          </Route>
 
-          {/* Mails */}
-          <Route path="/mails">
-            {/* Gov-ua */}
-            <Route path="Gov-ua">
+            {/* Phones */}
+            <Route path="/phones">
               <Route path="foundResults" element={<FoundResults />} />
-              <Route path=":pageNumber" element={<GovUaMails />} />
+              <Route path=":pageNumber" element={<Phones />} />
               <Route
                 index
                 element={
-                  <RedirectToCurrentPage redirectMenu={Pages.GOV_UA} />
+                  <RedirectToCurrentPage redirectMenu={Pages.PHONES} />
                 }
               />
             </Route>
 
-            {/* Lotus */}
-            <Route path="Lotus">
-              <Route path="foundResults" element={<FoundResults />} />
-              <Route path=":pageNumber" element={<LotusMails />} />
-              <Route
-                index
-                element={
-                  <RedirectToCurrentPage redirectMenu={Pages.LOTUS} />
-                }
-              />
+            {/* Mails */}
+            <Route path="/mails">
+              {/* Gov-ua */}
+              <Route path="Gov-ua">
+                <Route path="foundResults" element={<FoundResults />} />
+                <Route path=":pageNumber" element={<GovUaMails />} />
+                <Route
+                  index
+                  element={
+                    <RedirectToCurrentPage redirectMenu={Pages.GOV_UA} />
+                  }
+                />
+              </Route>
+
+              {/* Lotus */}
+              <Route path="Lotus">
+                <Route path="foundResults" element={<FoundResults />} />
+                <Route path=":pageNumber" element={<LotusMails />} />
+                <Route
+                  index
+                  element={
+                    <RedirectToCurrentPage redirectMenu={Pages.LOTUS} />
+                  }
+                />
+              </Route>
             </Route>
-          </Route>
-        </Routes>
+          </Routes>
+        </div>
+
+        {/* LOGIN MODAL */}
+        {isLoginOpen && <Login />}
       </div>
     </div>
   );

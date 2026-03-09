@@ -15,3 +15,4 @@ export const dataUrls = {
 };
 
 export const loginUrl = "/login";
+export const logoutUrl = "/logout"

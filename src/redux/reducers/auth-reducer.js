@@ -12,7 +12,7 @@ const initialState = {
 export const authReducer = (state = initialState, action) => {
   switch (action.type) {
     case LOGIN_SUCCESS:
-      debugger;
+    
       return {
         ...state,
         isLoggedIn: true,
