@@ -1,35 +1,29 @@
 import { connect } from "react-redux";
 import s from "./AuthPanel.module.css";
 import { authUserName, isUserAuthed } from "../../../redux/selectors/selector";
-import { logoutUser } from "../../../dal/api";
-import { openLogin, closeLogin } from "../../../redux/reducers/ui-reducer";
+import { logoutUser } from "../../../dal/thunks/authThunks";
+import { useLoginModal } from "../../../redux/hooks/useLoginModal";
 
-const AuthPanel = ({ userName, isAuth, openLogin, closeLogin, logoutUser }) => {
-    const handleLoginClick = () => {
-        openLogin();
-    };
+const AuthPanel = ({ userName, isAuth, logoutUser }) => {
+  const { openModal, closeModal } = useLoginModal();
 
-    const handleLogoutClick = () => {
-        logoutUser();
-        closeLogin();
-    };
+  const handleLoginClick = () => openModal();
 
-    if (!isAuth) {
-        return (
-            <button className={s.button} onClick={handleLoginClick}>
-                Вхід
-            </button>
-        );
-    }
+  const handleLogoutClick = () => {
+    logoutUser();
+    closeModal(); 
+  };
 
-    return (
-        <div className={s.userBlock}>
-            <span className={s.userName}>Привіт, {userName}</span>
-            <button className={s.logout} onClick={handleLogoutClick}>
-                Вийти
-            </button>
-        </div>
-    );
+  if (!isAuth) {
+    return <button className={s.button} onClick={handleLoginClick}>Вхід</button>;
+  }
+
+  return (
+    <div className={s.userBlock}>
+      <span className={s.userName}>Привіт, {userName}</span>
+      <button className={s.logout} onClick={handleLogoutClick}>Вийти</button>
+    </div>
+  );
 };
 
 const mapStateToProps = (state) => ({
@@ -38,9 +32,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-    openLogin,
-    closeLogin,
-    logoutUser,
+    logoutUser
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AuthPanel);

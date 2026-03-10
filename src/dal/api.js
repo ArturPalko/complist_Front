@@ -1,7 +1,6 @@
 import axios from "axios";
 import axiosRetry from "axios-retry";
-import { passwordUrls, loginUrl, logoutUrl} from "./urls";
-import { loginSuccess, loginFailure, logout } from "../redux/reducers/auth-reducer";
+import { passwordUrls} from "./urls";
 
 export const api = axios.create({
   baseURL: "http://localhost:5114", 
@@ -46,25 +45,3 @@ export const fetchPasswordsByType = async (type) => {
   }, {});
 };
 
-export const loginUser = (data) => async (dispatch) => {
-  try {
-    const response = await apiPrivate.post(loginUrl, data);
-    dispatch(loginSuccess(response.data));
-
-  } catch (err) {
-    const message = err.response?.data || "Login failed";
-    dispatch(loginFailure(message));
-  }
-};
-
-export const logoutUser = () => async (dispatch) => {
-  try {
-    const response = await apiPrivate.post(logoutUrl);
-    dispatch(logout());
-  
-  } catch (err) {
-    const message = err.response?.data?.message || "Logout failed";
-    alert(message);
-  
-  }
-};

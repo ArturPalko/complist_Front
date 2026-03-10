@@ -2,13 +2,12 @@ import { useEffect, useRef, useState, useMemo } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { useDispatch,useSelector } from "react-redux";
 import { rememberPreviousLocationActionCreator } from "../reducers/pagesNavbar-reducer";
-import {getPageIndexDataOfFoundResultsByPage, getCurrentPageNumberByKey,
-  isFilterAppliedSelector
- } from "../selectors/selector";
-import { activeMenu as activeMenuSelector, getIndexesOfFiltredResults} from "../selectors/selector";
+import {getPageIndexDataOfFoundResultsByPage, getCurrentPageNumberByKey} from "../selectors/selector";
+import { activeMenu as activeMenuSelector} from "../selectors/selector";
 import { createSelector } from '@reduxjs/toolkit';
 import { selectIndexesFromCell } from "../selectors/selector";
-
+import { getFilteredPageData } from "../../shared/functions/getDataByIndexes";
+import { checkAuth } from "../../dal/thunks/authThunks";
 
 export const usePageNumber = () => {
   const params = useParams();
@@ -31,8 +30,16 @@ export const useTrackLocation = () => {
 
 
 
-export const useIndexesForPage = (pageKey) => {
+export const useCheckAuth = () => {
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(checkAuth());
+  }, [dispatch]);
+};
+
+
+export const useIndexesForPage = (pageKey) => {
 
   const indexesFromIndexCell = useSelector(state => selectIndexesFromCell(state));
 
@@ -60,48 +67,14 @@ const indexes =
 
 
 
-
-
-export const useFilteredPageData = (mailsData) => {
+export const useFilteredPageData = (data) => {
+  const state = useSelector(state => state);
   const activeMenu = useSelector(activeMenuSelector);
 
-  // мемоізований селектор прямо тут
-  const filtredChunks = useSelector(
-    createSelector(
-      state => state,
-      state => activeMenu,
-      (state, activeMenu) => getIndexesOfFiltredResults(state, activeMenu)
-    )
+  return useMemo(
+    () => getFilteredPageData(state, data, activeMenu),
+    [state, data, activeMenu]
   );
-
-  const isFilterApplied = useSelector(isFilterAppliedSelector(activeMenu));
-
-  return useMemo(() => {
-    if (!Array.isArray(mailsData)) return { data: [], isFilterApplied: false };
-
-    if (isFilterApplied) {
-      if (!Array.isArray(filtredChunks) || filtredChunks.length === 0) {
-        return { data: [], isFilterApplied: true };
-      }
-
-      const mappedChunks = filtredChunks
-        .map(chunk => {
-          const rows = chunk.rows
-            .map(row => {
-              const page = mailsData.find(p => p.pageIndex === row.page);
-              return page?.rows?.[row.index] ?? null;
-            })
-            .filter(Boolean);
-
-          return rows.length > 0 ? { pageIndex: chunk.pageIndex, rows } : null;
-        })
-        .filter(Boolean);
-
-      return { data: mappedChunks, isFilterApplied: true };
-    }
-
-    return { data: mailsData, isFilterApplied: false };
-  }, [mailsData, filtredChunks, isFilterApplied]);
 };
 
 
@@ -143,3 +116,4 @@ export const useFoundResultsColNumbersLogic = ({
     showPreviousPageHighlight,
   };
 };
+

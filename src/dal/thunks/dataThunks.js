@@ -1,14 +1,7 @@
-import {toggleDataIsFetchingActionCreator, setDataIsLoadedActionCreator} from "../redux/reducers/app-reducer"
-import { api } from "./api";
-import { dataUrls } from "./urls";
+import {toggleDataIsFetchingActionCreator, setDataIsLoadedActionCreator} from "../../redux/reducers/app-reducer"
+import { api } from "../api";
+import { dataUrls } from "../urls";
 
-/**
- * ============================
- * THUNK ДЛЯ DATA (Phones, Lotus, Gov-ua)
- * ============================
- * @param {function} actionCreator - Redux action creator для збереження даних
- * @param {string} menu - ключ сторінки (Pages.PHONES, Pages.LOTUS, Pages.GOV_UA)
- */
 export const fetchDataThunk = (actionCreator, menu) => async (dispatch) => {
   const endpoint = dataUrls[menu];
   if (!endpoint) throw new Error(`No data URL defined for menu "${menu}"`);

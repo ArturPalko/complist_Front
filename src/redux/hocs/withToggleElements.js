@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -12,7 +12,8 @@ import {
   isPagesNavbarLinkElementOnCurrentPagePressed,
   isFilterAppliedSelector,
   activeMenu,
-  currentPageByMenu
+  currentPageByMenu,
+  isUserAuthed
 } from "../../redux/selectors/selector";
 import {SearchToggleContext, PasswordsToggleContext} from "../contexts/useConetxt.js"
 
@@ -30,6 +31,13 @@ const withToggleElements = (type) => (WrappedComponent) => {
       currentPage,
       isFilterApplied
     } = props;
+      /* ===== RESET showPasswords якщо користувач не залогінений ===== */
+  useEffect(() => {
+    if (!props.isUserAuthed) {
+      setShowPasswords(false);
+      setPasswordsMap({});
+    }
+  }, [props.isUserAuthed]);
 
     /* ===== SEARCH (Redux) ===== */
     const handleToggleSearchField = (e) => {
@@ -108,7 +116,8 @@ const withToggleElements = (type) => (WrappedComponent) => {
       isPresentedSearchField: !!isPresentedSearchField(state),
       isPagesNavbarLinkElementOnCurrentPagePressed:
         !!isPagesNavbarLinkElementOnCurrentPagePressed(state),
-      isFilterApplied: isFilterAppliedSelector(state, menu)
+      isFilterApplied: isFilterAppliedSelector(state, menu),
+      isUserAuthed :isUserAuthed(state)
     };
   };
 

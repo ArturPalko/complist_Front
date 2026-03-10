@@ -6,11 +6,9 @@ import { toggledElemetsReducer } from "./reducers/toggledElements-reducer";
 import { filterDataReducer } from "./reducers/filterData-reducer";
 import { dataReducer } from "./reducers/data-reducer/data-reducer";
 import { authReducer } from "./reducers/auth-reducer";
-import uiReducer from "./reducers/ui-reducer";
 
 
 let reducers = combineReducers({
-    "ui":uiReducer,
     "auth":authReducer,
     "data": dataReducer,           
     "currentPageNumber":pagesNavbarReducer,

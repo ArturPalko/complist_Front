@@ -22,8 +22,7 @@ export const findDashedBlocks = (pages) => {
                 row.type === "section" &&
                 row.departmentName === lastDepartment.departmentName
             )
-          : firstNextRow.type === "department" &&
-            firstNextRow.departmentName === lastDepartment.departmentName;
+          :  firstNextRow.departmentName === lastDepartment.departmentName;
 
       if (shouldAddDepartment) result.departments.push(lastDepartment.departmentName);
     }

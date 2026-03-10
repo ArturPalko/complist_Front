@@ -1,6 +1,7 @@
+import { useEffect, useRef } from "react";
 import s from './LoginForm.module.css';
-import lockImg from './../../../../../assets/Img/lock.png';
-import eyeImg from '../../../../../assets/Img/eye.png';
+import lockImg from '../../../../assets/Img/lock.png';
+import eyeImg from '../../../../assets/Img/eye.png';
 
 const LoginForm = ({
     register,
@@ -15,12 +16,26 @@ const LoginForm = ({
     const loginValue = watch('LoginName', '');
     const passwordValue = watch('Password', '');
 
+    const loginInputRef = useRef(null);
+
+    useEffect(() => {
+        if (loginInputRef.current) {
+            loginInputRef.current.focus();
+        }
+    }, []); 
+
     return (
         <form className={s.form} onSubmit={handleSubmit(onSubmit)}>
             <h2 className={s.title}>Вхід</h2>
 
             <div className={`${s.inputGroup} ${errors.LoginName ? s.error : ''}`}>
-                <input {...register('LoginName', { required: true })} />
+                <input
+                    {...register('LoginName', { required: true })}
+                    ref={(e) => {
+                        register('LoginName', { required: true }).ref(e); 
+                        loginInputRef.current = e; 
+                    }}
+                />
                 <label className={loginValue ? s.filled : ''}>Логін</label>
             </div>
 

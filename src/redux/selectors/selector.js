@@ -9,6 +9,7 @@ import { countDepartmentsAndSections } from "./helpFunctions/countDepartmentsAnd
 import { getBaseLinkByMenu } from "./helpFunctions/getBaseLinkByMenu";
 import { processFoundResults } from "./helpFunctions/processFoundResults";
 import {findDashedBlocks} from "./helpFunctions/findDashedBlocks";
+import { getFilteredPageData } from "../../shared/functions/getDataByIndexes";
 
 // =====Допоміжні селектори=======================
 
@@ -170,10 +171,21 @@ export const selectIndexesFromCell = (state) => {
   return state.toggledElements.indexesFromIndexCell || []
 }
 //////************** */
-export const selectDashedBlocks = createSelector(
-  [(state) => getDataForMenu(state, "phones")],
-  (pages) => findDashedBlocks(pages)
-);
+// export const selectDashedBlocks = createSelector(
+//   [(state) => getDataForMenu(state, "phones")],
+//   (pages) => findDashedBlocks(pages)
+// );
+
+export const selectDashedBlocks = (state) => {
+  const menu = "phones";
+  const data = getDataForMenu(state, menu);
+
+  const sourceData = isFilterAppliedSelector(menu)(state)
+    ? getFilteredPageData(state, data, menu).data
+    : data;
+
+  return findDashedBlocks(sourceData);
+};
 
 export const formMessage = (state) => {
   return state.auth.message;

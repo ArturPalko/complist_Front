@@ -1,7 +1,7 @@
 import "./App.css";
 import Header from "./Components/Header/Header";
 import NavBar from "./Components/NavBar/NavBar";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes} from "react-router-dom";
 
 import GovUaMails from "./Components/Content/Pages/GovUaMails/GovUaMails";
 import LotusMails from "./Components/Content/Pages/LotusMails/LotusMails";
@@ -9,18 +9,18 @@ import Phones from "./Components/Content/Pages/Phones/Phones";
 import RedirectToCurrentPage from "./shared/components/navigation/RedirectToCurrentPage/RedirectToCurrentPage";
 import Error from "./Components/UI/Error/Error";
 import FoundResults from "./Components/FoundResults/FoundResults";
+import Login from "./Components/ModalWindows/Login/Login";
 
 import { useTrackLocation } from "./redux/hooks/hooks";
 import { Pages } from "./configs/app/constants";
 
-import Login from "./Components/Content/Pages/Login/Login";
-
-import { useSelector } from "react-redux";
+import { useLoginModal } from "./redux/hooks/useLoginModal";
+import { useCheckAuth } from "./redux/hooks/hooks";
 
 function App() {
   useTrackLocation();
-
-  const isLoginOpen = useSelector((state) => state.ui.isLoginOpen);
+  useCheckAuth();
+  const { isLoginOpen, closeModal } = useLoginModal();
 
   return (
     <div className="app-wrapper">
@@ -28,10 +28,9 @@ function App() {
       <NavBar />
 
       <div className="app-wrapper-content">
-        {/* Контент який буде blur */}
+        {/* Контент під модалкою */}
         <div className={isLoginOpen ? "content-blur" : ""}>
           <Routes>
-            {/* Error */}
             <Route path="/error" element={<Error />} />
 
             {/* root → Gov-ua */}
@@ -46,9 +45,7 @@ function App() {
               <Route path=":pageNumber" element={<Phones />} />
               <Route
                 index
-                element={
-                  <RedirectToCurrentPage redirectMenu={Pages.PHONES} />
-                }
+                element={<RedirectToCurrentPage redirectMenu={Pages.PHONES} />}
               />
             </Route>
 
@@ -60,9 +57,7 @@ function App() {
                 <Route path=":pageNumber" element={<GovUaMails />} />
                 <Route
                   index
-                  element={
-                    <RedirectToCurrentPage redirectMenu={Pages.GOV_UA} />
-                  }
+                  element={<RedirectToCurrentPage redirectMenu={Pages.GOV_UA} />}
                 />
               </Route>
 
@@ -72,9 +67,7 @@ function App() {
                 <Route path=":pageNumber" element={<LotusMails />} />
                 <Route
                   index
-                  element={
-                    <RedirectToCurrentPage redirectMenu={Pages.LOTUS} />
-                  }
+                  element={<RedirectToCurrentPage redirectMenu={Pages.LOTUS} />}
                 />
               </Route>
             </Route>
@@ -82,7 +75,7 @@ function App() {
         </div>
 
         {/* LOGIN MODAL */}
-        {isLoginOpen && <Login />}
+        {isLoginOpen && <Login onClose={closeModal} />}
       </div>
     </div>
   );

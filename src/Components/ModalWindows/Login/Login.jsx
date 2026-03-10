@@ -2,32 +2,39 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { connect } from "react-redux";
 import LoginForm from "./LoginForm/LoginForm";
-import { loginUser } from "../../../../dal/api";
-import { closeLogin } from "../../../../redux/reducers/ui-reducer";
-import { formMessage } from "../../../../redux/selectors/selector";
+import { loginUser } from "../../../dal/thunks/authThunks";
+import { formMessage } from "../../../redux/selectors/selector";
 import { setupModalBehavior } from "./helpers";
 import s from "./Login.module.css";
 
-const Login = ({ message, user, loginUser, closeLogin }) => {
-  const { register, handleSubmit, watch, formState: { errors } } = useForm({
+const Login = ({ message, loginUser, onClose }) => {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm({
     mode: "onSubmit",
     shouldFocusError: false,
   });
 
   const [showPassword, setShowPassword] = useState(false);
 
+  // Налаштування поведінки модалки (клік за ESC тощо)
   useEffect(() => {
-    const cleanup = setupModalBehavior(closeLogin);
+    const cleanup = setupModalBehavior(onClose);
     return cleanup; // викликається при розмонтуванні
-  }, [closeLogin]);
+  }, [onClose]);
 
   const onSubmit = async (data) => {
-     loginUser(data);
+    loginUser(data);
   };
 
   const handleOverlayClick = () => {
-    closeLogin();
+    onClose();
   };
+
+  const togglePassword = () => setShowPassword((prev) => !prev);
 
   return (
     <div className={s.loginOverlay} onClick={handleOverlayClick}>
@@ -38,14 +45,11 @@ const Login = ({ message, user, loginUser, closeLogin }) => {
           watch={watch}
           errors={errors}
           showPassword={showPassword}
-          onTogglePassword={() => setShowPassword(prev => !prev)}
+          onTogglePassword={togglePassword}
           onSubmit={onSubmit}
           formMessage={message}
         />
-        <button
-          className={s.closeButton}
-          onClick={closeLogin}
-        >
+        <button className={s.closeButton} onClick={onClose}>
           Закрити
         </button>
       </div>
@@ -53,16 +57,12 @@ const Login = ({ message, user, loginUser, closeLogin }) => {
   );
 };
 
-
 const mapStateToProps = (state) => ({
   message: formMessage(state),
-  user: state.auth.user,
 });
-
 
 const mapDispatchToProps = {
   loginUser,
-  closeLogin
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
