@@ -6,6 +6,7 @@ import { pageConfigs } from "../../../../configs/app/pageConfig";
 import { connect } from "react-redux";
 import { getDepartmentsAndSectionsPerPage } from "../../../../redux/selectors/selector";
 import { PageContext } from "../../../../redux/contexts/useConetxt";
+import BottomFilter from "../../../../Components/Content/BottomFilter/BottomFilter";
 
 
 const GenericPage = ({
@@ -57,6 +58,7 @@ const GenericPage = ({
       <PageContext.Provider value={pageContextValue}>
         <config.TableComponent {...sharedProps} />
       </PageContext.Provider>
+      <BottomFilter/>
     </>
   );
 };

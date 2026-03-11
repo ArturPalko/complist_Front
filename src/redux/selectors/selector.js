@@ -198,3 +198,29 @@ export const authUserName = (state) => {
 export const isUserAuthed = (state) => {
   return state.auth.isLoggedIn;
 }
+
+export const getDepartmentsAndSections = (state) => {
+  let dep = [];
+  let sec = [];
+
+  state.data.phones.forEach(element => {
+    element.rows.forEach(row => {
+      if (!row.type) return;
+
+      switch (row.type) {
+        case "department":
+          dep.push(row);
+          break;
+        case "section":
+          sec.push(row);
+          break;
+      }
+    });
+  });
+
+  // Отримуємо унікальні значення
+  const uniqueDep = [...new Set(dep)];
+  const uniqueSec = [...new Set(sec)];
+
+  return { departments: uniqueDep, sections: uniqueSec };
+}

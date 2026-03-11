@@ -1,0 +1,83 @@
+/* Контейнер */
+.container {
+  position: relative;
+  font-family: Arial, sans-serif;
+  max-width: 1600px;
+  margin: 0 2em 6.25em 1em;
+}
+
+/* Кнопка */
+.button {
+  padding: 2em 1.875em;
+  width: 100%;
+  border-radius: 0.625em;
+  border: 0.125em solid #ccc;
+  text-align: left;
+  cursor: pointer;
+  background: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.9em;
+}
+
+/* Dropdown */
+/* Dropdown */
+.dropdown {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  display: flex;
+  width: 100%;
+  max-width: calc(100vw - 2em);
+  border: 0.125em solid #ccc;
+  border-radius: 1em;
+  background: #f9f9f9;
+  margin-bottom: 0.625em;
+  z-index: 1000;
+  max-height: 70vh; /* обмежує висоту дропдауну 70% висоти вікна */
+  overflow: hidden; /* сховаємо надлишок */
+}
+
+/* Ліва колонка (департаменти) */
+.box {
+  flex: 1;
+  min-width: 0;
+  padding: 1.875em;
+  border-right: 0.125em solid #ddd;
+  overflow-y: auto; /* скрол тільки тут */
+  max-height: 70vh; /* така ж висота, як у dropdown */
+}
+
+/* Права колонка (підпідрозділи) */
+.boxRight {
+  flex: 1;
+  min-width: 0;
+  padding: 1.875em;
+  border-left: 0.125em solid #ddd;
+  overflow-y: auto; /* скрол тільки тут */
+  max-height: 70vh;
+}
+
+/* Департамент */
+.deptLabel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25em;
+  cursor: pointer;
+}
+
+/* Підпідрозділ */
+.subLabel {
+  display: block;
+  margin-left: 1.875em;
+  margin-bottom: 0.625em;
+}
+
+/* Стрілка */
+.arrow {
+  margin-left: 0.625em;
+  font-weight: bold;
+  cursor: pointer;
+}
