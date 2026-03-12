@@ -1,4 +1,3 @@
-/* Контейнер */
 .container {
   position: relative;
   font-family: Arial, sans-serif;
@@ -6,78 +5,108 @@
   margin: 0 2em 6.25em 1em;
 }
 
-/* Кнопка */
+/* 📑 Закладка */
 .button {
-  padding: 2em 1.875em;
-  width: 100%;
-  border-radius: 0.625em;
-  border: 0.125em solid #ccc;
+  position: relative;
+  padding: 1.4em 1.8em;
+  
+  min-width: 18em;   /* мінімальна ширина */
+  max-width: 100%;   /* не більше ширини контейнера */
+  width: auto;       /* підлаштовується під текст, але переносить при необхідності */
+  
+  border: none;
+  background: #b22222;
+  color: white;
   text-align: left;
-  cursor: pointer;
-  background: #fff;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   font-size: 0.9em;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+
+  white-space: normal;      /* дозволяє перенос рядка */
+  overflow-wrap: break-word; /* переносить дуже довгі слова */
 }
 
-/* Dropdown */
-/* Dropdown */
+/* трикутник закладки */
+.button::after {
+  content: "";
+  position: absolute;
+  bottom: -1.2em;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-left: 4em solid #b22222;
+  border-right: 4em solid #b22222;
+  border-bottom: 1.2em solid transparent;
+}
+
+/* 📖 книга */
 .dropdown {
   position: absolute;
-  bottom: 100%;
+  bottom: 100%; /* не міняємо */
   left: 0;
   display: flex;
   width: 100%;
   max-width: calc(100vw - 2em);
-  border: 0.125em solid #ccc;
-  border-radius: 1em;
-  background: #f9f9f9;
-  margin-bottom: 0.625em;
+
+  background: #fdfbf5;
+  border: 2px solid #d4c9b3;
+  border-radius: 6px;
+
+  box-shadow: 0 12px 25px rgba(0,0,0,0.25);
+
+  margin-bottom: 0.6em;
   z-index: 1000;
-  max-height: 70vh; /* обмежує висоту дропдауну 70% висоти вікна */
-  overflow: hidden; /* сховаємо надлишок */
+
+  max-height: 70vh;
+  overflow: hidden;
 }
 
-/* Ліва колонка (департаменти) */
+/* сторінки книги */
 .box {
   flex: 1;
   min-width: 0;
-  padding: 1.875em;
-  border-right: 0.125em solid #ddd;
-  overflow-y: auto; /* скрол тільки тут */
-  max-height: 70vh; /* така ж висота, як у dropdown */
+  padding: 1.8em;
+  background: #fffdf7;
+  border-right: 1px solid #e5dccb;
+  overflow-y: auto;
 }
 
-/* Права колонка (підпідрозділи) */
 .boxRight {
   flex: 1;
   min-width: 0;
-  padding: 1.875em;
-  border-left: 0.125em solid #ddd;
-  overflow-y: auto; /* скрол тільки тут */
-  max-height: 70vh;
+  padding: 1.8em;
+  background: #fffdf7;
+  overflow-y: auto;
 }
 
-/* Департамент */
+/* заголовки */
+.box h4,
+.boxRight h4 {
+  margin-top: 0;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 0.4em;
+}
+
+/* департаменти */
 .deptLabel {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.25em;
+  margin-bottom: 0.9em;
   cursor: pointer;
 }
 
-/* Підпідрозділ */
+/* підрозділи */
 .subLabel {
   display: block;
-  margin-left: 1.875em;
-  margin-bottom: 0.625em;
+  margin-left: 1.5em;
+  margin-bottom: 0.5em;
 }
 
-/* Стрілка */
+/* стрілка */
 .arrow {
-  margin-left: 0.625em;
+  margin-left: 0.6em;
   font-weight: bold;
   cursor: pointer;
 }

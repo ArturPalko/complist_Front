@@ -202,17 +202,22 @@ export const isUserAuthed = (state) => {
 export const getDepartmentsAndSections = (state) => {
   let dep = [];
   let sec = [];
+  let filteredRow ={};
 
   state.data.phones.forEach(element => {
     element.rows.forEach(row => {
       if (!row.type) return;
-
+      // Вибираємо лише потрібні властивості
+      const { departmentName, sectionName, sections } = row;
+      // const filteredRow = {departmentName, sectionName, sections};
       switch (row.type) {
         case "department":
-          dep.push(row);
+           filteredRow ={departmentName,sections}
+          dep.push(filteredRow);
           break;
         case "section":
-          sec.push(row);
+          filteredRow= {sectionName}
+          sec.push(filteredRow);
           break;
       }
     });
