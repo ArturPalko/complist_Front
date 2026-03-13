@@ -40,6 +40,7 @@ const initialState = {
       NOThasCiscoPhone: false,
       subFilters: { contactType: {}, userPosition: {} }
     },
+    bookmarks:{selectedSubDepts:{}, selectedOrder:[]},
     filtredResults: [],
     isFilterApplied: false
   }
@@ -47,6 +48,119 @@ const initialState = {
 
 export const filterDataReducer = (state = initialState, action) => {
   switch (action.type) {
+    case "TOGGLE_SUB_DEPT": {
+  const { deptName, sub } = action;
+  const bookmarks = state.phones.bookmarks;
+
+  const selectedSubDepts = { ...bookmarks.selectedSubDepts };
+  let selectedOrder = [...bookmarks.selectedOrder];
+
+  // отримуємо поточні підсекції або порожній масив
+  const currentSubs = selectedSubDepts[deptName] || [];
+
+  let newSubs;
+  if (currentSubs.includes(sub)) {
+    // підсекція вже вибрана → видаляємо
+    newSubs = currentSubs.filter(s => s !== sub);
+  } else {
+    // підсекція не вибрана → додаємо
+    newSubs = [...currentSubs, sub];
+  }
+
+  if (newSubs.length === 0) {
+    // якщо більше немає підсекцій → видаляємо департамент
+    delete selectedSubDepts[deptName];
+    selectedOrder = selectedOrder.filter(d => d !== deptName);
+  } else {
+    // оновлюємо підсекції
+    selectedSubDepts[deptName] = newSubs;
+    // додаємо департамент у selectedOrder, якщо ще немає
+    if (!selectedOrder.includes(deptName)) selectedOrder.push(deptName);
+  }
+
+  return {
+    ...state,
+    phones: {
+      ...state.phones,
+      bookmarks: {
+        selectedSubDepts,
+        selectedOrder
+      }
+    }
+  };
+}
+
+  case "SET_BOOKMARK": {
+  const { deptName, sections } = action;
+  const bookmarks = state.phones.bookmarks;
+
+  // Копії state для immutable-оновлення
+  const selectedSubDepts = { ...bookmarks.selectedSubDepts };
+  let selectedOrder = [...bookmarks.selectedOrder];
+
+  const allSubs = sections || []; // усі підсекції департаменту
+  const selectedSubs = selectedSubDepts[deptName] || [];
+
+  let newSubs;
+
+  if (allSubs.length === 0) {
+    // департамент без підсекцій
+    if (selectedSubDepts[deptName]) {
+      // якщо вже вибраний — видаляємо
+      delete selectedSubDepts[deptName];
+      selectedOrder = selectedOrder.filter(d => d !== deptName);
+    } else {
+      // додаємо департамент
+      selectedSubDepts[deptName] = true;
+      if (!selectedOrder.includes(deptName)) selectedOrder.push(deptName);
+    }
+
+    return {
+      ...state,
+      phones: {
+        ...state.phones,
+        bookmarks: {
+          selectedSubDepts,
+          selectedOrder
+        }
+      }
+    };
+  }
+
+  // департамент з підсекціями
+  if (selectedSubs.length === allSubs.length) {
+    // всі підсекції вже вибрані → видаляємо департамент
+    delete selectedSubDepts[deptName];
+    newSubs = [];
+  } else {
+    // вибираємо всі підсекції
+    newSubs = allSubs.map(sub => sub.sectionName);
+    selectedSubDepts[deptName] = newSubs;
+  }
+
+  // формуємо рядок для selectedOrder
+  // const deptString =
+  //   newSubs.length > 0 ? `${deptName}:[${newSubs.join(",")}]` : deptName;
+const deptString = deptName
+  // видаляємо старі записи цього департаменту
+  selectedOrder = selectedOrder.filter(d => !d.startsWith(deptName));
+
+  // додаємо новий запис
+  if (newSubs.length > 0 || selectedSubs.length === 0) {
+    selectedOrder.push(deptString);
+  }
+
+  return {
+    ...state,
+    phones: {
+      ...state.phones,
+      bookmarks: {
+        selectedSubDepts,
+        selectedOrder
+      }
+    }
+  };
+}
     case CLEAR_FILTRED_DATA:
       return { ...initialState };
 
@@ -146,3 +260,13 @@ export const addIndexesOfFiltredResults = (menu, filtredIndexesOfFoundResults) =
   type: ADD_INDEXES_OF_FILTRED_RESULTS, menu, filtredIndexesOfFoundResults
 });
 export const clearFiltredData = () => ({ type: CLEAR_FILTRED_DATA });
+export const setBookmark = (deptName, sections = []) => ({
+  type: "SET_BOOKMARK",
+  deptName,
+  sections
+});
+export const toogleSubDept = (deptName, sections = []) => ({
+  type: "TOGGLE_SUB_DEPT",
+  deptName,
+  sections
+});

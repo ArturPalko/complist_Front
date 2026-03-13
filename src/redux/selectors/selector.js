@@ -199,29 +199,40 @@ export const isUserAuthed = (state) => {
   return state.auth.isLoggedIn;
 }
 
+
+export const selectBookmarks = (state) => {
+  return state.filters.phones.bookmarks;
+}
+
 export const getDepartmentsAndSections = (state) => {
   let dep = [];
   let sec = [];
   let filteredRow ={};
 
-  state.data.phones.forEach(element => {
-    element.rows.forEach(row => {
-      if (!row.type) return;
-      // Вибираємо лише потрібні властивості
-      const { departmentName, sectionName, sections } = row;
-      // const filteredRow = {departmentName, sectionName, sections};
-      switch (row.type) {
-        case "department":
-           filteredRow ={departmentName,sections}
-          dep.push(filteredRow);
-          break;
-        case "section":
-          filteredRow= {sectionName}
-          sec.push(filteredRow);
-          break;
-      }
-    });
+state.data.phones.forEach(element => {
+  element.rows.forEach(row => {
+    if (!row.type) return;
+
+    const { departmentName, sectionName, sections } = row;
+
+    switch (row.type) {
+      case "department":
+        filteredRow = {
+          departmentName,
+          sections: sections?.map(({ sectionName }) => ({
+            sectionName
+          }))
+        };
+        dep.push(filteredRow);
+        break;
+
+      case "section":
+        filteredRow = { sectionName };
+        sec.push(filteredRow);
+        break;
+    }
   });
+});
 
   // Отримуємо унікальні значення
   const uniqueDep = [...new Set(dep)];
