@@ -77,7 +77,7 @@ export const filterDataReducer = (state = initialState, action) => {
     // додаємо департамент у selectedOrder, якщо ще немає
     if (!selectedOrder.includes(deptName)) selectedOrder.push(deptName);
   }
-
+debugger;
   return {
     ...state,
     phones: {
@@ -238,6 +238,7 @@ const deptString = deptName
     }
 
     case ADD_INDEXES_OF_FILTRED_RESULTS: {
+      debugger;
       const currentStateForMenu = state[action.menu] ?? { usedFilters: {}, filtredResults: [], isFilterApplied: false };
       return {
         ...state,
@@ -265,8 +266,8 @@ export const setBookmark = (deptName, sections = []) => ({
   deptName,
   sections
 });
-export const toogleSubDept = (deptName, sections = []) => ({
+export const toogleSubDept = (deptName, sub) => ({
   type: "TOGGLE_SUB_DEPT",
   deptName,
-  sections
+  sub
 });

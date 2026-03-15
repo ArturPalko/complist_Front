@@ -6,7 +6,7 @@ import { pageConfigs } from "../../../../configs/app/pageConfig";
 import { connect } from "react-redux";
 import { getDepartmentsAndSectionsPerPage } from "../../../../redux/selectors/selector";
 import { PageContext } from "../../../../redux/contexts/useConetxt";
-import BottomFilter from "../../../../Components/Content/BottomFilter/BottomFilter";
+import { BottomFilterContainer } from "../../../../Components/Content/BottomFilter/BottomFilterContainer";
 
 
 const GenericPage = ({
@@ -22,6 +22,7 @@ const GenericPage = ({
   
 
   const config = pageConfigs[pageName];
+  
 
 
   // 🔹 memo для sharedProps → TableComponent і PageContext отримують однакові об’єкти
@@ -58,7 +59,7 @@ const GenericPage = ({
       <PageContext.Provider value={pageContextValue}>
         <config.TableComponent {...sharedProps} />
       </PageContext.Provider>
-      <BottomFilter/>
+      <BottomFilterContainer/>
     </>
   );
 };
