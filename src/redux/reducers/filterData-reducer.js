@@ -1,4 +1,5 @@
 import { isAnyFilterApplied } from "./filter-data-reducer/isAnyFIilterApplied";
+
 const ADD_FILTRED_DATA = "ADD_FILTRED_DATA";
 const SET_SUBFILTERS = "SET_SUBFILTERS";
 const CLEAR_FILTRED_STATE_FOR_CURRENT_FORM = "CLEAR_FILTRED_STATE_FOR_CURRENT_FORM";
@@ -41,7 +42,12 @@ const initialState = {
       NOThasCiscoPhone: false,
       subFilters: { contactType: {}, userPosition: {} }
     },
-    bookmarks:{selectedSubDepts:{}, selectedOrder:[]},
+    bookmarks: {
+      selectedSubDepts: {},
+      selectedOrder: [],
+      hideUsersWithoutSections: {},
+      hideSections: {}
+    },
     filtredResults: [],
     isFilterApplied: false
   }
@@ -54,7 +60,7 @@ export const filterDataReducer = (state = initialState, action) => {
 
     case "TOGGLE_SUB_DEPT": {
       const { deptName, sub } = action;
-      const { bookmarks, usedFilters } = state.phones;
+      const { bookmarks } = state.phones;
 
       const selectedSubDepts = { ...bookmarks.selectedSubDepts };
       let selectedOrder = [...bookmarks.selectedOrder];
@@ -78,7 +84,11 @@ export const filterDataReducer = (state = initialState, action) => {
 
       const newPhonesState = {
         ...state.phones,
-        bookmarks: { selectedSubDepts, selectedOrder }
+        bookmarks: {
+          ...bookmarks,
+          selectedSubDepts,
+          selectedOrder
+        }
       };
 
       return {
@@ -114,17 +124,17 @@ export const filterDataReducer = (state = initialState, action) => {
         } else {
           selectedSubDepts[deptName] = allSubs.map(s => s.sectionName);
         }
-
         selectedOrder = selectedOrder.filter(d => d !== deptName);
-
-        if (selectedSubDepts[deptName]) {
-          selectedOrder.push(deptName);
-        }
+        if (selectedSubDepts[deptName]) selectedOrder.push(deptName);
       }
 
       const newPhonesState = {
         ...state.phones,
-        bookmarks: { selectedSubDepts, selectedOrder }
+        bookmarks: {
+          ...bookmarks,
+          selectedSubDepts,
+          selectedOrder
+        }
       };
 
       return {
@@ -136,11 +146,50 @@ export const filterDataReducer = (state = initialState, action) => {
       };
     }
 
+    // ================= CHECKBOXES ДЛЯ ДЕПАРТАМЕНТІВ =================
+
+    case "TOGGLE_HIDE_USERS_WITHOUT_SECTIONS": {
+      const { deptName } = action;
+      const current = state.phones.bookmarks.hideUsersWithoutSections[deptName] || false;
+
+      return {
+        ...state,
+        phones: {
+          ...state.phones,
+          bookmarks: {
+            ...state.phones.bookmarks,
+            hideUsersWithoutSections: {
+              ...state.phones.bookmarks.hideUsersWithoutSections,
+              [deptName]: !current
+            }
+          }
+        }
+      };
+    }
+
+    case "TOGGLE_HIDE_SECTIONS": {
+      const { deptName } = action;
+      const current = state.phones.bookmarks.hideSections[deptName] || false;
+
+      return {
+        ...state,
+        phones: {
+          ...state.phones,
+          bookmarks: {
+            ...state.phones.bookmarks,
+            hideSections: {
+              ...state.phones.bookmarks.hideSections,
+              [deptName]: !current
+            }
+          }
+        }
+      };
+    }
+
     // ================= FILTERS =================
 
     case ADD_FILTRED_DATA: {
       const { menu, filter } = action;
-
       const { subFilters, ...rest } = state[menu].usedFilters;
 
       const newUsedFilters = {
@@ -169,9 +218,7 @@ export const filterDataReducer = (state = initialState, action) => {
     case SET_SUBFILTERS: {
       if (action.menu !== "phones") return state;
 
-      const currentVariety =
-        state.phones.usedFilters.subFilters?.[action.variety] || {};
-
+      const currentVariety = state.phones.usedFilters.subFilters?.[action.variety] || {};
       const newVariety = { ...currentVariety };
 
       action.values.forEach(value => {
@@ -219,7 +266,12 @@ export const filterDataReducer = (state = initialState, action) => {
             ),
             subFilters: { contactType: {}, userPosition: {} }
           },
-          bookmarks: { selectedSubDepts: {}, selectedOrder: [] },
+          bookmarks: {
+            selectedSubDepts: {},
+            selectedOrder: [],
+            hideUsersWithoutSections: {},
+            hideSections: {}
+          },
           filtredResults: []
         };
 
@@ -232,7 +284,6 @@ export const filterDataReducer = (state = initialState, action) => {
         };
       }
 
-      // інші меню без bookmarks
       const clearedFilters = Object.fromEntries(
         Object.keys(state[action.menu].usedFilters).map(k => [k, false])
       );
@@ -251,7 +302,6 @@ export const filterDataReducer = (state = initialState, action) => {
 
     case ADD_INDEXES_OF_FILTRED_RESULTS: {
       const currentStateForMenu = state[action.menu];
-
       return {
         ...state,
         [action.menu]: {
@@ -266,7 +316,8 @@ export const filterDataReducer = (state = initialState, action) => {
   }
 };
 
-// Action creators
+// ================= EXPORTS ACTION CREATORS =================
+
 export const addFilter = (menu, filter) => ({ type: ADD_FILTRED_DATA, menu, filter });
 export const setSubFilters = (menu, variety, values, checked) => ({
   type: SET_SUBFILTERS, menu, variety, values, checked
@@ -281,8 +332,13 @@ export const setBookmark = (deptName, sections = []) => ({
   deptName,
   sections
 });
-export const toogleSubDept = (deptName, sub) => ({
-  type: "TOGGLE_SUB_DEPT",
-  deptName,
-  sub
+export const toggleDept = (deptName) => ({ type: "TOGGLE_DEPT", deptName });
+export const toggleSubDept = (deptName, sub) => ({ type: "TOGGLE_SUB_DEPT", deptName, sub });
+export const toggleHideUsersWithoutSections = (deptName) => ({
+  type: "TOGGLE_HIDE_USERS_WITHOUT_SECTIONS",
+  deptName
+});
+export const toggleHideSections = (deptName) => ({
+  type: "TOGGLE_HIDE_SECTIONS",
+  deptName
 });

@@ -9,7 +9,7 @@ import {
 
 import {
   setBookmark,
-  toogleSubDept as toggleSubDeptAction
+  toggleSubDept as toggleSubDeptAction
 } from "../../../redux/reducers/filterData-reducer";
 
 import { BottomFilterView } from "./BottomFilterView/BottomFilterView";

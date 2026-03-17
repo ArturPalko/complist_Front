@@ -6,6 +6,13 @@ import { rowsPerPage as defaultChunkSize } from "../../../../configs/app/constan
  *   "Департамент 1": true,             // всі секції
  *   "Департамент 2": ["Секція 1"]     // тільки вибрані секції
  * }
+ *
+ * bookmarkConditions: {
+ *   departments: [...],
+ *   sections: {...},
+ *   hideUsers: {...},     // нове
+ *   hideSections: {...}   // нове
+ * }
  */
 export const computeFilteredChunks = ({
   state = {},
@@ -14,9 +21,9 @@ export const computeFilteredChunks = ({
   dataForMenu = [],
   conditions,
   selectedSubDepts = {},
+  bookmarkConditions = {}, // приймаємо нову структуру
   chunkSize = defaultChunkSize
 }) => {
-
   const activeFilters = Object.entries(state)
     .filter(([key, v]) => v && conditions[key])
     .map(([key]) => key);
@@ -24,22 +31,26 @@ export const computeFilteredChunks = ({
   const allFilteredIndexes = [];
   const effectiveSubConditions = activeMenu === "phones" ? subConditions : {};
 
-  // Перетворюємо selectedSubDepts у формат bookmarkConditions
-  const bookmarkConditions = {
-    departments: Object.entries(selectedSubDepts)
-      .filter(([_, val]) => val === true)
-      .map(([dept]) => dept),
-    sections: Object.entries(selectedSubDepts)
-      .filter(([_, val]) => Array.isArray(val))
-      .reduce((acc, [dept, sections]) => {
-        acc[dept] = sections;
-        return acc;
-      }, {})
-  };
+  // Забезпечуємо дефолтну структуру для нових чекбоксів
+  const hideUsers = bookmarkConditions.hideUsers || {};
+  const hideSections = bookmarkConditions.hideSections || {};
 debugger;
   dataForMenu.forEach((element, pageIndex) => {
     const rows = element?.rows || [];
     rows.forEach((row, rowIndex) => {
+      // Перевіряємо, чи департамент цього рядка вибраний
+      const deptName = row.departmentName;
+debugger;
+      if (hideUsers[deptName] && !row.sectionName && row.type !="department") {
+        // Приховуємо користувачів без секцій
+        return;
+      }
+
+      if (hideSections[deptName] && row.sectionName) {
+        // Приховуємо усі секції
+        return;
+      }
+
       if (
         passesFiltersForRow(
           row,

@@ -30,58 +30,55 @@ import {
 
 
 export const useFilters = ({ activeMenu, dataForMenu, currentPage }) => {
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   // ================== SELECTORS ==================
   const filtersFromRedux = useSelector(selectFiltersForMenu(activeMenu)) || {};
-
-  const subFiltersFromRedux =
-    useSelector(selectPhonesSubcondions) ||
-    { contactType: {}, userPosition: {} };
-
+  const subFiltersFromRedux = useSelector(selectPhonesSubcondions) || { contactType: {}, userPosition: {} };
   const bookmarks = useSelector(selectBookmarks) || {};
   const selectedSubDepts = bookmarks.selectedSubDepts || {};
 
-  const isLastVisitedPageWasFoundResults =
-    useSelector(isCurrentPageFoundResult(activeMenu));
+  const isLastVisitedPageWasFoundResults = useSelector(isCurrentPageFoundResult(activeMenu));
 
   // ================== BOOKMARK CONDITIONS ==================
-
-  const buildBookmarkConditions = (selectedSubDepts = {}) => {
-
+  const buildBookmarkConditions = (selectedSubDepts = {}, bookmarks = {}) => {
     const departments = [];
     const sections = {};
+    const hideUsers = {};
+    const hideSections = {};
 
     Object.entries(selectedSubDepts).forEach(([dept, value]) => {
-
+      // Вибрані департаменти
       if (value === true) {
         departments.push(dept);
       }
 
+      // Вибрані секції
       if (Array.isArray(value)) {
         sections[dept] = value;
       }
 
+      // Нові чекбокси
+      hideUsers[dept] = bookmarks.hideUsersWithoutSections?.[dept] || false;
+      hideSections[dept] = bookmarks.hideSections?.[dept] || false;
     });
 
-    return { departments, sections };
-
+    return { departments, sections, hideUsers, hideSections };
   };
 
   const bookmarkConditions = useMemo(
-    () => buildBookmarkConditions(selectedSubDepts),
-    [selectedSubDepts]
+    () => buildBookmarkConditions(selectedSubDepts, bookmarks),
+    [selectedSubDepts, bookmarks]
   );
 
   const hasBookmarks =
-    Object.keys(selectedSubDepts).length > 0;
+    Object.keys(selectedSubDepts).length > 0 ||
+    Object.values(bookmarks.hideUsersWithoutSections || {}).some(Boolean) ||
+    Object.values(bookmarks.hideSections || {}).some(Boolean);
 
   // ================== DERIVED STATE ==================
-
-  const getAlternativeKeys = (key) =>
-    getAlternativeKeysHelper(key, filterGroups);
+  const getAlternativeKeys = (key) => getAlternativeKeysHelper(key, filterGroups);
 
   const phonesSubConditions = useMemo(
     () => generatePhonesSubConditions(subFiltersFromRedux, activeMenu),
@@ -94,55 +91,38 @@ export const useFilters = ({ activeMenu, dataForMenu, currentPage }) => {
   );
 
   // ================== FILTERED CHUNKS ==================
-
   const filteredChunks = useMemo(() => {
-
     if (!hasFilters) return [];
 
     return computeFilteredChunks({
       state: filtersFromRedux,
       subConditions: phonesSubConditions,
-      bookmarkConditions,
+      bookmarkConditions, // Тепер з hideUsers та hideSections
       activeMenu,
       dataForMenu,
       conditions,
       selectedSubDepts
     });
-
-  }, [
-    hasFilters,
-    filtersFromRedux,
-    phonesSubConditions,
-    bookmarkConditions,
-    activeMenu,
-    dataForMenu
-  ]);
+  }, [hasFilters, filtersFromRedux, phonesSubConditions, bookmarkConditions, activeMenu, dataForMenu]);
 
   // ================== UI FILTER POINTS ==================
-
   const groupedFilterPoints = filterPoints[activeMenu] || {};
-
   const filterPointsForCurrentMenu = useMemo(
     () => Object.values(groupedFilterPoints).flat(),
     [groupedFilterPoints]
   );
 
   // ================== EFFECTS ==================
-
   useEffect(() => {
-
     syncFilteredIndexesToRedux({
       activeMenu,
       filteredChunks,
       dispatch,
       addIndexesOfFiltredResults
     });
-
   }, [filteredChunks, activeMenu, dispatch]);
 
-
   useEffect(() => {
-
     redirectToCurrentPage({
       hasFilters,
       isLastVisitedPageWasFoundResults,
@@ -150,7 +130,6 @@ export const useFilters = ({ activeMenu, dataForMenu, currentPage }) => {
       activeMenu,
       currentPage
     });
-
   }, [
     hasFilters,
     subFiltersFromRedux.contactType,
@@ -159,23 +138,13 @@ export const useFilters = ({ activeMenu, dataForMenu, currentPage }) => {
   ]);
 
   // ================== HANDLERS ==================
-
   const handleCheckboxChange = (key, category) =>
-    handleCheckboxChangeHelper({
-      activeMenu,
-      key,
-      category,
-      dispatch
-    });
+    handleCheckboxChangeHelper({ activeMenu, key, category, dispatch });
 
   const handleOnClearFormButtonClick = () =>
-    clearFormHelper({
-      activeMenu,
-      dispatch
-    });
+    clearFormHelper({ activeMenu, dispatch });
 
   return {
-
     filteredChunks,
     groupedFilterPoints,
     filterPointsForCurrentMenu,
@@ -185,7 +154,5 @@ export const useFilters = ({ activeMenu, dataForMenu, currentPage }) => {
     getAlternativeKeys,
     handleCheckboxChange,
     handleOnClearFormButtonClick
-
   };
-
 };
