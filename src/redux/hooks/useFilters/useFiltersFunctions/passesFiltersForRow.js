@@ -1,55 +1,75 @@
-import { filterGroups,conditions } from "./filtersLogics";
-// Перевірка проходження рядка / користувача
- export const passesFiltersForRow = (row, activeFilters = [], subConditions = {}) => {
-    const checkRowOrUser = (el) => {
-        const filtersPass = activeFilters.length === 0
-        ? true
-        : activeFilters.every(key => {
+import { filterGroups, conditions } from "./filtersLogics";
 
-            // 1. знайти parent-групу (ключ, у якому сидить цей фільтр)
-            const parentKey = Object.keys(filterGroups).find(
-                grp => filterGroups[grp].includes(key)
-            );
+export const passesFiltersForRow = (
+  row,
+  activeFilters = [],
+  subConditions = {},
+  bookmarkConditions = null
+) => {
+  const { departments = [], sections = {} } = bookmarkConditions || {};
+  const hasBookmarks = departments.length > 0 || Object.keys(sections).length > 0;
 
-            // 2. Якщо немає групи — звичайна перевірка
-            if (!parentKey) {
-                return typeof conditions[key] === "function" && conditions[key](el);
-            }
+  const checkRowOrUser = (el) => {
 
-            // 3. Якщо є група → виділяємо всі альтернативи
-            const alternatives = filterGroups[parentKey];
+    // ⭐ 1. BOOKMARK FILTER (працює першим)
+    if (hasBookmarks) {
+      const bookmarkPass =
+        departments.includes(el.departmentName) ||
+        (sections[el.departmentName] || []).includes(el.sectionName);
 
-            // 4. Але OR робимо тільки між ТИМИ, що є у activeFilters
-            const activeAlternatives = alternatives.filter(a =>
-                activeFilters.includes(a)
-            );
-
-            // 5. Якщо активна лише одна альтернатива → звичайний OR через одну
-            return activeAlternatives.some(a =>
-                typeof conditions[a] === "function" && conditions[a](el)
-            );
-            })
-        
-        const subConditionsPass = Object.values(subConditions || {}).some(groupObj => Object.keys(groupObj || {}).length > 0)
-            ? Object.values(subConditions || {}).some(groupObj =>
-                Object.values(groupObj || {}).some(condFn => condFn(el))
-            )
-            : true;
-
-        return filtersPass && subConditionsPass;
-        };
-
-        if (row?.type === "department") {
-        const usersPass = row.users?.some(checkRowOrUser) || false;
-        const sectionsPass = row.sections?.some(section =>
-            section.users?.length > 0 && section.users.some(checkRowOrUser)
-        ) || false;
-        return usersPass || sectionsPass;
+      if (!bookmarkPass) {
+        // 2️⃣ Додаткове правило для користувачів без секції
+        if (el.type === "user" && sections[el.departmentName] && el.sectionName == null) {
+          return true;
         }
+        return false;
+      }
+    }
 
-        if (row?.type === "section") {
-        return row.users?.length > 0 && row.users.some(checkRowOrUser);
-        }
+    // ⭐ 2. Старі FilterPanel filters
+    const filtersPass = activeFilters.length === 0
+      ? true
+      : activeFilters.every((key) => {
+          const parentKey = Object.keys(filterGroups).find(
+            (grp) => filterGroups[grp].includes(key)
+          );
 
-        return checkRowOrUser(row);
+          if (!parentKey) {
+            return typeof conditions[key] === "function" && conditions[key](el);
+          }
+
+          const alternatives = filterGroups[parentKey];
+          const activeAlternatives = alternatives.filter((a) => activeFilters.includes(a));
+
+          return activeAlternatives.some((a) => typeof conditions[a] === "function" && conditions[a](el));
+        });
+
+    // ⭐ 3. Sub filters
+    const subConditionsPass =
+      Object.values(subConditions || {}).some((groupObj) =>
+        Object.keys(groupObj || {}).length > 0
+      )
+        ? Object.values(subConditions || {}).some((groupObj) =>
+            Object.values(groupObj || {}).some((condFn) => condFn(el))
+          )
+        : true;
+
+    return filtersPass && subConditionsPass;
   };
+
+  if (row?.type === "department") {
+    const usersPass = row.users?.some(checkRowOrUser) || false;
+    const sectionsPass =
+      row.sections?.some((section) =>
+        section.users?.length > 0 && section.users.some(checkRowOrUser)
+      ) || false;
+
+    return usersPass || sectionsPass;
+  }
+
+  if (row?.type === "section") {
+    return row.users?.length > 0 && row.users.some(checkRowOrUser);
+  }
+
+  return checkRowOrUser(row);
+};

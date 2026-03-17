@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import { getDepartmentsAndSectionsPerPage } from "../../../../redux/selectors/selector";
 import { PageContext } from "../../../../redux/contexts/useConetxt";
 import { BottomFilterContainer } from "../../../../Components/Content/BottomFilter/BottomFilterContainer";
+import s from "./GenericPage.module.css"
 
 
 const GenericPage = ({
@@ -53,15 +54,21 @@ const GenericPage = ({
   }), [sharedProps, indexes]);
 
   
-  return (
-    <>
-      <TopTableBar ref={titleRef} title={config.title} pageName={pageName} />
+return (
+  <div className={s.pageWrapper}>
+    <TopTableBar ref={titleRef} title={config.title} pageName={pageName} />
+
+    <div className={s.pageContent}>
       <PageContext.Provider value={pageContextValue}>
         <config.TableComponent {...sharedProps} />
       </PageContext.Provider>
-      <BottomFilterContainer/>
-    </>
-  );
+    </div>
+
+    <div className={s.bottomWrapper}>
+      <BottomFilterContainer />
+    </div>
+  </div>
+);
 };
 
 const mapStateToProps = (state) => ({

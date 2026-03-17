@@ -1,3 +1,4 @@
+import { isAnyFilterApplied } from "./filter-data-reducer/isAnyFIilterApplied";
 const ADD_FILTRED_DATA = "ADD_FILTRED_DATA";
 const SET_SUBFILTERS = "SET_SUBFILTERS";
 const CLEAR_FILTRED_STATE_FOR_CURRENT_FORM = "CLEAR_FILTRED_STATE_FOR_CURRENT_FORM";
@@ -48,201 +49,215 @@ const initialState = {
 
 export const filterDataReducer = (state = initialState, action) => {
   switch (action.type) {
+
+    // ================= BOOKMARKS =================
+
     case "TOGGLE_SUB_DEPT": {
-  const { deptName, sub } = action;
-  const bookmarks = state.phones.bookmarks;
+      const { deptName, sub } = action;
+      const { bookmarks, usedFilters } = state.phones;
 
-  const selectedSubDepts = { ...bookmarks.selectedSubDepts };
-  let selectedOrder = [...bookmarks.selectedOrder];
+      const selectedSubDepts = { ...bookmarks.selectedSubDepts };
+      let selectedOrder = [...bookmarks.selectedOrder];
 
-  // отримуємо поточні підсекції або порожній масив
-  const currentSubs = selectedSubDepts[deptName] || [];
+      const currentSubs = selectedSubDepts[deptName] || [];
 
-  let newSubs;
-  if (currentSubs.includes(sub)) {
-    // підсекція вже вибрана → видаляємо
-    newSubs = currentSubs.filter(s => s !== sub);
-  } else {
-    // підсекція не вибрана → додаємо
-    newSubs = [...currentSubs, sub];
-  }
-
-  if (newSubs.length === 0) {
-    // якщо більше немає підсекцій → видаляємо департамент
-    delete selectedSubDepts[deptName];
-    selectedOrder = selectedOrder.filter(d => d !== deptName);
-  } else {
-    // оновлюємо підсекції
-    selectedSubDepts[deptName] = newSubs;
-    // додаємо департамент у selectedOrder, якщо ще немає
-    if (!selectedOrder.includes(deptName)) selectedOrder.push(deptName);
-  }
-debugger;
-  return {
-    ...state,
-    phones: {
-      ...state.phones,
-      bookmarks: {
-        selectedSubDepts,
-        selectedOrder
+      let newSubs;
+      if (currentSubs.includes(sub)) {
+        newSubs = currentSubs.filter(s => s !== sub);
+      } else {
+        newSubs = [...currentSubs, sub];
       }
-    }
-  };
-}
 
-  case "SET_BOOKMARK": {
-  const { deptName, sections } = action;
-  const bookmarks = state.phones.bookmarks;
+      if (newSubs.length === 0) {
+        delete selectedSubDepts[deptName];
+        selectedOrder = selectedOrder.filter(d => d !== deptName);
+      } else {
+        selectedSubDepts[deptName] = newSubs;
+        if (!selectedOrder.includes(deptName)) selectedOrder.push(deptName);
+      }
 
-  // Копії state для immutable-оновлення
-  const selectedSubDepts = { ...bookmarks.selectedSubDepts };
-  let selectedOrder = [...bookmarks.selectedOrder];
-
-  const allSubs = sections || []; // усі підсекції департаменту
-  const selectedSubs = selectedSubDepts[deptName] || [];
-
-  let newSubs;
-
-  if (allSubs.length === 0) {
-    // департамент без підсекцій
-    if (selectedSubDepts[deptName]) {
-      // якщо вже вибраний — видаляємо
-      delete selectedSubDepts[deptName];
-      selectedOrder = selectedOrder.filter(d => d !== deptName);
-    } else {
-      // додаємо департамент
-      selectedSubDepts[deptName] = true;
-      if (!selectedOrder.includes(deptName)) selectedOrder.push(deptName);
-    }
-
-    return {
-      ...state,
-      phones: {
+      const newPhonesState = {
         ...state.phones,
-        bookmarks: {
-          selectedSubDepts,
-          selectedOrder
+        bookmarks: { selectedSubDepts, selectedOrder }
+      };
+
+      return {
+        ...state,
+        phones: {
+          ...newPhonesState,
+          isFilterApplied: isAnyFilterApplied(newPhonesState)
+        }
+      };
+    }
+
+    case "SET_BOOKMARK": {
+      const { deptName, sections } = action;
+      const { bookmarks } = state.phones;
+
+      const selectedSubDepts = { ...bookmarks.selectedSubDepts };
+      let selectedOrder = [...bookmarks.selectedOrder];
+
+      const allSubs = sections || [];
+      const selectedSubs = selectedSubDepts[deptName] || [];
+
+      if (allSubs.length === 0) {
+        if (selectedSubDepts[deptName]) {
+          delete selectedSubDepts[deptName];
+          selectedOrder = selectedOrder.filter(d => d !== deptName);
+        } else {
+          selectedSubDepts[deptName] = true;
+          if (!selectedOrder.includes(deptName)) selectedOrder.push(deptName);
+        }
+      } else {
+        if (selectedSubs.length === allSubs.length) {
+          delete selectedSubDepts[deptName];
+        } else {
+          selectedSubDepts[deptName] = allSubs.map(s => s.sectionName);
+        }
+
+        selectedOrder = selectedOrder.filter(d => d !== deptName);
+
+        if (selectedSubDepts[deptName]) {
+          selectedOrder.push(deptName);
         }
       }
-    };
-  }
 
-  // департамент з підсекціями
-  if (selectedSubs.length === allSubs.length) {
-    // всі підсекції вже вибрані → видаляємо департамент
-    delete selectedSubDepts[deptName];
-    newSubs = [];
-  } else {
-    // вибираємо всі підсекції
-    newSubs = allSubs.map(sub => sub.sectionName);
-    selectedSubDepts[deptName] = newSubs;
-  }
+      const newPhonesState = {
+        ...state.phones,
+        bookmarks: { selectedSubDepts, selectedOrder }
+      };
 
-  // формуємо рядок для selectedOrder
-  // const deptString =
-  //   newSubs.length > 0 ? `${deptName}:[${newSubs.join(",")}]` : deptName;
-const deptString = deptName
-  // видаляємо старі записи цього департаменту
-  selectedOrder = selectedOrder.filter(d => !d.startsWith(deptName));
-
-  // додаємо новий запис
-  if (newSubs.length > 0 || selectedSubs.length === 0) {
-    selectedOrder.push(deptString);
-  }
-
-  return {
-    ...state,
-    phones: {
-      ...state.phones,
-      bookmarks: {
-        selectedSubDepts,
-        selectedOrder
-      }
+      return {
+        ...state,
+        phones: {
+          ...newPhonesState,
+          isFilterApplied: isAnyFilterApplied(newPhonesState)
+        }
+      };
     }
-  };
-}
-    case CLEAR_FILTRED_DATA:
-      return { ...initialState };
+
+    // ================= FILTERS =================
 
     case ADD_FILTRED_DATA: {
       const { menu, filter } = action;
-      const { subFilters, ...restFilters } = state[menu].usedFilters;
+
+      const { subFilters, ...rest } = state[menu].usedFilters;
+
       const newUsedFilters = {
-        ...restFilters,
-        [filter]: !restFilters[filter]
+        ...rest,
+        [filter]: !rest[filter],
+        subFilters
       };
-      const isFilterApplied = Object.values(newUsedFilters).some(Boolean) ||
-        Object.values(subFilters || {}).some(category => Object.values(category || {}).some(Boolean));
+
+      const newMenuState = {
+        ...state[menu],
+        usedFilters: newUsedFilters
+      };
+
       return {
         ...state,
-        [menu]: { ...state[menu], usedFilters: { ...newUsedFilters, subFilters }, isFilterApplied }
+        [menu]: {
+          ...newMenuState,
+          isFilterApplied:
+            menu === "phones"
+              ? isAnyFilterApplied(newMenuState)
+              : Object.values(newUsedFilters).some(Boolean)
+        }
       };
     }
 
     case SET_SUBFILTERS: {
       if (action.menu !== "phones") return state;
 
-      const currentVariety = state.phones.usedFilters.subFilters?.[action.variety] || {};
+      const currentVariety =
+        state.phones.usedFilters.subFilters?.[action.variety] || {};
+
       const newVariety = { ...currentVariety };
 
       action.values.forEach(value => {
         if (action.checked === null) {
-          newVariety[value] = !currentVariety[value]; // toggle
+          newVariety[value] = !currentVariety[value];
         } else {
-          newVariety[value] = action.checked; // explicit set
+          newVariety[value] = action.checked;
         }
       });
 
-      const newSubFilters = { ...state.phones.usedFilters.subFilters, [action.variety]: newVariety };
-      const newUsedFilters = { ...state.phones.usedFilters, subFilters: newSubFilters };
+      const newSubFilters = {
+        ...state.phones.usedFilters.subFilters,
+        [action.variety]: newVariety
+      };
 
-      const mainFiltersApplied = Object.values(newUsedFilters)
-        .filter(v => typeof v === "boolean")
-        .some(Boolean);
+      const newUsedFilters = {
+        ...state.phones.usedFilters,
+        subFilters: newSubFilters
+      };
 
-      const subFiltersApplied = Object.values(newSubFilters)
-        .some(category => Object.values(category || {}).some(Boolean));
+      const newPhonesState = {
+        ...state.phones,
+        usedFilters: newUsedFilters
+      };
 
       return {
         ...state,
-        phones: { ...state.phones, usedFilters: newUsedFilters, isFilterApplied: mainFiltersApplied || subFiltersApplied }
+        phones: {
+          ...newPhonesState,
+          isFilterApplied: isAnyFilterApplied(newPhonesState)
+        }
       };
     }
 
+    // ================= CLEAR =================
+
     case CLEAR_FILTRED_STATE_FOR_CURRENT_FORM: {
       if (action.menu === "phones") {
+        const newPhonesState = {
+          usedFilters: {
+            ...Object.fromEntries(
+              Object.keys(state.phones.usedFilters)
+                .filter(k => k !== "subFilters")
+                .map(k => [k, false])
+            ),
+            subFilters: { contactType: {}, userPosition: {} }
+          },
+          bookmarks: { selectedSubDepts: {}, selectedOrder: [] },
+          filtredResults: []
+        };
+
         return {
           ...state,
           phones: {
-            usedFilters: {
-              ...Object.fromEntries(
-                Object.keys(state.phones.usedFilters)
-                  .filter(k => k !== "subFilters")
-                  .map(k => [k, false])
-              ),
-              subFilters: { contactType: {}, userPosition: {} }
-            },
-            filtredResults: [],
+            ...newPhonesState,
             isFilterApplied: false
           }
         };
       }
 
+      // інші меню без bookmarks
       const clearedFilters = Object.fromEntries(
         Object.keys(state[action.menu].usedFilters).map(k => [k, false])
       );
+
       return {
         ...state,
-        [action.menu]: { usedFilters: clearedFilters, filtredResults: [], isFilterApplied: false }
+        [action.menu]: {
+          usedFilters: clearedFilters,
+          filtredResults: [],
+          isFilterApplied: false
+        }
       };
     }
 
+    // ================= RESULTS =================
+
     case ADD_INDEXES_OF_FILTRED_RESULTS: {
-      debugger;
-      const currentStateForMenu = state[action.menu] ?? { usedFilters: {}, filtredResults: [], isFilterApplied: false };
+      const currentStateForMenu = state[action.menu];
+
       return {
         ...state,
-        [action.menu]: { ...currentStateForMenu, filtredResults: action.filtredIndexesOfFoundResults }
+        [action.menu]: {
+          ...currentStateForMenu,
+          filtredResults: action.filtredIndexesOfFoundResults
+        }
       };
     }
 
