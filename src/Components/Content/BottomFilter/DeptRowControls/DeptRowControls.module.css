@@ -1,0 +1,41 @@
+.additionalCheckboxesColumn {
+  display: flex;
+  flex-direction: column;
+  margin-left: 20px;
+  margin-top: 5px;
+  gap: 8px; /* невеликий відступ між чекбоксами */
+}
+
+.imgCheckboxLabel {
+  display: flex;
+  align-items: center; /* вертикальне центрування */
+  cursor: pointer;
+  gap: 5px; /* відстань між чекбоксом і зображенням */
+}
+
+.imgCheckboxLabel input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+}
+
+.usersOutOfSectionsImg,
+.usersOutOfDepartmentImg {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  vertical-align: middle; /* центрування відносно чекбокса */
+  cursor: pointer;
+}
+
+.deptRow {
+  display: flex;
+  align-items: center; /* важливо — щоб стрілка була зверху */
+  gap: 6px;
+}
+
+
+
+.arrow {
+  cursor: pointer;
+  margin-top: 2px; /* щоб співпало з чекбоксом */
+}

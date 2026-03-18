@@ -45,6 +45,8 @@ const initialState = {
     bookmarks: {
       selectedSubDepts: {},
       selectedOrder: [],
+      allHideUsersWithoutSections:false,
+      allHideSections:false,
       hideUsersWithoutSections: {},
       hideSections: {}
     },
@@ -55,7 +57,70 @@ const initialState = {
 
 export const filterDataReducer = (state = initialState, action) => {
   switch (action.type) {
+// case "ALL_TOGGLE_HIDE_USERS_WITHOUT_SECTIONS": {
+//   const selectedSubDepts = state.phones.bookmarks.selectedSubDepts;
+//   const current = state.phones.bookmarks.hideUsersWithoutSections;
 
+//   const isEmpty = Object.keys(current).length === 0;
+
+//   const newValue = isEmpty
+//     ? Object.fromEntries(
+//         Object.entries(selectedSubDepts)
+//           .filter(([_, value]) => Array.isArray(value))
+//           .map(([key]) => [key, true])
+//       )
+//     : {}; // якщо вже є значення → очищаємо
+
+//   return {
+//     ...state,
+//     phones: {
+//       ...state.phones,
+//       bookmarks: {
+//         ...state.phones.bookmarks,
+//         hideUsersWithoutSections: newValue
+//       }
+//     }
+//   };
+// }
+case "TOGGLE_ALL_HIDE_USERS_WITHOUT_SECTIONS": {
+  const selectedSubDepts = state.phones.bookmarks.selectedSubDepts;
+
+  // Якщо зараз false → увімкнути та скопіювати всі департаменти з масивами у hideUsersWithoutSections
+  const isCurrentlyOff = !state.phones.bookmarks.allHideUsersWithoutSections;
+
+  const newHideUsers = isCurrentlyOff
+    ? Object.fromEntries(
+        Object.entries(selectedSubDepts)
+          .filter(([_, value]) => Array.isArray(value))
+          .map(([key]) => [key, true])
+      )
+    : {}; // якщо вимкнути → очищаємо
+
+  return {
+    ...state,
+    phones: {
+      ...state.phones,
+      bookmarks: {
+        ...state.phones.bookmarks,
+        allHideUsersWithoutSections: !state.phones.bookmarks.allHideUsersWithoutSections,
+        hideUsersWithoutSections: newHideUsers
+      }
+    }
+  };
+}
+
+case "TOGGLE_AUTO_SELECT_HIDE_SECTIONS": {
+  return {
+    ...state,
+    phones: {
+      ...state.phones,
+      bookmarks: {
+        ...state.phones.bookmarks,
+        autoSelectHideSections: !state.phones.bookmarks.autoSelectHideSections
+      }
+    }
+  };
+}
     // ================= BOOKMARKS =================
 
     case "TOGGLE_SUB_DEPT": {
@@ -311,6 +376,8 @@ export const filterDataReducer = (state = initialState, action) => {
       };
     }
 
+    
+
     default:
       return state;
   }
@@ -341,4 +408,24 @@ export const toggleHideUsersWithoutSections = (deptName) => ({
 export const toggleHideSections = (deptName) => ({
   type: "TOGGLE_HIDE_SECTIONS",
   deptName
+});
+
+
+
+
+
+// export const toggleAllHideUsersWithoutSections = () => ({
+//   type: "ALL_TOGGLE_HIDE_USERS_WITHOUT_SECTIONS",
+  
+// });
+// export const toggleAllHideSections = () => ({
+//   type: "ALL_TOGGLE_HIDE_SECTIONS",
+// });
+
+export const toggleAutoSelectHideUsersWithoutSections = () => ({
+  type: "TOGGLE_AUTO_SELECT_HIDE_USERS_WITHOUT_SECTIONS"
+});
+
+export const toggleAutoSelectHideSections = () => ({
+  type: "TOGGLE_AUTO_SELECT_HIDE_SECTIONS"
 });

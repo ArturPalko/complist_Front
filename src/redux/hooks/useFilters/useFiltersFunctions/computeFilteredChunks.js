@@ -34,13 +34,13 @@ export const computeFilteredChunks = ({
   // Забезпечуємо дефолтну структуру для нових чекбоксів
   const hideUsers = bookmarkConditions.hideUsers || {};
   const hideSections = bookmarkConditions.hideSections || {};
-debugger;
+// debugger;
   dataForMenu.forEach((element, pageIndex) => {
     const rows = element?.rows || [];
     rows.forEach((row, rowIndex) => {
       // Перевіряємо, чи департамент цього рядка вибраний
       const deptName = row.departmentName;
-debugger;
+// debugger;
       if (hideUsers[deptName] && !row.sectionName && row.type !="department") {
         // Приховуємо користувачів без секцій
         return;

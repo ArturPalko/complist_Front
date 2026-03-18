@@ -104,38 +104,29 @@
   margin-bottom: 0.5em;
 }
 
-/* стрілка */
-.arrow {
-  margin-left: 0.6em;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.additionalCheckboxesColumn {
+.headerWithToggles {
   display: flex;
-  flex-direction: column;
-  margin-left: 20px;
-  margin-top: 5px;
-  gap: 8px; /* невеликий відступ між чекбоксами */
+  align-items: center; /* вирівнює по вертикалі */
+  gap: 12px; /* проміжок між елементами */
+  margin-bottom: 12px;
 }
 
-.imgCheckboxLabel {
-  display: flex;
-  align-items: center; /* вертикальне центрування */
+.headerWithToggles h4 {
+  margin: 0; /* прибираємо стандартний відступ заголовка */
+  font-size: 16px; /* або свій розмір */
+}
+
+.toggleBtn {
+  padding: 4px 8px;
+  font-size: 14px;
   cursor: pointer;
-  gap: 5px; /* відстань між чекбоксом і зображенням */
+  border: 1px solid #ccc;
+  background-color: #f0f0f0;
+  border-radius: 4px;
 }
 
-.imgCheckboxLabel input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-}
-
-.usersOutOfSectionsImg,
-.usersOutOfDepartmentImg {
-  width: 20px;
-  height: 20px;
-  display: inline-block;
-  vertical-align: middle; /* центрування відносно чекбокса */
-  cursor: pointer;
+.toggleBtn.active {
+  background-color: #007bff;
+  color: #fff;
+  border-color: #007bff;
 }

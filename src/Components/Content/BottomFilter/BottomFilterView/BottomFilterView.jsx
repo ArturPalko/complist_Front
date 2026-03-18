@@ -1,14 +1,9 @@
 import React, { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "./BottomFilterView.module.css";
-import {
-  toggleHideUsersWithoutSections,
-  toggleHideSections,
-  toggleSubDept
-} from "../../../../redux/reducers/filterData-reducer";
-
-import usersOutOfDepartmentImg from "../../../../assets/Img/usersOutOfDepartment.png";
-import usersOutOfSectionImg from "../../../../assets/Img/usersOutOfSection.png";
+import { toggleSubDept } from "../../../../redux/reducers/filterData-reducer";
+import { DeptRowControls } from "../DeptRowControls/DeptRowControls";
+import { toggleAutoSelectHideSections, toggleAutoSelectHideUsersWithoutSections } from "../../../../redux/reducers/filterData-reducer";
 
 export const BottomFilterView = ({
   isOpen,
@@ -32,11 +27,11 @@ export const BottomFilterView = ({
     }
   );
 
-  const visibleSelected = selectedOrder.slice(0, 2);
-  const extraCount = Math.max(0, selectedOrder.length - 2);
+  const visibleSelected = selectedOrder.slice(0, 3);
+  const extraCount = Math.max(0, selectedOrder.length - 3);
   const selectedText = visibleSelected.length > 0
     ? visibleSelected.join(", ") + (extraCount > 0 ? ` +${extraCount} ще` : "")
-    : "Оберіть підрозділи";
+    : "Обрати підрозділи";
 
   return (
     <div className={styles.container}>
@@ -51,7 +46,23 @@ export const BottomFilterView = ({
       {isOpen && (
         <div className={styles.dropdown}>
           <div className={styles.box}>
-            <h4>Підрозділи</h4>
+    <div className={styles.headerWithToggles}>
+  <h4>Підрозділи</h4>
+
+  <button
+    className={`${styles.toggleBtn} ${bookmarks.autoSelectHideUsersWithoutSections ? styles.active : ""}`}
+    onClick={() => dispatch(toggleAutoSelectHideUsersWithoutSections())}
+  >
+    Автовибір Users
+  </button>
+
+  <button
+    className={`${styles.toggleBtn} ${bookmarks.autoSelectHideSections ? styles.active : ""}`}
+    onClick={() => dispatch(toggleAutoSelectHideSections())}
+  >
+    Автовибір Sections
+  </button>
+</div>
             {departments.map(dept => {
               const selectedSubs = selectedSubDepts[dept.departmentName] || [];
               const hasSubs = dept.sections?.length > 0;
@@ -62,9 +73,6 @@ export const BottomFilterView = ({
 
               const isIndeterminate =
                 hasSubs && selectedSubs.length > 0 && selectedSubs.length < dept.sections.length;
-
-              const hideUsers = bookmarks.hideUsersWithoutSections[dept.departmentName] || false;
-              const hideSections = bookmarks.hideSections[dept.departmentName] || false;
 
               return (
                 <div key={dept.departmentName} className={styles.deptLabel}>
@@ -81,50 +89,14 @@ export const BottomFilterView = ({
                     {dept.departmentName}
                   </label>
 
-                  {hasSubs && (
-                    <span
-                      className={styles.arrow}
-                      onClick={() => toggleExpand(dept.departmentName)}
-                    >
-                      {expandedDept === dept.departmentName ? "▶" : "◀"}
-                    </span>
-                  )}
-
-                  {/* Додаткові чекбокси рендеряться тільки для вибраного департаменту */}
-{(isChecked || isIndeterminate) && hasSubs && (
-  <div className={styles.additionalCheckboxesColumn}>
-    <label className={styles.imgCheckboxLabel}>
-      <input
-        type="checkbox"
-        checked={hideUsers}
-        onChange={() =>
-          dispatch(toggleHideUsersWithoutSections(dept.departmentName))
-        }
-      />
-      <img
-        src={usersOutOfDepartmentImg}
-        alt="Користувачі без департаменту"
-        className={styles.centeredCheckboxImg}
-      />
-    </label>
-
-    <label className={styles.imgCheckboxLabel}>
-      <input
-        type="checkbox"
-        checked={hideSections}
-        onChange={() =>
-          dispatch(toggleHideSections(dept.departmentName))
-        }
-      />
-      <img
-        src={usersOutOfSectionImg}
-        alt="Користувачі без секції"
-        className={styles.centeredCheckboxImg}
-        
-      />
-    </label>
-  </div>
-)}
+                  <DeptRowControls
+                    dept={dept}
+                    hasSubs={hasSubs}
+                    isChecked={isChecked}
+                    isIndeterminate={isIndeterminate}
+                    expandedDept={expandedDept}
+                    toggleExpand={toggleExpand}
+                  />
                 </div>
               );
             })}
