@@ -50,18 +50,22 @@ export const BottomFilterView = ({
   <h4>Підрозділи</h4>
 
   <button
-    className={`${styles.toggleBtn} ${bookmarks.autoSelectHideUsersWithoutSections ? styles.active : ""}`}
-    onClick={() => dispatch(toggleAutoSelectHideUsersWithoutSections())}
-  >
-    Автовибір Users
-  </button>
+  className={`${styles.toggleBtn} ${
+    bookmarks.allHideUsersWithoutSections ? styles.active : ""
+  }`}
+  onClick={() => dispatch(toggleAutoSelectHideUsersWithoutSections())}
+>
+  Прибрати контакти не у секції
+</button>
 
-  <button
-    className={`${styles.toggleBtn} ${bookmarks.autoSelectHideSections ? styles.active : ""}`}
-    onClick={() => dispatch(toggleAutoSelectHideSections())}
-  >
-    Автовибір Sections
-  </button>
+<button
+  className={`${styles.toggleBtn} ${
+    bookmarks.allHideSections ? styles.active : ""
+  }`}
+  onClick={() => dispatch(toggleAutoSelectHideSections())}
+>
+  Прибрати секції
+</button>
 </div>
             {departments.map(dept => {
               const selectedSubs = selectedSubDepts[dept.departmentName] || [];
@@ -103,7 +107,7 @@ export const BottomFilterView = ({
           </div>
 
           <div className={styles.boxRight}>
-            <h4>Підпідрозділи</h4>
+            <h4>Секції</h4>
             {expandedDept === null && <p>Натисніть стрілку ліворуч, щоб показати підпідрозділи</p>}
             {expandedDept && !bookmarks.hideSections[expandedDept] && (
               <div>

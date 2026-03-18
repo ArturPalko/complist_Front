@@ -82,7 +82,7 @@ export const filterDataReducer = (state = initialState, action) => {
 //     }
 //   };
 // }
-case "TOGGLE_ALL_HIDE_USERS_WITHOUT_SECTIONS": {
+case "TOGGLE_AUTO_SELECT_HIDE_USERS_WITHOUT_SECTIONS": {
   const selectedSubDepts = state.phones.bookmarks.selectedSubDepts;
 
   // Якщо зараз false → увімкнути та скопіювати всі департаменти з масивами у hideUsersWithoutSections
@@ -110,13 +110,27 @@ case "TOGGLE_ALL_HIDE_USERS_WITHOUT_SECTIONS": {
 }
 
 case "TOGGLE_AUTO_SELECT_HIDE_SECTIONS": {
+  const selectedSubDepts = state.phones.bookmarks.selectedSubDepts;
+
+  // якщо зараз вимкнено → вмикаємо і заповнюємо
+  const isCurrentlyOff = !state.phones.bookmarks.allHideSections;
+
+  const newHideSections = isCurrentlyOff
+    ? Object.fromEntries(
+        Object.entries(selectedSubDepts)
+          .filter(([_, value]) => Array.isArray(value))
+          .map(([key]) => [key, true])
+      )
+    : {}; // якщо вимикаємо → очищаємо
+
   return {
     ...state,
     phones: {
       ...state.phones,
       bookmarks: {
         ...state.phones.bookmarks,
-        autoSelectHideSections: !state.phones.bookmarks.autoSelectHideSections
+        allHideSections: !state.phones.bookmarks.allHideSections,
+        hideSections: newHideSections
       }
     }
   };
@@ -146,14 +160,31 @@ case "TOGGLE_AUTO_SELECT_HIDE_SECTIONS": {
         selectedSubDepts[deptName] = newSubs;
         if (!selectedOrder.includes(deptName)) selectedOrder.push(deptName);
       }
+      const hideUsersWithoutSections = { ...bookmarks.hideUsersWithoutSections };
+      const hideSections = { ...bookmarks.hideSections };
+
+      if (newSubs.length > 0) {
+        if (bookmarks.allHideUsersWithoutSections) {
+          hideUsersWithoutSections[deptName] = true;
+        }
+
+        if (bookmarks.allHideSections) {
+          hideSections[deptName] = true;
+        }
+      } else {
+        delete hideUsersWithoutSections[deptName];
+        delete hideSections[deptName];
+      }
 
       const newPhonesState = {
         ...state.phones,
         bookmarks: {
-          ...bookmarks,
-          selectedSubDepts,
-          selectedOrder
-        }
+  ...bookmarks,
+  selectedSubDepts,
+  selectedOrder,
+  hideUsersWithoutSections,
+  hideSections
+}
       };
 
       return {
@@ -166,50 +197,71 @@ case "TOGGLE_AUTO_SELECT_HIDE_SECTIONS": {
     }
 
     case "SET_BOOKMARK": {
-      const { deptName, sections } = action;
-      const { bookmarks } = state.phones;
+  const { deptName, sections } = action;
+  const { bookmarks } = state.phones;
 
-      const selectedSubDepts = { ...bookmarks.selectedSubDepts };
-      let selectedOrder = [...bookmarks.selectedOrder];
+  const selectedSubDepts = { ...bookmarks.selectedSubDepts };
+  let selectedOrder = [...bookmarks.selectedOrder];
 
-      const allSubs = sections || [];
-      const selectedSubs = selectedSubDepts[deptName] || [];
+  const allSubs = sections || [];
+  const selectedSubs = selectedSubDepts[deptName] || [];
 
-      if (allSubs.length === 0) {
-        if (selectedSubDepts[deptName]) {
-          delete selectedSubDepts[deptName];
-          selectedOrder = selectedOrder.filter(d => d !== deptName);
-        } else {
-          selectedSubDepts[deptName] = true;
-          if (!selectedOrder.includes(deptName)) selectedOrder.push(deptName);
-        }
-      } else {
-        if (selectedSubs.length === allSubs.length) {
-          delete selectedSubDepts[deptName];
-        } else {
-          selectedSubDepts[deptName] = allSubs.map(s => s.sectionName);
-        }
-        selectedOrder = selectedOrder.filter(d => d !== deptName);
-        if (selectedSubDepts[deptName]) selectedOrder.push(deptName);
-      }
-
-      const newPhonesState = {
-        ...state.phones,
-        bookmarks: {
-          ...bookmarks,
-          selectedSubDepts,
-          selectedOrder
-        }
-      };
-
-      return {
-        ...state,
-        phones: {
-          ...newPhonesState,
-          isFilterApplied: isAnyFilterApplied(newPhonesState)
-        }
-      };
+  if (allSubs.length === 0) {
+    if (selectedSubDepts[deptName]) {
+      delete selectedSubDepts[deptName];
+      selectedOrder = selectedOrder.filter(d => d !== deptName);
+    } else {
+      selectedSubDepts[deptName] = true;
+      if (!selectedOrder.includes(deptName)) selectedOrder.push(deptName);
     }
+  } else {
+    if (selectedSubs.length === allSubs.length) {
+      delete selectedSubDepts[deptName];
+    } else {
+      selectedSubDepts[deptName] = allSubs.map(s => s.sectionName);
+    }
+    selectedOrder = selectedOrder.filter(d => d !== deptName);
+    if (selectedSubDepts[deptName]) selectedOrder.push(deptName);
+  }
+
+  // 🔥 НОВА ЛОГІКА (симетрична)
+  const hideUsersWithoutSections = { ...bookmarks.hideUsersWithoutSections };
+  const hideSections = { ...bookmarks.hideSections };
+
+  const isSelected = !!selectedSubDepts[deptName];
+
+  if (isSelected) {
+    if (bookmarks.allHideUsersWithoutSections) {
+      hideUsersWithoutSections[deptName] = true;
+    }
+
+    if (bookmarks.allHideSections) {
+      hideSections[deptName] = true;
+    }
+  } else {
+    delete hideUsersWithoutSections[deptName];
+    delete hideSections[deptName];
+  }
+
+  const newPhonesState = {
+    ...state.phones,
+    bookmarks: {
+      ...bookmarks,
+      selectedSubDepts,
+      selectedOrder,
+      hideUsersWithoutSections,
+      hideSections
+    }
+  };
+
+  return {
+    ...state,
+    phones: {
+      ...newPhonesState,
+      isFilterApplied: isAnyFilterApplied(newPhonesState)
+    }
+  };
+}
 
     // ================= CHECKBOXES ДЛЯ ДЕПАРТАМЕНТІВ =================
 
