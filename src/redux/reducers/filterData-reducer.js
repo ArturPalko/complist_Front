@@ -235,7 +235,7 @@ case "TOGGLE_AUTO_SELECT_HIDE_SECTIONS": {
       hideUsersWithoutSections[deptName] = true;
     }
 
-    if (bookmarks.allHideSections) {
+    if (bookmarks.allHideSections ) {
       hideSections[deptName] = true;
     }
   } else {

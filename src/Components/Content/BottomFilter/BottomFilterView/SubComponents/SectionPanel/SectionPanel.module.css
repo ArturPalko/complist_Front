@@ -1,0 +1,21 @@
+.subLabel {
+  display: block;
+  margin-left: 1.5em;
+  margin-bottom: 0.5em;
+}
+.boxRight {
+  flex: 1;
+  min-width: 0;
+  padding: 1.8em;
+  background: #fffdf7;
+  overflow-y: auto;
+}
+/* заголовки */
+.box h4,
+.boxRight h4 {
+  margin-top: 0;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 0.4em;
+}
+
+
