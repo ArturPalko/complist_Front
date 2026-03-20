@@ -5,7 +5,8 @@ import styles from "./BottomFilterView.module.css";
 import { toggleSubDept } from "../../../../redux/reducers/filterData-reducer";
 import {
   toggleAutoSelectHideSections,
-  toggleAutoSelectHideUsersWithoutSections
+  toggleAutoSelectHideUsersWithoutSections,
+  toggleAllDepatrments
 } from "../../../../redux/reducers/filterData-reducer";
 import { BottomFilterHeader } from "./SubComponents/BottomFilterHeader/BottomFilterHeader";
 import { DepartmentsList } from "./SubComponents/DepartmentsList/DepartmentList";
@@ -62,6 +63,11 @@ export const BottomFilterView = ({
           <div className={styles.box}>
             <BottomFilterHeader
               bookmarks={bookmarks}
+              departments={departments}
+              // departments={departments}
+              onToggleSelectALL = {() =>
+                dispatch(toggleAllDepatrments(departments))
+              }
               onToggleHideUsers={() =>
                 dispatch(toggleAutoSelectHideUsersWithoutSections())
               }

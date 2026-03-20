@@ -138,6 +138,7 @@ case "TOGGLE_AUTO_SELECT_HIDE_SECTIONS": {
     // ================= BOOKMARKS =================
 
     case "TOGGLE_SUB_DEPT": {
+    
       const { deptName, sub } = action;
       const { bookmarks } = state.phones;
 
@@ -145,6 +146,7 @@ case "TOGGLE_AUTO_SELECT_HIDE_SECTIONS": {
       let selectedOrder = [...bookmarks.selectedOrder];
 
       const currentSubs = selectedSubDepts[deptName] || [];
+      
 
       let newSubs;
       if (currentSubs.includes(sub)) {
@@ -199,7 +201,7 @@ case "TOGGLE_AUTO_SELECT_HIDE_SECTIONS": {
     case "SET_BOOKMARK": {
   const { deptName, sections } = action;
   const { bookmarks } = state.phones;
-
+debugger
   const selectedSubDepts = { ...bookmarks.selectedSubDepts };
   let selectedOrder = [...bookmarks.selectedOrder];
 
@@ -207,7 +209,9 @@ case "TOGGLE_AUTO_SELECT_HIDE_SECTIONS": {
   const selectedSubs = selectedSubDepts[deptName] || [];
 
   if (allSubs.length === 0) {
+    debugger
     if (selectedSubDepts[deptName]) {
+      debugger
       delete selectedSubDepts[deptName];
       selectedOrder = selectedOrder.filter(d => d !== deptName);
     } else {
@@ -229,16 +233,24 @@ case "TOGGLE_AUTO_SELECT_HIDE_SECTIONS": {
   const hideSections = { ...bookmarks.hideSections };
 
   const isSelected = !!selectedSubDepts[deptName];
+  debugger
 
   if (isSelected) {
-    if (bookmarks.allHideUsersWithoutSections) {
+    let b = allSubs.length!=0
+    debugger
+    if (bookmarks.allHideUsersWithoutSections && b) {
+      debugger;
       hideUsersWithoutSections[deptName] = true;
     }
-
-    if (bookmarks.allHideSections ) {
-      hideSections[deptName] = true;
-    }
-  } else {
+// let a =bookmarks.allHideUsersWithoutSections
+// let b = !allSubs.length
+// debugger
+//     if (a &&  b ) {
+//       debugger
+//       hideUsersWithoutSections[deptName] = true;
+//     }
+ } 
+else {
     delete hideUsersWithoutSections[deptName];
     delete hideSections[deptName];
   }
@@ -416,7 +428,62 @@ case "TOGGLE_AUTO_SELECT_HIDE_SECTIONS": {
     }
 
     // ================= RESULTS =================
+case "TOGGLE_ALL_DEPARTMENTS": {
+  const { departments } = action;
+  const { bookmarks } = state.phones;
 
+  const allSelected =
+    Object.keys(bookmarks.selectedSubDepts).length === departments.length;
+
+  let selectedSubDepts = {};
+  let selectedOrder = [];
+  let hideUsersWithoutSections = { ...bookmarks.hideUsersWithoutSections };
+
+  if (!allSelected) {
+    // 🔹 вибираємо всі департаменти
+    departments.forEach(dept => {
+      const deptName = dept.departmentName || dept.name; // залежить від структури
+      const sections = dept.sections || [];
+
+      if (sections.length === 0) {
+        selectedSubDepts[deptName] = true;
+      } else {
+        selectedSubDepts[deptName] = sections.map(s => s.sectionName);
+      }
+
+      selectedOrder.push(deptName);
+
+      // залишаємо hideUsersWithoutSections тільки для тих, хто вже має прапорець
+      if (bookmarks.allHideUsersWithoutSections && sections.length === 0) {
+        hideUsersWithoutSections[deptName] = true;
+      }
+    });
+  } else {
+    // 🔹 якщо всі вже вибрані, очищаємо
+    selectedSubDepts = {};
+    selectedOrder = [];
+    hideUsersWithoutSections = {};
+  }
+
+  const newBookmarks = {
+    ...bookmarks,
+    selectedSubDepts,
+    selectedOrder,
+    hideUsersWithoutSections
+  };
+
+  return {
+    ...state,
+    phones: {
+      ...state.phones,
+      bookmarks: newBookmarks,
+      isFilterApplied: isAnyFilterApplied({
+        ...state.phones,
+        bookmarks: newBookmarks
+      })
+    }
+  };
+}
     case ADD_INDEXES_OF_FILTRED_RESULTS: {
       const currentStateForMenu = state[action.menu];
       return {
@@ -481,3 +548,8 @@ export const toggleAutoSelectHideUsersWithoutSections = () => ({
 export const toggleAutoSelectHideSections = () => ({
   type: "TOGGLE_AUTO_SELECT_HIDE_SECTIONS"
 });
+
+export const toggleAllDepatrments = (departments)=>({
+  type: "TOGGLE_ALL_DEPARTMENTS",
+  departments
+})

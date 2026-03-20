@@ -23,6 +23,7 @@ export const BottomFilterContainer = () => {
 
   const depSec = useSelector(getDepartmentsAndSections);
   const departments = depSec.departments || [];
+  debugger;
   const bookmarks = useSelector(selectBookmarks);
 
   const selectedSubDepts = bookmarks.selectedSubDepts;

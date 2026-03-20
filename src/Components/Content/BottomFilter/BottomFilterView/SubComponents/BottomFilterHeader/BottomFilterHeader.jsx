@@ -1,9 +1,12 @@
 import styles from "./BottomFilterHeader.module.css";
 
 export const BottomFilterHeader = ({
+
   bookmarks,
+  departments,
   onToggleHideUsers,
-  onToggleHideSections
+  onToggleHideSections,
+  onToggleSelectALL
 }) => {
   return (
     <div className={styles.headerWithToggles}>
@@ -25,6 +28,15 @@ export const BottomFilterHeader = ({
         onClick={onToggleHideSections}
       >
         Прибрати секції
+      </button>
+
+           <button
+        className={`${styles.toggleAllDeptartmentsBtn} ${
+          Object.keys(bookmarks.selectedSubDepts).length == departments.length ? styles.active : ""
+        }`}
+        onClick={onToggleSelectALL}
+      >
+        Усе
       </button>
     </div>
   );
