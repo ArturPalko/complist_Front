@@ -454,7 +454,10 @@ case "TOGGLE_ALL_DEPARTMENTS": {
       selectedOrder.push(deptName);
 
       // залишаємо hideUsersWithoutSections тільки для тих, хто вже має прапорець
-      if (bookmarks.allHideUsersWithoutSections && sections.length === 0) {
+      if (bookmarks.allHideUsersWithoutSections && sections.length !== 0) {
+        hideUsersWithoutSections[deptName] = true;
+      }
+         if (bookmarks.allHideSections && sections.length !== 0) {
         hideUsersWithoutSections[deptName] = true;
       }
     });
