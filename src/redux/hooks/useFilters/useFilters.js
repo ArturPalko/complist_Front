@@ -36,7 +36,7 @@ export const useFilters = ({ activeMenu, dataForMenu, currentPage }) => {
   // ================== SELECTORS ==================
   const filtersFromRedux = useSelector(selectFiltersForMenu(activeMenu)) || {};
   const subFiltersFromRedux = useSelector(selectPhonesSubcondions) || { contactType: {}, userPosition: {} };
-  const bookmarks = useSelector(selectBookmarks) || {};
+const bookmarks = useSelector(state => selectBookmarks(state, activeMenu)) || [];
   const selectedSubDepts = bookmarks.selectedSubDepts || {};
 
   const isLastVisitedPageWasFoundResults = useSelector(isCurrentPageFoundResult(activeMenu));
@@ -47,10 +47,11 @@ export const useFilters = ({ activeMenu, dataForMenu, currentPage }) => {
     const sections = {};
     const hideUsers = {};
     const hideSections = {};
-
+debugger
     Object.entries(selectedSubDepts).forEach(([dept, value]) => {
       // Вибрані департаменти
-      if (value === true) {
+      if (value === true ) {
+        debugger
         departments.push(dept);
       }
 
@@ -63,7 +64,7 @@ export const useFilters = ({ activeMenu, dataForMenu, currentPage }) => {
       hideUsers[dept] = bookmarks.hideUsersWithoutSections?.[dept] || false;
       hideSections[dept] = bookmarks.hideSections?.[dept] || false;
     });
-
+debugger
     return { departments, sections, hideUsers, hideSections };
   };
 
@@ -122,20 +123,17 @@ export const useFilters = ({ activeMenu, dataForMenu, currentPage }) => {
     });
   }, [filteredChunks, activeMenu, dispatch]);
 
-  useEffect(() => {
-    redirectToCurrentPage({
-      hasFilters,
-      isLastVisitedPageWasFoundResults,
-      navigate,
-      activeMenu,
-      currentPage
-    });
-  }, [
+useEffect(() => {
+  if (!hasFilters || !isLastVisitedPageWasFoundResults) return;
+
+  redirectToCurrentPage({
     hasFilters,
-    subFiltersFromRedux.contactType,
-    subFiltersFromRedux.userPosition,
-    filtersFromRedux
-  ]);
+    isLastVisitedPageWasFoundResults,
+    navigate,
+    activeMenu,
+    currentPage
+  });
+}, [hasFilters, isLastVisitedPageWasFoundResults, activeMenu, currentPage, navigate]);
 
   // ================== HANDLERS ==================
   const handleCheckboxChange = (key, category) =>

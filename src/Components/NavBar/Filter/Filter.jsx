@@ -13,7 +13,7 @@ import { toggleFielterPanelElement } from "../../../redux/reducers/toggledElemen
 import { clearFiltredData } from "../../../redux/reducers/filterData-reducer";
 import { redirectToPage } from "../../../shared/functions/redirectToPage";
 
-import s from "./Filter.module.css"; // файл стилів
+import s from "./Filter.module.css"; 
 
 const Filter = () => {
   const dispatch = useDispatch();

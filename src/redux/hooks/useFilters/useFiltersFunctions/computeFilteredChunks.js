@@ -24,6 +24,7 @@ export const computeFilteredChunks = ({
   bookmarkConditions = {}, // приймаємо нову структуру
   chunkSize = defaultChunkSize
 }) => {
+  debugger
   const activeFilters = Object.entries(state)
     .filter(([key, v]) => v && conditions[key])
     .map(([key]) => key);
@@ -36,11 +37,18 @@ export const computeFilteredChunks = ({
   const hideSections = bookmarkConditions.hideSections || {};
 // debugger;
   dataForMenu.forEach((element, pageIndex) => {
+    
     const rows = element?.rows || [];
     rows.forEach((row, rowIndex) => {
+      let deptName="";
       // Перевіряємо, чи департамент цього рядка вибраний
-      const deptName = row.departmentName;
-// debugger;
+      if(activeMenu=="phones"){
+          deptName = row.departmentName;
+      }
+      else{
+          deptName = row.depSec.department;
+      }
+//  debugger;
       if (hideUsers[deptName] && !row.sectionName && row.type !="department") {
         // Приховуємо користувачів без секцій
         return;
@@ -56,7 +64,8 @@ export const computeFilteredChunks = ({
           row,
           activeFilters,
           effectiveSubConditions,
-          bookmarkConditions
+          bookmarkConditions,
+          activeMenu
         )
       ) {
         allFilteredIndexes.push({

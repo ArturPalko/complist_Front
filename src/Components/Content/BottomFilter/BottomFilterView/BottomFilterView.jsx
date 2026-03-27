@@ -20,7 +20,8 @@ export const BottomFilterView = ({
   toggleExpand,
   selectedSubDepts,
   selectedOrder,
-  toggleDept
+  toggleDept,
+  activeMenu
 }) => {
   const refs = useRef({});
   const dispatch = useDispatch();
@@ -62,11 +63,12 @@ export const BottomFilterView = ({
           {/* 🔹 ліва частина */}
           <div className={styles.box}>
             <BottomFilterHeader
+              activeMenu={activeMenu}
               bookmarks={bookmarks}
               departments={departments}
               // departments={departments}
               onToggleSelectALL = {() =>
-                dispatch(toggleAllDepatrments(departments))
+                dispatch(toggleAllDepatrments(activeMenu,departments))
               }
               onToggleHideUsers={() =>
                 dispatch(toggleAutoSelectHideUsersWithoutSections())
@@ -77,6 +79,7 @@ export const BottomFilterView = ({
             />
 
             <DepartmentsList
+              activeMenu ={activeMenu}
               departments={departments}
               selectedSubDepts={selectedSubDepts}
               expandedDept={expandedDept}
@@ -93,7 +96,7 @@ export const BottomFilterView = ({
             selectedSubDepts={selectedSubDepts}
             hideSections={bookmarks.hideSections}
             onToggleSubDept={(dept, sub) =>
-              dispatch(toggleSubDept(dept, sub))
+              dispatch(toggleSubDept(activeMenu, dept, sub))
             }
           />
         </div>

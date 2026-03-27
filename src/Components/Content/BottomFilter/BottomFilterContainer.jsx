@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import {
-  activeMenu,
+  activeMenu as selectActiveMenu,
   getDepartmentsAndSections,
-  selectBookmarks
+  selectBookmarks,
+  currentPageByMenu,
+  getDataForMenu
 } from "../../../redux/selectors/selector";
 
 import {
@@ -14,38 +16,44 @@ import {
 
 import { BottomFilterView } from "./BottomFilterView/BottomFilterView";
 import { useFilters } from "../../../redux/hooks/useFilters/useFilters";
-import { currentPageByMenu } from "../../../redux/selectors/selector";
 
 export const BottomFilterContainer = () => {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const [expandedDept, setExpandedDept] = useState(null);
 
-  const depSec = useSelector(getDepartmentsAndSections);
+    // ================== AUTOMATIC ACTIVE MENU ==================
+  const activeMenu = useSelector(selectActiveMenu);
+  const currentPage = useSelector(state => currentPageByMenu(state, activeMenu));
+
+  const depSec = useSelector(state => getDepartmentsAndSections(state, activeMenu));
+  // debugger;
   const departments = depSec.departments || [];
-  debugger;
-  const bookmarks = useSelector(selectBookmarks);
+const bookmarks = useSelector(state => selectBookmarks(state, activeMenu)) || [];
+  // debugger
 
   const selectedSubDepts = bookmarks.selectedSubDepts;
   const selectedOrder = bookmarks.selectedOrder;
 
-  // ================== useFilters ==================
-  const menu = useSelector(activeMenu);
-const currentPage = useSelector(state => currentPageByMenu(state, menu));
-  const phonesData = useSelector(state => state.data.phones);
-const { filteredChunks, hasFilters, phonesSubConditions, _ } = useFilters({
-  activeMenu: "phones",
-  dataForMenu: phonesData,
-  currentPage: currentPage
-});
+
+  
+  // Автоматичний вибір dataForMenu
+  const dataForMenu = useSelector(state => getDataForMenu(state, activeMenu));
+  const { filteredChunks, hasFilters, phonesSubConditions } = useFilters({
+    activeMenu,
+    dataForMenu,
+    currentPage
+  });
+
   // ================== HANDLERS ==================
   const toggleDept = (deptName) => {
     const dept = departments.find(d => d.departmentName === deptName);
-    dispatch(setBookmark(deptName, dept?.sections || []));
+    dispatch(setBookmark(activeMenu, deptName, dept?.sections || []));
   };
 
   const toggleSubDept = (deptName, sub) => {
-    dispatch(toggleSubDeptAction(deptName, sub));
+    debugger
+    dispatch(toggleSubDept(activeMenu, deptName, sub));
   };
 
   const toggleExpand = (deptName) => {
@@ -55,6 +63,7 @@ const { filteredChunks, hasFilters, phonesSubConditions, _ } = useFilters({
   return (
     <BottomFilterView
       isOpen={isOpen}
+      activeMenu={activeMenu}
       toggleOpen={() => setIsOpen(!isOpen)}
       departments={departments}
       expandedDept={expandedDept}
@@ -68,4 +77,3 @@ const { filteredChunks, hasFilters, phonesSubConditions, _ } = useFilters({
 };
 
 export default BottomFilterContainer;
-

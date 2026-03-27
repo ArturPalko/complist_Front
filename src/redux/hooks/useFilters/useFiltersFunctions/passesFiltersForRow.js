@@ -4,27 +4,46 @@ export const passesFiltersForRow = (
   row,
   activeFilters = [],
   subConditions = {},
-  bookmarkConditions = null
+  bookmarkConditions = null,
+  activeMenu
 ) => {
   const { departments = [], sections = {} } = bookmarkConditions || {};
   const hasBookmarks = departments.length > 0 || Object.keys(sections).length > 0;
-
+// debugger
   const checkRowOrUser = (el) => {
-
-    // ⭐ 1. BOOKMARK FILTER (працює першим)
-    if (hasBookmarks) {
-      const bookmarkPass =
-        departments.includes(el.departmentName) ||
-        (sections[el.departmentName] || []).includes(el.sectionName);
-
-      if (!bookmarkPass) {
-        // 2️⃣ Додаткове правило для користувачів без секції
-        if (el.type === "user" && sections[el.departmentName] && el.sectionName == null) {
-          return true;
-        }
-        return false;
-      }
+// debugger
+   // ⭐ BOOKMARK FILTER (працює першим)
+if (hasBookmarks) {
+  // Вибираємо правильні значення залежно від activeMenu
+  const deptName = activeMenu === "phones" ? el.departmentName : el.depSec?.department || "";
+  const sectionName = activeMenu === "phones" ? el.sectionName : el.depSec?.section || "";
+let bookmarkPass = true;
+  bookmarkPass =
+    departments.includes(deptName) ||
+    (sections[deptName] || []).includes(sectionName);
+// if (activeMenu === "phones") {
+//   bookmarkPass =
+//     departments.includes(deptName) ||
+//     (sections[deptName] || []).includes(sectionName);
+// } else {
+//   bookmarkPass =
+//     departments.includes(deptName) || 
+//     (sections[deptName] && sections[deptName].length > 0);
+// }
+  
+debugger;
+  if (!bookmarkPass) {
+    // Додаткове правило для користувачів без секції
+    if (
+      el.type === "user" &&
+      sections[deptName] &&
+      (sectionName === null || sectionName === "")
+    ) {
+      return true;
     }
+    return false;
+  }
+}
 
     // ⭐ 2. Старі FilterPanel filters
     const filtersPass = activeFilters.length === 0

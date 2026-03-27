@@ -7,7 +7,8 @@ export const DepartmentsList = ({
   expandedDept,
   toggleDept,
   toggleExpand,
-  refs
+  refs,
+  activeMenu
 }) => {
   return (
     <>
@@ -38,8 +39,9 @@ export const DepartmentsList = ({
               />
               {dept.departmentName}
             </label>
-
+          
             <DeptRowControls
+              activeMenu={activeMenu}
               dept={dept}
               hasSubs={hasSubs}
               isChecked={isChecked}

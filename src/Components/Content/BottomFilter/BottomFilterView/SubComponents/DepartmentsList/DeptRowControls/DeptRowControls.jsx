@@ -6,8 +6,9 @@ import usersOutOfSectionImg from "../../../../../../../assets/Img/usersOutOfSect
 import { toggleHideUsersWithoutSections, toggleHideSections } from "../../../../../../../redux/reducers/filterData-reducer";
 
 export const DeptRowControls = React.memo(
-  ({ dept, hasSubs, isChecked, isIndeterminate, expandedDept, toggleExpand }) => {
+  ({ dept, hasSubs, isChecked, isIndeterminate, expandedDept, toggleExpand,activeMenu}) => {
     const dispatch = useDispatch();
+    const isActiveMenuPhones = activeMenu== "phones"? true: false
     const bookmarks = useSelector(
       state => state.filters.phones?.bookmarks || {
         hideUsersWithoutSections: {},
@@ -29,7 +30,7 @@ export const DeptRowControls = React.memo(
           </span>
         )}
 
-        {(isChecked || isIndeterminate) && hasSubs && (
+        {(isChecked || isIndeterminate)&& isActiveMenuPhones && hasSubs && (
           <div className={styles.additionalCheckboxesColumn}>
             <label className={styles.imgCheckboxLabel}>
               <input

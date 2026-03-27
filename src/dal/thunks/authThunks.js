@@ -28,7 +28,7 @@ export const logoutUser = () => async (dispatch) => {
 export const checkAuth = () => async (dispatch) => {
   try {
     const res = await apiPrivate.get("/checkAuth");
-    debugger;
+    // debugger;
     dispatch(loginSuccess(res.data));
   } catch (err) {
     dispatch(loginFailure(null));
