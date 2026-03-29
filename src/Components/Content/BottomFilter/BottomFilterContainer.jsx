@@ -27,7 +27,7 @@ export const BottomFilterContainer = () => {
   const currentPage = useSelector(state => currentPageByMenu(state, activeMenu));
 
   const depSec = useSelector(state => getDepartmentsAndSections(state, activeMenu));
-  // debugger;
+   debugger;
   const departments = depSec.departments || [];
 const bookmarks = useSelector(state => selectBookmarks(state, activeMenu)) || [];
   // debugger

@@ -243,66 +243,74 @@ debugger
       };
     }
 
-    case "SET_BOOKMARK": {
-      const bookmarks = state[activeMenu].bookmarks;
-      const selectedSubDepts = { ...bookmarks.selectedSubDepts };
-      let selectedOrder = [...bookmarks.selectedOrder];
+   case "SET_BOOKMARK": {
+  const bookmarks = state[activeMenu].bookmarks;
+  const selectedSubDepts = { ...bookmarks.selectedSubDepts };
+  let selectedOrder = [...bookmarks.selectedOrder];
 
-      const allSubs = action.sections || [];
-      const selectedSubs = selectedSubDepts[deptName] || [];
+  const allSubs = action.sections || [];
+  const selectedSubs = selectedSubDepts[deptName] || [];
 
-      if (allSubs.length === 0) {
-        if (selectedSubDepts[deptName]) {
-          delete selectedSubDepts[deptName];
-          selectedOrder = selectedOrder.filter(d => d !== deptName);
-        } else {
-          selectedSubDepts[deptName] = true;
-          if (!selectedOrder.includes(deptName)) selectedOrder.push(deptName);
-        }
-      } else {
-        if (selectedSubs.length === allSubs.length) {
-          delete selectedSubDepts[deptName];
-        } else {
-          selectedSubDepts[deptName] = allSubs.map(s => s.sectionName);
-        }
-        selectedOrder = selectedOrder.filter(d => d !== deptName);
-        if (selectedSubDepts[deptName]) selectedOrder.push(deptName);
-      }
-
-      const hideUsersWithoutSections = { ...bookmarks.hideUsersWithoutSections };
-      const hideSections = { ...bookmarks.hideSections };
-
-      if (selectedSubDepts[deptName] && bookmarks.allHideUsersWithoutSections && allSubs.length !== 0) {
-        hideUsersWithoutSections[deptName] = true;
-      } else {
-        delete hideUsersWithoutSections[deptName];
-        delete hideSections[deptName];
-      }
-
-      return {
-        ...state,
-        [activeMenu]: {
-          ...state[activeMenu],
-          bookmarks: {
-            ...bookmarks,
-            selectedSubDepts,
-            selectedOrder,
-            hideUsersWithoutSections,
-            hideSections
-          },
-          isFilterApplied: isAnyFilterApplied({
-            ...state[activeMenu],
-            bookmarks: {
-              ...bookmarks,
-              selectedSubDepts,
-              selectedOrder,
-              hideUsersWithoutSections,
-              hideSections
-            }
-          })
-        }
-      };
+  // Обробка вибору/зняття всіх секцій
+  if (allSubs.length === 0) {
+    if (selectedSubDepts[deptName]) {
+      delete selectedSubDepts[deptName];
+      selectedOrder = selectedOrder.filter(d => d !== deptName);
+    } else {
+      selectedSubDepts[deptName] = true;
+      if (!selectedOrder.includes(deptName)) selectedOrder.push(deptName);
     }
+  } else {
+    if (selectedSubs.length === allSubs.length) {
+      delete selectedSubDepts[deptName];
+    } else {
+      selectedSubDepts[deptName] = allSubs.map(s => s.sectionName);
+    }
+    selectedOrder = selectedOrder.filter(d => d !== deptName);
+    if (selectedSubDepts[deptName]) selectedOrder.push(deptName);
+  }
+
+  const hideUsersWithoutSections = { ...bookmarks.hideUsersWithoutSections };
+  const hideSections = { ...bookmarks.hideSections };
+
+  // ✅ Автоматичне ховання користувачів без секцій
+  if (bookmarks.allHideUsersWithoutSections && selectedSubDepts[deptName]) {
+    hideUsersWithoutSections[deptName] = true;
+  } else {
+    delete hideUsersWithoutSections[deptName];
+  }
+
+  // ✅ Автоматичне ховання секцій
+  if (bookmarks.allHideSections && selectedSubDepts[deptName] && Array.isArray(selectedSubDepts[deptName])) {
+    hideSections[deptName] = true;
+  } else {
+    delete hideSections[deptName];
+  }
+
+  return {
+    ...state,
+    [activeMenu]: {
+      ...state[activeMenu],
+      bookmarks: {
+        ...bookmarks,
+        selectedSubDepts,
+        selectedOrder,
+        hideUsersWithoutSections,
+        hideSections
+      },
+      isFilterApplied: isAnyFilterApplied({
+        ...state[activeMenu],
+        bookmarks: {
+          ...bookmarks,
+          selectedSubDepts,
+          selectedOrder,
+          hideUsersWithoutSections,
+          hideSections
+        }
+      })
+    }
+  };
+}
 
     // ===== TOGGLE CHECKBOXES =====
     case "TOGGLE_HIDE_USERS_WITHOUT_SECTIONS": {

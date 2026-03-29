@@ -22,7 +22,8 @@ export const computeFilteredChunks = ({
   conditions,
   selectedSubDepts = {},
   bookmarkConditions = {}, // приймаємо нову структуру
-  chunkSize = defaultChunkSize
+  chunkSize = defaultChunkSize,
+  departments
 }) => {
   debugger
   const activeFilters = Object.entries(state)
@@ -65,7 +66,8 @@ export const computeFilteredChunks = ({
           activeFilters,
           effectiveSubConditions,
           bookmarkConditions,
-          activeMenu
+          activeMenu,
+          departments
         )
       ) {
         allFilteredIndexes.push({

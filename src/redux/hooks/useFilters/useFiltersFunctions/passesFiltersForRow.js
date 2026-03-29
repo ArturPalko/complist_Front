@@ -5,89 +5,164 @@ export const passesFiltersForRow = (
   activeFilters = [],
   subConditions = {},
   bookmarkConditions = null,
-  activeMenu
+  activeMenu,
+  departmentsFromRedux = []
 ) => {
-  const { departments = [], sections = {} } = bookmarkConditions || {};
-  const hasBookmarks = departments.length > 0 || Object.keys(sections).length > 0;
-// debugger
-  const checkRowOrUser = (el) => {
-// debugger
-   // ⭐ BOOKMARK FILTER (працює першим)
-if (hasBookmarks) {
-  // Вибираємо правильні значення залежно від activeMenu
-  const deptName = activeMenu === "phones" ? el.departmentName : el.depSec?.department || "";
-  const sectionName = activeMenu === "phones" ? el.sectionName : el.depSec?.section || "";
-let bookmarkPass = true;
-  bookmarkPass =
-    departments.includes(deptName) ||
-    (sections[deptName] || []).includes(sectionName);
-// if (activeMenu === "phones") {
-//   bookmarkPass =
-//     departments.includes(deptName) ||
-//     (sections[deptName] || []).includes(sectionName);
-// } else {
-//   bookmarkPass =
-//     departments.includes(deptName) || 
-//     (sections[deptName] && sections[deptName].length > 0);
-// }
-  
-debugger;
-  if (!bookmarkPass) {
-    // Додаткове правило для користувачів без секції
-    if (
-      el.type === "user" &&
-      sections[deptName] &&
-      (sectionName === null || sectionName === "")
-    ) {
-      return true;
-    }
-    return false;
-  }
-}
 
-    // ⭐ 2. Старі FilterPanel filters
-    const filtersPass = activeFilters.length === 0
-      ? true
-      : activeFilters.every((key) => {
-          const parentKey = Object.keys(filterGroups).find(
-            (grp) => filterGroups[grp].includes(key)
+  const {
+    departments = [],
+    sections = {},
+    hideUsers = {},
+    hideSections = {},
+  } = bookmarkConditions || {};
+
+  const hasBookmarks =
+    departments.length > 0 || Object.keys(sections).length > 0;
+
+  // ------------------ HELPERS ------------------
+  const getDeptName = (el) =>
+    activeMenu === "phones"
+      ? el.departmentName
+      : el.depSec?.department || "";
+
+  const getSectionName = (el) =>
+    activeMenu === "phones"
+      ? el.sectionName
+      : el.depSec?.section || "";
+
+  const checkRowOrUser = (el) => {
+    const deptName = getDeptName(el);
+    const sectionName = getSectionName(el);
+
+    const isUserWithoutSection =
+      el.type === "user" && (!sectionName || sectionName === "");
+
+    // =====================================================
+    // 🔥 PHONES — СТАРА ЛОГІКА (НЕ ЧІПАЄМО)
+    // =====================================================
+    if (activeMenu === "phones") {
+
+      // hide тільки тут
+      if (hideUsers[deptName] && isUserWithoutSection) return false;
+      if (hideSections[deptName] && sectionName) return false;
+
+      if (hasBookmarks) {
+        let bookmarkPass =
+          departments.includes(deptName) ||
+          (sections[deptName] || []).includes(sectionName);
+
+        if (!bookmarkPass) {
+          // ⭐ спец правило для users без секції
+          if (
+            el.type === "user" &&
+            sections[deptName] &&
+            (!sectionName || sectionName === "")
+          ) {
+            return true;
+          }
+          return false;
+        }
+      }
+    }
+
+    // =====================================================
+    // 🔥 НЕ PHONES — НОВА ЛОГІКА
+    // =====================================================
+    else {
+      if (hasBookmarks) {
+        let bookmarkPass = false;
+
+        if (departments.includes(deptName)) {
+          const deptObj = departmentsFromRedux.find(
+            (d) => d.departmentName === deptName
           );
 
-          if (!parentKey) {
-            return typeof conditions[key] === "function" && conditions[key](el);
+          const selectedSections = Array.isArray(sections[deptName])
+            ? sections[deptName]
+            : [];
+
+          const totalSections = Array.isArray(deptObj?.sections)
+            ? deptObj.sections.length
+            : 0;
+
+          const isAllSectionsSelected =
+            selectedSections.length === totalSections;
+
+          if (isAllSectionsSelected) {
+            bookmarkPass = true;
+          } else {
+            bookmarkPass = selectedSections.includes(sectionName);
           }
+        }
 
-          const alternatives = filterGroups[parentKey];
-          const activeAlternatives = alternatives.filter((a) => activeFilters.includes(a));
+        if (!bookmarkPass) return false;
+      }
+    }
 
-          return activeAlternatives.some((a) => typeof conditions[a] === "function" && conditions[a](el));
-        });
+    // =====================================================
+    // 🔥 FILTERS (спільні)
+    // =====================================================
+    const filtersPass =
+      activeFilters.length === 0
+        ? true
+        : activeFilters.every((key) => {
+            const parentKey = Object.keys(filterGroups).find(
+              (grp) => filterGroups[grp].includes(key)
+            );
 
-    // ⭐ 3. Sub filters
+            if (!parentKey) {
+              return (
+                typeof conditions[key] === "function" &&
+                conditions[key](el)
+              );
+            }
+
+            const alternatives = filterGroups[parentKey];
+            const activeAlternatives = alternatives.filter((a) =>
+              activeFilters.includes(a)
+            );
+
+            return activeAlternatives.some(
+              (a) =>
+                typeof conditions[a] === "function" &&
+                conditions[a](el)
+            );
+          });
+
+    // =====================================================
+    // 🔥 SUB FILTERS
+    // =====================================================
     const subConditionsPass =
       Object.values(subConditions || {}).some((groupObj) =>
         Object.keys(groupObj || {}).length > 0
       )
         ? Object.values(subConditions || {}).some((groupObj) =>
-            Object.values(groupObj || {}).some((condFn) => condFn(el))
+            Object.values(groupObj || {}).some((condFn) =>
+              condFn(el)
+            )
           )
         : true;
 
     return filtersPass && subConditionsPass;
   };
 
+  // =====================================================
+  // 🔥 ROW TYPES
+  // =====================================================
   if (row?.type === "department") {
-    const usersPass = row.users?.some(checkRowOrUser) || false;
+    const usersPass = row.users?.some(checkRowOrUser) ?? false;
+
     const sectionsPass =
-      row.sections?.some((section) =>
-        section.users?.length > 0 && section.users.some(checkRowOrUser)
-      ) || false;
+      row.sections?.some(
+        (section) =>
+          section.users?.some(checkRowOrUser) ?? false
+      ) ?? false;
 
     return usersPass || sectionsPass;
   }
 
   if (row?.type === "section") {
-    return row.users?.length > 0 && row.users.some(checkRowOrUser);
+    return row.users?.some(checkRowOrUser) ?? false;
   }
 
   return checkRowOrUser(row);

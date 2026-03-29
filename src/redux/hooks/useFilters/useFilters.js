@@ -2,6 +2,8 @@ import { useMemo, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
+import { getDepartmentsAndSections } from "../../selectors/selector";
+
 // ---------------- CONFIG ----------------
 import { filterGroups, conditions, filterPoints } from "./useFiltersFunctions/filtersLogics";
 
@@ -36,10 +38,15 @@ export const useFilters = ({ activeMenu, dataForMenu, currentPage }) => {
   // ================== SELECTORS ==================
   const filtersFromRedux = useSelector(selectFiltersForMenu(activeMenu)) || {};
   const subFiltersFromRedux = useSelector(selectPhonesSubcondions) || { contactType: {}, userPosition: {} };
-const bookmarks = useSelector(state => selectBookmarks(state, activeMenu)) || [];
-  const selectedSubDepts = bookmarks.selectedSubDepts || {};
+  const bookmarks = useSelector(state => selectBookmarks(state, activeMenu)) || [];
 
+  const selectedSubDepts = bookmarks.selectedSubDepts || {};
   const isLastVisitedPageWasFoundResults = useSelector(isCurrentPageFoundResult(activeMenu));
+
+
+  const depSec = useSelector(state => getDepartmentsAndSections(state, activeMenu));
+     debugger;
+    const departments = depSec.departments || [];
 
   // ================== BOOKMARK CONDITIONS ==================
   const buildBookmarkConditions = (selectedSubDepts = {}, bookmarks = {}) => {
@@ -47,24 +54,25 @@ const bookmarks = useSelector(state => selectBookmarks(state, activeMenu)) || []
     const sections = {};
     const hideUsers = {};
     const hideSections = {};
-debugger
+
     Object.entries(selectedSubDepts).forEach(([dept, value]) => {
-      // Вибрані департаменти
-      if (value === true ) {
-        debugger
+
+      // ✅ якщо вибраний весь департамент
+      if (value === true) {
         departments.push(dept);
       }
 
-      // Вибрані секції
+      // ✅ якщо вибрані конкретні секції
       if (Array.isArray(value)) {
+        departments.push(dept); // 🔥 ФІКС (ключове!)
         sections[dept] = value;
       }
 
-      // Нові чекбокси
+      // чекбокси
       hideUsers[dept] = bookmarks.hideUsersWithoutSections?.[dept] || false;
       hideSections[dept] = bookmarks.hideSections?.[dept] || false;
     });
-debugger
+
     return { departments, sections, hideUsers, hideSections };
   };
 
@@ -98,13 +106,22 @@ debugger
     return computeFilteredChunks({
       state: filtersFromRedux,
       subConditions: phonesSubConditions,
-      bookmarkConditions, // Тепер з hideUsers та hideSections
+      bookmarkConditions,
       activeMenu,
       dataForMenu,
       conditions,
-      selectedSubDepts
+      selectedSubDepts,
+      departments
     });
-  }, [hasFilters, filtersFromRedux, phonesSubConditions, bookmarkConditions, activeMenu, dataForMenu]);
+  }, [
+    hasFilters,
+    filtersFromRedux,
+    phonesSubConditions,
+    bookmarkConditions,
+    activeMenu,
+    dataForMenu,
+    selectedSubDepts
+  ]);
 
   // ================== UI FILTER POINTS ==================
   const groupedFilterPoints = filterPoints[activeMenu] || {};
@@ -123,17 +140,17 @@ debugger
     });
   }, [filteredChunks, activeMenu, dispatch]);
 
-useEffect(() => {
-  if (!hasFilters || !isLastVisitedPageWasFoundResults) return;
+  useEffect(() => {
+    if (!hasFilters || !isLastVisitedPageWasFoundResults) return;
 
-  redirectToCurrentPage({
-    hasFilters,
-    isLastVisitedPageWasFoundResults,
-    navigate,
-    activeMenu,
-    currentPage
-  });
-}, [hasFilters, isLastVisitedPageWasFoundResults, activeMenu, currentPage, navigate]);
+    redirectToCurrentPage({
+      hasFilters,
+      isLastVisitedPageWasFoundResults,
+      navigate,
+      activeMenu,
+      currentPage
+    });
+  }, [hasFilters, isLastVisitedPageWasFoundResults, activeMenu, currentPage, navigate]);
 
   // ================== HANDLERS ==================
   const handleCheckboxChange = (key, category) =>

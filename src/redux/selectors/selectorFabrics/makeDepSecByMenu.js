@@ -4,10 +4,8 @@ export const makeGetDepSecByMenu = (menuKey) => (state) => {
   const depSecMap = {};
   const secArr = [];
 
-  debugger;
-
   if (!menuData) {
-    return { department: [], sec: [] };
+    return { departments: [], sec: [] };
   }
 
   menuData.forEach(element => {
@@ -17,23 +15,23 @@ export const makeGetDepSecByMenu = (menuKey) => (state) => {
         if (!type) return;
 
         if (type === "department" && departmentName) {
+          // 🔹 Очищаємо подвійний об’єкт
           depSecMap[departmentName] =
-            sections?.map(s => ({ sectionName: s.sectionName })) || [];
+            sections?.map(s =>
+              // якщо s вже об’єкт з ключем sectionName, беремо рядок
+              s && typeof s.sectionName === "string" ? s.sectionName : s
+            ) || [];
         }
 
         if (type === "section" && sectionName) {
-          secArr.push({ sectionName });
+          // sectionName має бути рядком
+          secArr.push({ sectionName: typeof sectionName === "string" ? sectionName : sectionName?.sectionName });
         }
       });
     } else {
-      // ✅ FIX: ітеруємось по rows
       element.rows?.forEach(row => {
-        // debugger;
-
         const dep = row.depSec?.department;
         const sec = row.depSec?.section;
-
-        // debugger;
 
         if (!dep) return;
 
@@ -43,12 +41,12 @@ export const makeGetDepSecByMenu = (menuKey) => (state) => {
     }
   });
 
-  const dep = Object.entries(depSecMap).map(([departmentName, sectionsSet]) => ({
+  const dep = Object.entries(depSecMap).map(([departmentName, sectionsArr]) => ({
     departmentName,
-    sections: Array.from(sectionsSet).map(sectionName => ({ sectionName }))
+    sections: Array.isArray(sectionsArr)
+      ? sectionsArr.map(sectionName => ({ sectionName }))
+      : Array.from(sectionsArr).map(sectionName => ({ sectionName }))
   }));
-  
-  // debugger
 
   return {
     departments: dep,
