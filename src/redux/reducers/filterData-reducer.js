@@ -243,7 +243,7 @@ debugger
       };
     }
 
-   case "SET_BOOKMARK": {
+ case "SET_BOOKMARK": {
   const bookmarks = state[activeMenu].bookmarks;
   const selectedSubDepts = { ...bookmarks.selectedSubDepts };
   let selectedOrder = [...bookmarks.selectedOrder];
@@ -257,7 +257,7 @@ debugger
       delete selectedSubDepts[deptName];
       selectedOrder = selectedOrder.filter(d => d !== deptName);
     } else {
-      selectedSubDepts[deptName] = true;
+      selectedSubDepts[deptName] = true; // для департаментів без секцій
       if (!selectedOrder.includes(deptName)) selectedOrder.push(deptName);
     }
   } else {
@@ -273,15 +273,16 @@ debugger
   const hideUsersWithoutSections = { ...bookmarks.hideUsersWithoutSections };
   const hideSections = { ...bookmarks.hideSections };
 
-  // ✅ Автоматичне ховання користувачів без секцій
-  if (bookmarks.allHideUsersWithoutSections && selectedSubDepts[deptName]) {
+  // ✅ Авто ховання застосовується тільки до департаментів з секціями
+  const hasSections = Array.isArray(selectedSubDepts[deptName]);
+
+  if (bookmarks.allHideUsersWithoutSections && hasSections) {
     hideUsersWithoutSections[deptName] = true;
   } else {
     delete hideUsersWithoutSections[deptName];
   }
 
-  // ✅ Автоматичне ховання секцій
-  if (bookmarks.allHideSections && selectedSubDepts[deptName] && Array.isArray(selectedSubDepts[deptName])) {
+  if (bookmarks.allHideSections && hasSections) {
     hideSections[deptName] = true;
   } else {
     delete hideSections[deptName];
