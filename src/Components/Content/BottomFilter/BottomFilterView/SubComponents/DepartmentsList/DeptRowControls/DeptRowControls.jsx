@@ -37,7 +37,7 @@ export const DeptRowControls = React.memo(
                 type="checkbox"
                 checked={hideUsers}
                 onChange={() =>
-                  dispatch(toggleHideUsersWithoutSections(dept.departmentName))
+                  dispatch(toggleHideUsersWithoutSections(activeMenu,dept.departmentName))
                 }
               />
               <img
@@ -53,7 +53,7 @@ export const DeptRowControls = React.memo(
                 type="checkbox"
                 checked={hideSections}
                 onChange={() =>
-                  dispatch(toggleHideSections(dept.departmentName))
+                  dispatch(toggleHideSections(activeMenu,dept.departmentName))
                 }
               />
               <img

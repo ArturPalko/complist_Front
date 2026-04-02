@@ -40,30 +40,43 @@ export const passesFiltersForRow = (
     // =====================================================
     // 🔥 PHONES — СТАРА ЛОГІКА (НЕ ЧІПАЄМО)
     // =====================================================
-    if (activeMenu === "phones") {
+if (activeMenu === "phones") {
+  // hide тільки тут
+  if (hideUsers[deptName] && isUserWithoutSection) return false;
+  if (hideSections[deptName] && sectionName) return false;
 
-      // hide тільки тут
-      if (hideUsers[deptName] && isUserWithoutSection) return false;
-      if (hideSections[deptName] && sectionName) return false;
+  if (hasBookmarks) {
+    const selectedSections = sections[deptName] || [];
 
-      if (hasBookmarks) {
-        let bookmarkPass =
-          departments.includes(deptName) ||
-          (sections[deptName] || []).includes(sectionName);
+    let bookmarkPass = false;
 
-        if (!bookmarkPass) {
-          // ⭐ спец правило для users без секції
-          if (
-            el.type === "user" &&
-            sections[deptName] &&
-            (!sectionName || sectionName === "")
-          ) {
-            return true;
-          }
-          return false;
-        }
+    if (row.type === "department") {
+      // показуємо департамент, якщо він у bookmarks, навіть якщо секцій немає
+      if (departments.includes(deptName)) {
+        bookmarkPass = true;
+      }
+    } else {
+      // для секцій/юзерів перевіряємо обрані секції
+      if (selectedSections.length === 0 && departments.includes(deptName)) {
+        bookmarkPass = true; // весь департамент
+      } else {
+        bookmarkPass = selectedSections.includes(sectionName);
       }
     }
+
+    if (!bookmarkPass) {
+      // спец правило для user без секції
+      if (
+        el.type === "user" &&
+        selectedSections.length > 0 &&
+        (!sectionName || sectionName === "")
+      ) {
+        return true;
+      }
+      return false;
+    }
+  }
+}
 
     // =====================================================
     // 🔥 НЕ PHONES — НОВА ЛОГІКА

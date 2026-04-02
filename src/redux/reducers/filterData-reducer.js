@@ -334,8 +334,11 @@ debugger
     }
 
     case "TOGGLE_HIDE_SECTIONS": {
+      debugger
       const bookmarks = state[activeMenu].bookmarks;
+      debugger
       const current = bookmarks.hideSections[deptName] || false;
+      debugger
 
       return {
         ...state,
