@@ -1,19 +1,6 @@
 import { passesFiltersForRow } from "./passesFiltersForRow";
 import { rowsPerPage as defaultChunkSize } from "../../../../configs/app/constants";
 
-/**
- * selectedSubDepts: {
- *   "Департамент 1": true,             // всі секції
- *   "Департамент 2": ["Секція 1"]     // тільки вибрані секції
- * }
- *
- * bookmarkConditions: {
- *   departments: [...],
- *   sections: {...},
- *   hideUsers: {...},     // нове
- *   hideSections: {...}   // нове
- * }
- */
 export const computeFilteredChunks = ({
   state = {},
   subConditions = {},
@@ -25,7 +12,7 @@ export const computeFilteredChunks = ({
   chunkSize = defaultChunkSize,
   departments
 }) => {
-  debugger
+  
   const activeFilters = Object.entries(state)
     .filter(([key, v]) => v && conditions[key])
     .map(([key]) => key);
@@ -36,7 +23,7 @@ export const computeFilteredChunks = ({
   // Забезпечуємо дефолтну структуру для нових чекбоксів
   const hideUsers = bookmarkConditions.hideUsers || {};
   const hideSections = bookmarkConditions.hideSections || {};
-// debugger;
+
   dataForMenu.forEach((element, pageIndex) => {
     
     const rows = element?.rows || [];
@@ -49,7 +36,7 @@ export const computeFilteredChunks = ({
       else{
           deptName = row.depSec.department;
       }
-//  debugger;
+
       if (hideUsers[deptName] && !row.sectionName && row.type !="department") {
         // Приховуємо користувачів без секцій
         return;

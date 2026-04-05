@@ -1,4 +1,6 @@
 import { connect } from "react-redux";
+import { handleCheckboxChangeHelper } from "../../../redux/hooks/useFilters/useFiltersFunctions/handlers/handleOnCheckboxChange.js";
+import { useDispatch } from "react-redux";
 
 import {
   activeMenu,
@@ -18,26 +20,19 @@ import {
 
 import { useFilters } from "../../../redux/hooks/useFilters/useFilters.js";
 import FilterPanelView from "./FilterPanel.view";
+import { clearFormHelper } from "../../../redux/hooks/useFilters/useFiltersFunctions/handlers/handleOnClearFormButtonClick.js";
+
 
 const FilterPanelContainer = (props) => {
+  const dispatch = useDispatch();
   const {
     currentFilters,
     filteredChunks,
     phonesSubConditions,
-    handleCheckboxChange,
-    handleOnClearFormButtonClick,
     groupedFilterPoints,
-    getAlternativeKeys
-  } = useFilters({
-    activeMenu: props.activeMenu,
-    dataForMenu: props.getDataForMenu,
-    getSubFilters: props.getSubFilters,
-    addFilter: props.addFilter,
-    clearCurrentForm: props.clearCurrentForm,
-    addIndexesOfFiltredResults: props.addIndexesOfFiltredResults,
-    currentPage: props.currentPage,
-    isPresentedFielterPanel: props.isPresentedFielterPanel
-  });
+    getAlternativeKeys,
+    activeMenu
+  } = useFilters({});
 
 const contactsCount = getContactsCount({
   state: props.state,
@@ -47,6 +42,11 @@ const contactsCount = getContactsCount({
   dataByMenu: props.getDataForMenu
 });
 
+  const handleCheckboxChange = (key, category) =>
+    handleCheckboxChangeHelper({ activeMenu, key, category, dispatch });
+
+  const handleOnClearFormButtonClick = () =>
+    clearFormHelper({ activeMenu, dispatch });
 
   return (
     <FilterPanelView

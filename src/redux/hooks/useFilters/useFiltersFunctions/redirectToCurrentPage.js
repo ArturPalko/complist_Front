@@ -5,7 +5,6 @@ let prevMenu = null;
 
 export const redirectToCurrentPage = ({
   hasFilters,
-  isLastVisitedPageWasFoundResults,
   navigate,
   activeMenu,
   currentPage
@@ -18,10 +17,9 @@ export const redirectToCurrentPage = ({
 
   prevMenu = activeMenu;
 
-  if (isLastVisitedPageWasFoundResults) return;
 
   const nextPage = hasFilters ? 1 : currentPage;
-
+debugger
   redirectToPage({
     navigate,
     currentPage: nextPage,

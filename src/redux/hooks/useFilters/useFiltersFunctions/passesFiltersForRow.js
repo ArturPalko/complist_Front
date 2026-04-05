@@ -8,7 +8,6 @@ export const passesFiltersForRow = (
   activeMenu,
   departmentsFromRedux = []
 ) => {
-
   const {
     departments = [],
     sections = {},
@@ -21,62 +20,80 @@ export const passesFiltersForRow = (
 
   // ------------------ HELPERS ------------------
   const getDeptName = (el) =>
-    activeMenu === "phones"
-      ? el.departmentName
-      : el.depSec?.department || "";
+    activeMenu === "phones" ? el.departmentName : el.depSec?.department || "";
 
   const getSectionName = (el) =>
-    activeMenu === "phones"
-      ? el.sectionName
-      : el.depSec?.section || "";
+    activeMenu === "phones" ? el.sectionName : el.depSec?.section || "";
 
   const checkRowOrUser = (el) => {
     const deptName = getDeptName(el);
     const sectionName = getSectionName(el);
 
-    const isUserWithoutSection =
-      el.type === "user" && (!sectionName || sectionName === "");
+    const isUserWithoutSection = el.type === "user" && (!sectionName || sectionName === "");
 
     // =====================================================
-    // 🔥 PHONES — СТАРА ЛОГІКА (НЕ ЧІПАЄМО)
+    // 🔥 PHONES — ЛОГІКА BOOKMARKS
     // =====================================================
-if (activeMenu === "phones") {
-  // hide тільки тут
-  if (hideUsers[deptName] && isUserWithoutSection) return false;
-  if (hideSections[deptName] && sectionName) return false;
+    if (activeMenu === "phones") {
+      if (hideUsers[deptName] && isUserWithoutSection) return false;
+      if (hideSections[deptName] && sectionName) return false;
 
-  if (hasBookmarks) {
-    const selectedSections = sections[deptName] || [];
+      if (hasBookmarks) {
+        const selectedSections = sections[deptName] || [];
+        let bookmarkPass = false;
 
-    let bookmarkPass = false;
+        if (row.type === "department") {
+          if (departments.includes(deptName)) bookmarkPass = true;
+        } else {
+          if (selectedSections.length === 0 && departments.includes(deptName)) {
+            bookmarkPass = true;
+          } else if (sectionName) {
+            bookmarkPass = selectedSections.includes(sectionName);
+          }
+          // user без секції залишає bookmarkPass = false
+        }
 
-    if (row.type === "department") {
-      // показуємо департамент, якщо він у bookmarks, навіть якщо секцій немає
-      if (departments.includes(deptName)) {
-        bookmarkPass = true;
-      }
-    } else {
-      // для секцій/юзерів перевіряємо обрані секції
-      if (selectedSections.length === 0 && departments.includes(deptName)) {
-        bookmarkPass = true; // весь департамент
-      } else {
-        bookmarkPass = selectedSections.includes(sectionName);
+        if (!bookmarkPass) {
+          // спец правило для user без секції — застосовуємо фільтри
+          if (el.type === "user" && isUserWithoutSection && selectedSections.length > 0) {
+            const filtersPass =
+              activeFilters.length === 0
+                ? true
+                : activeFilters.every((key) => {
+                    const parentKey = Object.keys(filterGroups).find(
+                      (grp) => filterGroups[grp].includes(key)
+                    );
+
+                    if (!parentKey) {
+                      return typeof conditions[key] === "function" && conditions[key](el);
+                    }
+
+                    const alternatives = filterGroups[parentKey];
+                    const activeAlternatives = alternatives.filter((a) =>
+                      activeFilters.includes(a)
+                    );
+
+                    return activeAlternatives.some(
+                      (a) => typeof conditions[a] === "function" && conditions[a](el)
+                    );
+                  });
+
+            const subConditionsPass =
+              Object.values(subConditions || {}).some((groupObj) =>
+                Object.keys(groupObj || {}).length > 0
+              )
+                ? Object.values(subConditions || {}).some((groupObj) =>
+                    Object.values(groupObj || {}).some((condFn) => condFn(el))
+                  )
+                : true;
+
+            return filtersPass && subConditionsPass;
+          }
+
+          return false;
+        }
       }
     }
-
-    if (!bookmarkPass) {
-      // спец правило для user без секції
-      if (
-        el.type === "user" &&
-        selectedSections.length > 0 &&
-        (!sectionName || sectionName === "")
-      ) {
-        return true;
-      }
-      return false;
-    }
-  }
-}
 
     // =====================================================
     // 🔥 НЕ PHONES — НОВА ЛОГІКА
@@ -84,28 +101,14 @@ if (activeMenu === "phones") {
     else {
       if (hasBookmarks) {
         let bookmarkPass = false;
-
         if (departments.includes(deptName)) {
-          const deptObj = departmentsFromRedux.find(
-            (d) => d.departmentName === deptName
-          );
+          const deptObj = departmentsFromRedux.find((d) => d.departmentName === deptName);
+          const selectedSections = Array.isArray(sections[deptName]) ? sections[deptName] : [];
+          const totalSections = Array.isArray(deptObj?.sections) ? deptObj.sections.length : 0;
+          const isAllSectionsSelected = selectedSections.length === totalSections;
 
-          const selectedSections = Array.isArray(sections[deptName])
-            ? sections[deptName]
-            : [];
-
-          const totalSections = Array.isArray(deptObj?.sections)
-            ? deptObj.sections.length
-            : 0;
-
-          const isAllSectionsSelected =
-            selectedSections.length === totalSections;
-
-          if (isAllSectionsSelected) {
-            bookmarkPass = true;
-          } else {
-            bookmarkPass = selectedSections.includes(sectionName);
-          }
+          if (isAllSectionsSelected) bookmarkPass = true;
+          else bookmarkPass = selectedSections.includes(sectionName);
         }
 
         if (!bookmarkPass) return false;
@@ -124,10 +127,7 @@ if (activeMenu === "phones") {
             );
 
             if (!parentKey) {
-              return (
-                typeof conditions[key] === "function" &&
-                conditions[key](el)
-              );
+              return typeof conditions[key] === "function" && conditions[key](el);
             }
 
             const alternatives = filterGroups[parentKey];
@@ -136,9 +136,7 @@ if (activeMenu === "phones") {
             );
 
             return activeAlternatives.some(
-              (a) =>
-                typeof conditions[a] === "function" &&
-                conditions[a](el)
+              (a) => typeof conditions[a] === "function" && conditions[a](el)
             );
           });
 
@@ -150,9 +148,7 @@ if (activeMenu === "phones") {
         Object.keys(groupObj || {}).length > 0
       )
         ? Object.values(subConditions || {}).some((groupObj) =>
-            Object.values(groupObj || {}).some((condFn) =>
-              condFn(el)
-            )
+            Object.values(groupObj || {}).some((condFn) => condFn(el))
           )
         : true;
 
@@ -164,13 +160,8 @@ if (activeMenu === "phones") {
   // =====================================================
   if (row?.type === "department") {
     const usersPass = row.users?.some(checkRowOrUser) ?? false;
-
     const sectionsPass =
-      row.sections?.some(
-        (section) =>
-          section.users?.some(checkRowOrUser) ?? false
-      ) ?? false;
-
+      row.sections?.some((section) => section.users?.some(checkRowOrUser) ?? false) ?? false;
     return usersPass || sectionsPass;
   }
 

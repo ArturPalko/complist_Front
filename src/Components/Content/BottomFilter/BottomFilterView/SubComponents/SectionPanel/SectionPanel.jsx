@@ -13,7 +13,7 @@ export const SectionsPanel = ({
   );
 
   const sections = currentDept?.sections || [];
-  debugger
+
 
   return (
     <div className={styles.boxRight}>

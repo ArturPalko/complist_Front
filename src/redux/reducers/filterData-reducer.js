@@ -66,13 +66,13 @@ export const initialState = {
 
 // ================== REDUCER ==================
 export const filterDataReducer = (state = initialState, action) => {
-  debugger
+ 
   const { menu, deptName, sub, filter, variety, values, checked, departments } = action;
   const activeMenu = menu || "phones"; // fallback для старих action
 
   switch (action.type) {
     case "TOGGLE_ALL_DEPARTMENTS": {
-      debugger
+     
   const bookmarks = state[action.menu].bookmarks;
 
   const allSelected =
@@ -188,11 +188,11 @@ export const filterDataReducer = (state = initialState, action) => {
 
     // ===== BOOKMARKS =====
     case "TOGGLE_SUB_DEPT": {
-      debugger
+      
       const bookmarks = state[action.activeMenu].bookmarks;
       const selectedSubDepts = { ...bookmarks.selectedSubDepts };
       let selectedOrder = [...bookmarks.selectedOrder];
-      debugger;
+     
 
       const currentSubs = selectedSubDepts[deptName] || [];
       const newSubs = currentSubs.includes(sub)
@@ -217,7 +217,7 @@ export const filterDataReducer = (state = initialState, action) => {
         delete hideUsersWithoutSections[deptName];
         delete hideSections[deptName];
       }
-debugger
+
       return {
         ...state,
         [action.activeMenu]: {
@@ -334,11 +334,11 @@ debugger
     }
 
     case "TOGGLE_HIDE_SECTIONS": {
-      debugger
+  
       const bookmarks = state[activeMenu].bookmarks;
-      debugger
+    
       const current = bookmarks.hideSections[deptName] || false;
-      debugger
+   
 
       return {
         ...state,

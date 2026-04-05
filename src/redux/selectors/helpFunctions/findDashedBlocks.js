@@ -35,7 +35,7 @@ const firstRowMatchesDepartment =
 
 const shouldAddDepartment =
   hasSectionsOnNextPage || firstRowMatchesDepartment;
-  // debugger;
+
     if (shouldAddDepartment) {
       result.departments.push(lastDepartment.departmentName);
     }
@@ -49,6 +49,6 @@ const shouldAddDepartment =
       result.sections.push(lastSection.sectionName);
     }
   });
-// debugger;
+
   return result;
 };

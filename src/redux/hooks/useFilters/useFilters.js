@@ -2,7 +2,7 @@ import { useMemo, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import { getDepartmentsAndSections } from "../../selectors/selector";
+// import { getDepartmentsAndSections } from "../../selectors/selector";
 
 // ---------------- CONFIG ----------------
 import { filterGroups, conditions, filterPoints } from "./useFiltersFunctions/filtersLogics";
@@ -16,65 +16,46 @@ import {
 } from "./useFiltersFunctions/helpers";
 
 import { computeFilteredChunks } from "./useFiltersFunctions/computeFilteredChunks";
-import { redirectToCurrentPage } from "./useFiltersFunctions/redirectToCurrentPage";
-import { handleCheckboxChangeHelper } from "./useFiltersFunctions/handlers/handleOnCheckboxChange";
-import { clearFormHelper } from "./useFiltersFunctions/handlers/handleOnClearFormButtonClick";
-
+import {buildBookmarkConditions} from "../useFilters/useFiltersFunctions/buildBookmarkConditions"
 import { addIndexesOfFiltredResults } from "../../reducers/filterData-reducer";
+import { redirectToCurrentPage } from "./useFiltersFunctions/redirectToCurrentPage";
 
 // ---------------- REDUX SELECTORS ----------------
 import {
+  activeMenu as selectActiveMenu,
+  getDepartmentsAndSections,
+    currentPageByMenu,
+  getDataForMenu,
   selectFiltersForMenu,
   selectPhonesSubcondions,
   isCurrentPageFoundResult,
   selectBookmarks
 } from "../../selectors/selector";
+import { useLocation } from "react-router-dom";
 
 
-export const useFilters = ({ activeMenu, dataForMenu, currentPage }) => {
+export const useFilters = ({  }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+    const activeMenu = useSelector(selectActiveMenu);
+    const currentPage = useSelector(state => currentPageByMenu(state, activeMenu));
+    const dataForMenu = useSelector(state => getDataForMenu(state, activeMenu));
   // ================== SELECTORS ==================
   const filtersFromRedux = useSelector(selectFiltersForMenu(activeMenu)) || {};
   const subFiltersFromRedux = useSelector(selectPhonesSubcondions) || { contactType: {}, userPosition: {} };
   const bookmarks = useSelector(state => selectBookmarks(state, activeMenu)) || [];
 
   const selectedSubDepts = bookmarks.selectedSubDepts || {};
-  const isLastVisitedPageWasFoundResults = useSelector(isCurrentPageFoundResult(activeMenu));
+  
+
 
 
   const depSec = useSelector(state => getDepartmentsAndSections(state, activeMenu));
-     debugger;
+  
     const departments = depSec.departments || [];
 
   // ================== BOOKMARK CONDITIONS ==================
-  const buildBookmarkConditions = (selectedSubDepts = {}, bookmarks = {}) => {
-    const departments = [];
-    const sections = {};
-    const hideUsers = {};
-    const hideSections = {};
-
-    Object.entries(selectedSubDepts).forEach(([dept, value]) => {
-
-      // ✅ якщо вибраний весь департамент
-      if (value === true) {
-        departments.push(dept);
-      }
-
-      // ✅ якщо вибрані конкретні секції
-      if (Array.isArray(value)) {
-        departments.push(dept); // 🔥 ФІКС (ключове!)
-        sections[dept] = value;
-      }
-
-      // чекбокси
-      hideUsers[dept] = bookmarks.hideUsersWithoutSections?.[dept] || false;
-      hideSections[dept] = bookmarks.hideSections?.[dept] || false;
-    });
-
-    return { departments, sections, hideUsers, hideSections };
-  };
 
   const bookmarkConditions = useMemo(
     () => buildBookmarkConditions(selectedSubDepts, bookmarks),
@@ -140,34 +121,32 @@ export const useFilters = ({ activeMenu, dataForMenu, currentPage }) => {
     });
   }, [filteredChunks, activeMenu, dispatch]);
 
-  useEffect(() => {
-    if (!hasFilters || !isLastVisitedPageWasFoundResults) return;
 
+const location = useLocation();
+const isFoundResultsPage = location.pathname.includes("foundResults");
+
+  useEffect(() => {
+    
+  debugger
+     if ( isFoundResultsPage) return;
+debugger
     redirectToCurrentPage({
       hasFilters,
-      isLastVisitedPageWasFoundResults,
       navigate,
       activeMenu,
       currentPage
     });
-  }, [hasFilters, isLastVisitedPageWasFoundResults, activeMenu, currentPage, navigate]);
+  }, [hasFilters, activeMenu, filteredChunks]);
 
-  // ================== HANDLERS ==================
-  const handleCheckboxChange = (key, category) =>
-    handleCheckboxChangeHelper({ activeMenu, key, category, dispatch });
-
-  const handleOnClearFormButtonClick = () =>
-    clearFormHelper({ activeMenu, dispatch });
 
   return {
+    activeMenu,
     filteredChunks,
     groupedFilterPoints,
     filterPointsForCurrentMenu,
     currentFilters: filtersFromRedux,
     phonesSubConditions,
     hasFilters,
-    getAlternativeKeys,
-    handleCheckboxChange,
-    handleOnClearFormButtonClick
+    getAlternativeKeys
   };
 };

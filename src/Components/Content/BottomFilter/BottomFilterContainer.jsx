@@ -4,9 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   activeMenu as selectActiveMenu,
   getDepartmentsAndSections,
-  selectBookmarks,
-  currentPageByMenu,
-  getDataForMenu
+  selectBookmarks
 } from "../../../redux/selectors/selector";
 
 import {
@@ -23,27 +21,18 @@ export const BottomFilterContainer = () => {
   const [expandedDept, setExpandedDept] = useState(null);
 
     // ================== AUTOMATIC ACTIVE MENU ==================
-  const activeMenu = useSelector(selectActiveMenu);
-  const currentPage = useSelector(state => currentPageByMenu(state, activeMenu));
+
+  const { filteredChunks, hasFilters, phonesSubConditions,activeMenu } = useFilters({ });
 
   const depSec = useSelector(state => getDepartmentsAndSections(state, activeMenu));
-   debugger;
+  
   const departments = depSec.departments || [];
-const bookmarks = useSelector(state => selectBookmarks(state, activeMenu)) || [];
-  // debugger
+  const bookmarks = useSelector(state => selectBookmarks(state, activeMenu)) || [];
 
   const selectedSubDepts = bookmarks.selectedSubDepts;
   const selectedOrder = bookmarks.selectedOrder;
 
 
-  
-  // Автоматичний вибір dataForMenu
-  const dataForMenu = useSelector(state => getDataForMenu(state, activeMenu));
-  const { filteredChunks, hasFilters, phonesSubConditions } = useFilters({
-    activeMenu,
-    dataForMenu,
-    currentPage
-  });
 
   // ================== HANDLERS ==================
   const toggleDept = (deptName) => {
@@ -52,7 +41,7 @@ const bookmarks = useSelector(state => selectBookmarks(state, activeMenu)) || []
   };
 
   const toggleSubDept = (deptName, sub) => {
-    debugger
+
     dispatch(toggleSubDept(activeMenu, deptName, sub));
   };
 
