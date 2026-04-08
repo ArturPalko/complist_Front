@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
 import { addIndexesOfFiltredResults } from "../../reducers/filterData-reducer";
 import { syncFilteredIndexesToRedux } from "./useFiltersFunctions/helpers";
-import { redirectToCurrentPage } from "./useFiltersFunctions/redirectToCurrentPage";
+import { redirectToPage } from "../../../shared/functions/redirectToPage";
 
 export const useFiltersEffects = ({
   filteredChunks,
@@ -15,21 +15,33 @@ export const useFiltersEffects = ({
   const navigate = useNavigate();
   const location = useLocation();
   const isFoundResultsPage = location.pathname.includes("foundResults");
+  
   const prevChunksRef = useRef([]);
+  const prevMenuRef = useRef(null); // відстежуємо попереднє меню тут
 
-  // синхронізація фільтрованих індексів в Redux
   useEffect(() => {
-    const prev = prevChunksRef.current;
-    const curr = filteredChunks;
+    const prevChunks = prevChunksRef.current;
+    const currChunks = filteredChunks;
 
-    // просте порівняння по довжині і JSON.stringify для безпечної перевірки змін
-    if (prev.length !== curr.length || JSON.stringify(prev) !== JSON.stringify(curr)) {
+    if (prevChunks.length !== currChunks.length || JSON.stringify(prevChunks) !== JSON.stringify(currChunks)) {
       syncFilteredIndexesToRedux({ activeMenu, filteredChunks, dispatch, addIndexesOfFiltredResults });
-      prevChunksRef.current = curr;
+      prevChunksRef.current = currChunks;
 
       // редірект тільки коли filteredChunks змінилися
       if (!isFoundResultsPage) {
-        redirectToCurrentPage({ hasFilters, navigate, activeMenu, currentPage });
+debugger
+        // перевіряємо зміни меню прямо тут
+        if (prevMenuRef.current !== null && prevMenuRef.current !== activeMenu) {
+          debugger
+          prevMenuRef.current = activeMenu; // оновлюємо
+          return; // пропускаємо редірект
+        }
+
+        prevMenuRef.current = activeMenu;
+
+        const nextPage = hasFilters ? 1 : currentPage;
+        debugger
+        redirectToPage({ navigate, currentPage: nextPage, activeMenu });
       }
     }
   }, [filteredChunks, activeMenu, dispatch, hasFilters, navigate, currentPage, isFoundResultsPage]);

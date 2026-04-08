@@ -1,53 +1,34 @@
 import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-
-import {
-  activeMenu as selectActiveMenu,
-  getDepartmentsAndSections,
-  selectBookmarks
-} from "../../../redux/selectors/selector";
-
-import {
-  setBookmark,
-  toggleSubDept as toggleSubDeptAction
-} from "../../../redux/reducers/filterData-reducer";
-
 import { BottomFilterView } from "./BottomFilterView/BottomFilterView";
-import { useFilters } from "../../../redux/hooks/useFilters/useFilters";
+import { useBottomFilterLogic } from "../../../redux/hooks/useBottomFilterLogic";
+import { setBookmark,   toggleSubDept as toggleSubDeptAction } from "../../../redux/reducers/filterData-reducer";
+import { useDispatch } from "react-redux";
+
 
 export const BottomFilterContainer = () => {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const [expandedDept, setExpandedDept] = useState(null);
 
-    // ================== AUTOMATIC ACTIVE MENU ==================
+  const {
+    activeMenu,
+    departments,
+    selectedSubDepts,
+    selectedOrder
+  } = useBottomFilterLogic();
 
-  const { filteredChunks, hasFilters, phonesSubConditions,activeMenu } = useFilters({ });
-
-  const depSec = useSelector(state => getDepartmentsAndSections(state, activeMenu));
-  
-  const departments = depSec.departments || [];
-  const bookmarks = useSelector(state => selectBookmarks(state, activeMenu)) || [];
-
-  const selectedSubDepts = bookmarks.selectedSubDepts;
-  const selectedOrder = bookmarks.selectedOrder;
-
-
-
-  // ================== HANDLERS ==================
-  const toggleDept = (deptName) => {
-    const dept = departments.find(d => d.departmentName === deptName);
-    dispatch(setBookmark(activeMenu, deptName, dept?.sections || []));
-  };
-
-  const toggleSubDept = (deptName, sub) => {
-
-    dispatch(toggleSubDept(activeMenu, deptName, sub));
-  };
-
-  const toggleExpand = (deptName) => {
+     const toggleExpand = (deptName) => {
     setExpandedDept(expandedDept === deptName ? null : deptName);
   };
+    const toggleDept = (deptName) => {
+      const dept = departments.find(d => d.departmentName === deptName);
+      dispatch(setBookmark(activeMenu, deptName, dept?.sections || []));
+    };
+  
+    const toggleSubDept = (deptName, sub) => {
+      dispatch(toggleSubDeptAction(activeMenu, deptName, sub));
+    };
+
 
   return (
     <BottomFilterView
