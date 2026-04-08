@@ -29,7 +29,9 @@ import {
   selectFiltersForMenu,
   selectPhonesSubcondions,
   isCurrentPageFoundResult,
-  selectBookmarks
+  selectBookmarks,
+  getSubFilters,
+  isFilterAppliedSelector
 } from "../../selectors/selector";
 import { useLocation } from "react-router-dom";
 
@@ -37,7 +39,6 @@ import { useLocation } from "react-router-dom";
 export const useFilters = ({  }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
     const activeMenu = useSelector(selectActiveMenu);
     const currentPage = useSelector(state => currentPageByMenu(state, activeMenu));
     const dataForMenu = useSelector(state => getDataForMenu(state, activeMenu));
@@ -147,6 +148,7 @@ debugger
     currentFilters: filtersFromRedux,
     phonesSubConditions,
     hasFilters,
-    getAlternativeKeys
+    getAlternativeKeys,
+    dataForMenu
   };
 };

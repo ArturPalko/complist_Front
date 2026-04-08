@@ -1,54 +1,57 @@
 import { useDispatch } from "react-redux";
-import { useFiltersCore } from "./useFilters/useFilters";
-
-import { filterPoints, filterGroups } from "./useFilters/useFiltersFunctions/filtersLogics";
-import { getAlternativeKeysHelper } from "./useFilters/useFiltersFunctions/helpers";
-import { handleCheckboxChangeHelper } from "./useFilters/useFiltersFunctions/handlers/handleOnCheckboxChange";
-import { clearFormHelper } from "./useFilters/useFiltersFunctions/handlers/handleOnClearFormButtonClick";
+import { useFiltersData } from "../hooks/useFilters/useFiltersData.js";
+import {
+  getSubFilters,
+  currentPageByMenu,
+  isFilterAppliedSelector,
+  isPresentedFielterPanel,
+  getDataForMenu,
+  getContactsCount
+} from "../selectors/selector.js";
 
 export const useFilterPanelLogic = () => {
   const dispatch = useDispatch();
 
+  // використовуємо готовий хук для даних
   const {
-    activeMenu,
+   activeMenu,
+    currentPage,
     filteredChunks,
+    groupedFilterPoints,
+    filterPointsForCurrentMenu,
+    currentFilters: filtersFromRedux,
     phonesSubConditions,
-    filtersFromRedux
-  } = useFiltersCore();
+    hasFilters,
+    getAlternativeKeys,
+    dataForMenu,
+    isFilterApplied
+  } = useFiltersData();
 
-  // === Груповані фільтри ===
-  const groupedFilterPoints = filterPoints[activeMenu] || {};
+  // додаткові дані, що раніше тягнули зі стора
+  // const subFilters = getSubFilters({ activeMenu }); // якщо це функція-селектор
+  // const currentPage = currentPageByMenu({ activeMenu });
+  // const isFilterApplied = isFilterAppliedSelector(activeMenu)();
+  // const isPanelPresented = isPresentedFielterPanel();
+  // const dataByMenu = getDataForMenu({ activeMenu });
 
-  // === Дефолтні дані для безпеки ===
-  const safeFilteredChunks = filteredChunks.map(chunk => ({
-    ...chunk,
-    departmentMails: chunk.departmentMails || []
-  }));
-
-  // === Функції допомоги ===
-  const getAlternativeKeys = (key) => getAlternativeKeysHelper(key, filterGroups);
-
-  const handleCheckboxChange = (key, category) =>
-    handleCheckboxChangeHelper({
-      activeMenu,
-      key,
-      category,
-      dispatch
-    });
-
-  const handleOnClearFormButtonClick = () =>
-    clearFormHelper({
-      activeMenu,
-      dispatch
-    });
+  // contactsCount можна теж винести у useFiltersData, але поки залишимо так
+  const contactsCount = getContactsCount({
+    activeMenu,
+    isFilterApplied,
+    filteredChunks,
+    dataForMenu
+  });
 
   return {
+   activeMenu,
+    currentPage,
+    filteredChunks,
     groupedFilterPoints,
-    filteredChunks: safeFilteredChunks, // Передаємо безпечні дані
-    phonesSubConditions,
+    filterPointsForCurrentMenu,
     currentFilters: filtersFromRedux,
+    phonesSubConditions,
+    hasFilters,
     getAlternativeKeys,
-    handleCheckboxChange,
-    handleOnClearFormButtonClick
+    dispatch
   };
 };

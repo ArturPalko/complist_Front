@@ -1,47 +1,20 @@
-import { connect } from "react-redux";
-import { handleCheckboxChangeHelper } from "../../../redux/hooks/useFilters/useFiltersFunctions/handlers/handleOnCheckboxChange.js";
-import { useDispatch } from "react-redux";
-
-import {
-  activeMenu,
-  getSubFilters,
-  currentPageByMenu,
-  isFilterAppliedSelector,
-  isPresentedFielterPanel,
-  getDataForMenu,
-  getContactsCount
-} from "../../../redux/selectors/selector.js";
-
-import {
-  addFilter,
-  clearCurrentForm,
-  addIndexesOfFiltredResults
-} from "../../../redux/reducers/filterData-reducer.js";
-
-import { useFilters } from "../../../redux/hooks/useFilters/useFilters.js";
 import FilterPanelView from "./FilterPanel.view";
-import { clearFormHelper } from "../../../redux/hooks/useFilters/useFiltersFunctions/handlers/handleOnClearFormButtonClick.js";
+import { useFilterPanelLogic } from "../../../redux/hooks/useFilterPanelLogic";
+import { handleCheckboxChangeHelper } from "../../../redux/hooks/useFilters/useFiltersFunctions/handlers/handleOnCheckboxChange";
+import { clearFormHelper } from "../../../redux/hooks/useFilters/useFiltersFunctions/handlers/handleOnClearFormButtonClick";
 
-
-const FilterPanelContainer = (props) => {
-  const dispatch = useDispatch();
+const FilterPanelContainer = () => {
   const {
-    currentFilters,
-    filteredChunks,
-    phonesSubConditions,
+    contactsCount,
     groupedFilterPoints,
+    currentFilters,
     getAlternativeKeys,
-    activeMenu
-  } = useFilters({});
+    activeMenu,
+    phonesSubConditions,
+    dispatch
+  } = useFilterPanelLogic();
 
-const contactsCount = getContactsCount({
-  state: props.state,
-  activeMenu: props.activeMenu,
-  isFilterApplied: props.isFilterApplied,
-  filteredChunks,
-  dataByMenu: props.getDataForMenu
-});
-
+  // використовуємо activeMenu з hooks, більше не menu
   const handleCheckboxChange = (key, category) =>
     handleCheckboxChangeHelper({ activeMenu, key, category, dispatch });
 
@@ -56,33 +29,10 @@ const contactsCount = getContactsCount({
       getAlternativeKeys={getAlternativeKeys}
       handleCheckboxChange={handleCheckboxChange}
       handleOnClearFormButtonClick={handleOnClearFormButtonClick}
-      activeMenu={props.activeMenu}
+      activeMenu={activeMenu}
       phonesSubConditions={phonesSubConditions}
     />
   );
 };
 
-const mapStateToProps = (state) => {
-  const menu = activeMenu(state);
-
-  return {
-    state,
-    activeMenu: menu,
-    getSubFilters: getSubFilters(state),
-    currentPage: currentPageByMenu(state, menu),
-    isPresentedFielterPanel: isPresentedFielterPanel(state),
-    isFilterApplied: isFilterAppliedSelector(menu)(state),
-    getDataForMenu: getDataForMenu(state, menu)
-  };
-};
-
-const mapDispatchToProps = {
-  addFilter,
-  clearCurrentForm,
-  addIndexesOfFiltredResults
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(FilterPanelContainer);
+export default FilterPanelContainer;

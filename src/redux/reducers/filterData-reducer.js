@@ -397,41 +397,15 @@ export const filterDataReducer = (state = initialState, action) => {
     }
 
     // ===== CLEAR =====
-    case CLEAR_FILTRED_STATE_FOR_CURRENT_FORM: {
-      if (activeMenu === "phones") {
-        const newPhonesState = {
-          usedFilters: {
-            ...Object.fromEntries(
-              Object.keys(state[activeMenu].usedFilters)
-                .filter(k => k !== "subFilters")
-                .map(k => [k, false])
-            ),
-            subFilters: { contactType: {}, userPosition: {} }
-          },
-          bookmarks: {
-            selectedSubDepts: {},
-            selectedOrder: [],
-            hideUsersWithoutSections: {},
-            hideSections: {}
-          },
-          filtredResults: []
-        };
+case CLEAR_FILTRED_STATE_FOR_CURRENT_FORM: {
+  return {
+    ...state,
+    [activeMenu]: createMenuState(activeMenu)
+  };
+}
 
-        return {
-          ...state,
-          [activeMenu]: { ...newPhonesState, isFilterApplied: false }
-        };
-      }
-
-      const clearedFilters = Object.fromEntries(
-        Object.keys(state[activeMenu].usedFilters).map(k => [k, false])
-      );
-
-      return {
-        ...state,
-        [activeMenu]: { usedFilters: clearedFilters, filtredResults: [], isFilterApplied: false }
-      };
-    }
+case CLEAR_FILTRED_DATA:
+    return {...initialState};
 
     // ===== RESULTS =====
     case ADD_INDEXES_OF_FILTRED_RESULTS: {
@@ -469,3 +443,4 @@ export const toggleHideSections = (menu, deptName) => ({ type: "TOGGLE_HIDE_SECT
 export const toggleAutoSelectHideUsersWithoutSections = (menu) => ({ type: "TOGGLE_AUTO_SELECT_HIDE_USERS_WITHOUT_SECTIONS", menu });
 export const toggleAutoSelectHideSections = (menu) => ({ type: "TOGGLE_AUTO_SELECT_HIDE_SECTIONS", menu });
 export const toggleAllDepatrments = (menu, departments) => ({ type: "TOGGLE_ALL_DEPARTMENTS", menu, departments });
+

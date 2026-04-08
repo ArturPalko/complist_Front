@@ -16,11 +16,24 @@ import { Pages } from "./configs/app/constants";
 
 import { useLoginModal } from "./redux/hooks/useLoginModal";
 import { useCheckAuth } from "./redux/hooks/hooks";
+import { useFiltersData } from "./redux/hooks/useFilters/useFiltersData";
+import { useFiltersEffects } from "./redux/hooks/useFilters/useFiltersEffects";
 
 function App() {
   useTrackLocation();
   useCheckAuth();
   const { isLoginOpen, closeModal } = useLoginModal();
+
+    const {
+    activeMenu,
+    filteredChunks,
+    hasFilters,
+    currentPage,
+    dispatch
+  } = useFiltersData();
+
+  // тепер викликаємо хук ефектів, передаючи потрібні дані
+  useFiltersEffects({ activeMenu, filteredChunks, hasFilters, currentPage, dispatch });
 
   return (
     <div className="app-wrapper">

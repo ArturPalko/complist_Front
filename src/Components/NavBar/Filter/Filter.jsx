@@ -34,17 +34,20 @@ const Filter = () => {
   const togglePanel = () => {
     const newState = !isOpen;
     setIsOpen(newState);
+  if(isOpen)
+    {
+      dispatch(toggleFielterPanelElement(newState));
+      dispatch(clearFiltredData());
 
-    dispatch(toggleFielterPanelElement(newState));
-    dispatch(clearFiltredData());
-
-    if (!newState) {
-      redirectToPage({
-        navigate,
-        activeMenu: currentMenu,
-        currentPage
-      });
-    }
+      if (!newState) {
+        redirectToPage({
+          navigate,
+          activeMenu: currentMenu,
+          currentPage
+        });
+      }
+  }
+ 
   };
 
   return (
