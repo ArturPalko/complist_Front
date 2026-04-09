@@ -19,10 +19,10 @@ const selectFoundResults = (state, menu) => selectSearchValueByPage(menu)(state)
 
 
 
+
 // ===================================
 // ===== Дані =====
-export const getDataForMenu = (state, menu) => state.data?.[menu] ?? [];
-export const getLoadedForMenu = (state, menu) => Boolean(state.dataState?.[menu]?.dataIsLoaded);
+export const getDataForMenu = (state, menu) => state?.data?.[menu] ?? [];export const getLoadedForMenu = (state, menu) => Boolean(state.dataState?.[menu]?.dataIsLoaded);
 export const getFetchingForMenu = (state, menu) => Boolean(state.dataState?.[menu]?.dataIsFetching);
 
 
@@ -101,7 +101,8 @@ const menuSelectors = {
 export const getContactsCount = ({ state, activeMenu, isFilterApplied, filteredChunks, dataByMenu }) => {
   if (!isFilterApplied) {
     const selector = menuSelectors[activeMenu];
-    return selector ? selector(state) : 0;
+    debugger
+    return selector ? selector(state) : "0";
   }
   return countContacts({ filteredChunks, dataByMenu });
 };

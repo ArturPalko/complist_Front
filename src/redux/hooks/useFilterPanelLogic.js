@@ -1,57 +1,48 @@
-import { useDispatch } from "react-redux";
 import { useFiltersData } from "../hooks/useFilters/useFiltersData.js";
 import {
-  getSubFilters,
-  currentPageByMenu,
-  isFilterAppliedSelector,
-  isPresentedFielterPanel,
-  getDataForMenu,
   getContactsCount
 } from "../selectors/selector.js";
 
+import { filterPoints, filterGroups } from "./useFilters/useFiltersFunctions/filtersLogics.js";
+import { getAlternativeKeysHelper } from "./useFilters/useFiltersFunctions/helpers.js";
+import { useMemo } from "react";
+
 export const useFilterPanelLogic = () => {
-  const dispatch = useDispatch();
 
   // використовуємо готовий хук для даних
   const {
    activeMenu,
     currentPage,
     filteredChunks,
-    groupedFilterPoints,
-    filterPointsForCurrentMenu,
     currentFilters: filtersFromRedux,
     phonesSubConditions,
     hasFilters,
-    getAlternativeKeys,
     dataForMenu,
     isFilterApplied
   } = useFiltersData();
 
-  // додаткові дані, що раніше тягнули зі стора
-  // const subFilters = getSubFilters({ activeMenu }); // якщо це функція-селектор
-  // const currentPage = currentPageByMenu({ activeMenu });
-  // const isFilterApplied = isFilterAppliedSelector(activeMenu)();
-  // const isPanelPresented = isPresentedFielterPanel();
-  // const dataByMenu = getDataForMenu({ activeMenu });
+  const groupedFilterPoints = filterPoints[activeMenu] || {};
+  const getAlternativeKeys = (key) => getAlternativeKeysHelper(key, filterGroups);
+  const contactsCount = useMemo(() => {
+    if (!filteredChunks.length || !dataForMenu.length) return ;
+    return getContactsCount({
+      activeMenu,
+      isFilterApplied,
+      filteredChunks,
+      dataByMenu: dataForMenu
+    });
+  }, [activeMenu, isFilterApplied, filteredChunks, dataForMenu]);
 
-  // contactsCount можна теж винести у useFiltersData, але поки залишимо так
-  const contactsCount = getContactsCount({
-    activeMenu,
-    isFilterApplied,
-    filteredChunks,
-    dataForMenu
-  });
 
   return {
    activeMenu,
     currentPage,
     filteredChunks,
     groupedFilterPoints,
-    filterPointsForCurrentMenu,
     currentFilters: filtersFromRedux,
     phonesSubConditions,
     hasFilters,
     getAlternativeKeys,
-    dispatch
+    contactsCount
   };
 };

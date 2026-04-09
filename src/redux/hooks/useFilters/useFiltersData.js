@@ -12,14 +12,11 @@ import {
 } from "../../selectors/selector";
 
 import {
-  filterGroups,
   conditions,
-  filterPoints
 } from "./useFiltersFunctions/filtersLogics";
 
 import {
   hasAnyFilters,
-  getAlternativeKeysHelper,
   generatePhonesSubConditions
 } from "./useFiltersFunctions/helpers";
 
@@ -28,9 +25,8 @@ import { buildBookmarkConditions } from "../useFilters/useFiltersFunctions/build
 
 export const useFiltersData = () => {
 
-    const activeMenu = useSelector(selectActiveMenu);
-  const isFilterApplied = useSelector(state => isFilterAppliedSelector(state,activeMenu))
-    const currentPage = useSelector(state => currentPageByMenu(state, activeMenu));
+  const activeMenu = useSelector(selectActiveMenu);
+  const isFilterApplied = useSelector(isFilterAppliedSelector(activeMenu));    const currentPage = useSelector(state => currentPageByMenu(state, activeMenu));
   const dataForMenu = useSelector(state => getDataForMenu(state, activeMenu));
   const filtersFromRedux = useSelector(selectFiltersForMenu(activeMenu)) || {};
   const subFiltersFromRedux = useSelector(selectPhonesSubcondions) || { contactType: {}, userPosition: {} };
@@ -83,25 +79,18 @@ export const useFiltersData = () => {
     selectedSubDepts,
     departments
   ]);
-
-  const groupedFilterPoints = filterPoints[activeMenu] || {};
-  const filterPointsForCurrentMenu = useMemo(
-    () => Object.values(groupedFilterPoints).flat(),
-    [groupedFilterPoints]
-  );
-
-  const getAlternativeKeys = (key) => getAlternativeKeysHelper(key, filterGroups);
+  
 
   return {
      activeMenu,
     currentPage,
     filteredChunks,
-    groupedFilterPoints,
-    filterPointsForCurrentMenu,
     currentFilters: filtersFromRedux,
     phonesSubConditions,
     hasFilters,
-    getAlternativeKeys,
-    isFilterApplied
+    isFilterApplied,
+    depSec,
+    bookmarks,
+    dataForMenu
   };
 };
