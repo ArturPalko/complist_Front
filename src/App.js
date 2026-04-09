@@ -1,7 +1,7 @@
 import "./App.css";
 import Header from "./Components/Header/Header";
 import NavBar from "./Components/NavBar/NavBar";
-import { Route, Routes} from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 
 import GovUaMails from "./Components/Content/Pages/GovUaMails/GovUaMails";
 import LotusMails from "./Components/Content/Pages/LotusMails/LotusMails";
@@ -18,79 +18,58 @@ import { useLoginModal } from "./redux/hooks/useLoginModal";
 import { useCheckAuth } from "./redux/hooks/hooks";
 import { useFiltersData } from "./redux/hooks/useFilters/useFiltersData";
 import { useFiltersEffects } from "./redux/hooks/useFilters/useFiltersEffects";
+import { FiltersContext } from "./redux/contexts/useConetxt";
 
 function App() {
   useTrackLocation();
   useCheckAuth();
+
   const { isLoginOpen, closeModal } = useLoginModal();
 
-    const {
-    activeMenu,
-    filteredChunks,
-    hasFilters,
-    currentPage,
-    dispatch
-  } = useFiltersData();
+  const filtersData = useFiltersData();
 
-  // тепер викликаємо хук ефектів, передаючи потрібні дані
-  useFiltersEffects({ activeMenu, filteredChunks, hasFilters, currentPage, dispatch });
+  // Викликаємо ефекти фільтрів
+  useFiltersEffects(filtersData);
 
   return (
-    <div className="app-wrapper">
-      <Header />
-      <NavBar />
+    <FiltersContext.Provider value={filtersData}>
+      <div className="app-wrapper">
+        <Header />
+        <NavBar />
 
-      <div className="app-wrapper-content">
-        {/* Контент під модалкою */}
-        <div className={isLoginOpen ? "content-blur" : ""}>
-          <Routes>
-            <Route path="/error" element={<Error />} />
+        <div className="app-wrapper-content">
+          <div className={isLoginOpen ? "content-blur" : ""}>
+            <Routes>
+              <Route path="/error" element={<Error />} />
+              <Route path="/" element={<RedirectToCurrentPage redirectMenu={Pages.GOV_UA} />} />
 
-            {/* root → Gov-ua */}
-            <Route
-              path="/"
-              element={<RedirectToCurrentPage redirectMenu={Pages.GOV_UA} />}
-            />
-
-            {/* Phones */}
-            <Route path="/phones">
-              <Route path="foundResults" element={<FoundResults />} />
-              <Route path=":pageNumber" element={<Phones />} />
-              <Route
-                index
-                element={<RedirectToCurrentPage redirectMenu={Pages.PHONES} />}
-              />
-            </Route>
-
-            {/* Mails */}
-            <Route path="/mails">
-              {/* Gov-ua */}
-              <Route path="Gov-ua">
+              <Route path="/phones">
                 <Route path="foundResults" element={<FoundResults />} />
-                <Route path=":pageNumber" element={<GovUaMails />} />
-                <Route
-                  index
-                  element={<RedirectToCurrentPage redirectMenu={Pages.GOV_UA} />}
-                />
+                <Route path=":pageNumber" element={<Phones />} />
+                <Route index element={<RedirectToCurrentPage redirectMenu={Pages.PHONES} />} />
               </Route>
 
-              {/* Lotus */}
-              <Route path="Lotus">
-                <Route path="foundResults" element={<FoundResults />} />
-                <Route path=":pageNumber" element={<LotusMails />} />
-                <Route
-                  index
-                  element={<RedirectToCurrentPage redirectMenu={Pages.LOTUS} />}
-                />
+              <Route path="/mails">
+                <Route path="Gov-ua">
+                  <Route path="foundResults" element={<FoundResults />} />
+                  <Route path=":pageNumber" element={<GovUaMails />} />
+                  <Route index element={<RedirectToCurrentPage redirectMenu={Pages.GOV_UA} />} />
+                </Route>
+
+                <Route path="Lotus">
+                  <Route path="foundResults" element={<FoundResults />} />
+                  <Route path=":pageNumber" element={<LotusMails />} />
+                  <Route index element={<RedirectToCurrentPage redirectMenu={Pages.LOTUS} />} />
+                </Route>
               </Route>
-            </Route>
-          </Routes>
+            </Routes>
+          </div>
         </div>
 
-        {/* LOGIN MODAL */}
+        {/* LoginModal поза контекстом */}
         {isLoginOpen && <Login onClose={closeModal} />}
       </div>
-    </div>
+    </FiltersContext.Provider>
   );
 }
 

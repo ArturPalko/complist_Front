@@ -54,3 +54,12 @@ export const [PasswordsToggleContext, usePasswordsToggle] = createCtx({
   valueOfpasswordCheckbox: false,
   handleTogglePasswords: () => {},
 });
+
+// дефолтне значення можна пустим об'єктом або null
+export const [FiltersContext, useFiltersContext] = createCtx({
+  activeMenu: null,
+  filteredChunks: [],
+  hasFilters: false,
+  currentPage: null,
+  dispatch: () => {},
+});

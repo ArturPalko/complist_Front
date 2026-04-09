@@ -1,10 +1,10 @@
 
-import { useFiltersData } from "./useFilters/useFiltersData";
+import { useFiltersContext } from "../contexts/useConetxt";
 
 export const useBottomFilterLogic = () => {
 
   // ================== AUTOMATIC ACTIVE MENU ==================
-  const { filteredChunks, hasFilters, phonesSubConditions, activeMenu, bookmarks, depSec, } = useFiltersData({ });
+  const { filteredChunks, hasFilters, phonesSubConditions, activeMenu, bookmarks, depSec, } = useFiltersContext({ });
 
   const departments = depSec.departments || [];
   const selectedSubDepts = bookmarks.selectedSubDepts;
