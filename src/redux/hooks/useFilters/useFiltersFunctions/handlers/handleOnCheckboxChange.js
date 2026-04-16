@@ -1,4 +1,4 @@
-import { addFilter, setSubFilters } from "../../../../reducers/filterData-reducer";
+import { addFilter, setSubFilters } from "../../../../reducers/filter-data-reducer/filterData-reducer";
 
 export const handleCheckboxChangeHelper = ({ activeMenu, key, category, dispatch, allValues, checked = null }) => {
   if (activeMenu === "phones" && category) {

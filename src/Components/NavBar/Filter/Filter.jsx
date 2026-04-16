@@ -10,7 +10,7 @@ import {
 } from "../../../redux/selectors/selector";
 
 import { toggleFielterPanelElement } from "../../../redux/reducers/toggledElements-reducer";
-import { clearFiltredData } from "../../../redux/reducers/filterData-reducer";
+import { clearFiltredData } from "../../../redux/reducers/filter-data-reducer/filterData-reducer";
 import { redirectToPage } from "../../../shared/functions/redirectToPage";
 
 import s from "./Filter.module.css"; 

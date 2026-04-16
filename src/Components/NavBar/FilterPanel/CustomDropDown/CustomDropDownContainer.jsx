@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import { connect } from "react-redux";
 import { activeMenu, getPositionsAndTypesOfUsers, getSubFilters } from "../../../../redux/selectors/selector";
-import { setSubFilters } from "../../../../redux/reducers/filterData-reducer";
 import CustomDropDownView from "./CustomDropDownView"
+import { setSubFilters } from "../../../../redux/reducers/filter-data-reducer/filterData-reducer";
 
 const CustomDropDownContainer = ({ positionsAndTypes, subFiltersFromStore, activeMenu: currentMenu, setSubFilters }) => {
   const [open, setOpen] = useState(false);

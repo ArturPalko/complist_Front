@@ -1,13 +1,12 @@
 import React, { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "./BottomFilterView.module.css";
-
-import { toggleSubDept } from "../../../../redux/reducers/filterData-reducer";
+import { toggleSubDept } from "../../../../redux/reducers/filter-data-reducer/filterData-reducer";
 import {
   toggleAutoSelectHideSections,
   toggleAutoSelectHideUsersWithoutSections,
   toggleAllDepatrments
-} from "../../../../redux/reducers/filterData-reducer";
+} from "../../../../redux/reducers/filter-data-reducer/filterData-reducer";
 import { BottomFilterHeader } from "./SubComponents/BottomFilterHeader/BottomFilterHeader";
 import { DepartmentsList } from "./SubComponents/DepartmentsList/DepartmentList";
 import { SectionsPanel } from "./SubComponents/SectionPanel/SectionPanel";
@@ -104,3 +103,4 @@ export const BottomFilterView = ({
     </div>
   );
 };
+

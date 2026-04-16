@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import styles from "../DeptRowControls/DeptRowControls.module.css";
 import usersOutOfDepartmentImg from "../../../../../../../assets/Img/usersOutOfDepartment.png";
 import usersOutOfSectionImg from "../../../../../../../assets/Img/usersOutOfSection.png";
-import { toggleHideUsersWithoutSections, toggleHideSections } from "../../../../../../../redux/reducers/filterData-reducer";
+import { toggleHideUsersWithoutSections, toggleHideSections } from "../../../../../../../redux/reducers/filter-data-reducer/filterData-reducer";
+
 
 export const DeptRowControls = React.memo(
   ({ dept, hasSubs, isChecked, isIndeterminate, expandedDept, toggleExpand,activeMenu}) => {
@@ -69,3 +70,4 @@ export const DeptRowControls = React.memo(
     );
   }
 );
+

@@ -1,4 +1,5 @@
-import { clearCurrentForm, addIndexesOfFiltredResults } from "../../../../reducers/filterData-reducer";
+import { clearCurrentForm,addIndexesOfFiltredResults } from "../../../../reducers/filter-data-reducer/filterData-reducer";
+
 export const clearFormHelper = ({ activeMenu, dispatch }) => {
 
   dispatch(clearCurrentForm(activeMenu));

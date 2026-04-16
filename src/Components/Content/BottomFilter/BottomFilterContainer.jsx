@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { BottomFilterView } from "./BottomFilterView/BottomFilterView";
 import { useBottomFilterLogic } from "../../../redux/hooks/useBottomFilterLogic";
-import { setBookmark,   toggleSubDept as toggleSubDeptAction } from "../../../redux/reducers/filterData-reducer";
+import { setBookmark,   toggleSubDept as toggleSubDeptAction } from "../../../redux/reducers/filter-data-reducer/filterData-reducer";
 import { useDispatch } from "react-redux";
-
 
 export const BottomFilterContainer = () => {
   const dispatch = useDispatch();

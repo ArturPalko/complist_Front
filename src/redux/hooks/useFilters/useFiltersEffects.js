@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
-import { addIndexesOfFiltredResults } from "../../reducers/filterData-reducer";
+import { addIndexesOfFiltredResults } from "../../reducers/filter-data-reducer/filterData-reducer";
 import { syncFilteredIndexesToRedux } from "./useFiltersFunctions/helpers";
 import { redirectToPage } from "../../../shared/functions/redirectToPage";
 
