@@ -1,11 +1,11 @@
 import { useMemo } from "react";
-import { getContactsCount } from "../selectors/selector.js";
+import { useSelector } from "react-redux";
+import { getContactsCount, menuSelectors } from "../selectors/selector.js";
 import { useFiltersContext } from "../contexts/useConetxt.js";
 import { filterPoints, filterGroups } from "./useFilters/useFiltersFunctions/filtersLogics.js";
 import { getAlternativeKeysHelper } from "./useFilters/useFiltersFunctions/helpers.js";
 
 export const useFilterPanelLogic = () => {
-  // Беремо дані з контексту (FiltersProvider має їх передавати)
   const {
     activeMenu,
     currentPage,
@@ -17,24 +17,31 @@ export const useFilterPanelLogic = () => {
     isFilterApplied
   } = useFiltersContext();
 
-debugger
-  // Групуємо фільтри для UI
   const groupedFilterPoints = filterPoints[activeMenu] || {};
 
-  // Функція для отримання альтернативних ключів
-  const getAlternativeKeys = (key) => getAlternativeKeysHelper(key, filterGroups);
+  const getAlternativeKeys = (key) =>
+    getAlternativeKeysHelper(key, filterGroups);
 
-  // Підрахунок контактів (мемоізовано)
+const selector = menuSelectors?.[activeMenu];
+
+const selectorResult = useSelector(
+  typeof selector === "function" ? selector : () => 0
+);
+
   const contactsCount = useMemo(() => {
-    if (!filteredChunks.length || !dataForMenu.length) return 0;
-
     return getContactsCount({
-      activeMenu,
+      selectorResult,
       isFilterApplied,
       filteredChunks,
       dataByMenu: dataForMenu
     });
-  }, [activeMenu, isFilterApplied, filteredChunks, dataForMenu]);
+  }, [
+    selectorResult,
+    isFilterApplied,
+    filteredChunks,
+    dataForMenu,
+    activeMenu
+  ]);
 
   return {
     activeMenu,

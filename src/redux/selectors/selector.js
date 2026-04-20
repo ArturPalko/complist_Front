@@ -11,6 +11,7 @@ import { processFoundResults } from "./helpFunctions/processFoundResults";
 import {findDashedBlocks} from "./helpFunctions/findDashedBlocks";
 import { getFilteredPageData } from "../../shared/functions/getDataByIndexes";
 import { makeGetDepSecByMenu } from "./selectorFabrics/makeDepSecByMenu";
+import { useSelector } from "react-redux";
 
 // =====Допоміжні селектори=======================
 
@@ -92,20 +93,28 @@ export const getCountsForActiveMenu = createSelector(
 
 // ===================================
 // ===== Контакти =====
-const menuSelectors = {
+export const menuSelectors = {
   [Pages.PHONES]: (state) => getPhonesCount(state).countOfUsers || 0,
   [Pages.LOTUS]: (state) => getLotusCount(state).countOfMails || 0,
   [Pages.GOV_UA]: (state) => getGovUaCount(state).countOfMails || 0,
 };
 
-export const getContactsCount = ({ state, activeMenu, isFilterApplied, filteredChunks, dataByMenu }) => {
+
+
+export const getContactsCount = ({
+  selectorResult,
+  isFilterApplied,
+  filteredChunks = [],
+  dataByMenu = []
+}) => {
   if (!isFilterApplied) {
-    const selector = menuSelectors[activeMenu];
     debugger
-    return selector ? selector(state) : "0";
+    return selectorResult ?? "0";
   }
+
   return countContacts({ filteredChunks, dataByMenu });
 };
+
 
 // ===================================
 // ===== Інші селектори =====
@@ -208,42 +217,6 @@ export const selectBookmarks = (state, menu) => {
 };
 
 
-// export const getDepartmentsAndSections = (state) => {
-//   let dep = [];
-//   let sec = [];
-//   let filteredRow ={};
-
-// state.data.phones.forEach(element => {
-//   element.rows.forEach(row => {
-//     if (!row.type) return;
-
-//     const { departmentName, sectionName, sections } = row;
-
-//     switch (row.type) {
-//       case "department":
-//         filteredRow = {
-//           departmentName,
-//           sections: sections?.map(({ sectionName }) => ({
-//             sectionName
-//           }))
-//         };
-//         dep.push(filteredRow);
-//         break;
-
-//       case "section":
-//         filteredRow = { sectionName };
-//         sec.push(filteredRow);
-//         break;
-//     }
-//   });
-// });
-
-//   // Отримуємо унікальні значення
-//   const uniqueDep = [...new Set(dep)];
-//   const uniqueSec = [...new Set(sec)];
-
-//   return { departments: uniqueDep, sections: uniqueSec };
-// }
 // 2. Створюємо кешовані селектори для конкретних меню
 export const getPhonesDepSec = makeGetDepSecByMenu(Pages.PHONES);
 export const getGovUaDepSec = makeGetDepSecByMenu(Pages.GOV_UA);

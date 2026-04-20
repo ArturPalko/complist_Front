@@ -1,9 +1,3 @@
-// =====================================================
-//  EXTERNAL / SHARED IMPORTS
-// =====================================================
-import { activeMenu } from "../../selectors/selector";
-
-// =====================================================
 // CORE STATE HELPERS
 // =====================================================
 import { updateMenuState } from "./filterData-reducerFunctions/updateMenuState";
@@ -22,11 +16,19 @@ import { updateFilters } from "./filterData-reducerFunctions/filters/updateFilte
 // =====================================================
 //  ACTION TYPES
 // =====================================================
-const ADD_FILTRED_DATA = "ADD_FILTRED_DATA";
-const SET_SUBFILTERS = "SET_SUBFILTERS";
+const SET_MAIN_FILTERS = "SET_MAIN_FILTERS";
+const SET_SUB_FILTERS = "SET_SUB_FILTERS";
 const CLEAR_FILTRED_STATE_FOR_CURRENT_FORM = "CLEAR_FILTRED_STATE_FOR_CURRENT_FORM";
 const ADD_INDEXES_OF_FILTRED_RESULTS = "ADD_INDEXES_OF_FILTRED_RESULTS";
 const CLEAR_FILTRED_DATA = "CLEAR_FILTRED_DATA";
+const BOOKMARKS_DEPARTMENTS_CHANGED = "BOOKMARKS_DEPARTMENTS_CHANGED"
+const BOOKMARKS_SECTIONS_CHANGED = "BOOKMARKS_SECTIONS_CHANGED"
+const TOGGLE_ALL_DEPARTMENTS = "TOGGLE_ALL_DEPARTMENTS"
+const TOGGLE_HIDE_USERS_WITHOUT_SECTIONS = "TOGGLE_HIDE_USERS_WITHOUT_SECTIONS"
+const HIDE_SECTIONS = "HIDE_SECTIONS"
+const TOGGLE_AUTO_SELECT_HIDE_USERS_WITHOUT_SECTIONS = "TOGGLE_AUTO_SELECT_HIDE_USERS_WITHOUT_SECTIONS"
+const TOGGLE_AUTO_SELECT_HIDE_SECTIONS = "TOGGLE_AUTO_SELECT_HIDE_SECTIONS"
+
 
 // =====================================================
 // INITIAL STATE FACTORY
@@ -108,31 +110,30 @@ export const filterDataReducer = (state = initialState, action) => {
     sections
   } = action;
 
-  const activeMenu = menu || "phones";
-debugger
+  
   switch (action.type) {
 
     // =====================================================
     // BOOKMARKS: bulk operations
     // =====================================================
     case "TOGGLE_ALL_DEPARTMENTS": {
-        return updateMenuState(state, activeMenu, menu => {
-          const bookmarks = toggleAllDepartmentsLogic(menu, departments);
-          return updateMenuWithBookmarks(menu, bookmarks);
+        return updateMenuState(state, menu, menuState => {
+          const bookmarks = toggleAllDepartmentsLogic(menuState, departments);
+          return updateMenuWithBookmarks(menuState, bookmarks);
       });
     }
 
-    case "TOGGLE_SUB_DEPT": {
-      return updateMenuState(state, activeMenu, menu => {
-        const bookmarks = toggleSubDeptLogic(menu, deptName, sub);
-        return updateMenuWithBookmarks(menu, bookmarks);
+    case "BOOKMARKS_SECTIONS_CHANGED": {
+      return updateMenuState(state, menu, menuState => {
+        const bookmarks = toggleSubDeptLogic(menuState, deptName, sub);
+        return updateMenuWithBookmarks(menuState, bookmarks);
       });
     }
 
-      case "SET_BOOKMARK": {
-        return updateMenuState(state, activeMenu, menu => {
-          const bookmarks = setBookmarkLogic(menu, deptName, sections);
-          return updateMenuWithBookmarks(menu, bookmarks);
+      case "BOOKMARKS_DEPARTMENTS_CHANGED": {
+        return updateMenuState(state, menu, menuState => {
+          const bookmarks = setBookmarkLogic(menuState, deptName, sections);
+          return updateMenuWithBookmarks(menuState, bookmarks);
         });
       }
 
@@ -142,14 +143,14 @@ debugger
 
 
     case "TOGGLE_HIDE_USERS_WITHOUT_SECTIONS": {
-      return updateMenuState(state, activeMenu, menu =>
-        toggleBookmarkFlag(menu, "hideUsersWithoutSections", deptName)
+      return updateMenuState(state, menu, menuState =>
+        toggleBookmarkFlag(menuState, "hideUsersWithoutSections", deptName)
       );
     }
 
     case "TOGGLE_HIDE_SECTIONS": {
-      return updateMenuState(state, activeMenu, menu =>
-        toggleBookmarkFlag(menu, "hideSections", deptName)
+      return updateMenuState(state, menu, menuState =>
+        toggleBookmarkFlag(menuState, "hideSections", deptName)
       );
     }
 
@@ -158,9 +159,9 @@ debugger
     // =====================================================
 
     case "TOGGLE_AUTO_SELECT_HIDE_USERS_WITHOUT_SECTIONS": {
-  return updateMenuState(state, activeMenu, menu =>
+  return updateMenuState(state, menu, menuState =>
     toggleAutoHide(
-      menu,
+      menuState,
       "allHideUsersWithoutSections",
       "hideUsersWithoutSections"
     )
@@ -168,9 +169,9 @@ debugger
 }
 
    case "TOGGLE_AUTO_SELECT_HIDE_SECTIONS": {
-  return updateMenuState(state, activeMenu, menu =>
+  return updateMenuState(state, menu, menuState =>
     toggleAutoHide(
-      menu,
+      menuState,
       "allHideSections",
       "hideSections"
     )
@@ -180,19 +181,19 @@ debugger
     // =====================================================
     // FILTERS
     // =====================================================
-case ADD_FILTRED_DATA: {
-  return updateMenuState(state, activeMenu, menu =>
-    updateFilters(menu, {
+case "SET_MAIN_FILTERS": {
+  return updateMenuState(state, menu, menuState =>
+    updateFilters(menuState, {
       type: "mainFilters",
       filter
     })
   );
 }
-case SET_SUBFILTERS: {
-  if (activeMenu !== "phones") return state;
+case "SET_SUB_FILTERS": {
+  if (menu !== "phones") return state;
 
-  return updateMenuState(state, activeMenu, menu =>
-    updateFilters(menu, {
+  return updateMenuState(state, menu, menuState => 
+    updateFilters(menuState, { 
       type: "subFilters",
       subFiltersUpdate: {
         variety,
@@ -208,8 +209,8 @@ case SET_SUBFILTERS: {
     // =====================================================
 
 case CLEAR_FILTRED_STATE_FOR_CURRENT_FORM: {
-  return updateMenuState(state, activeMenu, () =>
-    createMenuState(activeMenu)
+  return updateMenuState(state, menu, () =>
+    createMenuState(menu)
   );
 }
 
@@ -217,8 +218,8 @@ case CLEAR_FILTRED_STATE_FOR_CURRENT_FORM: {
       return { ...initialState };
 
   case ADD_INDEXES_OF_FILTRED_RESULTS: {
-    return updateMenuState(state, activeMenu, menu => ({
-      ...menu,
+    return updateMenuState(state, menu, menuState => ({
+      ...menuState,
       filtredResults: action.filtredIndexesOfFoundResults
     }));
   }
@@ -228,9 +229,9 @@ case CLEAR_FILTRED_STATE_FOR_CURRENT_FORM: {
   }
 };
 // ================== ACTION CREATORS ==================
-export const addFilter = (menu, filter) => ({ type: ADD_FILTRED_DATA, menu, filter });
+export const addFilter = (menu, filter) => ({ type: SET_MAIN_FILTERS, menu, filter });
 export const setSubFilters = (menu, variety, values, checked) => ({
-  type: SET_SUBFILTERS, menu, variety, values, checked
+  type: SET_SUB_FILTERS, menu, variety, values, checked
 });
 export const clearCurrentForm = (menu) => ({ type: CLEAR_FILTRED_STATE_FOR_CURRENT_FORM, menu });
 export const addIndexesOfFiltredResults = (menu, filtredIndexesOfFoundResults) => ({
@@ -239,15 +240,16 @@ export const addIndexesOfFiltredResults = (menu, filtredIndexesOfFoundResults) =
 export const clearFiltredData = () => ({ type: CLEAR_FILTRED_DATA });
 
 // Універсальні bookmarks/action creators
-export const setBookmark = (menu, deptName, sections = []) => ({
-  type: "SET_BOOKMARK", menu, deptName, sections
+export const toggleDept = (menu, deptName, sections = []) => ({
+  type: BOOKMARKS_DEPARTMENTS_CHANGED, menu, deptName, sections
 });
-export const toggleDept = (menu, deptName) => ({ type: "TOGGLE_DEPT", activeMenu, deptName });
-export const toggleSubDept = (activeMenu, deptName, sub) => ({ type: "TOGGLE_SUB_DEPT", activeMenu, deptName, sub });
-export const toggleHideUsersWithoutSections = (menu, deptName) => ({ type: "TOGGLE_HIDE_USERS_WITHOUT_SECTIONS", menu, deptName });
-export const toggleHideSections = (menu, deptName) => ({ type: "TOGGLE_HIDE_SECTIONS", menu, deptName });
-export const toggleAutoSelectHideUsersWithoutSections = (menu) => ({ type: "TOGGLE_AUTO_SELECT_HIDE_USERS_WITHOUT_SECTIONS", menu });
-export const toggleAutoSelectHideSections = (menu) => ({ type: "TOGGLE_AUTO_SELECT_HIDE_SECTIONS", menu });
-export const toggleAllDepatrments = (menu, departments) => ({ type: "TOGGLE_ALL_DEPARTMENTS", menu, departments });
+export const toggleSubDept = (menu, deptName, sub) => ({ 
+  type: BOOKMARKS_SECTIONS_CHANGED, menu, deptName, sub 
+});
+export const toggleHideUsersWithoutSections = (menu, deptName) => ({ type: TOGGLE_HIDE_USERS_WITHOUT_SECTIONS, menu, deptName });
+export const toggleHideSections = (menu, deptName) => ({ type: HIDE_SECTIONS, menu, deptName });
+export const toggleAutoSelectHideUsersWithoutSections = (menu) => ({ type: TOGGLE_AUTO_SELECT_HIDE_USERS_WITHOUT_SECTIONS, menu });
+export const toggleAutoSelectHideSections = (menu) => ({ type: TOGGLE_AUTO_SELECT_HIDE_SECTIONS, menu });
+export const toggleAllDepatrments = (menu, departments) => ({ type: TOGGLE_ALL_DEPARTMENTS, menu, departments });
 
 

@@ -70,10 +70,10 @@ export const BottomFilterView = ({
                 dispatch(toggleAllDepatrments(activeMenu,departments))
               }
               onToggleHideUsers={() =>
-                dispatch(toggleAutoSelectHideUsersWithoutSections())
+                dispatch(toggleAutoSelectHideUsersWithoutSections(activeMenu))
               }
               onToggleHideSections={() =>
-                dispatch(toggleAutoSelectHideSections())
+                dispatch(toggleAutoSelectHideSections(activeMenu))
               }
             />
 
