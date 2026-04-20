@@ -9,8 +9,8 @@
   transform: translateY(-50%);
   cursor: pointer;
   z-index: 1000;
-  background: white;
-  color: black;
+  background: #000;   /* чорна кнопка */
+ color: #fff;        /* біла стрілка */
   padding: 0.094rem 0.281rem; 
   border-radius: 0.1875rem;   
   box-shadow: 0 0 0.141rem rgba(0,0,0,0.3); 

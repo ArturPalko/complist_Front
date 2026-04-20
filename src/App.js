@@ -25,51 +25,62 @@ function App() {
   useCheckAuth();
 
   const { isLoginOpen, closeModal } = useLoginModal();
-
   const filtersData = useFiltersData();
 
-  // Викликаємо ефекти фільтрів
   useFiltersEffects(filtersData);
 
   return (
-    <FiltersContext.Provider value={filtersData}>
-      <div className="app-wrapper">
-        <Header />
-        <NavBar />
+    <>
+      <FiltersContext.Provider value={filtersData}>
+        <div className="app-wrapper">
+          <Header />
+          <NavBar />
 
-        <div className="app-wrapper-content">
-          <div className={isLoginOpen ? "content-blur" : ""}>
-            <Routes>
-              <Route path="/error" element={<Error />} />
-              <Route path="/" element={<RedirectToCurrentPage redirectMenu={Pages.GOV_UA} />} />
+          <div className="app-wrapper-content">
+            <div className={isLoginOpen ? "content-blur" : ""}>
+              <Routes>
+                <Route path="/error" element={<Error />} />
+                <Route
+                  path="/"
+                  element={<RedirectToCurrentPage redirectMenu={Pages.GOV_UA} />}
+                />
 
-              <Route path="/phones">
-                <Route path="foundResults" element={<FoundResults />} />
-                <Route path=":pageNumber" element={<Phones />} />
-                <Route index element={<RedirectToCurrentPage redirectMenu={Pages.PHONES} />} />
-              </Route>
-
-              <Route path="/mails">
-                <Route path="Gov-ua">
+                <Route path="/phones">
                   <Route path="foundResults" element={<FoundResults />} />
-                  <Route path=":pageNumber" element={<GovUaMails />} />
-                  <Route index element={<RedirectToCurrentPage redirectMenu={Pages.GOV_UA} />} />
+                  <Route path=":pageNumber" element={<Phones />} />
+                  <Route
+                    index
+                    element={<RedirectToCurrentPage redirectMenu={Pages.PHONES} />}
+                  />
                 </Route>
 
-                <Route path="Lotus">
-                  <Route path="foundResults" element={<FoundResults />} />
-                  <Route path=":pageNumber" element={<LotusMails />} />
-                  <Route index element={<RedirectToCurrentPage redirectMenu={Pages.LOTUS} />} />
+                <Route path="/mails">
+                  <Route path="Gov-ua">
+                    <Route path="foundResults" element={<FoundResults />} />
+                    <Route path=":pageNumber" element={<GovUaMails />} />
+                    <Route
+                      index
+                      element={<RedirectToCurrentPage redirectMenu={Pages.GOV_UA} />}
+                    />
+                  </Route>
+
+                  <Route path="Lotus">
+                    <Route path="foundResults" element={<FoundResults />} />
+                    <Route path=":pageNumber" element={<LotusMails />} />
+                    <Route
+                      index
+                      element={<RedirectToCurrentPage redirectMenu={Pages.LOTUS} />}
+                    />
+                  </Route>
                 </Route>
-              </Route>
-            </Routes>
+              </Routes>
+            </div>
           </div>
         </div>
-
-        {/* LoginModal поза контекстом */}
-        {isLoginOpen && <Login onClose={closeModal} />}
-      </div>
-    </FiltersContext.Provider>
+      </FiltersContext.Provider>
+      
+      {isLoginOpen && <Login onClose={closeModal} />}
+    </>
   );
 }
 
