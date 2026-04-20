@@ -1,15 +1,9 @@
-import React, { useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import styles from "./BottomFilterView.module.css";
-import { toggleSubDept } from "../../../../redux/reducers/filter-data-reducer/filterData-reducer";
-import {
-  toggleAutoSelectHideSections,
-  toggleAutoSelectHideUsersWithoutSections,
-  toggleAllDepatrments
-} from "../../../../redux/reducers/filter-data-reducer/filterData-reducer";
+import React from "react";
+import s from "./BottomFilterView.module.css";
 import { BottomFilterHeader } from "./SubComponents/BottomFilterHeader/BottomFilterHeader";
 import { DepartmentsList } from "./SubComponents/DepartmentsList/DepartmentList";
 import { SectionsPanel } from "./SubComponents/SectionPanel/SectionPanel";
+
 
 export const BottomFilterView = ({
   isOpen,
@@ -18,63 +12,40 @@ export const BottomFilterView = ({
   expandedDept,
   toggleExpand,
   selectedSubDepts,
-  selectedOrder,
-  toggleDept,
-  activeMenu
+  selectedText,
+  activeMenu,
+  bookmarks,
+  refs,
+  onToggleSelectAll,
+  onToggleHideUsers,
+  onToggleDept,
+  onToggleSubDept,
+  onToggleHideSections
+
 }) => {
-  const refs = useRef({});
-  const dispatch = useDispatch();
-
-  const bookmarks = useSelector(
-    state =>
-      state.filters.phones?.bookmarks || {
-        selectedSubDepts: {},
-        selectedOrder: [],
-        hideUsersWithoutSections: {},
-        hideSections: {}
-      }
-  );
-
-  // 🔹 текст вибраних департаментів
-  const visibleSelected = selectedOrder.slice(0, 3);
-  const extraCount = Math.max(0, selectedOrder.length - 3);
-
-  const selectedText =
-    visibleSelected.length > 0
-      ? visibleSelected.join(", ") +
-        (extraCount > 0 ? ` +${extraCount} ще` : "")
-      : "Обрати підрозділи";
-
   return (
-    <div className={styles.container}>
-      {/* 🔹 кнопка відкриття */}
+    <div className={s.container}>
+      {/*кнопка відкриття */}
       <button
-        className={styles.button}
+        className={s.button}
         onClick={toggleOpen}
-        title={selectedText}
+        title={"Обрані підрозділи"}
       >
         {selectedText}
       </button>
 
-      {/* 🔹 dropdown */}
+      {/*dropdown */}
       {isOpen && (
-        <div className={styles.dropdown}>
-          {/* 🔹 ліва частина */}
-          <div className={styles.box}>
+        <div className={s.dropdown}>
+          {/*ліва частина */}
+          <div className={s.box}>
             <BottomFilterHeader
               activeMenu={activeMenu}
               bookmarks={bookmarks}
               departments={departments}
-              // departments={departments}
-              onToggleSelectALL = {() =>
-                dispatch(toggleAllDepatrments(activeMenu,departments))
-              }
-              onToggleHideUsers={() =>
-                dispatch(toggleAutoSelectHideUsersWithoutSections(activeMenu))
-              }
-              onToggleHideSections={() =>
-                dispatch(toggleAutoSelectHideSections(activeMenu))
-              }
+              onToggleSelectALL ={onToggleSelectAll}
+              onToggleHideUsers={onToggleHideUsers}
+              onToggleHideSections={onToggleHideSections}
             />
 
             <DepartmentsList
@@ -82,21 +53,19 @@ export const BottomFilterView = ({
               departments={departments}
               selectedSubDepts={selectedSubDepts}
               expandedDept={expandedDept}
-              toggleDept={toggleDept}
+              onToggleDept={onToggleDept}
               toggleExpand={toggleExpand}
               refs={refs}
             />
           </div>
 
-          {/* 🔹 права частина */}
+          {/* права частина */}
           <SectionsPanel
             expandedDept={expandedDept}
             departments={departments}
             selectedSubDepts={selectedSubDepts}
             hideSections={bookmarks.hideSections}
-            onToggleSubDept={(dept, sub) =>
-              dispatch(toggleSubDept(activeMenu, dept, sub))
-            }
+            onToggleSubDept={onToggleSubDept}
           />
         </div>
       )}

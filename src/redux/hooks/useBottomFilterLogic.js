@@ -17,6 +17,7 @@ export const useBottomFilterLogic = () => {
     selectedOrder,
     filteredChunks,
     hasFilters,
-    phonesSubConditions
+    phonesSubConditions,
+    bookmarks
   };
 };

@@ -1,11 +1,11 @@
-import styles from "./DepartmentList.module.css";
+import s from "./DepartmentList.module.css";
 import { DeptRowControls } from "./DeptRowControls/DeptRowControls";
 
 export const DepartmentsList = ({
   departments,
   selectedSubDepts,
   expandedDept,
-  toggleDept,
+  onToggleDept,
   toggleExpand,
   refs,
   activeMenu
@@ -26,7 +26,7 @@ export const DepartmentsList = ({
           selectedSubs.length < dept.sections.length;
 
         return (
-          <div key={dept.departmentName} className={styles.deptLabel}>
+          <div key={dept.departmentName} className={s.deptLabel}>
             <label>
               <input
                 type="checkbox"
@@ -35,7 +35,7 @@ export const DepartmentsList = ({
                   if (el) el.indeterminate = isIndeterminate;
                 }}
                 checked={isChecked}
-                onChange={() => toggleDept(dept.departmentName)}
+                onChange={() => onToggleDept(dept.departmentName)}
               />
               {dept.departmentName}
             </label>
