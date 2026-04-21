@@ -6,7 +6,7 @@ import { useContext } from "react";
 import { useIndexCellLogic } from "./useIndexCellLogic";
 
 export const IndexCell = ({ index, isNonUserRowType, isSectionType }) => {
-debugger
+
   const {
     indexDataOfFoundResultsForFoundResultsPage,
     pageName

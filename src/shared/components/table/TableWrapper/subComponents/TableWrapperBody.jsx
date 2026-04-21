@@ -16,10 +16,10 @@ const TableWrapperBody = ({
         ref={(el) => rowRefs?.current && (rowRefs.current[index] = el)}
       >
         <IndexCell
-  index={index}
-  isNonUserRowType={item?.type ? item.type !== "user" : false}
-  isSectionType= {item?.type ? item.type == "section" : false}
-/>
+              index={index}
+              isNonUserRowType={item?.type ? item.type !== "user" : false}
+              isSectionType= {item?.type ? item.type == "section" : false}
+        />
         {renderRowCells(item, index)}
       </tr>
     ))}

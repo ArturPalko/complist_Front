@@ -143,14 +143,12 @@ export const filterDataReducer = (state = initialState, action) => {
 
 
     case "TOGGLE_HIDE_USERS_WITHOUT_SECTIONS": {
-      debugger
       return updateMenuState(state, menu, menuState =>
         toggleBookmarkFlag(menuState, "hideUsersWithoutSections", deptName)
       );
     }
 
     case "TOGGLE_HIDE_SECTIONS": {
-      debugger
       return updateMenuState(state, menu, menuState =>
         toggleBookmarkFlag(menuState, "hideSections", deptName)
       );

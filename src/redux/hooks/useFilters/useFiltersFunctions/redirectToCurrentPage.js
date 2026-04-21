@@ -19,7 +19,7 @@ export const redirectToCurrentPage = ({
 
 
   const nextPage = hasFilters ? 1 : currentPage;
-debugger
+  
   redirectToPage({
     navigate,
     currentPage: nextPage,

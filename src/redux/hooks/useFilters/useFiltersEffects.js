@@ -29,10 +29,10 @@ export const useFiltersEffects = ({
 
       // редірект тільки коли filteredChunks змінилися
       if (!isFoundResultsPage) {
-debugger
+
         // перевіряємо зміни меню прямо тут
         if (prevMenuRef.current !== null && prevMenuRef.current !== activeMenu) {
-          debugger
+          
           prevMenuRef.current = activeMenu; // оновлюємо
           return; // пропускаємо редірект
         }
@@ -40,7 +40,7 @@ debugger
         prevMenuRef.current = activeMenu;
 
         const nextPage = hasFilters ? 1 : currentPage;
-        debugger
+        
         redirectToPage({ navigate, currentPage: nextPage, activeMenu });
       }
     }

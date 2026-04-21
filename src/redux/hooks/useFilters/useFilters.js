@@ -128,9 +128,9 @@ const isFoundResultsPage = location.pathname.includes("foundResults");
 
   useEffect(() => {
     
-  debugger
+  
      if ( isFoundResultsPage) return;
-debugger
+
     redirectToCurrentPage({
       hasFilters,
       navigate,

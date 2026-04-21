@@ -1,31 +1,66 @@
 import { useFilteredPageData } from "../../redux/hooks/hooks";
-import { rowsPerPage } from "../../configs/app/constants"
+import { rowsPerPage } from "../../configs/app/constants";
 
-export const useFoundResults = (data, foundSearchValues, activeMenu, isFilterApplied) => {
+export const useFoundResults = (
+  data,
+  foundSearchValues,
+  activeMenu,
+  isFilterApplied
+) => {
   const { data: filteredPageData } = useFilteredPageData(data);
   const dataToSearch = isFilterApplied ? filteredPageData : data;
 
-  const foundResultsForCurrentMenu = foundSearchValues[activeMenu]?.foundResults || [];
+  const foundResultsForCurrentMenu =
+    foundSearchValues[activeMenu]?.foundResults || [];
 
-  // Фільтруємо рядки по знайденим результатам
-  const presentRows = dataToSearch.flatMap(item =>
-    item.rows.filter(row =>
-      foundResultsForCurrentMenu.some(result =>
-        item.pageIndex === result.currentPage &&
-        (Object.values(row).includes(result.dataValue) ||
-          (row.phones && row.phones.some(phoneObj => phoneObj.phoneName === result.dataValue)))
-      )
+  const normalize = (val) => {
+    if (val === null || val === undefined) return "";
+    return String(val).toLowerCase().trim();
+  };
+
+  const presentRows = dataToSearch.flatMap((item) =>
+    item.rows.filter((row) =>
+      foundResultsForCurrentMenu.some((result) => {
+        const samePage = item.pageIndex === result.currentPage;
+
+        if (!samePage) return false;
+
+        //  1. row fields
+        const inRow = Object.values(row)
+          .filter((v) => typeof v === "string")
+          .some((v) => normalize(v) === normalize(result.dataValue));
+
+        //  2. phones
+        const inPhones = row.phones?.some(
+          (phone) =>
+            normalize(phone?.phoneName) === normalize(result.dataValue)
+        );
+
+        //  3. depSec (OBJECT)
+        const inDepSec =
+          row.depSec &&
+          typeof row.depSec === "object" &&
+          Object.values(row.depSec)
+            .filter((v) => typeof v === "string")
+            .some((v) => normalize(v) === normalize(result.dataValue));
+
+        return inRow || inPhones || inDepSec;
+      })
     )
   );
 
-  // Формуємо індекси знайдених результатів для сторінки
-  const indexDataOfFoundResultsForFoundResultsPage = foundResultsForCurrentMenu.map(r => ({
-    currentPage: r.currentPage,
-    index: r.index
-  }));
+  const indexDataOfFoundResultsForFoundResultsPage =
+    foundResultsForCurrentMenu.map((r) => ({
+      currentPage: r.currentPage,
+      index: r.index,
+    }));
 
-  // Флаг "занадто багато результатів"
+
   const tooManyResults = presentRows.length > rowsPerPage;
 
-  return { presentRows, indexDataOfFoundResultsForFoundResultsPage, tooManyResults };
+  return {
+    presentRows,
+    indexDataOfFoundResultsForFoundResultsPage,
+    tooManyResults,
+  };
 };

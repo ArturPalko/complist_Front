@@ -57,6 +57,7 @@ const Search = ({
   const executeSearch = () => {
     const searchTarget = isFilterApplied ? filteredPageData : dataForMenu;
     const results = runSearch({ searchValue: draftValue, searchTarget });
+    console.log("SEARCH RESULTS:", results);
 
     if (!results.length) {
       setShowNotFound(true);

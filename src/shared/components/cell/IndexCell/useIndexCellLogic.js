@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { pageConfigs } from "../../../../configs/app/pageConfig";
 import { addIndexesFromIndexCell } from "../../../../redux/reducers/toggledElements-reducer";
 import { useDispatch, useSelector } from "react-redux";
-import { activeMenu, currentPageByMenu, selectSearchStateByMenu } from "../../../../redux/selectors/selector";
+import { activeMenu, selectSearchStateByMenu } from "../../../../redux/selectors/selector";
 import { getIndexesForSection } from "./helpers";
 
 export const useIndexCellLogic = (
@@ -21,15 +21,14 @@ export const useIndexCellLogic = (
   const dispatch = useDispatch();
 
   const cellData = indexData?.[index];
-  debugger
 
   const menu = useSelector(activeMenu);
-const searchState = useSelector((state) =>
-  selectSearchStateByMenu(state, menu)
-);
+  const searchState = useSelector((state) =>
+    selectSearchStateByMenu(state, menu)
+  );
 
 const foundResults = searchState.foundResults ?? [];
-const page = useSelector((state) => currentPageByMenu(state, menu))
+
 
 
 
@@ -44,17 +43,17 @@ const page = useSelector((state) => currentPageByMenu(state, menu))
     const url = config ? `${config.basePath}${targetPage}` : "/";
 
     setClickedRow(true);
-
+  
     if (isSetionType) {
       const currentIndex = foundResults.findIndex(
-        (item) => item.index === cellData.index && item.currentPage == page
+        (item) => item.index === cellData.index && item.currentPage == targetPage
       );
-      console.log("currentIndex:", currentIndex)
+      debugger
+      
       if (currentIndex !== -1) {
-        const indexes = getIndexesForSection(foundResults, currentIndex,page);
+        const indexes = getIndexesForSection(foundResults, currentIndex,targetPage);
         debugger
-        console.log (indexes)
-        console.log ("foundResultss:", foundResults)
+        
         dispatch(addIndexesFromIndexCell(indexes));
       }
     } else if (!isNonUserRowType) {

@@ -108,7 +108,6 @@ export const getContactsCount = ({
   dataByMenu = []
 }) => {
   if (!isFilterApplied) {
-    debugger
     return selectorResult ?? "0";
   }
 
@@ -229,7 +228,6 @@ export const getDepartmentsAndSections = (state, menuKey) => {
     case Pages.GOV_UA:
       return getGovUaDepSec(state);
     case Pages.LOTUS:
-      // debugger;
       return getLotusDepSec(state);
     default:
       return { dep: [], sec: [] };
