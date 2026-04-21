@@ -29,7 +29,10 @@ export const pageConfigs = {
     needsDepartments: true,
     basePath: "/phones/",
     pageFromURLIndex: 1,
-    showSearchToggle: true,      
+    showSearchToggle: true,
+    bookmarks: {
+            showExtraToggles: true
+    }   
     
   },
 

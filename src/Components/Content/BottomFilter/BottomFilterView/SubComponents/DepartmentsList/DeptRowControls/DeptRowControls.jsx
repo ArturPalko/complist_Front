@@ -1,73 +1,82 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import styles from "../DeptRowControls/DeptRowControls.module.css";
+import { useSelector } from "react-redux";
+import s from "../DeptRowControls/DeptRowControls.module.css";
 import usersOutOfDepartmentImg from "../../../../../../../assets/Img/usersOutOfDepartment.png";
 import usersOutOfSectionImg from "../../../../../../../assets/Img/usersOutOfSection.png";
-import { toggleHideUsersWithoutSections, toggleHideSections } from "../../../../../../../redux/reducers/filter-data-reducer/filterData-reducer";
-
 
 export const DeptRowControls = React.memo(
-  ({ dept, hasSubs, isChecked, isIndeterminate, expandedDept, toggleExpand,activeMenu}) => {
-    const dispatch = useDispatch();
-    const isActiveMenuPhones = activeMenu== "phones"? true: false
-    const bookmarks = useSelector(
-      state => state.filters.phones?.bookmarks || {
-        hideUsersWithoutSections: {},
-        hideSections: {}
-      }
-    );
+  ({
+    dept,
+    hasSubs,
+    isChecked,
+    isIndeterminate,
+    expandedDept,
+    toggleExpand,
+    activeMenu,
+    onToggleHideSections,
+    onToggleHideUsers,
+    showExtraToggles,
+    bookmarks
+  }) => {
 
-    const hideUsers = bookmarks.hideUsersWithoutSections[dept.departmentName] || false;
-    const hideSections = bookmarks.hideSections[dept.departmentName] || false;
-  
+const hideUsers = Boolean(
+  bookmarks?.hideUsersWithoutSections?.[dept.departmentName]
+);
+
+const hideSections = Boolean(
+  bookmarks?.hideSections?.[dept.departmentName]
+);
+
     return (
-      <div className={styles.deptRow}>
+      <div className={s.deptRow}>
+
         {hasSubs && (
           <span
-            className={styles.arrow}
+            className={s.arrow}
             onClick={() => toggleExpand(dept.departmentName)}
           >
             {expandedDept === dept.departmentName ? "▶" : "◀"}
           </span>
         )}
 
-        {(isChecked || isIndeterminate)&& isActiveMenuPhones && hasSubs && (
-          <div className={styles.additionalCheckboxesColumn}>
-            <label className={styles.imgCheckboxLabel}>
+        {(isChecked || isIndeterminate) && showExtraToggles && hasSubs && (
+          <div className={s.additionalCheckboxesColumn}>
+
+            <label className={s.imgCheckboxLabel}>
               <input
                 type="checkbox"
                 checked={hideUsers}
                 onChange={() =>
-                  dispatch(toggleHideUsersWithoutSections(activeMenu,dept.departmentName))
+                  onToggleHideUsers(dept.departmentName)
                 }
               />
               <img
                 src={usersOutOfDepartmentImg}
                 alt="Користувачі без департаменту"
                 title="Користувачі без департаменту"
-                className={styles.centeredCheckboxImg}
+                className={s.centeredCheckboxImg}
               />
             </label>
 
-            <label className={styles.imgCheckboxLabel}>
+            <label className={s.imgCheckboxLabel}>
               <input
                 type="checkbox"
                 checked={hideSections}
                 onChange={() =>
-                  dispatch(toggleHideSections(activeMenu,dept.departmentName))
+                  onToggleHideSections(dept.departmentName)
                 }
               />
               <img
                 src={usersOutOfSectionImg}
                 alt="Користувачі без секції"
                 title="Користувачі без секції"
-                className={styles.centeredCheckboxImg}
+                className={s.centeredCheckboxImg}
               />
             </label>
+
           </div>
         )}
       </div>
     );
   }
 );
-

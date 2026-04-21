@@ -1,5 +1,4 @@
-
-import styles from "./SectionPanel.module.css";
+import s from "./SectionPanel.module.css";
 
 export const SectionsPanel = ({
   expandedDept,
@@ -16,7 +15,7 @@ export const SectionsPanel = ({
 
 
   return (
-    <div className={styles.boxRight}>
+    <div className={s.boxRight}>
       <h4>Секції</h4>
 
       {expandedDept === null && (
@@ -31,7 +30,7 @@ export const SectionsPanel = ({
             return (
               <label
                 key={sub.sectionId || sectionName}
-                className={styles.subLabel}
+                className={s.subLabel}
               >
                 <input
                   type="checkbox"

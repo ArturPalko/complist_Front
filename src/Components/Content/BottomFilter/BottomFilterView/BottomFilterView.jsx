@@ -13,14 +13,17 @@ export const BottomFilterView = ({
   toggleExpand,
   selectedSubDepts,
   selectedText,
-  activeMenu,
   bookmarks,
   refs,
-  onToggleSelectAll,
+  onToggleHideSections,
   onToggleHideUsers,
+  onToggleSelectAll,
+  onAutoToggleHideSections,
+  onAutoToggleHideUsers,
+  onAutoToggleDept,
   onToggleDept,
   onToggleSubDept,
-  onToggleHideSections
+  showExtraToggles
 
 }) => {
   return (
@@ -40,22 +43,26 @@ export const BottomFilterView = ({
           {/*ліва частина */}
           <div className={s.box}>
             <BottomFilterHeader
-              activeMenu={activeMenu}
               bookmarks={bookmarks}
               departments={departments}
               onToggleSelectALL ={onToggleSelectAll}
-              onToggleHideUsers={onToggleHideUsers}
-              onToggleHideSections={onToggleHideSections}
+              onAutoToggleHideUsers={onAutoToggleHideUsers}
+              onAutoToggleHideSections={onAutoToggleHideSections}
+              showExtraToggles={showExtraToggles}
             />
 
             <DepartmentsList
-              activeMenu ={activeMenu}
+              bookmarks={bookmarks}
               departments={departments}
               selectedSubDepts={selectedSubDepts}
               expandedDept={expandedDept}
               onToggleDept={onToggleDept}
               toggleExpand={toggleExpand}
               refs={refs}
+              showExtraToggles={showExtraToggles}
+              onToggleHideSections={onToggleHideSections}
+              onToggleHideUsers={onToggleHideUsers}
+            
             />
           </div>
 

@@ -2,13 +2,16 @@ import s from "./DepartmentList.module.css";
 import { DeptRowControls } from "./DeptRowControls/DeptRowControls";
 
 export const DepartmentsList = ({
+  bookmarks,
   departments,
   selectedSubDepts,
   expandedDept,
   onToggleDept,
   toggleExpand,
+  onToggleHideSections,
+  onToggleHideUsers,
   refs,
-  activeMenu
+  showExtraToggles
 }) => {
   return (
     <>
@@ -41,13 +44,16 @@ export const DepartmentsList = ({
             </label>
           
             <DeptRowControls
-              activeMenu={activeMenu}
+              bookmarks={bookmarks}
+             showExtraToggles={showExtraToggles}
               dept={dept}
               hasSubs={hasSubs}
               isChecked={isChecked}
               isIndeterminate={isIndeterminate}
               expandedDept={expandedDept}
               toggleExpand={toggleExpand}
+              onToggleHideSections={onToggleHideSections}
+              onToggleHideUsers={onToggleHideUsers}
             />
           </div>
         );

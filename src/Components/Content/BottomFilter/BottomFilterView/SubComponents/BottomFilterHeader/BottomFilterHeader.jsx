@@ -1,36 +1,38 @@
 import React from "react";
-import styles from "./BottomFilterHeader.module.css";
+import s from "./BottomFilterHeader.module.css";
 
 export const BottomFilterHeader = ({
   bookmarks,
   departments,
-  onToggleHideUsers,
-  onToggleHideSections,
+  onAutoToggleHideUsers,
+  onAutoToggleHideSections,
   onToggleSelectALL,
-  activeMenu
+  showExtraToggles
 }) => {
-  const isActiveMenuPhones = activeMenu === "phones";
+
+const isAllDepartmentsSelected =
+  Object.keys(bookmarks?.selectedSubDepts || {}).length === departments.length;
 
   return (
-    <div className={styles.headerWithToggles}>
+    <div className={s.headerWithToggles}>
       <h4>Підрозділи</h4>
 
-      {isActiveMenuPhones && (
+      {showExtraToggles && (
         <>
           <button
-            className={`${styles.toggleBtn} ${
-              bookmarks.allHideUsersWithoutSections ? styles.active : ""
+            className={`${s.toggleBtn} ${
+              bookmarks.allHideUsersWithoutSections ? s.active : ""
             }`}
-            onClick={onToggleHideUsers}
+            onClick={onAutoToggleHideUsers}
           >
             Прибрати контакти не у секції
           </button>
 
           <button
-            className={`${styles.toggleBtn} ${
-              bookmarks.allHideSections ? styles.active : ""
+            className={`${s.toggleBtn} ${
+              bookmarks.allHideSections ? s.active : ""
             }`}
-            onClick={onToggleHideSections}
+            onClick={onAutoToggleHideSections}
           >
             Прибрати секції
           </button>
@@ -38,11 +40,9 @@ export const BottomFilterHeader = ({
       )}
 
       <button
-        className={`${styles.toggleAllDeptartmentsBtn} ${
-          Object.keys(bookmarks.selectedSubDepts).length === departments.length
-            ? styles.active
-            : ""
-        }`}
+          className={`${s.toggleAllDeptartmentsBtn} ${
+        isAllDepartmentsSelected ? s.active : ""
+      }`}
         onClick={onToggleSelectALL}
       >
         Усе
