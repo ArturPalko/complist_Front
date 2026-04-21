@@ -1,10 +1,18 @@
-
 import { useState, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { pageConfigs } from "../../../../configs/app/pageConfig";
 import { addIndexesFromIndexCell } from "../../../../redux/reducers/toggledElements-reducer";
-import { useDispatch } from "react-redux";
-export const useIndexCellLogic = (index, indexData, pageName, isNonUserRowType) => {
+import { useDispatch, useSelector } from "react-redux";
+import { activeMenu, currentPageByMenu, selectSearchStateByMenu } from "../../../../redux/selectors/selector";
+import { getIndexesForSection } from "./helpers";
+
+export const useIndexCellLogic = (
+  index,
+  indexData,
+  pageName,
+  isNonUserRowType,
+  isSetionType
+) => {
   const [hoveredRow, setHoveredRow] = useState(false);
   const [clickedRow, setClickedRow] = useState(false);
 
@@ -13,32 +21,56 @@ export const useIndexCellLogic = (index, indexData, pageName, isNonUserRowType) 
   const dispatch = useDispatch();
 
   const cellData = indexData?.[index];
+  debugger
+
+  const menu = useSelector(activeMenu);
+const searchState = useSelector((state) =>
+  selectSearchStateByMenu(state, menu)
+);
+
+const foundResults = searchState.foundResults ?? [];
+const page = useSelector((state) => currentPageByMenu(state, menu))
+
+
 
   const handleMouseEnter = useCallback(() => setHoveredRow(true), []);
   const handleMouseLeave = useCallback(() => setHoveredRow(false), []);
 
+  const handleClick = useCallback(() => {
+    if (!cellData) return;
 
-const handleClick = useCallback(() => {
-  if (!cellData) return;
+    const targetPage = cellData.currentPage;
+    const config = pageConfigs[pageName];
+    const url = config ? `${config.basePath}${targetPage}` : "/";
 
-  const targetPage = cellData.currentPage;
-  const config = pageConfigs[pageName];
-  const url = config ? `${config.basePath}${targetPage}` : "/"; 
+    setClickedRow(true);
 
-  setClickedRow(true);
+    if (isSetionType) {
+      const currentIndex = foundResults.findIndex(
+        (item) => item.index === cellData.index && item.currentPage == page
+      );
+      console.log("currentIndex:", currentIndex)
+      if (currentIndex !== -1) {
+        const indexes = getIndexesForSection(foundResults, currentIndex,page);
+        debugger
+        console.log (indexes)
+        console.log ("foundResultss:", foundResults)
+        dispatch(addIndexesFromIndexCell(indexes));
+      }
+    } else if (!isNonUserRowType) {
+      dispatch(addIndexesFromIndexCell([cellData.index]));
+    }
 
-const hery = isNonUserRowType;
-
-if (!hery)  dispatch(addIndexesFromIndexCell([cellData.index]));
-
-
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      setTimeout(() => navigate(url), 300);
-    });
-  });
-}, [cellData, pageName, navigate, dispatch]);
-
+    setTimeout(() => navigate(url), 300);
+  }, [
+    cellData,
+    pageName,
+    navigate,
+    dispatch,
+    foundResults,
+    isSetionType,
+    isNonUserRowType,
+  ]);
 
   return {
     cellData,

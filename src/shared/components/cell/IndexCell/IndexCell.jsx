@@ -5,8 +5,8 @@ import { useContext } from "react";
 
 import { useIndexCellLogic } from "./useIndexCellLogic";
 
-export const IndexCell = ({ index, isNonUserRowType }) => {
-
+export const IndexCell = ({ index, isNonUserRowType, isSectionType }) => {
+debugger
   const {
     indexDataOfFoundResultsForFoundResultsPage,
     pageName
@@ -21,7 +21,7 @@ export const IndexCell = ({ index, isNonUserRowType }) => {
     handleMouseEnter,
     handleMouseLeave,
     handleClick,
-  } = useIndexCellLogic(index, indexDataOfFoundResultsForFoundResultsPage, pageName, isNonUserRowType);
+  } = useIndexCellLogic(index, indexDataOfFoundResultsForFoundResultsPage, pageName, isNonUserRowType,isSectionType);
 
   if (!cellData) return null;
 

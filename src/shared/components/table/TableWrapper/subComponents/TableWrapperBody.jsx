@@ -18,6 +18,7 @@ const TableWrapperBody = ({
         <IndexCell
   index={index}
   isNonUserRowType={item?.type ? item.type !== "user" : false}
+  isSectionType= {item?.type ? item.type == "section" : false}
 />
         {renderRowCells(item, index)}
       </tr>

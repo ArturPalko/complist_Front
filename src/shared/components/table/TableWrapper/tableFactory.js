@@ -67,7 +67,7 @@ export const createTableComponent = (useTableLogic) => {
       }),
       [baseLogic, stableIndexData, indexesToUse]
     );
-
+debugger
     const renderRowCellsMemo = useCallback(
       (row, index) =>
         props.renderRowCells(row, index, tableLogic),

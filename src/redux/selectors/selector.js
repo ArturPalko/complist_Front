@@ -235,3 +235,4 @@ export const getDepartmentsAndSections = (state, menuKey) => {
       return { dep: [], sec: [] };
   }
 };
+
