@@ -97,3 +97,10 @@ input:checked + .slider.green:before {
   align-items: center;
   gap: 0.9375em;
 }
+input:checked + .slider.red {
+  background-color: #f44336; /* або будь-який червоний */
+}
+
+input:checked + .slider.red:before {
+  transform: translateX(1.375em);
+}

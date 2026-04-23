@@ -13,12 +13,14 @@ import {
   isFilterAppliedSelector,
   activeMenu,
   currentPageByMenu,
-  isUserAuthed
+  isUserAuthed,
+  isEditModeSelected
 } from "../../redux/selectors/selector";
-import {SearchToggleContext, PasswordsToggleContext} from "../contexts/useConetxt.js"
+import {SearchToggleContext, PasswordsToggleContext, EditModeToggleContext} from "../contexts/useConetxt.js"
 
 import { redirectToPage } from "../../shared/functions/redirectToPage.js";
 import { fetchPasswordsByType } from "../../dal/api.js"; 
+import { toggleEditMode } from "../reducers/appMode-reducer.js";
 
 
 // HOC
@@ -80,7 +82,22 @@ const withToggleElements = (type) => (WrappedComponent) => {
       }
     };
 
+    
+    /* ===== EDITMODE (Redux) ===== */
+    const handleToggleEditMode = (e) => {
+      const checked = e?.target?.checked ?? false;
+      props.toggleEditMode(checked);
+    }
+
     return (
+      // EditModeContext
+      <EditModeToggleContext.Provider
+        value={{
+          handleToggleEditMode,
+          valueOfEditCheckbox: props.isEditModeSelected,
+        }}
+      >
+      
       <SearchToggleContext.Provider
         value={{
           handleToggleSearchField,
@@ -103,6 +120,7 @@ const withToggleElements = (type) => (WrappedComponent) => {
           />
         </PasswordsToggleContext.Provider>
       </SearchToggleContext.Provider>
+    </EditModeToggleContext.Provider>
     );
   };
 
@@ -117,13 +135,15 @@ const withToggleElements = (type) => (WrappedComponent) => {
       isPagesNavbarLinkElementOnCurrentPagePressed:
         !!isPagesNavbarLinkElementOnCurrentPagePressed(state),
       isFilterApplied: isFilterAppliedSelector(state, menu),
-      isUserAuthed :isUserAuthed(state)
+      isUserAuthed :isUserAuthed(state),
+      isEditModeSelected:isEditModeSelected(state)
     };
   };
 
   const mapDispatchToProps = {
     toggleSearchField: toggleSearchFieldActionCreator,
-    clearSearchFieldsAndFoundResults
+    clearSearchFieldsAndFoundResults,
+    toggleEditMode:toggleEditMode
   };
 
   return connect(mapStateToProps, mapDispatchToProps)(HOC);

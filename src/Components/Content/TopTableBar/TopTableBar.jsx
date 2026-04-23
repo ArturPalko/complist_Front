@@ -5,18 +5,30 @@ import CheckboxToggle from "./subComponent/CheckboxToggle";
 
 const TopTableBar = React.forwardRef(({ title, pageName }, ref) => {
   const {
-    valueOfSearchCheckBox,
     handleToggleSearchField,
+    handleToggleEditMode,
+    valueOfSearchCheckBox,
     valueOfpasswordCheckbox,
+    valueOfEditCheckbox,
     handleTogglePasswords,
     showSearchToggle,
-    showPasswordsToggle
+    showPasswordsToggle,
+    showEditToggle
   } = useTopTableBarLogic(pageName);
 
   return (
     <div ref={ref} className={s.headerPanel}>
       <h2>{title}</h2>
       <div className={s.buttonsBar}>
+         {showEditToggle && (
+          <CheckboxToggle
+            checked={valueOfEditCheckbox}
+            onChange={handleToggleEditMode}
+            color="red"
+            label="Редагувати"
+          />
+        )}
+        
         {showSearchToggle && (
           <CheckboxToggle
             checked={valueOfSearchCheckBox}
@@ -34,6 +46,8 @@ const TopTableBar = React.forwardRef(({ title, pageName }, ref) => {
             label="Показати паролі"
           />
         )}
+
+        
       </div>
     </div>
   );

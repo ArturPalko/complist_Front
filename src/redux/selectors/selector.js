@@ -143,6 +143,7 @@ export const isPresentedSearchField = (state) => state.toggledElements.showSearc
 export const isPresentedFielterPanel = (state) => state.toggledElements.showFilterPanel.isActive;
 export const isPagesNavbarLinkElementOnCurrentPagePressed = (state) =>
   state.toggledElements.pagesNavbarLinkElementOnCurrentPage.isPressed;
+export const isEditModeSelected = (state) => state.appMode.editMode;
 
 export const isPreviousPageWasFoundResult = (menu) => (state) => {
   if (!menu) return false;

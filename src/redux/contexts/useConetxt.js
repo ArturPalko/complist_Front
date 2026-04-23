@@ -55,6 +55,13 @@ export const [PasswordsToggleContext, usePasswordsToggle] = createCtx({
   handleTogglePasswords: () => {},
 });
 
+// EditToggleContext
+export const [EditModeToggleContext, useEditModeToggle] = createCtx({
+  valueOfEditCheckbox: false,
+  handleEditMode: () => {},
+});
+
+
 // дефолтне значення можна пустим об'єктом або null
 export const [FiltersContext, useFiltersContext] = createCtx({
   activeMenu: null,
