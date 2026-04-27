@@ -70,3 +70,11 @@ export const [FiltersContext, useFiltersContext] = createCtx({
   currentPage: null,
   dispatch: () => {},
 });
+
+
+export const [DragContext, useDragContext] = createCtx({
+  dragId: null,
+  source: null,
+  startDrag: () => {},
+  endDrag: () => {},
+});

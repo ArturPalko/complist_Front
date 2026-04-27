@@ -23,7 +23,25 @@ const selectFoundResults = (state, menu) => selectSearchValueByPage(menu)(state)
 
 // ===================================
 // ===== Дані =====
-export const getDataForMenu = (state, menu) => state?.data?.[menu] ?? [];export const getLoadedForMenu = (state, menu) => Boolean(state.dataState?.[menu]?.dataIsLoaded);
+// export const getDataForMenu = (state, menu) => {
+//   const data = state?.data?.[menu] ?? [];
+
+//   const active = state.currentPageNumber.activeMenu;
+//   const editMode = isEditModeSelected(state);
+//   debugger
+//   const newW = data.flatMap(page => page.rows);
+//   debugger
+
+//   if ((active === "Gov-ua" || active === "Lotus") && editMode) {
+//     return newW;
+//   }
+
+//   return data;
+// };
+
+export const getDataForMenu = (state, menu) => state?.data?.[menu] ?? [];
+
+export const getLoadedForMenu = (state, menu) => Boolean(state.dataState?.[menu]?.dataIsLoaded);
 export const getFetchingForMenu = (state, menu) => Boolean(state.dataState?.[menu]?.dataIsFetching);
 
 

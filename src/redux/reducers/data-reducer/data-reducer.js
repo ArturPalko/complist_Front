@@ -5,6 +5,7 @@ import { paginateData } from "./data-reducerFunctions/pagination.js";
 
 // Action type
 const ADD_DATA = "ADD_DATA";
+const SET_PAGES = "SET_PAGES"
 
 const initialState = {
   "Gov-ua": [],
@@ -22,6 +23,15 @@ export const dataReducer = (state = initialState, action) => {
         [key]: paginateData(data, key, limitRows)
       };
     }
+
+    case SET_PAGES: {
+        const { key, pages } = action.payload;
+
+        return {
+          ...state,
+          [key]: pages,
+        };
+      }
     default:
       return state;
   }
@@ -32,5 +42,13 @@ export const addDataActionCreator = (key, data) => ({
   type: ADD_DATA,
   payload: { key, data }
 });
+
+export const setPagesActionCreator = (key, pages) => ({
+  type: SET_PAGES,
+  payload: { key, pages },
+});
+
+
+
 
 export const getDataByMenu = (key) => fetchDataThunk(addDataActionCreator, key);

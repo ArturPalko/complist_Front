@@ -19,6 +19,7 @@ import { useCheckAuth } from "./redux/hooks/hooks";
 import { useFiltersData } from "./redux/hooks/useFilters/useFiltersData";
 import { useFiltersEffects } from "./redux/hooks/useFilters/useFiltersEffects";
 import { FiltersContext } from "./redux/contexts/useConetxt";
+import {DragProvider} from "./redux/providers/provider"
 
 function App() {
   useTrackLocation();
@@ -31,6 +32,7 @@ function App() {
 
   return (
     <>
+    <DragProvider>
       <FiltersContext.Provider value={filtersData}>
         <div className="app-wrapper">
           <Header />
@@ -78,6 +80,7 @@ function App() {
           </div>
         </div>
       </FiltersContext.Provider>
+      </DragProvider>
       
       {isLoginOpen && <Login onClose={closeModal} />}
     </>

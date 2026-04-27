@@ -1,6 +1,7 @@
 import axios from "axios";
 import axiosRetry from "axios-retry";
 import { passwordUrls} from "./urls";
+import { changeOrderUrl } from "./urls";
 
 export const api = axios.create({
   baseURL: "http://localhost:5114", 
@@ -45,3 +46,17 @@ export const fetchPasswordsByType = async (type) => {
   }, {});
 };
 
+export const changeOrderOfDisplayElements = async (elements, menu) => {
+  debugger
+  
+  if (menu=="phones") return
+  const dataTopush = elements.map(el => ({
+    id: el.id,
+    priority: el.priority
+  }));
+  const sendUrl= changeOrderUrl(menu);
+  debugger
+  
+ api.post(sendUrl, dataTopush)
+  debugger;
+};

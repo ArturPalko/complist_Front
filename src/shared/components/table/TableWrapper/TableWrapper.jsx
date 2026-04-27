@@ -39,8 +39,10 @@ const TableWrapper = ({ tableLogic, renderHeader = () => null, renderRowCells })
           rowClassParams={{
             indexesOfFoundResults: indexesOfFoundResultsForCurrentPage,
             showPreviousPageHighlight,
-            isPagesNavbarLinkPressed: isPagesNavbarLinkElementOnCurrentPagePressed
+            isPagesNavbarLinkPressed: isPagesNavbarLinkElementOnCurrentPagePressed,
+
           }}
+            tableLogic={tableLogic} // 👈 ОТ ТУТ ПРАВИЛЬНО
         />
       </table>
     </div>
