@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import s from "./PagesNavBarView.module.css";
 import { useDragContext } from "../../../../redux/contexts/useConetxt";
@@ -14,11 +14,27 @@ const PagesNavBarView = ({
   handleDropOnPage,
 }) => {
   const navigate = useNavigate();
-  const { dragId, endDrag } = useDragContext();
+  const { dragIds, endDrag } = useDragContext();
+
+  // 🔥 pending page switch (fix for dragEnter bug)
+  const pendingPageRef = useRef(null);
+  const timerRef = useRef(null);
 
   const goToPage = (page) => {
-    if (!dragId) return;
-    navigate(`${basePath}${page}`);
+    if (!dragIds || dragIds.length === 0) return;
+
+    pendingPageRef.current = page;
+
+    clearTimeout(timerRef.current);
+
+    timerRef.current = setTimeout(() => {
+      navigate(`${basePath}${pendingPageRef.current}`);
+    }, 300); // 🔥 debounce for stable drag
+  };
+
+  const cancelPageSwitch = () => {
+    clearTimeout(timerRef.current);
+    pendingPageRef.current = null;
   };
 
   return (
@@ -30,6 +46,7 @@ const PagesNavBarView = ({
           onClick={endDrag}
           onDragOver={(e) => e.preventDefault()}
           onDragEnter={() => goToPage("foundResults")}
+          onDragLeave={cancelPageSwitch}
           onDrop={() => {
             handleDropOnPage?.("foundResults");
             endDrag();
@@ -52,13 +69,14 @@ const PagesNavBarView = ({
           return (
             <div
               key={pageNumber}
-              onDragOver={(e) => e.preventDefault()} // 🔥 дозволяє drop
-              onDragEnter={() => goToPage(pageNumber)} // 🔥 auto navigate
+              className={s.pageWrapper}
+              onDragOver={(e) => e.preventDefault()}
+              onDragEnter={() => goToPage(pageNumber)}
+              onDragLeave={cancelPageSwitch}
               onDrop={() => {
                 handleDropOnPage?.(pageNumber);
                 endDrag();
               }}
-              className={s.pageWrapper}
             >
               <NavLink
                 to={`${basePath}${pageNumber}`}

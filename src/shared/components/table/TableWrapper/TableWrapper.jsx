@@ -1,7 +1,7 @@
 import s from "./TableWrapper.module.css";
 import ColNumbers from "./subComponents/ColNumbers";
 import TableWrapperHead from "./subComponents/TableWrapperHead";
-import TableWrapperBody from "./subComponents/TableWrapperBody";
+import TableWrapperBody from "./subComponents/TableWrapperBody/TableWrapperBody";
 import { getRowClass } from "./helpers";
 import "../../../Css/Table.css";
 
