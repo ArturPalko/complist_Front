@@ -1,9 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import s from "./PagesNavBarView.module.css";
 import { useDragContext } from "../../../../redux/contexts/useConetxt";
 
 const PagesNavBarView = ({
+  editMode,
   basePath,
   count,
   showFoundResultPage,
@@ -16,12 +17,13 @@ const PagesNavBarView = ({
   const navigate = useNavigate();
   const { dragIds, endDrag } = useDragContext();
 
-  // 🔥 pending page switch (fix for dragEnter bug)
   const pendingPageRef = useRef(null);
   const timerRef = useRef(null);
 
+  const isDragActive = Boolean(editMode && dragIds?.length);
+
   const goToPage = (page) => {
-    if (!dragIds || dragIds.length === 0) return;
+    if (!isDragActive) return;
 
     pendingPageRef.current = page;
 
@@ -29,7 +31,7 @@ const PagesNavBarView = ({
 
     timerRef.current = setTimeout(() => {
       navigate(`${basePath}${pendingPageRef.current}`);
-    }, 300); // 🔥 debounce for stable drag
+    }, 300);
   };
 
   const cancelPageSwitch = () => {
@@ -38,21 +40,17 @@ const PagesNavBarView = ({
   };
 
   return (
-    <div className={s.navigationOfPage}>
-      {/* FOUND RESULTS */}
-      {(showFoundResultPage || isFoundResultsPage) && (
+    <div
+      className={`${s.navigationOfPage} ${
+        isDragActive ? s.editMode : ""
+      }`}
+    >
+      {/* 🔥 FOUND RESULTS (ONLY NORMAL MODE) */}
+      {(showFoundResultPage || isFoundResultsPage) && !isDragActive && (
         <NavLink
           to={`${basePath}foundResults`}
-          onClick={endDrag}
-          onDragOver={(e) => e.preventDefault()}
-          onDragEnter={() => goToPage("foundResults")}
-          onDragLeave={cancelPageSwitch}
-          onDrop={() => {
-            handleDropOnPage?.("foundResults");
-            endDrag();
-          }}
           className={({ isActive }) =>
-            `${s.pageNavigator} ${s.foundResultsPage} ${
+            `${s.foundResultsPage} ${
               isActive ? s.activeLink : ""
             }`
           }
@@ -61,7 +59,7 @@ const PagesNavBarView = ({
         </NavLink>
       )}
 
-      {/* PAGES */}
+      {/* 🔥 PAGES (HORIZONTAL OR VERTICAL DEPENDS ON MODE) */}
       {count > 0 &&
         Array.from({ length: count }, (_, i) => {
           const pageNumber = i + 1;
@@ -69,7 +67,9 @@ const PagesNavBarView = ({
           return (
             <div
               key={pageNumber}
-              className={s.pageWrapper}
+              className={`${s.pageWrapper} ${
+                isDragActive ? s.dragActive : ""
+              }`}
               onDragOver={(e) => e.preventDefault()}
               onDragEnter={() => goToPage(pageNumber)}
               onDragLeave={cancelPageSwitch}
@@ -95,6 +95,11 @@ const PagesNavBarView = ({
                 }
               >
                 {pageNumber}
+
+                {/* 🔥 ARROW ONLY IN DRAG MODE */}
+                {isDragActive && (
+                  <span className={s.dragArrow}>›››</span>
+                )}
               </NavLink>
             </div>
           );

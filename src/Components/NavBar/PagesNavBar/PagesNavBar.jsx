@@ -1,6 +1,6 @@
 import  { useEffect, useState, useRef } from "react";
 import {useLocation } from "react-router-dom";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 
 import {
   selectPaginationPagesCount,
@@ -9,6 +9,7 @@ import {
   isFilterAppliedSelector,
   selectSearchValueByPage,
   isSearchValueFoundByPage,
+  isEditModeSelected,
 } from "../../../redux/selectors/selector";
 
 import {
@@ -38,6 +39,7 @@ const PagesNavBar = (props) => {
   const pathParts = location.pathname.split("/").filter(Boolean);
   const { pageName, basePath, pageFromURL } = getPageInfoFromPath(pathParts);
   const isFoundResultsPage = pageFromURL === "foundResults";
+  const editMode = useSelector(isEditModeSelected);
 
   // --- Кількість сторінок
   const count = getPagesCount({
@@ -102,6 +104,7 @@ const PagesNavBar = (props) => {
 
   return (
     <PagesNavBarView
+      editMode={editMode}
       basePath={basePath}
       count={count}
       showFoundResultPage={showFoundResultPage}

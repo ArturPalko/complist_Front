@@ -1,46 +1,56 @@
+/* 🔹 контейнер */
 .navigationOfPage {
   display: flex;
-  flex-wrap: wrap;      /* щоб елементи переносилися при вузьких екранах */
+  flex-wrap: wrap;
   align-items: center;
-  gap: 6px;             /* трохи менше, ніж 8px */
-  padding: 5px 0;       /* менше padding, компактніше */
-  margin-top: 8px;      /* трохи більше ніж 5px для “повітряності” */
+  gap: 6px;
+  padding: 5px 0;
+  margin-top: 8px;
+  transition: all 250ms ease;
 }
 
-.pageNavigator {
-  display: inline-block;
-  padding: 5px 10px;    /* трохи менше, ніж 6px 12px */
+/* 🔹 EDIT MODE */
+.editMode {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  width: 120px;
+  padding: 10px 6px;
+  gap: 10px;
+}
+
+/* 🔹 базові кнопки */
+.pageNavigator,
+.foundResultsPage {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 5px 10px;
   border-radius: 6px;
-  background-color: #f5f5f5;
-  color: #333;
-  text-decoration: none;
   font-weight: 500;
-  font-size: 0.85rem;   /* компактний шрифт */
-  text-align: center;
+  font-size: 0.85rem;
+  text-decoration: none;
+
   transition: all 0.2s ease;
 }
 
-.pageNavigator:hover {
-  background-color: #e0f7fa;
-  color: #007c91;
-}
-
-.pageNavigator.activeLink {
-  background-color: #00e5ff;
-  color: #fff;
+/* 🔹 кольори */
+.pageNavigator {
+  background-color: #f5f5f5;
+  color: #333;
 }
 
 .foundResultsPage {
-  display: inline-block;
-  padding: 5px 10px;     /* компактніше */
-  border-radius: 6px;
   background-color: rgb(190, 101, 101);
   color: #333;
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 0.85rem;
-  text-align: center;
-  transition: all 0.2s ease;
+}
+
+/* 🔹 hover */
+.pageNavigator:hover {
+  background-color: #e0f7fa;
+  color: #007c91;
+  transform: translateX(2px);
 }
 
 .foundResultsPage:hover {
@@ -48,10 +58,69 @@
   color: azure;
 }
 
+/* 🔹 active */
+.pageNavigator.activeLink {
+  background-color: #00e5ff;
+  color: #fff;
+}
+
 .foundResultsPage.activeLink {
   background-color: red;
 }
 
+/* 🔹 EDIT MODE — великі кнопки */
+.editMode .pageNavigator,
+.editMode .foundResultsPage {
+  width: 100%;
+  padding: 14px 10px;
+  font-size: 1rem;
+  border-radius: 10px;
+}
+
+/* 🔹 highlighted */
 .containsSearchedValues {
-  border: 3px solid yellow;  /* трохи тонше, компактніше */
+  border: 3px solid yellow;
+}
+
+/* 🔹 drag wrapper */
+.dragActive {
+  position: relative;
+}
+
+/* 🔹 drag фон (НЕ чіпає active) */
+.dragActive .pageNavigator:not(.activeLink) {
+  outline: 2px dashed rgba(0, 229, 255, 0.5);
+  background: rgba(0, 229, 255, 0.08);
+}
+
+/* 🔹 стрілка */
+.dragArrow {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translate(0, -50%);
+  font-size: 20px;
+  font-weight: bold;
+  color: #00e5ff;
+  pointer-events: none;
+
+  animation: arrowFlow 0.6s infinite ease-in-out;
+}
+
+/* 🔹 більша в edit mode */
+.editMode .dragArrow {
+  font-size: 24px;
+  right: 12px;
+}
+
+/* 🔹 активна — біла стрілка */
+.activeLink .dragArrow {
+  color: white;
+}
+
+/* 🔹 animation */
+@keyframes arrowFlow {
+  0%   { transform: translate(0, -50%); opacity: 0.3; }
+  50%  { transform: translate(6px, -50%); opacity: 1; }
+  100% { transform: translate(0, -50%); opacity: 0.3; }
 }

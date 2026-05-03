@@ -3,7 +3,9 @@ import { IndexCell } from "../../../../cell/IndexCell/IndexCell";
 import { useDragContext } from "../../../../../../redux/contexts/useConetxt";
 import { activeMenu, isEditModeSelected } from "../../../../../../redux/selectors/selector";
 import { currentPageByMenu } from "../../../../../../redux/selectors/selector";
-import { getEditStyle,getDragProps } from "./tableWrapperBody_helpers";
+import { getEditStyle,getDragProps,
+  createDragPreview,cleanupDragPreview
+ } from "./tableWrapperBody_helpers";
 
 const TableWrapperBody = ({
   pageData,
@@ -33,15 +35,31 @@ const TableWrapperBody = ({
       {pageData?.map((item, index) => {
         const isSelected = selectedIds.includes(item.id);
         const isDragging = dragIds.includes(item.id);
-        const dragProps = getDragProps({
-        editMode,
-        itemId: item.id,
-        index,
-        page,
-        startDrag,
-        handleDrop,
-        toggleSelect,
-      });
+const dragProps = {
+  ...getDragProps({
+    editMode,
+    itemId: item.id,
+    index,
+    page,
+    startDrag,
+    handleDrop,
+    toggleSelect,
+  }),
+
+  onDragStart: (e) => {
+    startDrag(item.id);
+
+    const preview = createDragPreview(item, selectedIds);
+    e.dataTransfer.setDragImage(preview, 0, 0);
+
+    e.currentTarget._dragPreview = preview;
+  },
+
+  onDragEnd: (e) => {
+    cleanupDragPreview(e.currentTarget._dragPreview);
+    e.currentTarget._dragPreview = null;
+  },
+};
         return (
           <tr
           {...dragProps}
