@@ -1,11 +1,18 @@
 import { useSelector } from "react-redux";
 import { IndexCell } from "../../../../cell/IndexCell/IndexCell";
 import { useDragContext } from "../../../../../../redux/contexts/useConetxt";
-import { activeMenu, isEditModeSelected } from "../../../../../../redux/selectors/selector";
-import { currentPageByMenu } from "../../../../../../redux/selectors/selector";
-import { getEditStyle,getDragProps,
-  createDragPreview,cleanupDragPreview
- } from "./tableWrapperBody_helpers";
+import {
+  activeMenu,
+  isEditModeSelected,
+  currentPageByMenu,
+} from "../../../../../../redux/selectors/selector";
+
+import {
+  getEditStyle,
+  getDragProps,
+  createDragPreview,
+  cleanupDragPreview,
+} from "./tableWrapperBody_helpers";
 
 const TableWrapperBody = ({
   pageData,
@@ -15,10 +22,10 @@ const TableWrapperBody = ({
   getRowClass,
   rowClassParams,
 }) => {
-
   const menu = useSelector(activeMenu);
-  const page = useSelector((state) =>
-    currentPageByMenu(state, menu))
+
+  const page = useSelector((state) => currentPageByMenu(state, menu));
+
   const editMode = useSelector(isEditModeSelected);
 
   const {
@@ -27,7 +34,12 @@ const TableWrapperBody = ({
     toggleSelect,
     startDrag,
     handleDrop,
+    elementsAfterSelectedIds,
+    elementsBeforeSelectedIds,
   } = useDragContext();
+
+  //   console.log("ElementsBeforeSelectedIds:", elementsBeforeSelectedIds);
+  // console.log("ElementsAfterSelectedIds:", elementsAfterSelectedIds);
 
 
   return (
@@ -35,34 +47,38 @@ const TableWrapperBody = ({
       {pageData?.map((item, index) => {
         const isSelected = selectedIds.includes(item.id);
         const isDragging = dragIds.includes(item.id);
-const dragProps = {
-  ...getDragProps({
-    editMode,
-    itemId: item.id,
-    index,
-    page,
-    startDrag,
-    handleDrop,
-    toggleSelect,
-  }),
 
-  onDragStart: (e) => {
-    startDrag(item.id);
+        const dragProps = {
+          ...getDragProps({
+            editMode,
+            itemId: item.id,
+            index,
+            page,
+            startDrag,
+            handleDrop,
+            toggleSelect,
+            elementsAfterSelectedIds,
+            elementsBeforeSelectedIds,
+          }),
 
-    const preview = createDragPreview(item, selectedIds);
-    e.dataTransfer.setDragImage(preview, 0, 0);
+          onDragStart: (e) => {
+            startDrag(item.id);
 
-    e.currentTarget._dragPreview = preview;
-  },
+            const preview = createDragPreview(item, selectedIds);
+            e.dataTransfer.setDragImage(preview, 0, 0);
 
-  onDragEnd: (e) => {
-    cleanupDragPreview(e.currentTarget._dragPreview);
-    e.currentTarget._dragPreview = null;
-  },
-};
+            e.currentTarget._dragPreview = preview;
+          },
+
+          onDragEnd: (e) => {
+            cleanupDragPreview(e.currentTarget._dragPreview);
+            e.currentTarget._dragPreview = null;
+          },
+        };
+
         return (
           <tr
-          {...dragProps}
+            {...dragProps}
             key={item.id}
             className={getRowClass({ index, ...rowClassParams })}
             data-key={index}
@@ -73,12 +89,8 @@ const dragProps = {
           >
             <IndexCell
               index={index}
-              isNonUserRowType={
-                item?.type ? item.type !== "user" : false
-              }
-              isSectionType={
-                item?.type ? item.type === "section" : false
-              }
+              isNonUserRowType={item?.type ? item.type !== "user" : false}
+              isSectionType={item?.type ? item.type === "section" : false}
             />
 
             {renderRowCells(item, index)}

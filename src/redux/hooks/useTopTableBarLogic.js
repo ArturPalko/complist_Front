@@ -16,7 +16,7 @@ export const useTopTableBarLogic = (pageName) => {
   // Беремо конфіг сторінки
   const config = pageConfigs[pageName] || {};
   
-console.log("ValueOfEdit:", valueOfEditCheckbox)
+
   return {
     // Стани
     valueOfSearchCheckBox,
