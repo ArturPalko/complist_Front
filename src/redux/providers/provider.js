@@ -4,10 +4,12 @@ import { DragContext } from "../contexts/useConetxt";
 import { activeMenu, getDataForMenu } from "../selectors/selector";
 import { setPagesActionCreator } from "../reducers/data-reducer/data-reducer";
 import { changeOrderOfDisplayElements } from "../../dal/api";
+import { useEffect } from "react";
 
 /* =========================
    MOVE LOGIC
 ========================= */
+
 const moveItems = (list, ids, toIndex) => {
   const set = new Set(ids);
 
@@ -25,16 +27,19 @@ const moveItems = (list, ids, toIndex) => {
     }
   });
 
+  if (selected.length === 0) return list;
+
   const movingDown = toIndex > firstIndex;
 
-  const shift = selected.length - 1;
+  const shift = selected.length;
+
+  const baseIndex = movingDown
+    ? toIndex - shift
+    : toIndex + 1;
 
   const safeIndex = Math.max(
     0,
-    Math.min(
-      movingDown ? toIndex - shift : toIndex,
-      rest.length
-    )
+    Math.min(baseIndex, rest.length)
   );
 
   return [
@@ -43,41 +48,11 @@ const moveItems = (list, ids, toIndex) => {
     ...rest.slice(safeIndex),
   ];
 };
-// const moveItems = (list, ids, toIndex) => {
-//   const set = new Set(ids);
-
-//   const selected = [];
-//   const rest = [];
-
-//   list.forEach(item => {
-//     if (set.has(item.id)) selected.push(item);
-//     else rest.push(item);
-//   });
-
-//   const fromIndex = list.findIndex(item => set.has(item.id));
-
-//   // 🔥 різна логіка для напрямку
-//   const safeIndex =
-//     toIndex > fromIndex
-//       // вниз → зсув
-//       ? toIndex - (selected.length - 1)
-//       // вверх → без змін
-//       : toIndex;
-
-//   const clamped = Math.max(0, Math.min(safeIndex, rest.length));
-
-//   return [
-//     ...rest.slice(0, clamped),
-//     ...selected,
-//     ...rest.slice(clamped),
-//   ];
-// };
-
-
 
 /* =========================
    PAGINATION
 ========================= */
+
 const chunkIntoPages = (list, size) => {
   const pages = [];
 
@@ -94,13 +69,16 @@ const chunkIntoPages = (list, size) => {
 /* =========================
    PROVIDER
 ========================= */
+
 export const DragProvider = ({ children, rowsPerPage = 18 }) => {
   const [dragIds, setDragIds] = useState([]);
   const [selectedIds, setSelectedIds] = useState([]);
 
+  // 🔥 нова модель range selection (two-point)
+  const [rangeStartId, setRangeStartId] = useState(null);
+
   const [elementsBeforeSelectedIds, setElementsBeforeSelectedIds] = useState([]);
   const [elementsAfterSelectedIds, setElementsAfterSelectedIds] = useState([]);
-  
 
   const dispatch = useDispatch();
 
@@ -110,78 +88,138 @@ export const DragProvider = ({ children, rowsPerPage = 18 }) => {
     menu ? getDataForMenu(state, menu) : []
   ) ?? [];
 
-  /* =========================
-     LOGS
-  ========================= */
-  // console.log("PAGEEESS:", pages);
+
+
+useEffect(() => {
+  const handler = (e) => {
+    console.log("KEY:", e.key); // 👈 перевірка
+
+    if (e.key === "Escape") {
+      console.log("ESC PRESSED");
+
+      setSelectedIds([]);
+      setRangeStartId(null);
+      setDragIds([]);
+    }
+  };
+
+  window.addEventListener("keydown", handler);
+
+  return () => window.removeEventListener("keydown", handler);
+}, []);
 
   /* =========================
-     FLAT DATA (SAFE)
+     FLAT DATA
   ========================= */
+
   const fullData = useMemo(() => {
     if (!Array.isArray(pages) || pages.length === 0) return [];
-
     return pages.flatMap((p) => p?.rows ?? []);
   }, [pages]);
 
-  // console.log("FUUULL DATA:", fullData);
+  /* =========================
+     RANGE SELECT (2-point)
+  ========================= */
+
+  const selectRange = useCallback(
+    (startId, endId) => {
+      const start = fullData.findIndex(i => i.id === startId);
+      const end = fullData.findIndex(i => i.id === endId);
+
+      if (start === -1 || end === -1) return;
+
+      const [from, to] = start < end ? [start, end] : [end, start];
+
+      const range = fullData.slice(from, to + 1).map(i => i.id);
+
+      setSelectedIds(range);
+    },
+    [fullData]
+  );
 
   /* =========================
-     SELECT
+     SELECT ROUTER
   ========================= */
-  const toggleSelect = useCallback((id) => {
-    setSelectedIds((prev) =>
-      prev.includes(id)
-        ? prev.filter((x) => x !== id)
-        : [...prev, id]
-    );
-  }, []);
+
+  const toggleSelect = useCallback((id, e) => {
+    // 🔹 ALT → two-step range selection
+    if (e?.altKey) {
+      // 1st click → set start
+      if (!rangeStartId) {
+        setRangeStartId(id);
+        return;
+      }
+
+      // 2nd click → complete range
+      selectRange(rangeStartId, id);
+      setRangeStartId(null);
+      return;
+    }
+
+    // 🔹 CTRL → multi toggle
+    if (e?.ctrlKey) {
+      setSelectedIds((prev) =>
+        prev.includes(id)
+          ? prev.filter(x => x !== id)
+          : [...prev, id]
+      );
+
+      setRangeStartId(null);
+      return;
+    }
+
+    // reset range if normal interaction happens
+    setRangeStartId(null);
+  }, [rangeStartId, selectRange]);
 
   /* =========================
      DRAG START
   ========================= */
-const startDrag = useCallback(
-  (id) => {
-    if (!fullData.length) return;
 
-    const isGroupDrag = selectedIds.includes(id);
-    const dragGroup = isGroupDrag ? selectedIds : [id];
+  const startDrag = useCallback(
+    (id) => {
+      if (!fullData.length) return;
 
-    setDragIds(dragGroup);
+      setRangeStartId(null);
 
-    const indexes = dragGroup
-      .map(id => fullData.findIndex(i => i.id === id))
-      .filter(i => i !== -1);
+      const isGroupDrag = selectedIds.includes(id);
+      const dragGroup = isGroupDrag ? selectedIds : [id];
 
-    if (!indexes.length) return;
+      setDragIds(dragGroup);
 
-    const anchorIndex = Math.min(...indexes);
+      const indexes = dragGroup
+        .map(id => fullData.findIndex(i => i.id === id))
+        .filter(i => i !== -1);
 
-    const before = fullData
-      .slice(0, anchorIndex)
-      .map(i => i.id);
+      if (!indexes.length) return;
 
-    const after = fullData
-      .slice(anchorIndex + 1)
-      .map(i => i.id);
+      const anchorIndex = Math.min(...indexes);
 
-    setElementsBeforeSelectedIds(before);
-    setElementsAfterSelectedIds(after);
-  },
-  [selectedIds, fullData]
-);
+      setElementsBeforeSelectedIds(
+        fullData.slice(0, anchorIndex).map(i => i.id)
+      );
+
+      setElementsAfterSelectedIds(
+        fullData.slice(anchorIndex + 1).map(i => i.id)
+      );
+    },
+    [selectedIds, fullData]
+  );
 
   /* =========================
      DRAG END
   ========================= */
+
   const endDrag = useCallback(() => {
     setDragIds([]);
     setSelectedIds([]);
+    setRangeStartId(null);
   }, []);
 
   /* =========================
      DROP
   ========================= */
+
   const handleDrop = useCallback(
     (toIndex, page) => {
       if (!dragIds.length || !fullData.length) return;
@@ -197,8 +235,6 @@ const startDrag = useCallback(
 
       const newPages = chunkIntoPages(withPriority, rowsPerPage);
 
-      console.log("NEW PAGES:", newPages);
-
       dispatch(setPagesActionCreator(menu, newPages));
       changeOrderOfDisplayElements(withPriority, menu);
 
@@ -208,8 +244,9 @@ const startDrag = useCallback(
   );
 
   /* =========================
-     PROVIDE CONTEXT
+     PROVIDER
   ========================= */
+
   return (
     <DragContext.Provider
       value={{
@@ -222,6 +259,7 @@ const startDrag = useCallback(
         elementsBeforeSelectedIds,
         elementsAfterSelectedIds,
         fullData,
+        rangeStartId,
       }}
     >
       {children}

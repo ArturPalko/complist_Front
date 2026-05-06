@@ -20,6 +20,12 @@ const resetRowTransforms = (tr) => {
 
     content.style.transform = "translateY(0)";
     content.style.transition = "transform 0.15s ease";
+
+    td.style.borderTop = "none";
+    td.style.borderBottom = "none";
+
+    // якщо юзаєш box-shadow варіант
+    td.style.boxShadow = "none";
   });
 };
 
@@ -44,35 +50,49 @@ export const getDragProps = ({
       startDrag(itemId);
     },
 
-    onDragOver: (e) => {
-      e.preventDefault();
+onDragOver: (e) => {
+  e.preventDefault();
 
-      const tr = e.currentTarget;
-      if (!tr) return;
+  const tr = e.currentTarget;
+  if (!tr) return;
 
-      const tds = tr.querySelectorAll("td");
+  const tds = tr.querySelectorAll("td");
 
-      const isAfter = elementsAfterSelectedIds?.includes(itemId);
-      const isBefore = elementsBeforeSelectedIds?.includes(itemId);
+  const isAfter = elementsAfterSelectedIds?.includes(itemId);
+  const isBefore = elementsBeforeSelectedIds?.includes(itemId);
 
-      tds.forEach((td) => {
-        const content = td.firstElementChild || td;
+  tds.forEach((td) => {
+    const content = td.firstElementChild || td;
 
-        content.style.transition = "transform 0.15s ease";
+    content.style.transition = "transform 0.15s ease";
 
-        if (isAfter) {
-          content.style.transform = "translateY(-4px)";
-        } else if (isBefore) {
-          content.style.transform = "translateY(4px)";
-        } else {
-          content.style.transform = "translateY(0)";
-        }
-      });
-    },
+    // reset перед новим станом
+    td.style.borderTop = "none";
+    td.style.borderBottom = "none";
 
-    onDragLeave: (e) => {
-      resetRowTransforms(e.currentTarget);
-    },
+    if (isAfter) {
+      content.style.transform = "translateY(4px)";
+      td.style.borderTop = "2px dashed #4dabf7"; // 👈 лінія зверху
+    } else if (isBefore) {
+      content.style.transform = "translateY(-4px)";
+      td.style.borderBottom = "2px dashed #4dabf7"; // 👈 лінія знизу
+    } else {
+      content.style.transform = "translateY(0)";
+    }
+  });
+},
+
+ onDragLeave: (e) => {
+  const tr = e.currentTarget;
+  const related = e.relatedTarget;
+
+  // 🔥 якщо ми просто перейшли всередині того ж tr — ігноруємо
+  if (tr && related && tr.contains(related)) {
+    return;
+  }
+
+  resetRowTransforms(tr);
+},
 
     onDrop: (e) => {
       resetRowTransforms(e.currentTarget);
@@ -84,11 +104,9 @@ export const getDragProps = ({
       stopDrag?.();
     },
 
-    onClick: (e) => {
-      if (e.ctrlKey) {
-        toggleSelect(itemId);
-      }
-    },
+   onClick: (e) => {
+  toggleSelect(itemId, e);
+},
   };
 };
 
@@ -122,3 +140,4 @@ export const cleanupDragPreview = (el) => {
     el.parentNode.removeChild(el);
   }
 };
+

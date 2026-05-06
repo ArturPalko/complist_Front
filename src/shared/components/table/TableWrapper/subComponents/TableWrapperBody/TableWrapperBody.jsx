@@ -38,8 +38,7 @@ const TableWrapperBody = ({
     elementsBeforeSelectedIds,
   } = useDragContext();
 
-  //   console.log("ElementsBeforeSelectedIds:", elementsBeforeSelectedIds);
-  // console.log("ElementsAfterSelectedIds:", elementsAfterSelectedIds);
+
 
 
   return (
