@@ -2,7 +2,10 @@ export const getEditStyle = ({ editMode, isDragging, isSelected }) => ({
   cursor: editMode ? "grab" : "default",
   opacity: editMode && isDragging ? 0.5 : 1,
   transform: isDragging ? "scale(1.03)" : "scale(1)",
-  background: editMode && isSelected ? "#d0ebff" : "",
+background:
+  (editMode && isSelected) || isDragging
+    ? "#d0ebff"
+    : "",
   boxShadow: isDragging
     ? "0 6px 18px rgba(0,0,0,0.2)"
     : "none",
@@ -40,6 +43,8 @@ export const getDragProps = ({
   elementsBeforeSelectedIds,
   elementsAfterSelectedIds,
   stopDrag,
+  isOnFoundResultsPage
+  
 }) => {
   if (!editMode) return {};
 
@@ -51,6 +56,7 @@ export const getDragProps = ({
     },
 
 onDragOver: (e) => {
+  if(isOnFoundResultsPage) return
   e.preventDefault();
 
   const tr = e.currentTarget;
@@ -140,4 +146,5 @@ export const cleanupDragPreview = (el) => {
     el.parentNode.removeChild(el);
   }
 };
+
 

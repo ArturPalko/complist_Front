@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { IndexCell } from "../../../../cell/IndexCell/IndexCell";
-import { useDragContext } from "../../../../../../redux/contexts/useConetxt";
+import { useDragContext, useFoundResults } from "../../../../../../redux/contexts/useConetxt";
 import {
   activeMenu,
   isEditModeSelected,
@@ -13,6 +13,7 @@ import {
   createDragPreview,
   cleanupDragPreview,
 } from "./tableWrapperBody_helpers";
+import { useEffect } from "react";
 
 const TableWrapperBody = ({
   pageData,
@@ -23,10 +24,12 @@ const TableWrapperBody = ({
   rowClassParams,
 }) => {
   const menu = useSelector(activeMenu);
+    const {foundResults} = useFoundResults();
 
   const page = useSelector((state) => currentPageByMenu(state, menu));
-
   const editMode = useSelector(isEditModeSelected);
+    
+  
 
   const {
     dragIds,
@@ -36,13 +39,21 @@ const TableWrapperBody = ({
     handleDrop,
     elementsAfterSelectedIds,
     elementsBeforeSelectedIds,
+    setDragIds,
+    endDrag,
+    setFoundResults,
+    isOnFoundResultsPage
   } = useDragContext();
 
+useEffect(() => {
+  if (!setFoundResults) return;
 
+  setFoundResults(foundResults);
+}, [foundResults, setFoundResults]);
 
 
   return (
-    <tbody>
+    <tbody className={dragIds.length ? "dragging" : ""}>
       {pageData?.map((item, index) => {
         const isSelected = selectedIds.includes(item.id);
         const isDragging = dragIds.includes(item.id);
@@ -58,6 +69,7 @@ const TableWrapperBody = ({
             toggleSelect,
             elementsAfterSelectedIds,
             elementsBeforeSelectedIds,
+            isOnFoundResultsPage
           }),
 
           onDragStart: (e) => {
@@ -69,10 +81,11 @@ const TableWrapperBody = ({
             e.currentTarget._dragPreview = preview;
           },
 
-          onDragEnd: (e) => {
+        onDragEnd: (e) => {
             cleanupDragPreview(e.currentTarget._dragPreview);
             e.currentTarget._dragPreview = null;
-          },
+            endDrag()
+          }
         };
 
         return (

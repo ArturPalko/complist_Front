@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { DragContext } from "../contexts/useConetxt";
-import { activeMenu, getDataForMenu } from "../selectors/selector";
+import { activeMenu, getDataForMenu, getLastVisitedPage } from "../selectors/selector";
 import { setPagesActionCreator } from "../reducers/data-reducer/data-reducer";
 import { changeOrderOfDisplayElements } from "../../dal/api";
 import { useEffect } from "react";
@@ -73,6 +73,7 @@ const chunkIntoPages = (list, size) => {
 export const DragProvider = ({ children, rowsPerPage = 18 }) => {
   const [dragIds, setDragIds] = useState([]);
   const [selectedIds, setSelectedIds] = useState([]);
+   const [foundResults, setFoundResults] = useState([]);
 
   // 🔥 нова модель range selection (two-point)
   const [rangeStartId, setRangeStartId] = useState(null);
@@ -83,6 +84,9 @@ export const DragProvider = ({ children, rowsPerPage = 18 }) => {
   const dispatch = useDispatch();
 
   const menu = useSelector(activeMenu);
+const lastPage = useSelector((state) =>
+  getLastVisitedPage(state, menu)
+);
 
   const pages = useSelector((state) =>
     menu ? getDataForMenu(state, menu) : []
@@ -121,21 +125,34 @@ useEffect(() => {
      RANGE SELECT (2-point)
   ========================= */
 
-  const selectRange = useCallback(
-    (startId, endId) => {
-      const start = fullData.findIndex(i => i.id === startId);
-      const end = fullData.findIndex(i => i.id === endId);
+const selectRange = useCallback(
+  (startId, endId) => {
+    const source =
+      lastPage === "foundResults"
+        ? foundResults
+        : fullData;
 
-      if (start === -1 || end === -1) return;
+    if (!source || source.length === 0) return;
 
-      const [from, to] = start < end ? [start, end] : [end, start];
+    const start = source.findIndex(i => i.id === startId);
+    const end = source.findIndex(i => i.id === endId);
 
-      const range = fullData.slice(from, to + 1).map(i => i.id);
+    if (start === -1 || end === -1) return;
 
-      setSelectedIds(range);
-    },
-    [fullData]
-  );
+    const [from, to] =
+      start < end ? [start, end] : [end, start];
+
+    const range = source
+      .slice(from, to + 1)
+      .map(i => i.id);
+
+    setSelectedIds(range);
+
+    console.log("Source:", activeMenu === "foundResults" ? "foundResults" : "fullData");
+    console.log("Range:", range);
+  },
+  [fullData, foundResults, activeMenu]
+);
 
   /* =========================
      SELECT ROUTER
@@ -238,7 +255,7 @@ useEffect(() => {
       dispatch(setPagesActionCreator(menu, newPages));
       changeOrderOfDisplayElements(withPriority, menu);
 
-      endDrag();
+     endDrag();
     },
     [dragIds, fullData, rowsPerPage, dispatch, menu, endDrag]
   );
@@ -252,6 +269,7 @@ useEffect(() => {
       value={{
         dragIds,
         selectedIds,
+        setDragIds,
         toggleSelect,
         startDrag,
         endDrag,
@@ -260,9 +278,15 @@ useEffect(() => {
         elementsAfterSelectedIds,
         fullData,
         rangeStartId,
+        endDrag,
+        setFoundResults,
+        isOnFoundResultsPage: lastPage == "foundResults"
       }}
     >
       {children}
     </DragContext.Provider>
   );
 };
+
+
+

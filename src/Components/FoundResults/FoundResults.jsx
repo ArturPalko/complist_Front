@@ -11,6 +11,10 @@ import { FoundResultsContext } from "../../redux/contexts/useConetxt.js";
 const FoundResults = ({ activeMenu, data, foundSearchValues, isFilterApplied }) => {
   const { presentRows, indexDataOfFoundResultsForFoundResultsPage, tooManyResults } =
     useFoundResults(data, foundSearchValues, activeMenu, isFilterApplied);
+    
+
+console.log ("preset:", presentRows)
+
 
   const ActiveComponent = getPageComponent(activeMenu);
 
@@ -36,6 +40,7 @@ const mapStateToProps = (state) => {
     acc[pageKey] = selectSearchValueByPage(pageKey)(state);
     return acc;
   }, {});
+
 
   return {
     activeMenu: menu,
