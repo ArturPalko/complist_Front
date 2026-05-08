@@ -1,40 +1,26 @@
-export const getEditStyle = ({ editMode, isDragging, isSelected }) => ({
-  cursor: editMode ? "grab" : "default",
-  opacity: editMode && isDragging ? 0.5 : 1,
-  transform: isDragging ? "scale(1.03)" : "scale(1)",
-background:
-  (editMode && isSelected) || isDragging
-    ? "#d0ebff"
-    : "",
-  boxShadow: isDragging
-    ? "0 6px 18px rgba(0,0,0,0.2)"
-    : "none",
-  transition: "all 0.2s ease",
-  userSelect: editMode ? "none" : "auto",
-});
+import { getDragClass } from "../../helpers";
 
-const resetRowTransforms = (tr) => {
-  if (!tr) return;
-
-  const tds = tr.querySelectorAll("td");
-
-  tds.forEach((td) => {
-    const content = td.firstElementChild || td;
-
-    content.style.transform = "translateY(0)";
-    content.style.transition = "transform 0.15s ease";
-
-    td.style.borderTop = "none";
-    td.style.borderBottom = "none";
-
-    // якщо юзаєш box-shadow варіант
-    td.style.boxShadow = "none";
-  });
+export const getClassName = ({
+  index,
+  rowClassParams,
+  editMode,
+  isDragging,
+  isSelected,
+  getRowClass
+}) => {
+  return [
+    getRowClass({ index, ...rowClassParams }),
+    getDragClass({editMode, isDragging, isSelected})
+  ]
+    .filter(Boolean)
+    .join(" ");
 };
 
 export const getDragProps = ({
   editMode,
   itemId,
+  item,
+  selectedIds,
   index,
   page,
   startDrag,
@@ -43,80 +29,102 @@ export const getDragProps = ({
   elementsBeforeSelectedIds,
   elementsAfterSelectedIds,
   stopDrag,
-  isOnFoundResultsPage
-  
+  isOnFoundResultsPage,
+  endDrag
 }) => {
   if (!editMode) return {};
 
   return {
     draggable: true,
 
-    onDragStart: () => {
+    onDragStart: (e) => {
       startDrag(itemId);
+
+      const preview = createDragPreview(item, selectedIds);
+
+      e.dataTransfer.setDragImage(preview, 0, 0);
+
+      e.currentTarget._dragPreview = preview;
     },
 
-onDragOver: (e) => {
-  if(isOnFoundResultsPage) return
-  e.preventDefault();
+    onDragOver: (e) => {
+      if (isOnFoundResultsPage) return;
 
-  const tr = e.currentTarget;
-  if (!tr) return;
+      e.preventDefault();
 
-  const tds = tr.querySelectorAll("td");
+      const tr = e.currentTarget;
 
-  const isAfter = elementsAfterSelectedIds?.includes(itemId);
-  const isBefore = elementsBeforeSelectedIds?.includes(itemId);
+      if (!tr) return;
 
-  tds.forEach((td) => {
-    const content = td.firstElementChild || td;
+      const tds = tr.querySelectorAll("td");
 
-    content.style.transition = "transform 0.15s ease";
+      const isAfter =
+        elementsAfterSelectedIds?.includes(itemId);
 
-    // reset перед новим станом
-    td.style.borderTop = "none";
-    td.style.borderBottom = "none";
+      const isBefore =
+        elementsBeforeSelectedIds?.includes(itemId);
 
-    if (isAfter) {
-      content.style.transform = "translateY(4px)";
-      td.style.borderTop = "2px dashed #4dabf7"; // 👈 лінія зверху
-    } else if (isBefore) {
-      content.style.transform = "translateY(-4px)";
-      td.style.borderBottom = "2px dashed #4dabf7"; // 👈 лінія знизу
-    } else {
-      content.style.transform = "translateY(0)";
-    }
-  });
-},
+      tds.forEach((td) => {
+        const content = td.firstElementChild || td;
 
- onDragLeave: (e) => {
-  const tr = e.currentTarget;
-  const related = e.relatedTarget;
+        content.style.transition = "transform 0.15s ease";
 
-  // 🔥 якщо ми просто перейшли всередині того ж tr — ігноруємо
-  if (tr && related && tr.contains(related)) {
-    return;
-  }
+        td.style.borderTop = "none";
+        td.style.borderBottom = "none";
 
-  resetRowTransforms(tr);
-},
+        if (isAfter) {
+          content.style.transform = "translateY(4px)";
+          td.style.borderTop = "2px dashed #4dabf7";
+        } else if (isBefore) {
+          content.style.transform = "translateY(-4px)";
+          td.style.borderBottom = "2px dashed #4dabf7";
+        } else {
+          content.style.transform = "translateY(0)";
+        }
+      });
+    },
+
+    onDragLeave: (e) => {
+      const tr = e.currentTarget;
+      const related = e.relatedTarget;
+
+      // якщо перейшли всередині того ж tr — ігноруємо
+      if (tr && related && tr.contains(related)) {
+        return;
+      }
+
+      resetRowTransforms(tr);
+    },
 
     onDrop: (e) => {
       resetRowTransforms(e.currentTarget);
+
       handleDrop(index, page);
     },
 
     onDragEnd: (e) => {
       resetRowTransforms(e.currentTarget);
+      endDrag()
+
+      cleanupDragPreview(
+        e.currentTarget._dragPreview
+      );
+
+      e.currentTarget._dragPreview = null;
+
       stopDrag?.();
     },
 
-   onClick: (e) => {
-  toggleSelect(itemId, e);
-},
+    onClick: (e) => {
+      toggleSelect(itemId, e);
+    },
   };
 };
 
-export const createDragPreview = (item, selectedIds) => {
+export const createDragPreview = (
+  item,
+  selectedIds
+) => {
   const el = document.createElement("div");
 
   el.style.position = "absolute";
@@ -126,7 +134,8 @@ export const createDragPreview = (item, selectedIds) => {
   el.style.background = "#1e1e1e";
   el.style.color = "white";
   el.style.borderRadius = "6px";
-  el.style.boxShadow = "0 8px 20px rgba(0,0,0,0.3)";
+  el.style.boxShadow =
+    "0 8px 20px rgba(0,0,0,0.3)";
   el.style.fontSize = "13px";
   el.style.pointerEvents = "none";
 
@@ -147,4 +156,19 @@ export const cleanupDragPreview = (el) => {
   }
 };
 
+const resetRowTransforms = (tr) => {
+  if (!tr) return;
 
+  const tds = tr.querySelectorAll("td");
+
+  tds.forEach((td) => {
+    const content = td.firstElementChild || td;
+
+    content.style.transform = "translateY(0)";
+    content.style.transition = "transform 0.15s ease";
+
+    td.style.borderTop = "none";
+    td.style.borderBottom = "none";
+    td.style.boxShadow = "none";
+  });
+};

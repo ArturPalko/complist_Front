@@ -1,0 +1,28 @@
+.row-edit {
+  cursor: grab;
+  user-select: none;
+  transition: all 0.2s ease;
+}
+
+.row-edit-default {
+  cursor: default;
+  user-select: auto;
+}
+
+.row-dragging {
+  opacity: 0.5;
+  transform: scale(1.03);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+  background: #d0ebff !important;
+
+}
+
+.row-selected{
+    background: #d0ebff !important;
+}
+
+
+
+
+
+

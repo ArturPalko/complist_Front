@@ -18,3 +18,12 @@ export const getRowClass = ({
 
   return `${highLightAfterFoundResultsPageClass} ${highLightAfterCurrentPageNumberPressedClass}`;
 };
+
+export const getDragClass = ({ editMode, isDragging, isSelected }) =>
+  [
+    editMode ? "row-edit" : "row-edit-default",
+    isDragging && "row-dragging",
+    isSelected && "row-selected",
+  ]
+    .filter(Boolean)
+    .join(" ");

@@ -1,6 +1,13 @@
 import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { getRowClass } from "../../helpers";
+
 import { IndexCell } from "../../../../cell/IndexCell/IndexCell";
-import { useDragContext, useFoundResults } from "../../../../../../redux/contexts/useConetxt";
+import {
+  useDragContext,
+  useFoundResults
+} from "../../../../../../redux/contexts/useConetxt";
+
 import {
   activeMenu,
   isEditModeSelected,
@@ -8,28 +15,29 @@ import {
 } from "../../../../../../redux/selectors/selector";
 
 import {
-  getEditStyle,
   getDragProps,
   createDragPreview,
   cleanupDragPreview,
 } from "./tableWrapperBody_helpers";
-import { useEffect } from "react";
+
+import "./dragAndDrop.css";
+import { getClassName } from "./tableWrapperBody_helpers";
 
 const TableWrapperBody = ({
   pageData,
-  rowsPerPage,
   rowRefs,
   renderRowCells,
   getRowClass,
   rowClassParams,
 }) => {
   const menu = useSelector(activeMenu);
-    const {foundResults} = useFoundResults();
+  const { foundResults } = useFoundResults();
 
-  const page = useSelector((state) => currentPageByMenu(state, menu));
+  const page = useSelector((state) =>
+    currentPageByMenu(state, menu)
+  );
+
   const editMode = useSelector(isEditModeSelected);
-    
-  
 
   const {
     dragIds,
@@ -39,18 +47,15 @@ const TableWrapperBody = ({
     handleDrop,
     elementsAfterSelectedIds,
     elementsBeforeSelectedIds,
-    setDragIds,
     endDrag,
     setFoundResults,
     isOnFoundResultsPage
   } = useDragContext();
 
-useEffect(() => {
-  if (!setFoundResults) return;
-
-  setFoundResults(foundResults);
-}, [foundResults, setFoundResults]);
-
+  useEffect(() => {
+    if (!setFoundResults) return;
+    setFoundResults(foundResults);
+  }, [foundResults, setFoundResults]);
 
   return (
     <tbody className={dragIds.length ? "dragging" : ""}>
@@ -58,51 +63,48 @@ useEffect(() => {
         const isSelected = selectedIds.includes(item.id);
         const isDragging = dragIds.includes(item.id);
 
-        const dragProps = {
-          ...getDragProps({
-            editMode,
-            itemId: item.id,
-            index,
-            page,
-            startDrag,
-            handleDrop,
-            toggleSelect,
-            elementsAfterSelectedIds,
-            elementsBeforeSelectedIds,
-            isOnFoundResultsPage
-          }),
-
-          onDragStart: (e) => {
-            startDrag(item.id);
-
-            const preview = createDragPreview(item, selectedIds);
-            e.dataTransfer.setDragImage(preview, 0, 0);
-
-            e.currentTarget._dragPreview = preview;
-          },
-
-        onDragEnd: (e) => {
-            cleanupDragPreview(e.currentTarget._dragPreview);
-            e.currentTarget._dragPreview = null;
-            endDrag()
-          }
-        };
-
         return (
           <tr
-            {...dragProps}
             key={item.id}
-            className={getRowClass({ index, ...rowClassParams })}
+            {...getDragProps({
+              editMode,
+              itemId: item.id,
+              item,
+              selectedIds,
+              index,
+              page,
+              startDrag,
+              handleDrop,
+              toggleSelect,
+              elementsAfterSelectedIds,
+              elementsBeforeSelectedIds,
+              isOnFoundResultsPage,
+              endDrag,
+              createDragPreview,
+              cleanupDragPreview
+            })}
+              className={getClassName({
+                    index,
+                    rowClassParams,
+                    editMode,
+                    isDragging,
+                    isSelected,
+                    getRowClass
+                  })}
             data-key={index}
             ref={(el) =>
-              rowRefs?.current && (rowRefs.current[index] = el)
+              rowRefs?.current &&
+              (rowRefs.current[index] = el)
             }
-            style={getEditStyle({ editMode, isDragging, isSelected })}
           >
             <IndexCell
               index={index}
-              isNonUserRowType={item?.type ? item.type !== "user" : false}
-              isSectionType={item?.type ? item.type === "section" : false}
+              isNonUserRowType={
+                item?.type ? item.type !== "user" : false
+              }
+              isSectionType={
+                item?.type ? item.type === "section" : false
+              }
             />
 
             {renderRowCells(item, index)}

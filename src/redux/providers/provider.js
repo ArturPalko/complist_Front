@@ -73,7 +73,8 @@ const chunkIntoPages = (list, size) => {
 export const DragProvider = ({ children, rowsPerPage = 18 }) => {
   const [dragIds, setDragIds] = useState([]);
   const [selectedIds, setSelectedIds] = useState([]);
-   const [foundResults, setFoundResults] = useState([]);
+  const [foundResults, setFoundResults] = useState([]);
+  const [dropTargetId, setDropTargetId] = useState(null);
 
   // 🔥 нова модель range selection (two-point)
   const [rangeStartId, setRangeStartId] = useState(null);
@@ -263,7 +264,7 @@ const selectRange = useCallback(
   /* =========================
      PROVIDER
   ========================= */
-
+console.log ("selectedIDS:", selectedIds)
   return (
     <DragContext.Provider
       value={{
@@ -280,7 +281,9 @@ const selectRange = useCallback(
         rangeStartId,
         endDrag,
         setFoundResults,
-        isOnFoundResultsPage: lastPage == "foundResults"
+        isOnFoundResultsPage: lastPage == "foundResults",
+        dropTargetId,
+        setDropTargetId
       }}
     >
       {children}
