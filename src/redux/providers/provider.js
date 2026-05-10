@@ -93,7 +93,9 @@ const lastPage = useSelector((state) =>
     menu ? getDataForMenu(state, menu) : []
   ) ?? [];
 
-
+useEffect(() => {
+  console.log("dropTargetId updated:", dropTargetId);
+}, [dropTargetId]);
 
 useEffect(() => {
   const handler = (e) => {
@@ -264,7 +266,7 @@ const selectRange = useCallback(
   /* =========================
      PROVIDER
   ========================= */
-console.log ("selectedIDS:", selectedIds)
+
   return (
     <DragContext.Provider
       value={{

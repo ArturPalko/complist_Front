@@ -1,20 +1,59 @@
-import { getDragClass } from "../../helpers";
+import {
+  getDragClass,
+  getDropPositionClass,
+} from "../../helpers";
+
+/* =========================
+   CLASS NAME
+========================= */
 
 export const getClassName = ({
+  itemId,
   index,
   rowClassParams,
+
   editMode,
   isDragging,
   isSelected,
-  getRowClass
+
+  getRowClass,
+
+  dropTargetId,
+  elementsBeforeSelectedIds,
+  elementsAfterSelectedIds,
 }) => {
+  const isCurrentDropTarget = dropTargetId === itemId;
+
+const isAfter = isCurrentDropTarget && elementsAfterSelectedIds?.includes(itemId);
+const isBefore = isCurrentDropTarget && elementsBeforeSelectedIds?.includes(itemId);
+if(isCurrentDropTarget){
+console.log ("id:", itemId)
+console.log ("AFTER:", elementsAfterSelectedIds)
+console.log ("BEFORE", elementsBeforeSelectedIds)
+}
+
+
   return [
     getRowClass({ index, ...rowClassParams }),
-    getDragClass({editMode, isDragging, isSelected})
+
+    getDragClass({
+      editMode,
+      isDragging,
+      isSelected,
+    }),
+
+    getDropPositionClass({
+      isAfter,
+      isBefore,
+    }),
   ]
     .filter(Boolean)
     .join(" ");
 };
+
+/* =========================
+   DRAG PROPS
+========================= */
 
 export const getDragProps = ({
   editMode,
@@ -26,17 +65,19 @@ export const getDragProps = ({
   startDrag,
   handleDrop,
   toggleSelect,
-  elementsBeforeSelectedIds,
-  elementsAfterSelectedIds,
   stopDrag,
   isOnFoundResultsPage,
-  endDrag
+  endDrag,
+  setDropTargetId,
 }) => {
   if (!editMode) return {};
 
   return {
     draggable: true,
 
+    /* =========================
+       DRAG START
+    ========================= */
     onDragStart: (e) => {
       startDrag(itemId);
 
@@ -47,84 +88,55 @@ export const getDragProps = ({
       e.currentTarget._dragPreview = preview;
     },
 
+    /* =========================
+       DRAG OVER (ONLY SOURCE OF TRUTH)
+    ========================= */
     onDragOver: (e) => {
       if (isOnFoundResultsPage) return;
 
       e.preventDefault();
 
-      const tr = e.currentTarget;
-
-      if (!tr) return;
-
-      const tds = tr.querySelectorAll("td");
-
-      const isAfter =
-        elementsAfterSelectedIds?.includes(itemId);
-
-      const isBefore =
-        elementsBeforeSelectedIds?.includes(itemId);
-
-      tds.forEach((td) => {
-        const content = td.firstElementChild || td;
-
-        content.style.transition = "transform 0.15s ease";
-
-        td.style.borderTop = "none";
-        td.style.borderBottom = "none";
-
-        if (isAfter) {
-          content.style.transform = "translateY(4px)";
-          td.style.borderTop = "2px dashed #4dabf7";
-        } else if (isBefore) {
-          content.style.transform = "translateY(-4px)";
-          td.style.borderBottom = "2px dashed #4dabf7";
-        } else {
-          content.style.transform = "translateY(0)";
-        }
-      });
+      // 🔥 єдине місце де міняємо drop target
+      setDropTargetId?.(itemId);
     },
 
-    onDragLeave: (e) => {
-      const tr = e.currentTarget;
-      const related = e.relatedTarget;
-
-      // якщо перейшли всередині того ж tr — ігноруємо
-      if (tr && related && tr.contains(related)) {
-        return;
-      }
-
-      resetRowTransforms(tr);
-    },
-
+    /* =========================
+       DROP
+    ========================= */
     onDrop: (e) => {
-      resetRowTransforms(e.currentTarget);
+      setDropTargetId?.(null);
 
       handleDrop(index, page);
     },
 
+    /* =========================
+       DRAG END
+    ========================= */
     onDragEnd: (e) => {
-      resetRowTransforms(e.currentTarget);
-      endDrag()
+      setDropTargetId?.(null);
 
-      cleanupDragPreview(
-        e.currentTarget._dragPreview
-      );
+      endDrag();
 
+      cleanupDragPreview(e.currentTarget._dragPreview);
       e.currentTarget._dragPreview = null;
 
       stopDrag?.();
     },
 
+    /* =========================
+       CLICK SELECT
+    ========================= */
     onClick: (e) => {
       toggleSelect(itemId, e);
     },
   };
 };
 
-export const createDragPreview = (
-  item,
-  selectedIds
-) => {
+/* =========================
+   DRAG PREVIEW
+========================= */
+
+export const createDragPreview = (item, selectedIds) => {
   const el = document.createElement("div");
 
   el.style.position = "absolute";
@@ -134,8 +146,7 @@ export const createDragPreview = (
   el.style.background = "#1e1e1e";
   el.style.color = "white";
   el.style.borderRadius = "6px";
-  el.style.boxShadow =
-    "0 8px 20px rgba(0,0,0,0.3)";
+  el.style.boxShadow = "0 8px 20px rgba(0,0,0,0.3)";
   el.style.fontSize = "13px";
   el.style.pointerEvents = "none";
 
@@ -154,21 +165,4 @@ export const cleanupDragPreview = (el) => {
   if (el && el.parentNode) {
     el.parentNode.removeChild(el);
   }
-};
-
-const resetRowTransforms = (tr) => {
-  if (!tr) return;
-
-  const tds = tr.querySelectorAll("td");
-
-  tds.forEach((td) => {
-    const content = td.firstElementChild || td;
-
-    content.style.transform = "translateY(0)";
-    content.style.transition = "transform 0.15s ease";
-
-    td.style.borderTop = "none";
-    td.style.borderBottom = "none";
-    td.style.boxShadow = "none";
-  });
 };

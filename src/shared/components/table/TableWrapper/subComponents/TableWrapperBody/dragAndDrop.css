@@ -1,3 +1,7 @@
+/* =========================
+   BASE ROW
+========================= */
+
 .row-edit {
   cursor: grab;
   user-select: none;
@@ -14,15 +18,43 @@
   transform: scale(1.03);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
   background: #d0ebff !important;
+}
+
+.row-selected {
+  background: #d0ebff !important;
+}
+
+/* =========================
+   DROP POSITION (FIXED)
+========================= */
+
+/* AFTER */
+.drag-after td {
+  /* border-top: 2px dashed #4dabf7; */
+ transform: translateY(4px);
+   border-top: 2px dashed #4dabf7;
+}
+
+.drag-after td * {
+    background-color: aqua;
+  transform: translateY(4px);
 
 }
 
-.row-selected{
-    background: #d0ebff !important;
+/* BEFORE */
+.drag-before td {
+  border-bottom: 2px dashed #4dabf7;
+  transform: translateY(-4px);
 }
 
 
 
+/* NEUTRAL */
+.drag-neutral td {
+  border-top: none;
+  border-bottom: none;
+}
 
-
-
+.drag-neutral td * {
+  transform: translateY(0);
+}

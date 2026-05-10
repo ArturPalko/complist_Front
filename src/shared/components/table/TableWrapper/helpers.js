@@ -27,3 +27,17 @@ export const getDragClass = ({ editMode, isDragging, isSelected }) =>
   ]
     .filter(Boolean)
     .join(" ");
+
+
+export const getDropPositionClass = ({
+  isAfter,
+  isBefore,
+}) => {
+  const classes = [
+    isAfter && "drag-after",
+    isBefore && "drag-before",
+  ].filter(Boolean);
+
+
+  return classes.join(" ");
+};

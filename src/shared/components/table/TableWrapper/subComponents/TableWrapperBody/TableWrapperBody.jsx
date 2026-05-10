@@ -49,7 +49,9 @@ const TableWrapperBody = ({
     elementsBeforeSelectedIds,
     endDrag,
     setFoundResults,
-    isOnFoundResultsPage
+    isOnFoundResultsPage,
+     dropTargetId,
+     setDropTargetId
   } = useDragContext();
 
   useEffect(() => {
@@ -81,7 +83,9 @@ const TableWrapperBody = ({
               isOnFoundResultsPage,
               endDrag,
               createDragPreview,
-              cleanupDragPreview
+              cleanupDragPreview,
+              setDropTargetId,
+              dropTargetId
             })}
               className={getClassName({
                     index,
@@ -89,7 +93,11 @@ const TableWrapperBody = ({
                     editMode,
                     isDragging,
                     isSelected,
-                    getRowClass
+                    getRowClass,
+                    itemId: item.id,
+                    dropTargetId,
+                    elementsAfterSelectedIds,
+                    elementsBeforeSelectedIds
                   })}
             data-key={index}
             ref={(el) =>
