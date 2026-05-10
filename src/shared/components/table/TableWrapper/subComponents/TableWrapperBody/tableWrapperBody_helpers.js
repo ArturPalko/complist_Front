@@ -26,12 +26,6 @@ export const getClassName = ({
 
 const isAfter = isCurrentDropTarget && elementsAfterSelectedIds?.includes(itemId);
 const isBefore = isCurrentDropTarget && elementsBeforeSelectedIds?.includes(itemId);
-if(isCurrentDropTarget){
-console.log ("id:", itemId)
-console.log ("AFTER:", elementsAfterSelectedIds)
-console.log ("BEFORE", elementsBeforeSelectedIds)
-}
-
 
   return [
     getRowClass({ index, ...rowClassParams }),
@@ -136,30 +130,40 @@ export const getDragProps = ({
    DRAG PREVIEW
 ========================= */
 
-export const createDragPreview = (item, selectedIds) => {
+// import { getDragPreviewHTML } from "./dragPreviewTemplate";
+
+export const createDragPreview = (
+  item,
+  selectedIds
+) => {
   const el = document.createElement("div");
 
-  el.style.position = "absolute";
-  el.style.top = "-1000px";
-  el.style.left = "-1000px";
-  el.style.padding = "10px 16px";
-  el.style.background = "#1e1e1e";
-  el.style.color = "white";
-  el.style.borderRadius = "6px";
-  el.style.boxShadow = "0 8px 20px rgba(0,0,0,0.3)";
-  el.style.fontSize = "13px";
-  el.style.pointerEvents = "none";
+  el.className = "drag-preview";
 
-  const isMultiple = selectedIds.length > 1;
-
-  el.innerHTML = isMultiple
-    ? `📦 ${selectedIds.length} елементи`
-    : `📄 ${item.mailName}`;
+  el.innerHTML = getDragPreviewHTML({
+    item,
+    selectedIds,
+  });
 
   document.body.appendChild(el);
 
   return el;
 };
+
+
+// dragPreviewTemplate.js
+
+export const getDragPreviewHTML = ({
+  item,
+  selectedIds,
+}) => {
+  const isMultiple = selectedIds.length > 1;
+
+  return isMultiple
+    ? `📦 ${selectedIds.length} елементи`
+    : `📄 ${item.mailName}`;
+};
+
 
 export const cleanupDragPreview = (el) => {
   if (el && el.parentNode) {

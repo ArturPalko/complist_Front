@@ -34,8 +34,8 @@ export const getDropPositionClass = ({
   isBefore,
 }) => {
   const classes = [
-    isAfter && "drag-after",
-    isBefore && "drag-before",
+    isAfter && "drag-before",
+    isBefore && "drag-after",
   ].filter(Boolean);
 
 

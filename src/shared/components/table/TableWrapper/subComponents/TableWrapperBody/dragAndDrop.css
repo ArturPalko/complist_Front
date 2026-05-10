@@ -27,22 +27,20 @@
 /* =========================
    DROP POSITION (FIXED)
 ========================= */
-
+td  {
+  transition: transform 0.15s ease;
+  will-change: transform;
+}
 /* AFTER */
-.drag-after td {
-  /* border-top: 2px dashed #4dabf7; */
- transform: translateY(4px);
+.drag-before td {
    border-top: 2px dashed #4dabf7;
+   transform: translateY(4px);
 }
 
-.drag-after td * {
-    background-color: aqua;
-  transform: translateY(4px);
 
-}
 
 /* BEFORE */
-.drag-before td {
+.drag-after td {
   border-bottom: 2px dashed #4dabf7;
   transform: translateY(-4px);
 }
@@ -57,4 +55,25 @@
 
 .drag-neutral td * {
   transform: translateY(0);
+}
+
+
+
+.drag-preview {
+  position: absolute;
+  top: -1000px;
+  left: -1000px;
+
+  padding: 10px 16px;
+
+  background: #1e1e1e;
+  color: white;
+
+  border-radius: 6px;
+
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+
+  font-size: 13px;
+
+  pointer-events: none;
 }

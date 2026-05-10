@@ -222,6 +222,9 @@ const selectRange = useCallback(
       setElementsAfterSelectedIds(
         fullData.slice(anchorIndex + 1).map(i => i.id)
       );
+
+      console.log("bef:", elementsBeforeSelectedIds)
+      console.log ("aft:", elementsAfterSelectedIds)
     },
     [selectedIds, fullData]
   );
