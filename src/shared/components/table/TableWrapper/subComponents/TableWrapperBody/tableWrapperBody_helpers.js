@@ -21,11 +21,21 @@ export const getClassName = ({
   dropTargetId,
   elementsBeforeSelectedIds,
   elementsAfterSelectedIds,
+  selectedIds = [],
 }) => {
   const isCurrentDropTarget = dropTargetId === itemId;
 
-const isAfter = isCurrentDropTarget && elementsAfterSelectedIds?.includes(itemId);
-const isBefore = isCurrentDropTarget && elementsBeforeSelectedIds?.includes(itemId);
+  const isSelectedItem = selectedIds.includes(itemId);
+
+  const isAfter =
+    isCurrentDropTarget &&
+    !isSelectedItem &&
+    elementsAfterSelectedIds?.includes(itemId);
+
+  const isBefore =
+    isCurrentDropTarget &&
+    !isSelectedItem &&
+    elementsBeforeSelectedIds?.includes(itemId);
 
   return [
     getRowClass({ index, ...rowClassParams }),
@@ -44,7 +54,6 @@ const isBefore = isCurrentDropTarget && elementsBeforeSelectedIds?.includes(item
     .filter(Boolean)
     .join(" ");
 };
-
 /* =========================
    DRAG PROPS
 ========================= */
@@ -92,6 +101,11 @@ export const getDragProps = ({
 
       // 🔥 єдине місце де міняємо drop target
       setDropTargetId?.(itemId);
+    },
+
+    onDragLeave: (e) => {
+
+      setDropTargetId?.(null);
     },
 
     /* =========================

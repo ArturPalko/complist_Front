@@ -3,8 +3,8 @@ import TopTableBar from "../../../../Components/Content/TopTableBar/TopTableBar"
 import { rowsPerPage } from "../../../../configs/app/constants";
 import { useIndexesForPage, usePageNumber } from "../../../../redux/hooks/hooks";
 import { pageConfigs } from "../../../../configs/app/pageConfig";
-import { connect } from "react-redux";
-import { getDepartmentsAndSectionsPerPage } from "../../../../redux/selectors/selector";
+import { connect, useSelector } from "react-redux";
+import { getDepartmentsAndSectionsPerPage, isEditModeSelected } from "../../../../redux/selectors/selector";
 import { PageContext } from "../../../../redux/contexts/useConetxt";
 import { BottomFilterContainer } from "../../../../Components/Content/BottomFilter/BottomFilterContainer";
 import s from "./GenericPage.module.css"
@@ -18,7 +18,7 @@ const GenericPage = ({
 }) => {
   const titleRef = useRef(null);
   const pageNumber = usePageNumber();
-
+  const isEditMode = !useSelector(isEditModeSelected);
   const indexes = useIndexesForPage(pageName);
   
 
@@ -63,10 +63,10 @@ return (
         <config.TableComponent {...sharedProps} />
       </PageContext.Provider>
     </div>
-
-    <div className={s.bottomWrapper}>
+{isEditMode && ( <div className={s.bottomWrapper}>
       <BottomFilterContainer />
-    </div>
+    </div>)}
+   
   </div>
 );
 };

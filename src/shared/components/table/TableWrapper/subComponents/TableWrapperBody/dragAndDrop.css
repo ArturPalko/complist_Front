@@ -29,7 +29,7 @@
 ========================= */
 td  {
   transition: transform 0.15s ease;
-  will-change: transform;
+ 
 }
 /* AFTER */
 .drag-before td {

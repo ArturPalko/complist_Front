@@ -215,6 +215,7 @@ case CLEAR_FILTRED_STATE_FOR_CURRENT_FORM: {
 }
 
     case CLEAR_FILTRED_DATA:
+      debugger
       return { ...initialState };
 
   case ADD_INDEXES_OF_FILTRED_RESULTS: {

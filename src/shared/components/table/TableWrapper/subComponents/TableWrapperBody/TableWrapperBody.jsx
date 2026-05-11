@@ -97,7 +97,8 @@ const TableWrapperBody = ({
                     itemId: item.id,
                     dropTargetId,
                     elementsAfterSelectedIds,
-                    elementsBeforeSelectedIds
+                    elementsBeforeSelectedIds,
+                    selectedIds
                   })}
             data-key={index}
             ref={(el) =>

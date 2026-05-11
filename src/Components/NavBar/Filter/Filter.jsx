@@ -14,6 +14,7 @@ import { clearFiltredData } from "../../../redux/reducers/filter-data-reducer/fi
 import { redirectToPage } from "../../../shared/functions/redirectToPage";
 
 import s from "./Filter.module.css"; 
+import { useRef } from "react";
 
 const Filter = () => {
   const dispatch = useDispatch();
@@ -26,6 +27,8 @@ const Filter = () => {
   );
 
   const [isOpen, setIsOpen] = useState(isFilterPanelVisibleFromStore);
+
+
 
   useEffect(() => {
     setIsOpen(isFilterPanelVisibleFromStore);

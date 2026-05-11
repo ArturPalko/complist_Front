@@ -19,7 +19,7 @@ import { useCheckAuth } from "./redux/hooks/hooks";
 import { useFiltersData } from "./redux/hooks/useFilters/useFiltersData";
 import { useFiltersEffects } from "./redux/hooks/useFilters/useFiltersEffects";
 import { FiltersContext } from "./redux/contexts/useConetxt";
-import {DragProvider} from "./redux/providers/provider"
+import { DragProvider } from "./redux/providers/DragProvider/provider";
 
 function App() {
   useTrackLocation();
