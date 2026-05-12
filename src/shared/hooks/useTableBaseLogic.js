@@ -10,7 +10,9 @@ import { useRowHeights } from "../../redux/hooks/useSyncRowHeights";
 
 import {
   activeMenu,
+  getPhonesDepartmenstForOrder,
   isCurrentPageFoundResult,
+  isEditModeSelected,
 } from "../../redux/selectors/selector";
 
 import { useDataLoader, useSearchToggle } from "../../redux/contexts/useConetxt";
@@ -36,6 +38,10 @@ export const useTableBaseLogic = ({
   const isLastVisitedPageWasFoundResults =
     useSelector(isCurrentPageFoundResult(pageName));
 
+  const sortData = useSelector(getPhonesDepartmenstForOrder)
+  const isEditeMode = useSelector(isEditModeSelected)
+  console.log ("sorter:", sortData)
+
   // ================================
   // data loading
   // ================================
@@ -60,6 +66,10 @@ export const useTableBaseLogic = ({
     if (isLastVisitedPageWasFoundResults) {
       return safeFoundResults;
     }
+
+    if(pageName == "phones" && isEditeMode){
+      return sortData?.[pageNumber - 1]?.rows ?? [];
+    }
     if (isFilterApplied) {
       return filteredPageData?.[pageNumber - 1]?.rows ?? [];
     }
@@ -71,6 +81,8 @@ export const useTableBaseLogic = ({
     filteredPageData,
     data,
     pageNumber,
+    sortData,
+    isEditeMode
   ]);
 
   // ================================

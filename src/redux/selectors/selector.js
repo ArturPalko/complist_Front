@@ -12,6 +12,7 @@ import {findDashedBlocks} from "./helpFunctions/findDashedBlocks";
 import { getFilteredPageData } from "../../shared/functions/getDataByIndexes";
 import { makeGetDepSecByMenu } from "./selectorFabrics/makeDepSecByMenu";
 import { useSelector } from "react-redux";
+import { buildDepartmentPages } from "./selectorFabrics/buildDepartmentsPages";
 
 // =====Допоміжні селектори=======================
 
@@ -252,6 +253,7 @@ export const getDepartmentsAndSections = (state, menuKey) => {
       return { dep: [], sec: [] };
   }
 };
-
-
-
+export const getPhonesDepartmenstForOrder = createSelector(
+  [(state) => getDataForMenu(state, "phones")],
+  buildDepartmentPages
+);
