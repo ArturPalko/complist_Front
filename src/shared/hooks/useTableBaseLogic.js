@@ -40,7 +40,7 @@ export const useTableBaseLogic = ({
 
   const sortData = useSelector(getPhonesDepartmenstForOrder)
   const isEditeMode = useSelector(isEditModeSelected)
-  console.log ("sorter:", sortData)
+  // console.log ("sorter:", sortData)
 
   // ================================
   // data loading
@@ -62,29 +62,63 @@ export const useTableBaseLogic = ({
   // ================================
   // pageData calculation
   // ================================
-  const pageData = useMemo(() => {
-    if (isLastVisitedPageWasFoundResults) {
-      return safeFoundResults;
-    }
+  // const pageData = useMemo(() => {
+  //   if (isLastVisitedPageWasFoundResults) {
+  //     return safeFoundResults;
+  //   }
 
-    if(pageName == "phones" && isEditeMode){
-      return sortData?.[pageNumber - 1]?.rows ?? [];
-    }
-    if (isFilterApplied) {
-      return filteredPageData?.[pageNumber - 1]?.rows ?? [];
-    }
-    return data?.[pageNumber - 1]?.rows ?? [];
-  }, [
-    isLastVisitedPageWasFoundResults,
-    safeFoundResults,
-    isFilterApplied,
-    filteredPageData,
-    data,
-    pageNumber,
-    sortData,
-    isEditeMode
-  ]);
+  //   if(pageName == "phones" && isEditeMode){
+  //     return sortData?.[pageNumber - 1]?.rows ?? [];
+  //   }
+  //   if (isFilterApplied) {
+  //     return filteredPageData?.[pageNumber - 1]?.rows ?? [];
+  //   }
+  //   return data?.[pageNumber - 1]?.rows ?? [];
+  // }, [
+  //   isLastVisitedPageWasFoundResults,
+  //   safeFoundResults,
+  //   isFilterApplied,
+  //   filteredPageData,
+  //   data,
+  //   pageNumber,
+  //   sortData,
+  //   isEditeMode
+  // ]); 
 
+const pageData = useMemo(() => {
+  if (isLastVisitedPageWasFoundResults) {
+    return safeFoundResults;
+  }
+
+  if (
+    pageName === "phones" &&
+    isEditeMode &&
+    Array.isArray(sortData) &&
+    sortData.length
+  ) {
+    return sortData?.[pageNumber - 1]?.rows ?? [];
+  }
+
+  if (isFilterApplied) {
+    return filteredPageData?.[pageNumber - 1]?.rows ?? [];
+  }
+
+  return data?.[pageNumber - 1]?.rows ?? [];
+}, [
+  isLastVisitedPageWasFoundResults,
+  safeFoundResults,
+  isFilterApplied,
+  filteredPageData,
+  data,
+  pageNumber,
+  sortData,
+  isEditeMode,
+  pageName,
+]);
+
+
+// console.log("TABLE baseData", pageData);
+// console.log("SORTDATA", sortData);
   // ================================
   // found results logic
   // ================================
@@ -116,6 +150,8 @@ export const useTableBaseLogic = ({
   // ================================
   // return
   // ================================
+
+
 
   return {
     // data

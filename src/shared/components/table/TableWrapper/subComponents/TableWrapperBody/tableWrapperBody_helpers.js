@@ -83,6 +83,7 @@ export const getDragProps = ({
     ========================= */
     onDragStart: (e) => {
       startDrag(itemId);
+      
 
       const preview = createDragPreview(item, selectedIds);
 
@@ -175,7 +176,7 @@ export const getDragPreviewHTML = ({
 
   return isMultiple
     ? `📦 ${selectedIds.length} елементи`
-    : `📄 ${item.mailName}`;
+    : `📄 ${item.mailName || item.departmentName || item.SectionName}`;
 };
 
 

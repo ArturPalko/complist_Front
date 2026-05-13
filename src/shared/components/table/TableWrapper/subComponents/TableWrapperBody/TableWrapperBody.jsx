@@ -62,15 +62,21 @@ const TableWrapperBody = ({
   return (
     <tbody className={dragIds.length ? "dragging" : ""}>
       {pageData?.map((item, index) => {
-        const isSelected = selectedIds.includes(item.id);
-        const isDragging = dragIds.includes(item.id);
-
+        const itemId =
+  item?.type === "department"
+    ? item.departmentId
+    : item?.type === "section"
+      ? item.sectionId
+      : item?.id;
+        const isSelected = selectedIds.includes(itemId);
+        const isDragging = dragIds.includes(itemId);
+// console.log ("itemId:", itemId)
         return (
           <tr
-            key={item.id}
+            key={itemId}
             {...getDragProps({
               editMode,
-              itemId: item.id,
+              itemId: itemId,
               item,
               selectedIds,
               index,

@@ -42,11 +42,22 @@ export const DragProvider = ({ children, rowsPerPage = 18 }) => {
      FLAT DATA
   ========================= */
 
-  const fullData = useMemo(() => {
-    if (!Array.isArray(pages) || pages.length === 0) return [];
-    return pages.flatMap((p) => p?.rows ?? []);
-  }, [pages]);
+const fullData = useMemo(() => {
+  if (!Array.isArray(pages) || pages.length === 0) return [];
 
+  return pages.flatMap((p) =>
+    (p?.rows ?? [])
+      .filter((el) => el.type === "department") // 👈 ОЦЕ ВАЖЛИВО
+      .map((item) => ({
+        ...item,
+        id:
+          item?.id ??
+          item?.departmentId ??
+          item?.sectionId,
+      }))
+  );
+}, [pages]);
+console.log ("fulldata:", fullData)
 useEffect(() => {
   const handler = (e) => {
     if (e.key === "Escape") {
@@ -196,15 +207,22 @@ const handleDrop = useCallback(
 
     const withPriority = reordered.map((item, index) => ({
       ...item,
-      priority: index + 1,
+      departmentPriority: index + 1,
     }));
 
     const newPages = chunkIntoPages(
       withPriority,
       rowsPerPage
     );
+  console.log("newPages:", newPages)
+  const payload = reordered.map((el, index) => ({
+  departmentId: el.departmentId,
+  departmentPriority: index + 1,
+}));
 
-    dispatch(setPagesActionCreator(menu, newPages));
+console.log("DEPARTMENT PRIORITY PAYLOAD:", payload);
+  
+    dispatch(setPagesActionCreator(menu, payload));
     changeOrderOfDisplayElements(withPriority, menu);
 
     endDrag();

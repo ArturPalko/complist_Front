@@ -24,14 +24,47 @@ export const dataReducer = (state = initialState, action) => {
       };
     }
 
-    case SET_PAGES: {
-        const { key, pages } = action.payload;
+case SET_PAGES: {
+  const { key, pages } = action.payload;
 
-        return {
-          ...state,
-          [key]: pages,
-        };
-      }
+  if (key !== "phones") {
+    return {
+      ...state,
+      [key]: pages,
+    };
+  }
+
+  // pages тут = payload (!!!)
+  const priorityMap = new Map(
+    pages.map((el) => [
+      el.departmentId,
+      el.departmentPriority,
+    ])
+  );
+
+  const currentPages = state[key];
+
+  const updatedPages = currentPages.map((p) => ({
+    ...p,
+    rows: (p.rows ?? []).map((row) => {
+      // if (row.type !== "department") return row;
+
+      const newPriority = priorityMap.get(row.departmentId);
+
+      if (newPriority == null) return row;
+
+      return {
+        ...row,
+        departmentPriority: newPriority,
+      };
+    }),
+  }));
+
+  return {
+    ...state,
+    [key]: updatedPages,
+  };
+}
     default:
       return state;
   }
