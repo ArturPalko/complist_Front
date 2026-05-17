@@ -100,7 +100,7 @@ const TableWrapperBody = ({
                     isDragging,
                     isSelected,
                     getRowClass,
-                    itemId: item.id,
+                    itemId: itemId,
                     dropTargetId,
                     elementsAfterSelectedIds,
                     elementsBeforeSelectedIds,

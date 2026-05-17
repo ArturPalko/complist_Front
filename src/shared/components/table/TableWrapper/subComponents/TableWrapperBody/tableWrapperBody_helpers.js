@@ -176,7 +176,7 @@ export const getDragPreviewHTML = ({
 
   return isMultiple
     ? `📦 ${selectedIds.length} елементи`
-    : `📄 ${item.mailName || item.departmentName || item.SectionName}`;
+    : `📄 ${item.name || item.mailName || item.departmentName || item.SectionName}`;
 };
 
 
