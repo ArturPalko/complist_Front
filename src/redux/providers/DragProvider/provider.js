@@ -45,6 +45,7 @@ import {
   buildRangeIds,
 } from "./dragProvider-helpers/selectRange-helpers";
 
+
 /* =========================
    PROVIDER
 ========================= */
@@ -86,23 +87,35 @@ export const DragProvider = ({
      FLAT DATA (FIXED)
   ========================= */
 
-  const fullData = useMemo(() => {
-    if (!Array.isArray(pages) || pages.length === 0)
-      return [];
+const fullData = useMemo(() => {
+  if (!Array.isArray(pages) || pages.length === 0) {
+    return [];
+  }
 
-    return pages.flatMap((p) =>
-      (p?.rows ?? [])
-        .filter((el) => el?.type === "department")
-        .map((item) => ({
-          ...item,
-          id:
-            item?.id ??
-            item?.departmentId ??
-            item?.sectionId,
-        }))
-        .filter((el) => el.id != null)
-    );
-  }, [pages]);
+  const rows = pages.flatMap((p) => p?.rows ?? []);
+
+  // phones → тільки departments
+  if (menu === "phones") {
+    return rows
+      .filter((el) => el?.type === "department")
+      .map((item) => ({
+        ...item,
+        id:
+          item?.departmentId ??
+          item?.id,
+      }))
+      .filter((el) => el.id != null);
+  }
+
+  // інші меню → всі rows
+  return rows.map((item) => ({
+    ...item,
+    id:
+      item?.id ??
+      item?.mailId ??
+      item?.sectionId,
+  }));
+}, [pages, menu]);
 
   /* =========================
      ESC RESET
@@ -207,7 +220,7 @@ export const DragProvider = ({
         dragGroup,
         fullData
       );
-
+debugger
       const anchorIndex =
         getAnchorIndex(indexes);
 
@@ -215,7 +228,7 @@ export const DragProvider = ({
 
       const { before, after } =
         splitBeforeAfter(fullData, anchorIndex);
-
+debugger
       setElementsBeforeSelectedIds(before);
       setElementsAfterSelectedIds(after);
     },
@@ -238,9 +251,10 @@ export const DragProvider = ({
 
   const handleDrop = useCallback(
     (toIndex, page) => {
+      debugger
       if (!dragIds.length || !fullData.length)
         return;
-
+debugger
       const globalToIndex = getGlobalIndex(
         page,
         toIndex,
@@ -259,27 +273,42 @@ export const DragProvider = ({
         return;
       }
 
-      const reordered = moveItems(
-        fullData,
-        dragIds,
-        globalToIndex
-      );
+    const reordered = moveItems(
+  fullData,
+  dragIds,
+  globalToIndex
+);
 
-      const payload = reordered.map(
-        (el, index) => ({
-          id: el.departmentId ?? el.id,
-          priority: index + 1,
-        })
-      );
+/* =========================
+   API PAYLOAD
+========================= */
 
-      dispatch(
-        setPagesActionCreator(menu, payload)
-      );
+const payload = reordered.map((el, index) => ({
+  id: el.departmentId ?? el.id,
+  priority: index + 1,
+}));
 
-      changeOrderOfDisplayElements(
-        payload,
-        menu
-      );
+/* =========================
+   REDUX
+========================= */
+
+dispatch(
+  setPagesActionCreator(
+    menu,
+    menu === "phones"
+      ? payload
+      : reordered
+  )
+);
+
+/* =========================
+   API
+========================= */
+
+changeOrderOfDisplayElements(
+  payload,
+  menu
+);
 
       endDrag();
     },
@@ -322,3 +351,5 @@ export const DragProvider = ({
     </DragContext.Provider>
   );
 };
+
+

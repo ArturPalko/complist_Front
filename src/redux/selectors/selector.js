@@ -40,7 +40,15 @@ const selectFoundResults = (state, menu) => selectSearchValueByPage(menu)(state)
 //   return data;
 // };
 
-export const getDataForMenu = (state, menu) => state?.data?.[menu] ?? [];
+export const getDataForMenu = (state, menu) => {
+  const edit = isEditModeSelected(state);
+
+  if (edit && menu === "phones") {
+    return getPhonesDepartmenstForOrder(state);
+  }
+
+  return state?.data?.[menu] ?? [];
+};
 
 export const getLoadedForMenu = (state, menu) => Boolean(state.dataState?.[menu]?.dataIsLoaded);
 export const getFetchingForMenu = (state, menu) => Boolean(state.dataState?.[menu]?.dataIsFetching);
@@ -254,6 +262,6 @@ export const getDepartmentsAndSections = (state, menuKey) => {
   }
 };
 export const getPhonesDepartmenstForOrder = createSelector(
-  [(state) => getDataForMenu(state, "phones")],
-  buildDepartmentPages
+  [(state) => state?.data?.phones],
+  (phones) => buildDepartmentPages(phones)
 );

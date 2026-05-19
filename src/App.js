@@ -20,6 +20,7 @@ import { useFiltersData } from "./redux/hooks/useFilters/useFiltersData";
 import { useFiltersEffects } from "./redux/hooks/useFilters/useFiltersEffects";
 import { FiltersContext } from "./redux/contexts/useConetxt";
 import { DragProvider } from "./redux/providers/DragProvider/provider";
+import { useEditModeEffects } from "./redux/hooks/useFilters/useEditModeEffects";
 
 function App() {
   useTrackLocation();
@@ -29,6 +30,7 @@ function App() {
   const filtersData = useFiltersData();
 
   useFiltersEffects(filtersData);
+  useEditModeEffects()
 
   return (
     <>

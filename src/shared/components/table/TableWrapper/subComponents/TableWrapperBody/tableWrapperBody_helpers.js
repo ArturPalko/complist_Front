@@ -83,7 +83,7 @@ export const getDragProps = ({
     ========================= */
     onDragStart: (e) => {
       startDrag(itemId);
-      
+      // debugger
 
       const preview = createDragPreview(item, selectedIds);
 
@@ -96,12 +96,14 @@ export const getDragProps = ({
        DRAG OVER (ONLY SOURCE OF TRUTH)
     ========================= */
     onDragOver: (e) => {
+      // debugger
       if (isOnFoundResultsPage) return;
 
       e.preventDefault();
 
       // 🔥 єдине місце де міняємо drop target
       setDropTargetId?.(itemId);
+      // debugger
     },
 
     onDragLeave: (e) => {
@@ -113,8 +115,9 @@ export const getDragProps = ({
        DROP
     ========================= */
     onDrop: (e) => {
+      // debugger
       setDropTargetId?.(null);
-
+// debugger
       handleDrop(index, page);
     },
 
@@ -185,3 +188,5 @@ export const cleanupDragPreview = (el) => {
     el.parentNode.removeChild(el);
   }
 };
+
+

@@ -10,12 +10,13 @@ import { useRowHeights } from "../../redux/hooks/useSyncRowHeights";
 
 import {
   activeMenu,
-  getPhonesDepartmenstForOrder,
   isCurrentPageFoundResult,
-  isEditModeSelected,
 } from "../../redux/selectors/selector";
 
-import { useDataLoader, useSearchToggle } from "../../redux/contexts/useConetxt";
+import {
+  useDataLoader,
+  useSearchToggle,
+} from "../../redux/contexts/useConetxt";
 
 export const useTableBaseLogic = ({
   columns,
@@ -35,19 +36,18 @@ export const useTableBaseLogic = ({
   // redux state
   // ================================
   const pageName = useSelector(activeMenu);
+
   const isLastVisitedPageWasFoundResults =
     useSelector(isCurrentPageFoundResult(pageName));
-
-  const sortData = useSelector(getPhonesDepartmenstForOrder)
-  const isEditeMode = useSelector(isEditModeSelected)
-  // console.log ("sorter:", sortData)
 
   // ================================
   // data loading
   // ================================
-  const { data, isPreviousPageWasFoundResult } = useDataLoader(pageName);
-  
-  const { isPagesNavbarLinkElementOnCurrentPagePressed } = useSearchToggle();
+  const { data, isPreviousPageWasFoundResult } =
+    useDataLoader(pageName);
+
+  const { isPagesNavbarLinkElementOnCurrentPagePressed } =
+    useSearchToggle();
 
   // ================================
   // safe values
@@ -57,68 +57,33 @@ export const useTableBaseLogic = ({
   // ================================
   // filtering
   // ================================
-  const { data: filteredPageData, isFilterApplied } = useFilteredPageData(data);
+  const { data: filteredPageData, isFilterApplied } =
+    useFilteredPageData(data);
 
   // ================================
   // pageData calculation
   // ================================
-  // const pageData = useMemo(() => {
-  //   if (isLastVisitedPageWasFoundResults) {
-  //     return safeFoundResults;
-  //   }
+  const pageData = useMemo(() => {
+    if (isLastVisitedPageWasFoundResults) {
+      return safeFoundResults;
+    }
 
-  //   if(pageName == "phones" && isEditeMode){
-  //     return sortData?.[pageNumber - 1]?.rows ?? [];
-  //   }
-  //   if (isFilterApplied) {
-  //     return filteredPageData?.[pageNumber - 1]?.rows ?? [];
-  //   }
-  //   return data?.[pageNumber - 1]?.rows ?? [];
-  // }, [
-  //   isLastVisitedPageWasFoundResults,
-  //   safeFoundResults,
-  //   isFilterApplied,
-  //   filteredPageData,
-  //   data,
-  //   pageNumber,
-  //   sortData,
-  //   isEditeMode
-  // ]); 
+    if (isFilterApplied) {
+      return (
+        filteredPageData?.[pageNumber - 1]?.rows ?? []
+      );
+    }
 
-const pageData = useMemo(() => {
-  if (isLastVisitedPageWasFoundResults) {
-    return safeFoundResults;
-  }
+    return data?.[pageNumber - 1]?.rows ?? [];
+  }, [
+    isLastVisitedPageWasFoundResults,
+    safeFoundResults,
+    isFilterApplied,
+    filteredPageData,
+    data,
+    pageNumber,
+  ]);
 
-  if (
-    pageName === "phones" &&
-    isEditeMode &&
-    Array.isArray(sortData) &&
-    sortData.length
-  ) {
-    return sortData?.[pageNumber - 1]?.rows ?? [];
-  }
-
-  if (isFilterApplied) {
-    return filteredPageData?.[pageNumber - 1]?.rows ?? [];
-  }
-
-  return data?.[pageNumber - 1]?.rows ?? [];
-}, [
-  isLastVisitedPageWasFoundResults,
-  safeFoundResults,
-  isFilterApplied,
-  filteredPageData,
-  data,
-  pageNumber,
-  sortData,
-  isEditeMode,
-  pageName,
-]);
-
-
-// console.log("TABLE baseData", pageData);
-// console.log("SORTDATA", sortData);
   // ================================
   // found results logic
   // ================================
@@ -129,37 +94,45 @@ const pageData = useMemo(() => {
   } = useFoundResultsColNumbersLogic({
     isLastVisitedPageWasFoundResults,
     indexesOfFoundResultsForCurrentPage,
-    isPagesNavbarLinkPressed: isPagesNavbarLinkElementOnCurrentPagePressed,
+    isPagesNavbarLinkPressed:
+      isPagesNavbarLinkElementOnCurrentPagePressed,
     isPreviousPageWasFoundResult,
   });
 
   // ================================
   // sync row heights
   // ================================
-  useRowHeights(rowRefs, colNumbersRef, [pageData], headerRef, titleRef);
+  useRowHeights(
+    rowRefs,
+    colNumbersRef,
+    [pageData],
+    headerRef,
+    titleRef
+  );
 
   // ================================
-  // columns count (опціонально)
+  // columns count
   // ================================
   const tableColumns = useMemo(() => {
-    if (!columns) return undefined; // якщо columns не передані – не повертаємо
-    const column = columns.find((c) => c.key === pageName);
+    if (!columns) return undefined;
+
+    const column = columns.find(
+      (c) => c.key === pageName
+    );
+
     return column?.subLabels?.length;
   }, [columns, pageName]);
 
   // ================================
   // return
   // ================================
-
-
-
   return {
     // data
     pageData,
 
     // refs
-     rowRefs,
-     colNumbersRef,
+    rowRefs,
+    colNumbersRef,
 
     // found results logic
     showDigitsFromPressed,
@@ -170,8 +143,6 @@ const pageData = useMemo(() => {
     isPagesNavbarLinkElementOnCurrentPagePressed,
 
     // table config
-    ...(columns ? { pageColumns: tableColumns } : {}), // повертаємо тільки якщо columns передані
-
-
+    ...(columns ? { pageColumns: tableColumns } : {}),
   };
 };

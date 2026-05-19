@@ -1,10 +1,13 @@
 import { fetchDataThunk } from "../../../dal/thunks/dataThunks.js";
 import { rowsPerPage as limitRows } from "../../../configs/app/constants.js";
 import { paginateData } from "./data-reducerFunctions/pagination.js";
+import { applyPhonesReorder } from "./data-reducerFunctions/applyPhonesReorder.js";
+import { chunkIntoPages } from "../../providers/DragProvider/dragProvider-helpers/commonFunctions.js";
+import { rowsPerPage } from "../../../configs/app/constants.js";
 
 // Action type
 const ADD_DATA = "ADD_DATA";
-const SET_PAGES = "SET_PAGES"
+const SET_ORDER = "SET_ORDER"
 
 const initialState = {
   "Gov-ua": [],
@@ -23,94 +26,30 @@ export const dataReducer = (state = initialState, action) => {
       };
     }
 
-case SET_PAGES: {
+   ;
+
+case SET_ORDER: {
   const { key, pages } = action.payload;
-debugger
-  if (key !== "phones") {
+
+  // 🔥 phones — складна логіка
+  if (key === "phones") {
     return {
       ...state,
-      [key]: pages,
+      phones: applyPhonesReorder(state, pages),
     };
   }
 
-  const priorityMap = new Map(
-    pages.map((p) => [p.id, p.priority])
-  );
+  // 🔥 non-phones — використовуємо загальний chunker
 
-  // 🔥 1. FLATTEN ВСІ СТОРІНКИ В ОДИН СПИСОК
-  const allRows = state[key].flatMap((p) => p.rows ?? []);
 
-  // 🔥 2. ГРУПУВАННЯ
-  const groups = [];
-  let currentGroup = null;
-
-  for (const row of allRows) {
-    if (row.type === "department") {
-      if (currentGroup) groups.push(currentGroup);
-
-      currentGroup = {
-        department: row,
-        items: [],
-      };
-      continue;
-    }
-
-    if (currentGroup) {
-      currentGroup.items.push(row);
-    }
-  }
-
-  if (currentGroup) groups.push(currentGroup);
-
-  // 🔥 3. UPDATE PRIORITY
-  const updatedGroups = groups.map((g) => {
-    const depId = g.department.departmentId;
-
-    const newPriority = priorityMap.get(depId);
-
-    return {
-      ...g,
-      department: {
-        ...g.department,
-        departmentPriority:
-          newPriority ?? g.department.departmentPriority,
-      },
-    };
-  });
-
-  // 🔥 4. SORT GROUPS
-  updatedGroups.sort((a, b) => {
-    return (
-      (a.department.departmentPriority ?? 9999) -
-      (b.department.departmentPriority ?? 9999)
-    );
-  });
-
-  // 🔥 5. FLATTEN BACK
-  const flat = [];
-
-  for (const g of updatedGroups) {
-    flat.push(g.department);
-    flat.push(...g.items);
-  }
-
-  // 🔥 6. РОЗБИВАЄМО НАЗАД У PAGES
-  const pageSize = state[key][0]?.rows?.length ?? 20;
-
-  const newPages = [];
-
-  for (let i = 0; i < flat.length; i += pageSize) {
-    newPages.push({
-      ...state[key][Math.floor(i / pageSize)] ?? {},
-      rows: flat.slice(i, i + pageSize),
-    });
-  }
+  const newPages = chunkIntoPages(pages,rowsPerPage);
 
   return {
     ...state,
     [key]: newPages,
   };
 }
+
     default:
       return state;
   }
@@ -123,7 +62,7 @@ export const addDataActionCreator = (key, data) => ({
 });
 
 export const setPagesActionCreator = (key, pages) => ({
-  type: SET_PAGES,
+  type: SET_ORDER,
   payload: { key, pages },
 });
 
