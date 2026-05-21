@@ -59,6 +59,8 @@ export const DragProvider = ({
   const [foundResults, setFoundResults] = useState([]);
   const [dropTargetId, setDropTargetId] = useState(null);
   const [rangeStartId, setRangeStartId] = useState(null);
+  // const [isSectionsMode, setIsSectionsMode] = useState(false);
+  // const [activeDepartment, setActiveDepartment] = useState(null);
 
   const [
     elementsBeforeSelectedIds,
@@ -69,6 +71,8 @@ export const DragProvider = ({
     elementsAfterSelectedIds,
     setElementsAfterSelectedIds,
   ] = useState([]);
+
+  
 
   const dispatch = useDispatch();
 
@@ -86,22 +90,23 @@ export const DragProvider = ({
   /* =========================
      FLAT DATA (FIXED)
   ========================= */
-
+useEffect(()=> {console.log ("pages:", pages)}, [pages])
 const fullData = useMemo(() => {
   if (!Array.isArray(pages) || pages.length === 0) {
     return [];
   }
 
   const rows = pages.flatMap((p) => p?.rows ?? []);
-
+debugger
   // phones → тільки departments
   if (menu === "phones") {
     return rows
-      .filter((el) => el?.type === "department")
+      .filter((el) => el?.type === "department" || el?.sectionName)
       .map((item) => ({
         ...item,
         id:
           item?.departmentId ??
+          item?.sectionId ??
           item?.id,
       }))
       .filter((el) => el.id != null);
@@ -117,9 +122,29 @@ const fullData = useMemo(() => {
   }));
 }, [pages, menu]);
 
+
   /* =========================
      ESC RESET
   ========================= */
+
+  useEffect(() => {
+
+      console.log("Pages:", pages)
+    
+    
+},
+    [pages]);
+
+  useEffect(() => {
+
+      console.log("FullData:", fullData)
+    
+    
+},
+    [fullData]);
+
+
+
 
   useEffect(() => {
     const handler = (e) => {
@@ -208,6 +233,8 @@ const fullData = useMemo(() => {
       if (!fullData.length) return;
 
       setRangeStartId(null);
+      
+console.log("Fulldata:", fullData)
 
       const dragGroup = getDragGroup(
         id,
@@ -345,11 +372,15 @@ changeOrderOfDisplayElements(
           lastPage === "foundResults",
         dropTargetId,
         setDropTargetId,
+        // isSectionsMode,
+        // setIsSectionsMode
       }}
     >
       {children}
     </DragContext.Provider>
   );
 };
+
+
 
 

@@ -8,6 +8,7 @@ import { getDepartmentsAndSectionsPerPage, isEditModeSelected } from "../../../.
 import { PageContext } from "../../../../redux/contexts/useConetxt";
 import { BottomFilterContainer } from "../../../../Components/Content/BottomFilter/BottomFilterContainer";
 import s from "./GenericPage.module.css"
+import BottomTableControls from "../../../../Components/Content/BottomTableControls/BottomTableControls";
 
 
 const GenericPage = ({
@@ -63,13 +64,19 @@ return (
         <config.TableComponent {...sharedProps} />
       </PageContext.Provider>
     </div>
-{isEditMode && ( <div className={s.bottomWrapper}>
-      <BottomFilterContainer />
-    </div>)}
+<div className={s.bottomWrapper}>
+  {isEditMode
+    ? <BottomFilterContainer />
+    : <BottomTableControls />
+  }
+</div>
    
   </div>
 );
 };
+
+
+
 
 const mapStateToProps = (state) => ({
   getDepartmentsAndSectionsPerPage: (menu) =>

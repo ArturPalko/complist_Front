@@ -1,4 +1,4 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { getRowClass } from "../../helpers";
 
@@ -12,6 +12,7 @@ import {
   activeMenu,
   isEditModeSelected,
   currentPageByMenu,
+  isSectionsMode,
 } from "../../../../../../redux/selectors/selector";
 
 import {
@@ -30,6 +31,8 @@ const TableWrapperBody = ({
   getRowClass,
   rowClassParams,
 }) => {
+  const dispatch = useDispatch();
+  const isSections = useSelector(isSectionsMode)
   const menu = useSelector(activeMenu);
   const { foundResults } = useFoundResults();
 
@@ -91,7 +94,9 @@ const TableWrapperBody = ({
               createDragPreview,
               cleanupDragPreview,
               setDropTargetId,
-              dropTargetId
+              dropTargetId,
+              dispatch,
+              isSections
             })}
               className={getClassName({
                     index,
@@ -131,3 +136,6 @@ const TableWrapperBody = ({
 };
 
 export default TableWrapperBody;
+
+
+

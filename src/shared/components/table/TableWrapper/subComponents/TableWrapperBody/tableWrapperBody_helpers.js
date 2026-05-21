@@ -2,6 +2,7 @@ import {
   getDragClass,
   getDropPositionClass,
 } from "../../helpers";
+import { setActiveDepartment } from "../../../../../../redux/reducers/ui-reducer";
 
 /* =========================
    CLASS NAME
@@ -72,6 +73,8 @@ export const getDragProps = ({
   isOnFoundResultsPage,
   endDrag,
   setDropTargetId,
+  dispatch,
+  isSections
 }) => {
   if (!editMode) return {};
 
@@ -138,9 +141,19 @@ export const getDragProps = ({
     /* =========================
        CLICK SELECT
     ========================= */
-    onClick: (e) => {
-      toggleSelect(itemId, e);
-    },
+onClick: (e) => {
+// debugger
+  if (
+    isSections &&
+    item?.type === "department"
+  ) {
+    // debugger
+    dispatch(setActiveDepartment(item.departmentId));
+    return;
+  }
+
+  toggleSelect(itemId, e);
+},
   };
 };
 

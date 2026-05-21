@@ -7,9 +7,11 @@ import { filterDataReducer } from "./reducers/filter-data-reducer/filterData-red
 import { dataReducer } from "./reducers/data-reducer/data-reducer";
 import { authReducer } from "./reducers/auth-reducer";
 import { appModeReducer } from "./reducers/appMode-reducer";
+import { phonesUiReducer, uiReducer } from "./reducers/ui-reducer";
 
 
 let reducers = combineReducers({
+    "ui": uiReducer,
     "appMode":appModeReducer,
     "auth":authReducer,
     "data": dataReducer,           

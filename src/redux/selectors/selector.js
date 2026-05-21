@@ -41,15 +41,51 @@ const selectFoundResults = (state, menu) => selectSearchValueByPage(menu)(state)
 // };
 
 export const getDataForMenu = (state, menu) => {
+ 
   const edit = isEditModeSelected(state);
+  const activeDepartmentId = state.ui.activeDepartmentId;
+  const isSection = isSectionsMode(state);
 
-  if (edit && menu === "phones") {
+   debugger
+  if (edit && menu === "phones" && !activeDepartmentId  ) {
     return getPhonesDepartmenstForOrder(state);
+  }
+debugger
+  if (
+    menu === "phones" &&
+    isSection &&
+    activeDepartmentId != null
+  ) {
+    return selectSectionsByDepartmentId(
+      state,
+      activeDepartmentId
+    );
   }
 
   return state?.data?.[menu] ?? [];
 };
 
+const selectSectionsByDepartmentId = (state, departmentId) => {
+  const pages = state?.data?.phones ?? [];
+
+  const allRows = pages.flatMap(page => page?.rows ?? []);
+debugger
+
+  const matchedRows = allRows.filter(
+    row =>
+      row.type === "section" &&
+      row.departmentId == departmentId
+  );
+
+  if (!matchedRows.length) return [];
+console.log ("matches:", matchedRows)
+  return [
+    {
+      pageIndex: 1,
+      rows: matchedRows
+    }
+  ];
+};
 export const getLoadedForMenu = (state, menu) => Boolean(state.dataState?.[menu]?.dataIsLoaded);
 export const getFetchingForMenu = (state, menu) => Boolean(state.dataState?.[menu]?.dataIsFetching);
 
@@ -265,3 +301,8 @@ export const getPhonesDepartmenstForOrder = createSelector(
   [(state) => state?.data?.phones],
   (phones) => buildDepartmentPages(phones)
 );
+
+
+export const isSectionsMode = (state) => {
+  //console.log ("isSectionsMode:",state.ui.viewMode == "sections" )
+  return state.ui.viewMode == "sections"};
