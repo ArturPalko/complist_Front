@@ -85,14 +85,17 @@ export const getDragProps = ({
        DRAG START
     ========================= */
     onDragStart: (e) => {
+        // toggleSelect(itemId, e);
       startDrag(itemId);
-      // debugger
-
+      debugger
+      console.log ("selectedIds3:", selectedIds)
       const preview = createDragPreview(item, selectedIds);
 
       e.dataTransfer.setDragImage(preview, 0, 0);
 
+      debugger
       e.currentTarget._dragPreview = preview;
+      debugger
     },
 
     /* =========================
@@ -142,7 +145,7 @@ export const getDragProps = ({
        CLICK SELECT
     ========================= */
 onClick: (e) => {
-// debugger
+ debugger
   if (
     isSections &&
     item?.type === "department"
@@ -151,7 +154,7 @@ onClick: (e) => {
     dispatch(setActiveDepartment(item.departmentId));
     return;
   }
-
+debugger
   toggleSelect(itemId, e);
 },
   };

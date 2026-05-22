@@ -97,22 +97,24 @@ const fullData = useMemo(() => {
   }
 
   const rows = pages.flatMap((p) => p?.rows ?? []);
-debugger
-  // phones → тільки departments
+
   if (menu === "phones") {
     return rows
-      .filter((el) => el?.type === "department" || el?.sectionName)
+      .filter((el) => el?.type === "department" || el?.type === "section")
       .map((item) => ({
         ...item,
+
+        // 🔥 FIX HERE
         id:
-          item?.departmentId ??
-          item?.sectionId ??
-          item?.id,
+          item.type === "department"
+            ? item.departmentId
+            : item.type === "section"
+            ? item.sectionId
+            : item.id,
       }))
       .filter((el) => el.id != null);
   }
 
-  // інші меню → всі rows
   return rows.map((item) => ({
     ...item,
     id:
@@ -195,10 +197,11 @@ debugger
   /* =========================
      SELECT
   ========================= */
-
+//////////////////////////////////////////////////////
   const toggleSelect = useCallback(
     (id, e) => {
       const mode = getSelectMode(e);
+      debugger
 
       if (mode === "RANGE") {
         if (!rangeStartId) {
@@ -231,11 +234,9 @@ debugger
   const startDrag = useCallback(
     (id) => {
       if (!fullData.length) return;
-
+      debugger
       setRangeStartId(null);
-      
-console.log("Fulldata:", fullData)
-
+debugger
       const dragGroup = getDragGroup(
         id,
         selectedIds
@@ -250,7 +251,7 @@ console.log("Fulldata:", fullData)
 debugger
       const anchorIndex =
         getAnchorIndex(indexes);
-
+debugger
       if (anchorIndex === -1) return;
 
       const { before, after } =
