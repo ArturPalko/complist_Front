@@ -13,6 +13,7 @@ import {
   activeMenu,
   getDataForMenu,
   getLastVisitedPage,
+  selectAtiveDepartmentId,
 } from "../../selectors/selector";
 
 import { setPagesActionCreator } from "../../reducers/data-reducer/data-reducer";
@@ -61,7 +62,7 @@ export const DragProvider = ({
   const [rangeStartId, setRangeStartId] = useState(null);
   // const [isSectionsMode, setIsSectionsMode] = useState(false);
   // const [activeDepartment, setActiveDepartment] = useState(null);
-
+  const depId = useSelector(selectAtiveDepartmentId)
   const [
     elementsBeforeSelectedIds,
     setElementsBeforeSelectedIds,
@@ -201,7 +202,7 @@ const fullData = useMemo(() => {
   const toggleSelect = useCallback(
     (id, e) => {
       const mode = getSelectMode(e);
-      debugger
+      
 
       if (mode === "RANGE") {
         if (!rangeStartId) {
@@ -234,9 +235,9 @@ const fullData = useMemo(() => {
   const startDrag = useCallback(
     (id) => {
       if (!fullData.length) return;
-      debugger
+      
       setRangeStartId(null);
-debugger
+
       const dragGroup = getDragGroup(
         id,
         selectedIds
@@ -248,15 +249,15 @@ debugger
         dragGroup,
         fullData
       );
-debugger
+
       const anchorIndex =
         getAnchorIndex(indexes);
-debugger
+
       if (anchorIndex === -1) return;
 
       const { before, after } =
         splitBeforeAfter(fullData, anchorIndex);
-debugger
+
       setElementsBeforeSelectedIds(before);
       setElementsAfterSelectedIds(after);
     },
@@ -279,10 +280,10 @@ debugger
 
   const handleDrop = useCallback(
     (toIndex, page) => {
-      debugger
+      
       if (!dragIds.length || !fullData.length)
         return;
-debugger
+
       const globalToIndex = getGlobalIndex(
         page,
         toIndex,
@@ -312,7 +313,7 @@ debugger
 ========================= */
 
 const payload = reordered.map((el, index) => ({
-  id: el.departmentId ?? el.id,
+  id: el.sectionId ?? el.departmentId ?? el.id,
   priority: index + 1,
 }));
 
@@ -325,7 +326,8 @@ dispatch(
     menu,
     menu === "phones"
       ? payload
-      : reordered
+      : reordered,
+      depId
   )
 );
 

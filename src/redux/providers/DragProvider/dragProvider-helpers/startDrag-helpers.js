@@ -3,7 +3,7 @@ export const getDragGroup = (id, selectedIds) => {
 };
 
 export const getIndexes = (dragGroup, fullData) => {
-  debugger
+  
   return dragGroup
     .map(id => fullData.findIndex(i => i.id === id))
     .filter(i => i !== -1);

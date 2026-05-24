@@ -29,13 +29,13 @@ export const dataReducer = (state = initialState, action) => {
    ;
 
 case SET_ORDER: {
-  const { key, pages } = action.payload;
+  const { key, pages, deptId } = action.payload;
 
   // 🔥 phones — складна логіка
   if (key === "phones") {
     return {
       ...state,
-      phones: applyPhonesReorder(state, pages),
+      phones: applyPhonesReorder(state, pages,deptId),
     };
   }
 
@@ -61,9 +61,9 @@ export const addDataActionCreator = (key, data) => ({
   payload: { key, data }
 });
 
-export const setPagesActionCreator = (key, pages) => ({
+export const setPagesActionCreator = (key, pages,deptId) => ({
   type: SET_ORDER,
-  payload: { key, pages },
+  payload: { key, pages, deptId },
 });
 
 

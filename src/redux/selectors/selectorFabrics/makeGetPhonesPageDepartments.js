@@ -9,7 +9,7 @@ export const makeGetPhonesSort = (menuKey) => (state) => {
   // 1. FLATTEN departments
   // =========================
   const departments = [];
-debugger
+
   menuData.forEach((element) => {
     element.rows?.forEach((row) => {
       if (row.type === "department") {

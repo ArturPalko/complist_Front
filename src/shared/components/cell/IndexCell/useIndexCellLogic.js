@@ -48,11 +48,11 @@ const foundResults = searchState.foundResults ?? [];
       const currentIndex = foundResults.findIndex(
         (item) => item.index === cellData.index && item.currentPage == targetPage
       );
-      debugger
+      
       
       if (currentIndex !== -1) {
         const indexes = getIndexesForSection(foundResults, currentIndex,targetPage);
-        debugger
+        
         
         dispatch(addIndexesFromIndexCell(indexes));
       }

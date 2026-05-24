@@ -1,56 +1,153 @@
 import { chunkIntoPages } from "../../../providers/DragProvider/dragProvider-helpers/commonFunctions";
 
-export const applyPhonesReorder = (state, pages) => {
-  const priorityMap = new Map(pages.map(p => [p.id, p.priority]));
+export const applyPhonesReorder = (state, pages, deptId) => {
+  // sectionId -> newPriority
+  const priorityMap = new Map(
+    pages.map(p => [p.id, p.priority])
+  );
 
-  const groups = [];
+  // 1) flatten all rows
+  const allRows = state.phones.flatMap(
+    page => page.rows ?? []
+  );
 
-  // 1) build groups (flatten + grouping в одному проході)
-  for (const page of state.phones) {
-    for (const row of page.rows ?? []) {
-      if (row.type === "department") {
-        groups.push({
-          department: row,
-          items: [],
-        });
-      } else if (groups.length) {
-        groups[groups.length - 1].items.push(row);
-      }
+  // 2) find target department block
+  const departmentRows = [];
+
+  let insideTargetDepartment = false;
+
+  for (const row of allRows) {
+    // start target department
+    if (
+      row.type === "department" &&
+      row.departmentId === deptId
+    ) {
+      insideTargetDepartment = true;
+    }
+
+    // reached next department
+    else if (
+      row.type === "department" &&
+      insideTargetDepartment
+    ) {
+      break;
+    }
+
+    if (insideTargetDepartment) {
+      departmentRows.push(row);
     }
   }
 
-  // 2) update + collect in one step (без окремого sort array clone)
-  const updated = groups
-    .map(g => {
-      const id = g.department.departmentId;
+  // nothing found
+  if (!departmentRows.length) {
+    return state.phones;
+  }
 
-      return {
-        department: {
-          ...g.department,
-          departmentPriority:
-            priorityMap.get(id) ?? g.department.departmentPriority,
-        },
-        items: g.items,
+  // 3) keep department header
+  const departmentHeader = departmentRows[0];
+
+  // 4) collect:
+  // - department-level rows
+  // - sections with their rows
+  const departmentItems = [];
+  const sections = [];
+
+  let currentSection = null;
+
+  for (const row of departmentRows.slice(1)) {
+    // new section
+    if (row.type === "section") {
+      currentSection = {
+        section: row,
+        items: [],
       };
-    })
+
+      sections.push(currentSection);
+    }
+
+    // rows inside section
+    else if (currentSection) {
+      currentSection.items.push(row);
+    }
+
+    // rows directly under department
+    else {
+      departmentItems.push(row);
+    }
+  }
+
+  // 5) apply priorities + sort sections
+  const sortedSections = sections
+    .map(s => ({
+      ...s,
+      section: {
+        ...s.section,
+        sectionPriority:
+          priorityMap.get(s.section.sectionId) ??
+          s.section.sectionPriority,
+      },
+    }))
     .sort(
       (a, b) =>
-        (a.department.departmentPriority ?? 9999) -
-        (b.department.departmentPriority ?? 9999)
+        (a.section.sectionPriority ?? 9999) -
+        (b.section.sectionPriority ?? 9999)
     );
 
-  // 3) final flat rebuild (один reduce замість for)
-  const flat = updated.reduce((acc, g) => {
-    acc.push(g.department, ...g.items);
-    return acc;
-  }, []);
+  // 6) rebuild department block
+  const reorderedDepartmentRows = [
+    departmentHeader,
 
-  // 4) chunk (замість ручного циклу)
-  const pageSize = state.phones[0]?.rows?.length ?? 20;
+    // department-level users/items
+    ...departmentItems,
 
-  const chunked = chunkIntoPages(flat, pageSize);
+    // sorted sections
+    ...sortedSections.reduce((acc, s) => {
+      acc.push(s.section, ...s.items);
+      return acc;
+    }, []),
+  ];
 
-  // 5) preserve page metadata (мінімально)
+  // 7) rebuild all rows
+  const rebuiltRows = [];
+
+  let skipDepartment = false;
+
+  for (const row of allRows) {
+    // replace target department
+    if (
+      row.type === "department" &&
+      row.departmentId === deptId
+    ) {
+      skipDepartment = true;
+
+      rebuiltRows.push(...reorderedDepartmentRows);
+
+      continue;
+    }
+
+    // reached next department
+    if (
+      row.type === "department" &&
+      skipDepartment
+    ) {
+      skipDepartment = false;
+    }
+
+    if (!skipDepartment) {
+      rebuiltRows.push(row);
+    }
+  }
+
+  // 8) chunk back into pages
+  const pageSize =
+    state.phones[0]?.rows?.length ?? 20;
+
+  const chunked = chunkIntoPages(
+    rebuiltRows,
+    pageSize
+  );
+
+  // 9) preserve page metadata
   return chunked.map((p, i) => ({
     ...state.phones[i],
     ...p,

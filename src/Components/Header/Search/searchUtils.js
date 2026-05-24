@@ -51,7 +51,7 @@ export const runSearch = ({ searchValue, searchTarget }) => {
           if (excludedKeys.includes(key)) continue;
 
           if (normalize(value).includes(query)) {
-            debugger
+            
             foundResults.push({
               elementType: row.type,
               dataKey: key,

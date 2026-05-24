@@ -33,7 +33,7 @@ export const uiReducer = (state = initialState, action) => {
 
     /* 🔁 toggle between departments <-> sections */
     case TOGGLE_VIEW_MODE:
-        debugger
+        
       return {
         ...state,
         viewMode:

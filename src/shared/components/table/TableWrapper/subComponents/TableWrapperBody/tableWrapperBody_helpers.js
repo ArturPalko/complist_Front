@@ -87,29 +87,29 @@ export const getDragProps = ({
     onDragStart: (e) => {
         // toggleSelect(itemId, e);
       startDrag(itemId);
-      debugger
+      
       console.log ("selectedIds3:", selectedIds)
       const preview = createDragPreview(item, selectedIds);
 
       e.dataTransfer.setDragImage(preview, 0, 0);
 
-      debugger
+      
       e.currentTarget._dragPreview = preview;
-      debugger
+      
     },
 
     /* =========================
        DRAG OVER (ONLY SOURCE OF TRUTH)
     ========================= */
     onDragOver: (e) => {
-      // debugger
+      // 
       if (isOnFoundResultsPage) return;
 
       e.preventDefault();
 
       // 🔥 єдине місце де міняємо drop target
       setDropTargetId?.(itemId);
-      // debugger
+      // 
     },
 
     onDragLeave: (e) => {
@@ -121,9 +121,9 @@ export const getDragProps = ({
        DROP
     ========================= */
     onDrop: (e) => {
-      // debugger
+      // 
       setDropTargetId?.(null);
-// debugger
+// 
       handleDrop(index, page);
     },
 
@@ -145,16 +145,16 @@ export const getDragProps = ({
        CLICK SELECT
     ========================= */
 onClick: (e) => {
- debugger
+ 
   if (
     isSections &&
     item?.type === "department"
   ) {
-    // debugger
+    // 
     dispatch(setActiveDepartment(item.departmentId));
     return;
   }
-debugger
+
   toggleSelect(itemId, e);
 },
   };

@@ -29,9 +29,9 @@ const selectFoundResults = (state, menu) => selectSearchValueByPage(menu)(state)
 
 //   const active = state.currentPageNumber.activeMenu;
 //   const editMode = isEditModeSelected(state);
-//   debugger
+//   
 //   const newW = data.flatMap(page => page.rows);
-//   debugger
+//   
 
 //   if ((active === "Gov-ua" || active === "Lotus") && editMode) {
 //     return newW;
@@ -46,11 +46,11 @@ export const getDataForMenu = (state, menu) => {
   const activeDepartmentId = state.ui.activeDepartmentId;
   const isSection = isSectionsMode(state);
 
-   debugger
+   
   if (edit && menu === "phones" && !activeDepartmentId  ) {
     return getPhonesDepartmenstForOrder(state);
   }
-debugger
+
   if (
     menu === "phones" &&
     isSection &&
@@ -69,7 +69,7 @@ const selectSectionsByDepartmentId = (state, departmentId) => {
   const pages = state?.data?.phones ?? [];
 
   const allRows = pages.flatMap(page => page?.rows ?? []);
-debugger
+
 
   const matchedRows = allRows.filter(
     row =>
@@ -306,3 +306,5 @@ export const getPhonesDepartmenstForOrder = createSelector(
 export const isSectionsMode = (state) => {
   //console.log ("isSectionsMode:",state.ui.viewMode == "sections" )
   return state.ui.viewMode == "sections"};
+
+export const selectAtiveDepartmentId = (state)=> state.ui.activeDepartmentId;
