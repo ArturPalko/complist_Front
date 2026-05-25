@@ -34,12 +34,14 @@ const PhonesTable = ({ columns, pageNumber, rowsPerPage }) => {
     const { dimAfterSearchNavigationClass, dimAfterPageNumberPressedClass } = tableLogic.dimClasses;
 
     switch (row.type) {
+      case "postion":
       case "department":
       case "section": {
         const isDepartment = row.type === "department";
-        const name = isDepartment ? row.departmentName : row.sectionName;
-        const className = isDepartment ? s.mainDepartment : s.section;
-
+        const isPosition = row.type == "position";
+        const name = isDepartment ? row.departmentName : isPosition ? row.positionName :row.sectionName;
+        const className = isDepartment ? s.mainDepartment : isPosition? s.position: s.section;
+        console.log ("name:", name)
         const showBreak = isDepartment
           ? tableLogic.dashedBlocks.departments.some(d => d === name)
           : tableLogic.dashedBlocks.sections.includes(name);

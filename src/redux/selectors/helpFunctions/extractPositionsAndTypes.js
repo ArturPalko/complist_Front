@@ -1,27 +1,40 @@
 export const extractPositionsAndTypes = (phones) => {
-  const contactTypes = [];
-  const userPositions = [];
+  const contactTypes = new Set();
+  const positionsMap = new Map();
 
-  if (!Array.isArray(phones) || phones.length === 0) {
+  if (!Array.isArray(phones)) {
     return { contactTypes: [], userPositions: [] };
   }
 
-  phones.forEach(element => {
-    if (!Array.isArray(element.rows)) return;
+  phones.forEach(page => {
+    if (!Array.isArray(page.rows)) return;
 
-    element.rows.forEach(row => {
-      if (row.type === "user") {
-        if (!contactTypes.includes(row.userType)) {
-          contactTypes.push(row.userType);
-        }
+    page.rows.forEach(row => {
+      if (row.type !== "user") return;
 
-        if (row.userType === "Користувач" && !userPositions.includes(row.userPosition)) {
-          if (row.userPosition === undefined) console.log("Пустий рядок:", row);
-          userPositions.push(row.userPosition);
+      if (row.userType) {
+        contactTypes.add(row.userType);
+      }debugger
+
+      if (row.userType === "Користувач" && row.userPosition) {
+        // key = position name (dedup)
+        if (!positionsMap.has(row.userPosition)) {
+          positionsMap.set(row.userPosition, {
+            name: row.userPosition,
+            priority: row.userPositionPriority ?? 9999
+          });
         }
       }
     });
   });
 
-  return { contactTypes, userPositions };
+  const userPositions = Array.from(positionsMap.values())
+    .sort((a, b) => a.priority - b.priority)
+    .map(p => p.name);
+
+  return {
+    contactTypes: Array.from(contactTypes),
+    userPositions
+  };
 };
+

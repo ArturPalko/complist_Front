@@ -101,7 +101,11 @@ const fullData = useMemo(() => {
 
   if (menu === "phones") {
     return rows
-      .filter((el) => el?.type === "department" || el?.type === "section")
+      .filter((el) =>
+  el?.type === "department" ||
+  el?.type === "section" ||
+  el?.type === "position"
+)
       .map((item) => ({
         ...item,
 
@@ -337,7 +341,8 @@ dispatch(
 
 changeOrderOfDisplayElements(
   payload,
-  menu
+  menu,
+  depId
 );
 
       endDrag();

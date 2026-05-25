@@ -45,9 +45,31 @@ export const getDataForMenu = (state, menu) => {
   const edit = isEditModeSelected(state);
   const activeDepartmentId = state.ui.activeDepartmentId;
   const isSection = isSectionsMode(state);
+  const isDepartments = isDepartmentsMode(state);
+  const isPositions = isPositionsMode(state);
 
+if (edit && menu === "phones" && isPositions) {
+
+  const data = state.data.phones;
+
+  const positions =
+    extractPositionsAndTypes(data)?.userPositions ?? [];
+    debugger
+
+  const result = [
+    {
+      pageIndex: 1,
+      rows: positions.map(position => ({
+        type: "position",
+        positionName: position
+      }))
+    }
+  ];
+
+  return result;
+}
    
-  if (edit && menu === "phones" && !activeDepartmentId  ) {
+  if (edit && menu === "phones" && (isDepartments || isSection) && !activeDepartmentId  ) {
     return getPhonesDepartmenstForOrder(state);
   }
 
@@ -307,4 +329,14 @@ export const isSectionsMode = (state) => {
   //console.log ("isSectionsMode:",state.ui.viewMode == "sections" )
   return state.ui.viewMode == "sections"};
 
+export const isDepartmentsMode = (state) => {
+  //console.log ("isSectionsMode:",state.ui.viewMode == "sections" )
+  return state.ui.viewMode == "departments"};
+
+export const isPositionsMode = (state) => {
+  //console.log ("isSectionsMode:",state.ui.viewMode == "sections" )
+  return state.ui.viewMode == "positions"};
+
 export const selectAtiveDepartmentId = (state)=> state.ui.activeDepartmentId;
+
+

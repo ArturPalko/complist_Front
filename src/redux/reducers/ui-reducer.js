@@ -1,5 +1,5 @@
 const initialState = {
-  viewMode: "departments", // "departments" | "sections"
+  viewMode: null, // "departments" | "sections"
   activeDepartmentId: null
 };
 
@@ -28,7 +28,8 @@ export const uiReducer = (state = initialState, action) => {
     case SET_VIEW_MODE:
       return {
         ...state,
-        viewMode: action.mode
+        viewMode: action.mode == state.viewMode ? null: action.mode,
+        activeDepartmentId: action.mode == "sections" ? null : state.activeDepartmentId
       };
 
     /* 🔁 toggle between departments <-> sections */

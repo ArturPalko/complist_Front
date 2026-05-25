@@ -46,17 +46,28 @@ export const fetchPasswordsByType = async (type) => {
   }, {});
 };
 
-export const changeOrderOfDisplayElements = async (elements, menu) => {
-  
-  
-  if (menu=="phones") return
-  const dataTopush = elements.map(el => ({
+export const changeOrderOfDisplayElements = async (
+  elements,
+  menu,
+  depId
+) => {
+
+  const dataToPush = elements.map(el => ({
     id: el.id,
     priority: el.priority
   }));
-  const sendUrl= changeOrderUrl(menu);
-  
-  
- api.post(sendUrl, dataTopush)
-  ;
+
+  const sendUrl = changeOrderUrl(menu);
+
+  // 🔥 phones sections reorder
+  if (menu === "phones" && depId) {
+
+    return api.post(sendUrl, {
+      depId,
+      items: dataToPush
+    });
+  }
+
+  // 🔥 default reorder
+  return api.post(sendUrl, dataToPush);
 };
