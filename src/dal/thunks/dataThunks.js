@@ -1,22 +1,37 @@
-import {toggleDataIsFetchingActionCreator, setDataIsLoadedActionCreator} from "../../redux/reducers/app-reducer"
+import {
+  toggleDataIsFetchingActionCreator,
+  setDataIsLoadedActionCreator
+} from "../../redux/reducers/app-reducer";
+
 import { api } from "../api";
 import { dataUrls } from "../urls";
 
-export const fetchDataThunk = (actionCreator, menu) => async (dispatch) => {
-  const endpoint = dataUrls[menu];
-  if (!endpoint) throw new Error(`No data URL defined for menu "${menu}"`);
+export const fetchDataThunk =
+  (actionCreator, menu) =>
+  async (dispatch) => {
 
-  dispatch(toggleDataIsFetchingActionCreator(true, menu));
+    const endpoint = dataUrls[menu];
 
-  try {
-    const { data } = await api.get(endpoint); // запит через централізований axios
-    dispatch(actionCreator(menu, data));      // збереження даних у Redux
-    dispatch(setDataIsLoadedActionCreator(true, menu));
-  } catch (error) {
-    console.error(`Помилка запиту ${menu}:`, error.message);
-    throw error;
-  } finally {
-    dispatch(toggleDataIsFetchingActionCreator(false, menu));
-  }
-};
+    if (!endpoint) {
+      throw new Error(`No data URL defined for menu "${menu}"`);
+    }
 
+    dispatch(toggleDataIsFetchingActionCreator(true, menu));
+
+    try {
+      const { data } = await api.get(endpoint);
+
+      // =========================
+      // SIMPLE FLOW (RESTORED)
+      // =========================
+      dispatch(actionCreator(menu, data));
+
+      dispatch(setDataIsLoadedActionCreator(true, menu));
+
+    } catch (error) {
+      console.error(`Помилка запиту ${menu}:`, error.message);
+      throw error;
+    } finally {
+      dispatch(toggleDataIsFetchingActionCreator(false, menu));
+    }
+  };

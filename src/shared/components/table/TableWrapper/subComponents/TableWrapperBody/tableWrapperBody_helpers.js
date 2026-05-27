@@ -2,6 +2,7 @@ import {
   getDragClass,
   getDropPositionClass,
 } from "../../helpers";
+
 import { setActiveDepartment } from "../../../../../../redux/reducers/ui-reducer";
 
 /* =========================
@@ -44,7 +45,7 @@ export const getClassName = ({
     getDragClass({
       editMode,
       isDragging,
-      isSelected,
+      isSelected
     }),
 
     getDropPositionClass({
@@ -55,6 +56,7 @@ export const getClassName = ({
     .filter(Boolean)
     .join(" ");
 };
+
 /* =========================
    DRAG PROPS
 ========================= */
@@ -66,105 +68,141 @@ export const getDragProps = ({
   selectedIds,
   index,
   page,
+
   startDrag,
   handleDrop,
   toggleSelect,
   stopDrag,
+
   isOnFoundResultsPage,
+
   endDrag,
   setDropTargetId,
+
   dispatch,
-  isSections
+  isSections,
+  menu,
+  currentMode
 }) => {
-  if (!editMode) return {};
+
+  /* =========================
+     CLICK SELECT
+  ========================= */
+
+  const onClick = (e) => {
+    if (
+      isSections &&
+      item?.type === "department"
+    ) {
+      dispatch(setActiveDepartment(item.departmentId));
+      return;
+    }
+
+    toggleSelect(itemId, e);
+  };
+if (menu == "phones" && !currentMode) return
+  /* =========================
+     DRAG DISABLED
+  ========================= */
+
+  const isDragDisabled =
+    !editMode ||
+    (
+      isSections &&
+      item?.type === "department"
+    );
+
+  /* =========================
+     BASE PROPS
+  ========================= */
+
+  const props = {
+    onClick,
+  };
+
+  /* =========================
+     NO DRAG
+  ========================= */
+
+  if (isDragDisabled) {
+    return props;
+  }
+
+  /* =========================
+     DRAG ENABLED
+  ========================= */
 
   return {
+    ...props,
+
     draggable: true,
 
     /* =========================
        DRAG START
     ========================= */
+
     onDragStart: (e) => {
-        // toggleSelect(itemId, e);
       startDrag(itemId);
-      
-      console.log ("selectedIds3:", selectedIds)
-      const preview = createDragPreview(item, selectedIds);
+
+      console.log("selectedIds3:", selectedIds);
+
+      const preview =
+        createDragPreview(item, selectedIds);
 
       e.dataTransfer.setDragImage(preview, 0, 0);
 
-      
       e.currentTarget._dragPreview = preview;
-      
     },
 
     /* =========================
-       DRAG OVER (ONLY SOURCE OF TRUTH)
+       DRAG OVER
     ========================= */
+
     onDragOver: (e) => {
-      // 
       if (isOnFoundResultsPage) return;
 
       e.preventDefault();
 
-      // 🔥 єдине місце де міняємо drop target
       setDropTargetId?.(itemId);
-      // 
     },
 
-    onDragLeave: (e) => {
-
+    onDragLeave: () => {
       setDropTargetId?.(null);
     },
 
     /* =========================
        DROP
     ========================= */
-    onDrop: (e) => {
-      // 
+
+    onDrop: () => {
       setDropTargetId?.(null);
-// 
+
       handleDrop(index, page);
     },
 
     /* =========================
        DRAG END
     ========================= */
+
     onDragEnd: (e) => {
       setDropTargetId?.(null);
 
       endDrag();
 
-      cleanupDragPreview(e.currentTarget._dragPreview);
+      cleanupDragPreview(
+        e.currentTarget._dragPreview
+      );
+
       e.currentTarget._dragPreview = null;
 
       stopDrag?.();
     },
-
-    /* =========================
-       CLICK SELECT
-    ========================= */
-onClick: (e) => {
- 
-  if (
-    isSections &&
-    item?.type === "department"
-  ) {
-    // 
-    dispatch(setActiveDepartment(item.departmentId));
-    return;
-  }
-
-  toggleSelect(itemId, e);
-},
   };
 };
 
 /* =========================
    DRAG PREVIEW
 ========================= */
-
-// import { getDragPreviewHTML } from "./dragPreviewTemplate";
 
 export const createDragPreview = (
   item,
@@ -184,25 +222,35 @@ export const createDragPreview = (
   return el;
 };
 
-
-// dragPreviewTemplate.js
+/* =========================
+   PREVIEW HTML
+========================= */
 
 export const getDragPreviewHTML = ({
   item,
   selectedIds,
 }) => {
-  const isMultiple = selectedIds.length > 1;
+  const isMultiple =
+    selectedIds.length > 1;
 
   return isMultiple
     ? `📦 ${selectedIds.length} елементи`
-    : `📄 ${item.name || item.mailName || item.departmentName || item.SectionName}`;
+    : `📄 ${
+        item.name ||
+        item.mailName ||
+        item.departmentName ||
+        item.SectionName ||
+        item.positionName ||
+        item.userType
+      }`;
 };
 
+/* =========================
+   CLEANUP
+========================= */
 
 export const cleanupDragPreview = (el) => {
   if (el && el.parentNode) {
     el.parentNode.removeChild(el);
   }
 };
-
-

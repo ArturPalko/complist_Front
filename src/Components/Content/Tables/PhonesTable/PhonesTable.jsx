@@ -34,13 +34,26 @@ const PhonesTable = ({ columns, pageNumber, rowsPerPage }) => {
     const { dimAfterSearchNavigationClass, dimAfterPageNumberPressedClass } = tableLogic.dimClasses;
 
     switch (row.type) {
-      case "postion":
+      case "userType":
+      case "position":
       case "department":
       case "section": {
         const isDepartment = row.type === "department";
+        const isSection = row.type == "section";
         const isPosition = row.type == "position";
-        const name = isDepartment ? row.departmentName : isPosition ? row.positionName :row.sectionName;
-        const className = isDepartment ? s.mainDepartment : isPosition? s.position: s.section;
+        const isUserType = row.type == "userType"; 
+      
+       const name =
+  isDepartment
+    ? row.departmentName
+    : isSection
+      ? row.sectionName
+      : isPosition
+        ? row.positionName
+        : isUserType
+          ? row.userType
+          : row.name;
+        const className = isDepartment ? s.mainDepartment : isPosition || isUserType? s.positionsAndUserTypes: s.section;
         console.log ("name:", name)
         const showBreak = isDepartment
           ? tableLogic.dashedBlocks.departments.some(d => d === name)

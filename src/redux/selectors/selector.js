@@ -39,37 +39,53 @@ const selectFoundResults = (state, menu) => selectSearchValueByPage(menu)(state)
 
 //   return data;
 // };
-
 export const getDataForMenu = (state, menu) => {
- 
+
   const edit = isEditModeSelected(state);
   const activeDepartmentId = state.ui.activeDepartmentId;
+
   const isSection = isSectionsMode(state);
   const isDepartments = isDepartmentsMode(state);
+
   const isPositions = isPositionsMode(state);
+  const isUserTypes = isUserTypesMode(state);
 
-if (edit && menu === "phones" && isPositions) {
+  // ========================================
+  // POSITIONS / USER TYPES (FROM PHONES)
+  // ========================================
+  if (
+    edit &&
+    menu === "phones" &&
+    (isPositions || isUserTypes)
+  ) {
+    const data = state.data.phones;
 
-  const data = state.data.phones;
+    const extracted = extractPositionsAndTypes(data);
 
-  const positions =
-    extractPositionsAndTypes(data)?.userPositions ?? [];
-    debugger
+    const rows = isPositions
+      ? extracted?.userPositions ?? []
+      : extracted?.contactTypes ?? [];
 
-  const result = [
-    {
-      pageIndex: 1,
-      rows: positions.map(position => ({
-        type: "position",
-        positionName: position
-      }))
-    }
-  ];
+    return [
+      {
+        pageIndex: 1,
+        rows: rows.map(item => ({
+          ...item,
+          type: isPositions ? "position" : "userType"
+        }))
+      }
+    ];
+  }
 
-  return result;
-}
-   
-  if (edit && menu === "phones" && (isDepartments || isSection) && !activeDepartmentId  ) {
+  // ========================================
+  // DEPARTMENTS / SECTIONS
+  // ========================================
+  if (
+    edit &&
+    menu === "phones" &&
+    (isDepartments || isSection) &&
+    !activeDepartmentId
+  ) {
     return getPhonesDepartmenstForOrder(state);
   }
 
@@ -78,15 +94,14 @@ if (edit && menu === "phones" && isPositions) {
     isSection &&
     activeDepartmentId != null
   ) {
-    return selectSectionsByDepartmentId(
-      state,
-      activeDepartmentId
-    );
+    return selectSectionsByDepartmentId(state, activeDepartmentId);
   }
 
+  // ========================================
+  // DEFAULT
+  // ========================================
   return state?.data?.[menu] ?? [];
 };
-
 const selectSectionsByDepartmentId = (state, departmentId) => {
   const pages = state?.data?.phones ?? [];
 
@@ -337,6 +352,18 @@ export const isPositionsMode = (state) => {
   //console.log ("isSectionsMode:",state.ui.viewMode == "sections" )
   return state.ui.viewMode == "positions"};
 
+export const isUserTypesMode = (state) => {
+  //console.log ("isSectionsMode:",state.ui.viewMode == "sections" )
+  return state.ui.viewMode == "userTypes"};
+
+
+export const getCurrentMode = (state) =>  state.ui.viewMode;
+
+
+
 export const selectAtiveDepartmentId = (state)=> state.ui.activeDepartmentId;
+
+
+
 
 

@@ -258,3 +258,129 @@ export const reorderSections = (
     rebuiltRows
   );
 };
+
+
+
+
+
+export const orderByPositions = (state, pages) => {
+  if (!Array.isArray(state?.phones)) return state.phones;
+
+  // 1. priority map
+  const priorityMap = pages.reduce((acc, p) => {
+    acc[String(p.id)] = p.priority;
+    return acc;
+  }, {});
+
+  // 2. flatten
+  const rows = state.phones.flatMap(p => p.rows ?? []);
+
+  const result = [];
+  let buffer = [];
+
+  const flush = () => {
+    if (!buffer.length) return;
+
+    buffer.sort((a, b) =>
+      (a.userPositionPriority ?? 9999) -
+      (b.userPositionPriority ?? 9999)
+    );
+
+    result.push(...buffer);
+    buffer = [];
+  };
+
+  // 3. apply segment sort
+  for (const row of rows) {
+    if (row.type === "user") {
+      const key = String(row.userPositionId);
+
+      const newPriority = priorityMap[key];
+
+      buffer.push({
+        ...row,
+        userPositionPriority:
+          newPriority ?? row.userPositionPriority
+      });
+
+      continue;
+    }
+
+    flush();
+    result.push(row);
+  }
+
+  flush();
+
+  // 4. rebuild pages (🔥 ВАЖЛИВО)
+  const pageSize = state.phones[0]?.rows?.length ?? 20;
+
+  const chunked = chunkIntoPages(result, pageSize);
+
+  return chunked.map((p, i) => ({
+    ...state.phones[i],
+    ...p
+  }));
+};
+
+export const orderByUserTypes = (state, pages) => {
+  debugger
+  if (!Array.isArray(state?.phones)) return state.phones;
+
+  // 1. priority map (userTypeId -> priority)
+  const priorityMap = pages.reduce((acc, p) => {
+    acc[String(p.id)] = p.priority;
+    return acc;
+  }, {});
+
+  // 2. flatten
+  const rows = state.phones.flatMap(p => p.rows ?? []);
+
+  const result = [];
+  let buffer = [];
+
+  const flush = () => {
+    if (!buffer.length) return;
+
+    buffer.sort((a, b) =>
+      (a.userTypePriority ?? 9999) -
+      (b.userTypePriority ?? 9999)
+    );
+
+    result.push(...buffer);
+    buffer = [];
+  };
+
+  // 3. apply segment sort
+  for (const row of rows) {
+    if (row.type === "user") {
+
+      const key = String(row.userTypeId);
+
+      const newPriority = priorityMap[key];
+
+      buffer.push({
+        ...row,
+        userTypePriority:
+          newPriority ?? row.userTypePriority
+      });
+
+      continue;
+    }
+
+    flush();
+    result.push(row);
+  }
+
+  flush();
+
+  // 4. rebuild pages
+  const pageSize = state.phones[0]?.rows?.length ?? 20;
+
+  const chunked = chunkIntoPages(result, pageSize);
+
+  return chunked.map((p, i) => ({
+    ...state.phones[i],
+    ...p
+  }));
+};

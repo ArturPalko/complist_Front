@@ -2,6 +2,7 @@ import axios from "axios";
 import axiosRetry from "axios-retry";
 import { passwordUrls} from "./urls";
 import { changeOrderUrl } from "./urls";
+import { current } from "@reduxjs/toolkit";
 
 export const api = axios.create({
   baseURL: "http://localhost:5114", 
@@ -49,7 +50,8 @@ export const fetchPasswordsByType = async (type) => {
 export const changeOrderOfDisplayElements = async (
   elements,
   menu,
-  depId
+  depId,
+  currentMode
 ) => {
 
   const dataToPush = elements.map(el => ({
@@ -59,15 +61,21 @@ export const changeOrderOfDisplayElements = async (
 
   const sendUrl = changeOrderUrl(menu);
 
-  // 🔥 phones sections reorder
-  if (menu === "phones" && depId) {
+  // 🔥 phones special case
+  if (menu === "phones") {
 
-    return api.post(sendUrl, {
-      depId,
-      items: dataToPush
-    });
+    const payload = {
+      items: dataToPush,
+      mode: currentMode,
+    };
+
+    if (depId) {
+      payload.depId = depId;
+    }
+
+    return api.post(sendUrl, payload);
   }
 
-  // 🔥 default reorder
+  // 🔥 everything else stays SAME AS BEFORE
   return api.post(sendUrl, dataToPush);
 };

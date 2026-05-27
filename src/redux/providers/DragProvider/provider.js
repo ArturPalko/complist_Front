@@ -11,6 +11,7 @@ import { DragContext } from "../../contexts/useConetxt";
 
 import {
   activeMenu,
+  getCurrentMode,
   getDataForMenu,
   getLastVisitedPage,
   selectAtiveDepartmentId,
@@ -78,6 +79,7 @@ export const DragProvider = ({
   const dispatch = useDispatch();
 
   const menu = useSelector(activeMenu);
+  const currentMode = useSelector(getCurrentMode);
 
   const lastPage = useSelector((state) =>
     getLastVisitedPage(state, menu)
@@ -100,32 +102,33 @@ const fullData = useMemo(() => {
   const rows = pages.flatMap((p) => p?.rows ?? []);
 
   if (menu === "phones") {
+    // debugger
     return rows
       .filter((el) =>
-  el?.type === "department" ||
-  el?.type === "section" ||
-  el?.type === "position"
-)
+        el?.type === "department" ||
+        el?.type === "section" ||
+        el?.type === "position" ||
+        el.type == "userType"
+      )
       .map((item) => ({
         ...item,
 
-        // 🔥 FIX HERE
+        // 🔥 UNIFIED ID
         id:
           item.type === "department"
             ? item.departmentId
             : item.type === "section"
             ? item.sectionId
-            : item.id,
+            : item.type === "position"
+            ? item.id
+            : item.id
       }))
       .filter((el) => el.id != null);
   }
-
+// debugger
   return rows.map((item) => ({
     ...item,
-    id:
-      item?.id ??
-      item?.mailId ??
-      item?.sectionId,
+    id: item?.id ?? item?.mailId ?? item?.sectionId,
   }));
 }, [pages, menu]);
 
@@ -331,7 +334,8 @@ dispatch(
     menu === "phones"
       ? payload
       : reordered,
-      depId
+      depId,
+      currentMode
   )
 );
 
@@ -342,8 +346,10 @@ dispatch(
 changeOrderOfDisplayElements(
   payload,
   menu,
-  depId
+  depId,
+  currentMode
 );
+
 
       endDrag();
     },

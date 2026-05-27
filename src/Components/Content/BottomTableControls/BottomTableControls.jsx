@@ -3,7 +3,7 @@ import s from "./BottomTableControls.module.css";
 import { useDragContext } from "../../../redux/contexts/useConetxt";
 import { useDispatch, useSelector } from "react-redux";
 // import { togglePhonesViewMode } from "../../../redux/reducers/ui-reducer";
-import { isSectionsMode, isDepartmentsMode, isPositionsMode } from "../../../redux/selectors/selector";
+import { isSectionsMode, isDepartmentsMode, isPositionsMode, isUserTypesMode } from "../../../redux/selectors/selector";
 import { setPhonesViewMode } from "../../../redux/reducers/ui-reducer";
 import { getPositionsAndTypesOfUsers } from "../../../redux/selectors/selector";
 
@@ -12,6 +12,7 @@ const dispatch = useDispatch();
 const isSections = useSelector(isSectionsMode);
 const isDepartments = useSelector(isDepartmentsMode);
 const isPosition = useSelector(isPositionsMode);
+const isUserTypes = useSelector(isUserTypesMode)
 
   return (
     <div className={s.controlsWrapper}>
@@ -40,6 +41,16 @@ const isPosition = useSelector(isPositionsMode);
       >
         Посади
       </button>
+
+       <button
+        className={`${s.toggleBtn} ${
+          isUserTypes ? s.active : ""
+        }`}
+        onClick={() => dispatch(setPhonesViewMode("userTypes"))}
+      >
+        Тип користувача
+      </button>
+      
     </div>
   );
 };

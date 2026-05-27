@@ -1,22 +1,30 @@
-import { chunkIntoPages } from "../../../providers/DragProvider/dragProvider-helpers/commonFunctions";
-import { reorderSections, reorderDepartments } from "./reorderHelpers";
+import {
+  reorderSections,
+  reorderDepartments,
+  orderByPositions,
+  orderByUserTypes
+} from "./reorderHelpers";
 
 export const applyPhonesReorder = (
   state,
   pages,
-  deptId
+  deptId,
+  currentMode
 ) => {
 
-  if (deptId) {
-    return reorderSections(
-      state,
-      pages,
-      deptId
-    );
-  }
+  switch (currentMode) {
 
-  return reorderDepartments(
-    state,
-    pages
-  );
+    case "positions":
+      return orderByPositions(state, pages);
+
+    case "userTypes":
+      return orderByUserTypes(state, pages);
+
+    case "sections":
+      return reorderSections(state, pages, deptId);
+
+    case "departments":
+    default:
+      return reorderDepartments(state, pages);
+  }
 };

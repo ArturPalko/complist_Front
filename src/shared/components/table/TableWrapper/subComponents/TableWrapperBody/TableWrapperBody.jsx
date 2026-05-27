@@ -13,6 +13,7 @@ import {
   isEditModeSelected,
   currentPageByMenu,
   isSectionsMode,
+  getCurrentMode
 } from "../../../../../../redux/selectors/selector";
 
 import {
@@ -35,6 +36,7 @@ const TableWrapperBody = ({
   const isSections = useSelector(isSectionsMode)
   const menu = useSelector(activeMenu);
   const { foundResults } = useFoundResults();
+  const currentMode = useSelector(getCurrentMode);
 
   const page = useSelector((state) =>
     currentPageByMenu(state, menu)
@@ -96,7 +98,9 @@ const TableWrapperBody = ({
               setDropTargetId,
               dropTargetId,
               dispatch,
-              isSections
+              isSections,
+              menu,
+              currentMode
             })}
               className={getClassName({
                     index,
