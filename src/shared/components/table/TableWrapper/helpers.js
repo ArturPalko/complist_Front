@@ -1,3 +1,4 @@
+import { isSectionsMode } from "../../../../redux/selectors/selector";
 import s from "./TableWrapper.module.css"
 
 export const getRowClass = ({
@@ -19,14 +20,29 @@ export const getRowClass = ({
   return `${highLightAfterFoundResultsPageClass} ${highLightAfterCurrentPageNumberPressedClass}`;
 };
 
-export const getDragClass = ({ editMode, isDragging, isSelected }) =>
-  [
-    editMode ? "row-edit" : "row-edit-default",
+export const getDragClass = ({
+  editMode,
+  isDragging,
+  isSelected,
+  currentMode,
+  menu,
+  isSections,
+  itemType
+}) => {
+  const isPhonesBlocked =
+    menu === "phones" && !currentMode || isSections && itemType =="department" ;
+
+  const isEditable =
+    editMode && !isPhonesBlocked;
+
+  return [
+    isEditable ? "row-edit" : "row-edit-default",
     isDragging && "row-dragging",
     isSelected && "row-selected",
   ]
     .filter(Boolean)
     .join(" ");
+};
 
 
 export const getDropPositionClass = ({

@@ -6,7 +6,7 @@ import torn_pageImg from "../../../../assets/Img/torn_page.png";
 
 const BasePhonesTable = createTableComponent(usePhonesTableLogic);
 
-const PhonesTable = ({ columns, pageNumber, rowsPerPage }) => {
+const PhonesTable = ({ columns, pageNumber, rowsPerPage,isSections }) => {
 
 
   const renderHeader = () => (
@@ -29,83 +29,152 @@ const PhonesTable = ({ columns, pageNumber, rowsPerPage }) => {
     </>
   );
 
-  const renderRowCells = (row, index, tableLogic) => {
-    const nonUserRowsBefore = countNonUserRowsBefore(tableLogic.pageData, index);
-    const { dimAfterSearchNavigationClass, dimAfterPageNumberPressedClass } = tableLogic.dimClasses;
+const renderRowCells = (row, index, tableLogic) => {
+  const nonUserRowsBefore = countNonUserRowsBefore(
+    tableLogic.pageData,
+    index
+  );
 
-    switch (row.type) {
-      case "userType":
-      case "position":
-      case "department":
-      case "section": {
-        const isDepartment = row.type === "department";
-        const isSection = row.type == "section";
-        const isPosition = row.type == "position";
-        const isUserType = row.type == "userType"; 
-      
-       const name =
-  isDepartment
-    ? row.departmentName
-    : isSection
-      ? row.sectionName
-      : isPosition
-        ? row.positionName
-        : isUserType
-          ? row.userType
-          : row.name;
-        const className = isDepartment ? s.mainDepartment : isPosition || isUserType? s.positionsAndUserTypes: s.section;
-        console.log ("name:", name)
-        const showBreak = isDepartment
-          ? tableLogic.dashedBlocks.departments.some(d => d === name)
-          : tableLogic.dashedBlocks.sections.includes(name);
-        return (
-          <td
-            className={`${className} ${dimAfterSearchNavigationClass} ${dimAfterPageNumberPressedClass}`}
-            colSpan={6}
+  const {
+    dimAfterSearchNavigationClass,
+    dimAfterPageNumberPressedClass,
+  } = tableLogic.dimClasses;
+
+  switch (row.type) {
+    case "userType":
+    case "position":
+    case "department":
+    case "section": {
+      const isDepartment = row.type === "department";
+      const isSection = row.type === "section";
+      const isPosition = row.type === "position";
+      const isUserType = row.type === "userType";
+
+      const name = isDepartment
+        ? row.departmentName
+        : isSection
+          ? row.sectionName
+          : isPosition
+            ? row.positionName
+            : isUserType
+              ? row.userType
+              : row.name;
+
+      const className = isDepartment
+        ? s.mainDepartment
+        : isPosition || isUserType
+          ? s.positionsAndUserTypes
+          : s.section;
+
+      const showBreak = isDepartment
+        ? tableLogic.dashedBlocks.departments.some(d => d === name)
+        : tableLogic.dashedBlocks.sections.includes(name);
+
+      return (
+        <td
+          className={`${className} ${dimAfterSearchNavigationClass} ${dimAfterPageNumberPressedClass}`}
+          colSpan={6}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+            }}
           >
-            {name}
-            {showBreak && <img src={torn_pageImg} alt ="Розрив" title ="Розрив" className={s.breakImage} />}
-          </td>
-        );
-      }
+            {/* NAME */}
+            <span>{name}</span>
 
-      case "user": {
-        const userRowIndex = getUserRowIndex({
-          pageNumber,
-          rowsPerPage,
-          index,
-          nonUserRowsBefore,
-          indexDecrementFromPreviousPages: tableLogic.indexDecrementFromPreviousPages,
-        });
+            {/* SECTION INFO + BUTTON */}
+            {isSections &&
+              Array.isArray(row.sections) &&
+              row.sections.length > 0 && (
+                <>
+                  <span style={{ color: "#888" }}>
+                    ({row.sections.length})
+                  </span>
+debugger
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
 
-        return (
-          <>
-            <td>{userRowIndex}</td>
-            {row.userTypeId !== 1 ? (
-              <>
-                <td>{row.userName}</td>
-                <td />
-              </>
-            ) : (
-              <>
-                <td>{row.userPosition}</td>
-                <td>{row.userName}</td>
-              </>
+                      console.log("sections:", row.sections);
+
+                      // TODO: тут можна відкрити модалку або dispatch
+                      // dispatch(openSectionsModal(row.sections));
+                    }}
+                    style={{
+                      padding: "2px 8px",
+                      fontSize: "12px",
+                      cursor: "pointer",
+                      borderRadius: "4px",
+                    }}
+                  >
+                    Переглянути
+                  </button>
+                </>
+              )}
+
+            {/* BREAK IMAGE */}
+            {showBreak && (
+              <img
+                src={torn_pageImg}
+                alt="Розрив"
+                title="Розрив"
+                className={s.breakImage}
+              />
             )}
-            {columns.find(c => c.key === "phones")?.subLabels.map(sub => {
-              const phone = row.phones?.find(p => p.phoneType === sub.label);
+          </div>
+        </td>
+      );
+    }
+
+    case "user": {
+      const userRowIndex = getUserRowIndex({
+        pageNumber,
+        rowsPerPage,
+        index,
+        nonUserRowsBefore,
+        indexDecrementFromPreviousPages:
+          tableLogic.indexDecrementFromPreviousPages,
+      });
+
+      return (
+        <>
+          <td>{userRowIndex}</td>
+
+          {row.userTypeId !== 1 ? (
+            <>
+              <td>{row.userName}</td>
+              <td />
+            </>
+          ) : (
+            <>
+              <td>{row.userPosition}</td>
+              <td>{row.userName}</td>
+            </>
+          )}
+
+          {columns
+            .find((c) => c.key === "phones")
+            ?.subLabels.map((sub) => {
+              const phone = row.phones?.find(
+                (p) => p.phoneType === sub.label
+              );
+
               return <td key={sub.key}>{phone?.phoneName || ""}</td>;
             })}
-          </>
-        );
-      }
-
-      default:
-        return null;
+        </>
+      );
     }
-  };
+
+    default:
+      return null;
+  }
+};
 
   return <BasePhonesTable renderHeader={renderHeader} renderRowCells={renderRowCells} />;
 };
 
 export default PhonesTable;
+

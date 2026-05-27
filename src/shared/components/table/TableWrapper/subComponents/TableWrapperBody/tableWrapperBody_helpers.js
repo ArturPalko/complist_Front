@@ -24,6 +24,10 @@ export const getClassName = ({
   elementsBeforeSelectedIds,
   elementsAfterSelectedIds,
   selectedIds = [],
+  currentMode,
+  menu,
+  isSections,
+  itemType
 }) => {
   const isCurrentDropTarget = dropTargetId === itemId;
 
@@ -45,7 +49,11 @@ export const getClassName = ({
     getDragClass({
       editMode,
       isDragging,
-      isSelected
+      isSelected,
+      currentMode,
+      menu,
+      isSections,
+      itemType
     }),
 
     getDropPositionClass({

@@ -4,7 +4,7 @@ import { rowsPerPage } from "../../../../configs/app/constants";
 import { useIndexesForPage, usePageNumber } from "../../../../redux/hooks/hooks";
 import { pageConfigs } from "../../../../configs/app/pageConfig";
 import { connect, useSelector } from "react-redux";
-import { getDepartmentsAndSectionsPerPage, isEditModeSelected } from "../../../../redux/selectors/selector";
+import { getDepartmentsAndSectionsPerPage, isEditModeSelected, isSectionsMode } from "../../../../redux/selectors/selector";
 import { PageContext } from "../../../../redux/contexts/useConetxt";
 import { BottomFilterContainer } from "../../../../Components/Content/BottomFilter/BottomFilterContainer";
 import s from "./GenericPage.module.css"
@@ -21,6 +21,7 @@ const GenericPage = ({
   const pageNumber = usePageNumber();
   const isEditMode = !useSelector(isEditModeSelected);
   const indexes = useIndexesForPage(pageName);
+  const isSections = useSelector (isSectionsMode)
   
 
   const config = pageConfigs[pageName];
@@ -37,6 +38,7 @@ const GenericPage = ({
     ...(config.needsDepartments && { departmentsAndSectionsPerPage: getDepartmentsAndSectionsPerPage(pageName) }),
     ...(showPasswords !== undefined && { showPasswords }),
     ...(passwordsMap !== undefined && { passwordsMap }),
+     isSections
   }), [
     titleRef,
     config.columns,
@@ -45,7 +47,8 @@ const GenericPage = ({
     pageName,
     config.needsDepartments,
     showPasswords,
-    passwordsMap
+    passwordsMap,
+    isSections
   ]);
 
   // 🔹 memo для PageContext

@@ -113,7 +113,11 @@ const TableWrapperBody = ({
                     dropTargetId,
                     elementsAfterSelectedIds,
                     elementsBeforeSelectedIds,
-                    selectedIds
+                    selectedIds,
+                    menu,
+                    currentMode,
+                    isSections,
+                    itemType: item.type
                   })}
             data-key={index}
             ref={(el) =>
