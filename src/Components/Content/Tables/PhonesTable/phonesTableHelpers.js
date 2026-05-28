@@ -2,6 +2,10 @@
  * Рахує кількість НЕ-user рядків ДО поточного індексу
  * (department / section)
  */
+import { setActiveDepartment } from "../../../../redux/reducers/ui-reducer";
+
+
+
 export const countNonUserRowsBefore = (pageData, index) => {
   return pageData
     .slice(0, index)
@@ -53,3 +57,14 @@ export const getDimGroupRowClasses = ({
     dimAfterPageNumberPressedClass,
   };
 };
+
+  export const handleOnOpenSectionsButtonClick =
+  ({ isSections, item, dispatch }) =>
+  (e) => {
+   // e.stopPropagation();
+    debugger
+    if (isSections && item?.type === "department") {
+      dispatch(setActiveDepartment(item.departmentId));
+      return;
+    }
+  };

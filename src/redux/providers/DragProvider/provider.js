@@ -264,6 +264,7 @@ const fullData = useMemo(() => {
 
       const { before, after } =
         splitBeforeAfter(fullData, anchorIndex);
+        debugger
 
       setElementsBeforeSelectedIds(before);
       setElementsAfterSelectedIds(after);
@@ -285,83 +286,112 @@ const fullData = useMemo(() => {
      DROP
   ========================= */
 
-  const handleDrop = useCallback(
-    (toIndex, page) => {
-      
-      if (!dragIds.length || !fullData.length)
-        return;
+const handleDrop = useCallback(
+  (toIndex, page) => {
+    if (!dragIds.length || !fullData.length)
+      return;
 
-      const globalToIndex = getGlobalIndex(
-        page,
-        toIndex,
-        rowsPerPage
+    /* =========================
+       🔥 EDGE CASE: 2 ITEMS SWAP (FIXED)
+    ========================= */
+
+if (fullData.length === 2) {
+  const reordered = [fullData[1], fullData[0]];
+  const payload = reordered.map((el, index) => ({
+    id: el.sectionId ?? el.departmentId ?? el.id,
+    priority: index + 1,
+  }));
+
+debugger
+      dispatch(
+        setPagesActionCreator(
+          menu,
+          menu === "phones"
+            ? payload
+            : reordered,
+          depId,
+          currentMode
+        )
       );
 
-      const bounds = getDragBounds(
-        dragIds,
-        fullData
+      changeOrderOfDisplayElements(
+        payload,
+        menu,
+        depId,
+        currentMode
       );
-
-      if (
-        isDropInsideSelf(globalToIndex, bounds)
-      ) {
-        endDrag();
-        return;
-      }
-
-    const reordered = moveItems(
-  fullData,
-  dragIds,
-  globalToIndex
-);
-
-/* =========================
-   API PAYLOAD
-========================= */
-
-const payload = reordered.map((el, index) => ({
-  id: el.sectionId ?? el.departmentId ?? el.id,
-  priority: index + 1,
-}));
-
-/* =========================
-   REDUX
-========================= */
-
-dispatch(
-  setPagesActionCreator(
-    menu,
-    menu === "phones"
-      ? payload
-      : reordered,
-      depId,
-      currentMode
-  )
-);
-
-/* =========================
-   API
-========================= */
-
-changeOrderOfDisplayElements(
-  payload,
-  menu,
-  depId,
-  currentMode
-);
-
 
       endDrag();
-    },
-    [
+      return;
+    }
+
+    /* =========================
+       NORMAL FLOW
+    ========================= */
+
+    const globalToIndex = getGlobalIndex(
+      page,
+      toIndex,
+      rowsPerPage
+    );
+
+    const bounds = getDragBounds(
       dragIds,
+      fullData
+    );
+
+    if (
+      isDropInsideSelf(globalToIndex, bounds)
+    ) {
+      endDrag();
+      return;
+    }
+
+    const reordered = moveItems(
       fullData,
-      rowsPerPage,
+      dragIds,
+      globalToIndex
+    );
+
+    const payload = reordered.map((el, index) => ({
+      id:
+        el.sectionId ??
+        el.departmentId ??
+        el.id,
+      priority: index + 1,
+    }));
+
+    dispatch(
+      setPagesActionCreator(
+        menu,
+        menu === "phones"
+          ? payload
+          : reordered,
+        depId,
+        currentMode
+      )
+    );
+
+    changeOrderOfDisplayElements(
+      payload,
       menu,
-      endDrag,
-      dispatch,
-    ]
-  );
+      depId,
+      currentMode
+    );
+
+    endDrag();
+  },
+  [
+    dragIds,
+    fullData,
+    rowsPerPage,
+    menu,
+    depId,
+    currentMode,
+    endDrag,
+    dispatch,
+  ]
+);
 
   /* =========================
      PROVIDER

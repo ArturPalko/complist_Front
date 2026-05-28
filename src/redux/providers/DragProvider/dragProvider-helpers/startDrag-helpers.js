@@ -15,6 +15,17 @@ export const getAnchorIndex = (indexes) => {
 };
 
 export const splitBeforeAfter = (fullData, anchorIndex) => {
+  const ids = fullData.map(i => i.id);
+
+  // 🔥 SPECIAL CASE: 2 items (inverted logic)
+  if (ids.length === 2) {
+    return {
+      before: anchorIndex === 0 ? [ids[1]] : [],
+      after: anchorIndex === 1 ? [ids[0]] : [],
+    };
+  }
+
+  // ✅ DEFAULT LOGIC (unchanged)
   return {
     before: fullData.slice(0, anchorIndex).map(i => i.id),
     after: fullData.slice(anchorIndex + 1).map(i => i.id),

@@ -1,10 +1,9 @@
-
-
-.positionsAndUserTypes{
+.positionsAndUserTypes {
   text-align: center;
   background-color: rgb(241, 19, 174);
 }
-.mainDepartment{
+
+.mainDepartment {
   text-align: center;
   background-color: rgb(156, 156, 238);
 }
@@ -14,26 +13,84 @@
   background-color: rgb(252, 195, 89);
 }
 
-.dimGroupRow{
-   background-color: #d6ddde;
+.dimGroupRow {
+  background-color: #d6ddde;
 }
 
-.dimGroupRowFade  {
-  animation: light 3s step-end ;
+.dimGroupRowFade {
+  animation: light 3s step-end;
 }
+
 @keyframes light {
   0% {
     background-color: #d6ddde;
   }
+
   100% {
-    background-color: inherit; 
+    background-color: inherit;
   }
 }
 
-
 .breakImage {
-  float: left;        
-  height: 1.3em;        
-  width: auto;        
-  margin-left: 1.7em; 
+  float: left;
+  height: 1.3em;
+  width: auto;
+  margin-left: 1.7em;
+}
+
+/* =========================
+   GROUP ROW LAYOUT
+========================= */
+
+.groupRowContent {
+  position: relative;
+  width: 100%;
+  text-align: center;
+}
+
+/* =========================
+   RIGHT CONTROLS
+========================= */
+
+.groupRowActions {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* =========================
+   SECTIONS COUNT
+========================= */
+
+.sectionsCount {
+  color: #666;
+  font-size: 13px;
+}
+
+/* =========================
+   VIEW BUTTON
+========================= */
+
+.viewSectionsButton {
+  padding: 2px 8px;
+
+  font-size: 12px;
+
+  cursor: pointer;
+
+  border-radius: 4px;
+  border: 1px solid #999;
+
+  background-color: white;
+
+  transition: 0.2s;
+}
+
+.viewSectionsButton:hover {
+  background-color: #f2f2f2;
 }

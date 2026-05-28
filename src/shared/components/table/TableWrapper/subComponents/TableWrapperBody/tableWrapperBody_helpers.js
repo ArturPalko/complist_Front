@@ -79,7 +79,6 @@ export const getDragProps = ({
 
   startDrag,
   handleDrop,
-  toggleSelect,
   stopDrag,
 
   isOnFoundResultsPage,
@@ -97,17 +96,7 @@ export const getDragProps = ({
      CLICK SELECT
   ========================= */
 
-  const onClick = (e) => {
-    if (
-      isSections &&
-      item?.type === "department"
-    ) {
-      dispatch(setActiveDepartment(item.departmentId));
-      return;
-    }
 
-    toggleSelect(itemId, e);
-  };
 if (menu == "phones" && !currentMode) return
   /* =========================
      DRAG DISABLED
@@ -124,16 +113,14 @@ if (menu == "phones" && !currentMode) return
      BASE PROPS
   ========================= */
 
-  const props = {
-    onClick,
-  };
+
 
   /* =========================
      NO DRAG
   ========================= */
 
   if (isDragDisabled) {
-    return props;
+    return 
   }
 
   /* =========================
@@ -141,7 +128,6 @@ if (menu == "phones" && !currentMode) return
   ========================= */
 
   return {
-    ...props,
 
     draggable: true,
 
@@ -247,7 +233,7 @@ export const getDragPreviewHTML = ({
         item.name ||
         item.mailName ||
         item.departmentName ||
-        item.SectionName ||
+        item.sectionName ||
         item.positionName ||
         item.userType
       }`;
