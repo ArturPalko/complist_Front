@@ -264,7 +264,7 @@ const fullData = useMemo(() => {
 
       const { before, after } =
         splitBeforeAfter(fullData, anchorIndex);
-        debugger
+        // debugger
 
       setElementsBeforeSelectedIds(before);
       setElementsAfterSelectedIds(after);
@@ -288,6 +288,7 @@ const fullData = useMemo(() => {
 
 const handleDrop = useCallback(
   (toIndex, page) => {
+    debugger
     if (!dragIds.length || !fullData.length)
       return;
 
