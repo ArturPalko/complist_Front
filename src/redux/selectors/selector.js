@@ -17,7 +17,7 @@ import { buildDepartmentPages } from "./selectorFabrics/buildDepartmentsPages";
 // =====Допоміжні селектори=======================
 
 const selectPageNumberState = (state, menu) => state.currentPageNumber[menu];
-const selectFoundResults = (state, menu) => selectSearchValueByPage(menu)(state)?.foundResults ?? [];
+export const selectFoundResults = (state, menu) => selectSearchValueByPage(menu)(state)?.foundResults ?? [];
 
 
 

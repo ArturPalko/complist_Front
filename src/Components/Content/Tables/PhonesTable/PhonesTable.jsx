@@ -45,10 +45,8 @@ const PhonesTable = ({ columns, pageNumber, rowsPerPage, isSections }) => {
       index
     );
 
-    const {
-      dimAfterSearchNavigationClass,
-      dimAfterPageNumberPressedClass,
-    } = tableLogic.dimClasses;
+const dim = tableLogic.getRowDimClasses(row.sectionId);
+console.log("DIM OBJECT", dim);
 
     switch (row.type) {
       case "userType":
@@ -83,10 +81,14 @@ const PhonesTable = ({ columns, pageNumber, rowsPerPage, isSections }) => {
           : tableLogic.dashedBlocks.sections.includes(name);
 
         return (
-          <td
-            className={`${className} ${dimAfterSearchNavigationClass} ${dimAfterPageNumberPressedClass}`}
-            colSpan={6}
-          >
+<td
+  className={[
+    className,
+    dim.hidden ? "" : dim.dimAfterSearchNavigationClass,
+    dim.hidden ? "" : dim.dimAfterPageNumberPressedClass,
+  ].filter(Boolean).join(" ")}
+  colSpan={6}
+>
             <div className={s.groupRowContent}>
               {/* CENTER NAME */}
               <span>{name}</span>

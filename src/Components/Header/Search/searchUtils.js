@@ -5,6 +5,16 @@ export const runSearch = ({ searchValue, searchTarget }) => {
   if (query.length < 3) return [];
 
   const foundResults = [];
+  const getIdByRowType = (row) => {
+  const idMap = {
+    section: row.sectionId,
+    department: row.departmentId,
+    user: row.userId,
+    position: row.positionId,
+  };
+
+  return idMap[row.type];
+};
 
   //  нормалізація будь-якого значення
   const normalize = (val) => {
@@ -32,8 +42,9 @@ export const runSearch = ({ searchValue, searchTarget }) => {
 
       if (matchedKey) {
         const [key, value] = matchedKey;
-
+debugger
         foundResults.push({
+          id: getIdByRowType(row),
           elementType: row.type,
           dataKey: key,
           dataValue: value,
