@@ -10,7 +10,8 @@ export const runSearch = ({ searchValue, searchTarget }) => {
     section: row.sectionId,
     department: row.departmentId,
     user: row.userId,
-    position: row.positionId,
+    position: row.id,
+    userType: row.id
   };
 
   return idMap[row.type];

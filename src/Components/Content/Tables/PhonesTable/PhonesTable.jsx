@@ -45,8 +45,17 @@ const PhonesTable = ({ columns, pageNumber, rowsPerPage, isSections }) => {
       index
     );
 
-const dim = tableLogic.getRowDimClasses(row.sectionId);
-console.log("DIM OBJECT", dim);
+const idMap = {
+  department: "departmentId",
+  section: "sectionId",
+  position: "id",
+  userType: "id",
+};
+
+const idKey = idMap[row.type];
+const dim = tableLogic.getRowDimClasses(row[idKey]);
+
+// console.log("DIM OBJECT", dim);
 
     switch (row.type) {
       case "userType":

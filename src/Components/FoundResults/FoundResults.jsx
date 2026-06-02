@@ -13,7 +13,7 @@ const FoundResults = ({ activeMenu, data, foundSearchValues, isFilterApplied }) 
     useFoundResults(data, foundSearchValues, activeMenu, isFilterApplied);
     
 
-console.log ("preset:", presentRows)
+// console.log ("preset:", presentRows)
 
 
   const ActiveComponent = getPageComponent(activeMenu);

@@ -93,7 +93,7 @@ export const DragProvider = ({
   /* =========================
      FLAT DATA (FIXED)
   ========================= */
-useEffect(()=> {console.log ("pages:", pages)}, [pages])
+// useEffect(()=> {console.log ("pages:", pages)}, [pages])
 const fullData = useMemo(() => {
   if (!Array.isArray(pages) || pages.length === 0) {
     return [];
@@ -139,7 +139,7 @@ const fullData = useMemo(() => {
 
   useEffect(() => {
 
-      console.log("Pages:", pages)
+      // console.log("Pages:", pages)
     
     
 },
@@ -147,7 +147,7 @@ const fullData = useMemo(() => {
 
   useEffect(() => {
 
-      console.log("FullData:", fullData)
+      // console.log("FullData:", fullData)
     
     
 },
@@ -425,7 +425,6 @@ debugger
     </DragContext.Provider>
   );
 };
-
 
 
 

@@ -56,7 +56,7 @@ const foundResults = searchState.foundResults ?? [];
         
         dispatch(addIndexesFromIndexCell(indexes));
       }
-    } else if (!isNonUserRowType) {
+    } else if (true) {
       dispatch(addIndexesFromIndexCell([cellData.index]));
     }
 
