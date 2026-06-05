@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { pageConfigs } from "../../../../configs/app/pageConfig";
 import { addIndexesFromIndexCell } from "../../../../redux/reducers/toggledElements-reducer";
 import { useDispatch, useSelector } from "react-redux";
-import { activeMenu, selectSearchStateByMenu } from "../../../../redux/selectors/selector";
+import { activeMenu, isSectionsMode, selectSearchStateByMenu } from "../../../../redux/selectors/selector";
 import { getIndexesForSection } from "./helpers";
 
 export const useIndexCellLogic = (
@@ -27,6 +27,9 @@ export const useIndexCellLogic = (
     selectSearchStateByMenu(state, menu)
   );
 
+  const isSections = useSelector(isSectionsMode)
+
+
 const foundResults = searchState.foundResults ?? [];
 
 
@@ -44,7 +47,8 @@ const foundResults = searchState.foundResults ?? [];
 
     setClickedRow(true);
   
-    if (isSetionType) {
+    if (isSetionType && !isSections) {
+      debugger
       const currentIndex = foundResults.findIndex(
         (item) => item.index === cellData.index && item.currentPage == targetPage
       );
@@ -57,6 +61,7 @@ const foundResults = searchState.foundResults ?? [];
         dispatch(addIndexesFromIndexCell(indexes));
       }
     } else if (true) {
+      debugger
       dispatch(addIndexesFromIndexCell([cellData.index]));
     }
 

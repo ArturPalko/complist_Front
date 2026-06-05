@@ -18,11 +18,11 @@ export const usePhonesTableLogic = (props) => {
   const index = useSelector(state => selectIndexesFromCell(state));
   let data = tableLogic.pageData;
   
-  console.log(index)
-  console.log(data)
+
    let currentData = data[index-1];
   //  let indexValue = currentData.departmentId || currentData.setionId || currentData.id
- let indexValue = currentData?.departmentId || currentData?.Id
+ let indexValue = currentData?.sectionId  ||currentData?.departmentId  || currentData?.id
+ debugger
   if(indexValue){
 console.log("indexVALUE:",  indexValue)
 debugger
@@ -55,7 +55,7 @@ debugger
 // return
 //     } 
     if(index.length>0 ){
-      debugger
+      // debugger
    return  foundResultsInclude(indexValue) && isEditMode && indexValue ==id;
     }
     else{
