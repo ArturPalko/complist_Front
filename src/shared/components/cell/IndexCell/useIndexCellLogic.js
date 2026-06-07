@@ -48,7 +48,7 @@ const foundResults = searchState.foundResults ?? [];
     setClickedRow(true);
   
     if (isSetionType && !isSections) {
-      debugger
+        
       const currentIndex = foundResults.findIndex(
         (item) => item.index === cellData.index && item.currentPage == targetPage
       );
@@ -61,7 +61,7 @@ const foundResults = searchState.foundResults ?? [];
         dispatch(addIndexesFromIndexCell(indexes));
       }
     } else if (true) {
-      debugger
+        
       dispatch(addIndexesFromIndexCell([cellData.index]));
     }
 

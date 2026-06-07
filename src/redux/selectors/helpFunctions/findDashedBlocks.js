@@ -9,6 +9,7 @@ export const findDashedBlocks = (pages) => {
 
     // --- останній department на поточній сторінці
     const lastDepartment = [...rows].reverse().find((row) => row.type === "department");
+      
     if (!lastDepartment) return;
 
     const firstNextRow = nextPage.rows[0];
@@ -17,7 +18,7 @@ export const findDashedBlocks = (pages) => {
 const hasSectionsOnNextPage = nextPage.rows.some(
   (row) =>
     row.type === "section" &&
-    row.departmentName === lastDepartment.departmentName
+    row.departmentId === lastDepartment.departmentId
 );
 const hasSectionsOnCurrentPage = rows.some(
   (row) =>

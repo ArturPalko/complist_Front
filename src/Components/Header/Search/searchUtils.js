@@ -43,7 +43,7 @@ export const runSearch = ({ searchValue, searchTarget }) => {
 
       if (matchedKey) {
         const [key, value] = matchedKey;
-debugger
+  
         foundResults.push({
           id: getIdByRowType(row),
           elementType: row.type,

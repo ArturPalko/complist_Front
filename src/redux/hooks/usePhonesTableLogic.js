@@ -22,10 +22,10 @@ export const usePhonesTableLogic = (props) => {
    let currentData = data[index-1];
   //  let indexValue = currentData.departmentId || currentData.setionId || currentData.id
  let indexValue = currentData?.sectionId  ||currentData?.departmentId  || currentData?.id
- debugger
+   
   if(indexValue){
 console.log("indexVALUE:",  indexValue)
-debugger
+  
   }  
    console.log ("index:",index)
    console.log ("data:", data)
@@ -51,11 +51,11 @@ debugger
 
   const stopDismiss = (id) =>{
 //     if(data.length <15){
-//       debugger
+//         
 // return
 //     } 
     if(index.length>0 ){
-      // debugger
+      //   
    return  foundResultsInclude(indexValue) && isEditMode && indexValue ==id;
     }
     else{
@@ -70,14 +70,14 @@ debugger
   const getRowDimClasses = (id) => {
   //     console.log("ID:", id);
   // console.log("stopDismiss:", stopDismiss(id));
-    // debugger
+    //   
     if (stopDismiss(id)) 
      {
-      // debugger
+      //   
       return { hidden: true }
     }
     
-// debugger
+//   
     return getDimGroupRowClasses({
       hasFoundResults:
         props.indexesOfFoundResultsForCurrentPage?.length > 0,

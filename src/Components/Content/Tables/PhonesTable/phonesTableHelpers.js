@@ -62,7 +62,7 @@ export const getDimGroupRowClasses = ({
   ({ isSections, item, dispatch }) =>
   (e) => {
    // e.stopPropagation();
-    debugger
+      
     if (isSections && item?.type === "department") {
       dispatch(setActiveDepartment(item.departmentId));
       return;

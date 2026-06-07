@@ -28,27 +28,35 @@ import { getClassName } from "./tableWrapperBody_helpers";
 
 import { rowsPerPage } from "../../../../../../configs/app/constants";
 
+import { withDropZones } from "../../../../../hooks/withDropedThones";
+
 const TableWrapperBody = ({
   pageData,
   rowRefs,
   renderRowCells,
   getRowClass,
   rowClassParams,
+  menu,
+  editMode,
+  page,
+  dispatch,
+  isSections,
+  currentMode
 }) => {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
-  const isSections = useSelector(isSectionsMode);
-  const menu = useSelector(activeMenu);
-  const currentMode = useSelector(getCurrentMode);
+  // const isSections = useSelector(isSectionsMode);
+  // const menu = useSelector(activeMenu);
+  // const currentMode = useSelector(getCurrentMode);
 
-  const { foundResults } = useFoundResults();
+  // const { foundResults } = useFoundResults();
 
-  const page = useSelector((state) =>
-    currentPageByMenu(state, menu)
-  );
+  // const page = useSelector((state) =>
+  //   currentPageByMenu(state, menu)
+  // );
 
-  const editMode = useSelector(isEditModeSelected);
-debugger
+  // const editMode = useSelector(isEditModeSelected);
+// debugger
   const {
     dragIds,
     selectedIds,
@@ -64,28 +72,11 @@ debugger
     setDropTargetId,
   } = useDragContext();
 
-  useEffect(() => {
-    if (!setFoundResults) return;
-    setFoundResults(foundResults);
-  }, [foundResults, setFoundResults]);
+
 
 
   return (
     <tbody className={dragIds.length ? "dragging" : ""}>
-
-      {/* 🔥 TOP DROP ZONE (before first row) */}
-      {editMode && pageData?.length > 0 && (
-        <tr
-          className="edgeDropTopRow"
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={(e) => {
-            e.preventDefault();
-            handleDrop(-1, page);
-          }}
-        >
-          <td colSpan={999} />
-        </tr>
-      )}
 
       {pageData?.map((item, index) => {
         const itemId =
@@ -169,21 +160,8 @@ debugger
         );
       })}
 
-      {/* 🔥 BOTTOM DROP ZONE (after last row) */}
-      {editMode && pageData?.length > 0 && (
-        <tr
-          className="edgeDropBottomRow"
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={(e) => {
-            e.preventDefault();
-            handleDrop(pageData.length, page);
-          }}
-        > 
-          <td colSpan={999} />
-        </tr>
-      )}
     </tbody>
   );
 };
 
-export default TableWrapperBody;
+export default withDropZones(TableWrapperBody);

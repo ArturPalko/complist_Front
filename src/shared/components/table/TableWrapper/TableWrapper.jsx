@@ -6,7 +6,7 @@ import { getRowClass } from "./helpers";
 import "../../../Css/Table.css";
 
 
-const TableWrapper = ({ tableLogic, renderHeader = () => null, renderRowCells }) => {
+const TableWrapper = ({ tableLogic, tableUI, tableDrag, renderHeader = () => null, renderRowCells }) => {
   const {
     pageData,
     showDigitsFromPressed,
@@ -19,6 +19,12 @@ const TableWrapper = ({ tableLogic, renderHeader = () => null, renderRowCells })
     isPagesNavbarLinkElementOnCurrentPagePressed,
     shouldRenderIndexesHeader
   } = tableLogic;
+  const { 
+       isSections,
+        menu,
+        currentMode,
+        editMode,
+        page} = tableUI
 
 
   return (
@@ -42,7 +48,13 @@ const TableWrapper = ({ tableLogic, renderHeader = () => null, renderRowCells })
             isPagesNavbarLinkPressed: isPagesNavbarLinkElementOnCurrentPagePressed,
 
           }}
-            tableLogic={tableLogic} // 👈 ОТ ТУТ ПРАВИЛЬНО
+            editMode = {editMode}
+            isSections = {isSections}
+            currentMode= {currentMode}
+            menu = {menu}
+            page = {page}
+            // tableLogic={tableLogic}
+            tableDrag = {tableDrag} 
         />
       </table>
     </div>
@@ -50,3 +62,5 @@ const TableWrapper = ({ tableLogic, renderHeader = () => null, renderRowCells })
 };
 
 export default TableWrapper;
+
+

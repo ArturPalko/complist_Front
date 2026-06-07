@@ -19,7 +19,7 @@ const SearchForm = forwardRef((props, ref) => {
   const count = getCountOfFoundResults(); 
 
   return (
-    <div className={s.searchBlock}>
+    <div className={s.searchBlock} onDragStart={(e) => e.preventDefault()}>
       <form className={s.form}>
         <input
           ref={ref}

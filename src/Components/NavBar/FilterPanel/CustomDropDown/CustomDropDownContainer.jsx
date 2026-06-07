@@ -9,9 +9,12 @@ const CustomDropDownContainer = ({ positionsAndTypes, subFiltersFromStore, activ
   const dropdownRef = useRef(null);
 
   const { contactTypes = [], userPositions: positions = [] } = positionsAndTypes || {};
-
+// debugger
   const predefinedGroups = ["Користувач", "Спеціалісти"];
-  const others = useMemo(() => contactTypes.filter(t => !predefinedGroups.includes(t)), [contactTypes]);
+const others = useMemo(
+  () => contactTypes.filter(t => !predefinedGroups.includes(t.userType)),
+  [contactTypes]
+);
 
   const selectedKeys = useMemo(() => {
     return Object.values(subFiltersFromStore || {})
@@ -21,16 +24,16 @@ const CustomDropDownContainer = ({ positionsAndTypes, subFiltersFromStore, activ
       );
   }, [subFiltersFromStore]);
 
-  const allSelectedPositions = positions.length > 0 && positions.every(p => selectedKeys.includes(p));
-  const someSelectedPositions = positions.some(p => selectedKeys.includes(p));
-  const allSelectedOthers = others.length > 0 && others.every(o => selectedKeys.includes(o));
-  const someSelectedOthers = others.some(o => selectedKeys.includes(o));
-
+  const allSelectedPositions = positions.length > 0 && positions.every(p => selectedKeys.includes(p.positionName));
+  const someSelectedPositions = positions.some(p => selectedKeys.includes(p.positionName));
+  const allSelectedOthers = others.length > 0 && others.every(o => selectedKeys.includes(o.userType));
+  const someSelectedOthers = others.some(o => selectedKeys.includes(o.userType));
+debugger
   const togglePosition = (pos) => setSubFilters("phones", "userPosition", [pos], null);
   const toggleContactType = (type) => setSubFilters("phones", "contactType", [type], null);
-  const toggleAllPositions = () => setSubFilters("phones", "userPosition", positions, !allSelectedPositions);
-  const toggleAllOthers = () => setSubFilters("phones", "contactType", others, !allSelectedOthers);
-
+  const toggleAllPositions = () => setSubFilters("phones", "userPosition", positions.map(p => p.positionName), !allSelectedPositions);
+  const toggleAllOthers = () => setSubFilters("phones", "contactType", others.map(o => o.userType), !allSelectedOthers);
+debugger
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) setOpen(false);

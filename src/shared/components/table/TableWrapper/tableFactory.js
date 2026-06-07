@@ -1,18 +1,60 @@
-import { useRef, useMemo, useCallback } from "react";
-import { useFoundResults, usePageContext } from "../../../../redux/contexts/useConetxt";
+import { useDispatch, useSelector } from "react-redux";
+
 import TableWrapper from "./TableWrapper";
+
+import { useRef, useMemo, useCallback } from "react";
+import {
+  useFoundResults,
+  usePageContext,
+} from "../../../../redux/contexts/useConetxt";
+import { useDragContext } from "../../../../redux/contexts/useConetxt";
+import {
+  currentPageByMenu,
+  isSectionsMode,
+  activeMenu,
+  getCurrentMode,
+  isEditModeSelected,
+} from "../../../../redux/selectors/selector";
+
 import { useRedirectHighlight } from "../../../../redux/hooks/useRedirectHighLight";
+
 
 export const createTableComponent = (useTableLogic) => {
   return function TableComponent(props) {
+    const dispatch = useDispatch();
+
+    // =========================
+    // REFS
+    // =========================
     const headerRef = useRef(null);
 
-    const pageContext = usePageContext();
+    // =========================
+    // GLOBAL STATE
+    // =========================
+    const isSections = useSelector(isSectionsMode);
+    const menu = useSelector(activeMenu);
+    const currentMode = useSelector(getCurrentMode);
+    const editMode = useSelector(isEditModeSelected);
+
+    const page = useSelector((state) =>
+      currentPageByMenu(state, menu)
+    );
+
     const {
       foundResults = [],
       indexDataOfFoundResultsForFoundResultsPage = [],
     } = useFoundResults() || {};
 
+    const pageContext = usePageContext();
+
+    // =========================
+    // DRAG STATE (NEW LAYER)
+    // =========================
+    const tableDrag = useDragContext();
+
+    // =========================
+    // STABLE MEMO STATE
+    // =========================
     const stableFoundResults = useMemo(
       () => foundResults,
       [foundResults]
@@ -22,8 +64,6 @@ export const createTableComponent = (useTableLogic) => {
       () => indexDataOfFoundResultsForFoundResultsPage,
       [indexDataOfFoundResultsForFoundResultsPage]
     );
-
-    const shouldRenderIndexesHeader = stableIndexData.length > 0;
 
     const stablePageContext = useMemo(
       () => ({
@@ -41,12 +81,18 @@ export const createTableComponent = (useTableLogic) => {
       ]
     );
 
+    // =========================
+    // HIGHLIGHT LOGIC
+    // =========================
     const indexesToUse = useRedirectHighlight({
       pageNumber: stablePageContext.pageNumber,
       defaultIndexes:
         stablePageContext.indexesOfFoundResultsForCurrentPage,
     });
 
+    // =========================
+    // CORE TABLE LOGIC
+    // =========================
     const baseLogic = useTableLogic({
       headerRef,
       foundResults: stableFoundResults,
@@ -56,30 +102,66 @@ export const createTableComponent = (useTableLogic) => {
       pageNumber: stablePageContext.pageNumber,
     });
 
+    // =========================
+    // TABLE LOGIC (DATA LAYER)
+    // =========================
     const tableLogic = useMemo(
       () => ({
         ...baseLogic,
+
         headerRef,
-        indexDataOfFoundResultsForFoundResultsPage:
-          stableIndexData,
+
+        foundResults: stableFoundResults,
+        indexDataOfFoundResultsForFoundResultsPage: stableIndexData,
         indexesOfFoundResultsForCurrentPage: indexesToUse,
-        shouldRenderIndexesHeader,
+
+        shouldRenderIndexesHeader:
+          stableIndexData.length > 0,
       }),
-      [baseLogic, stableIndexData, indexesToUse]
+      [
+        baseLogic,
+        stableFoundResults,
+        stableIndexData,
+        indexesToUse,
+      ]
     );
 
+    // =========================
+    // TABLE UI (VIEW STATE)
+    // =========================
+    const tableUI = useMemo(
+      () => ({
+        dispatch,
+        isSections,
+        menu,
+        currentMode,
+        editMode,
+        page,
+      }),
+      [dispatch, isSections, menu, currentMode, editMode, page]
+    );
+
+    // =========================
+    // ROW RENDER WRAPPER
+    // =========================
     const renderRowCellsMemo = useCallback(
       (row, index) =>
-        props.renderRowCells(row, index, tableLogic),
-      [props.renderRowCells, tableLogic]
+        props.renderRowCells(row, index, tableLogic, tableUI, tableDrag),
+      [props.renderRowCells, tableLogic, tableUI, tableDrag]
     );
 
+    // =========================
+    // RENDER
+    // =========================
     return (
       <TableWrapper
         tableLogic={tableLogic}
+        tableUI={tableUI}
+        tableDrag={tableDrag}
         renderHeader={props.renderHeader}
         renderRowCells={renderRowCellsMemo}
       />
     );
   };
 };
+

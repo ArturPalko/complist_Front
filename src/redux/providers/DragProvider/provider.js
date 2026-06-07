@@ -102,7 +102,7 @@ const fullData = useMemo(() => {
   const rows = pages.flatMap((p) => p?.rows ?? []);
 
   if (menu === "phones") {
-    // debugger
+    //   
     return rows
       .filter((el) =>
         el?.type === "department" ||
@@ -125,7 +125,7 @@ const fullData = useMemo(() => {
       }))
       .filter((el) => el.id != null);
   }
-// debugger
+//   
   return rows.map((item) => ({
     ...item,
     id: item?.id ?? item?.mailId ?? item?.sectionId,
@@ -264,7 +264,7 @@ const fullData = useMemo(() => {
 
       const { before, after } =
         splitBeforeAfter(fullData, anchorIndex);
-        // debugger
+        //   
 
       setElementsBeforeSelectedIds(before);
       setElementsAfterSelectedIds(after);
@@ -288,7 +288,7 @@ const fullData = useMemo(() => {
 
 const handleDrop = useCallback(
   (toIndex, page) => {
-    debugger
+      
     if (!dragIds.length || !fullData.length)
       return;
 
@@ -303,7 +303,7 @@ if (fullData.length === 2) {
     priority: index + 1,
   }));
 
-debugger
+  
       dispatch(
         setPagesActionCreator(
           menu,

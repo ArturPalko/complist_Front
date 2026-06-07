@@ -23,8 +23,8 @@ const CustomDropDownView = ({
         {selectedKeys.length === 0
           ? "Обрати значення"
           : [
-              positions.some(pos => selectedKeys.includes(pos)) ? "Користувач" : null,
-              ...selectedKeys.filter(k => !positions.includes(k))
+              positions.some(pos => selectedKeys.includes(pos.positionName)) ? "Користувач" : null,
+              ...selectedKeys.filter(k => !positions.some(p => p.positionName === k))
             ].filter(Boolean).join(", ")}
       </button>
 
@@ -36,8 +36,8 @@ const CustomDropDownView = ({
               <legend className={s.legend}>Типи посад</legend>
               {positions.map(pos => (
                 <label key={pos} className={s.dropdownItem}>
-                  <input type="checkbox" checked={selectedKeys.includes(pos)} onChange={() => togglePosition(pos)} />
-                  {pos}
+                  <input type="checkbox" checked={selectedKeys.includes(pos.positionName)} onChange={() => togglePosition(pos.positionName)} />
+                  {pos.positionName}
                 </label>
               ))}
             </fieldset>
@@ -77,12 +77,16 @@ const CustomDropDownView = ({
 
             <fieldset className={s.group}>
               <legend className={s.legend}>Інше</legend>
-              {others.map(value => (
-                <label key={value} className={s.dropdownItem}>
-                  <input type="checkbox" checked={selectedKeys.includes(value)} onChange={() => toggleContactType(value)} />
-                  {value}
-                </label>
-              ))}
+            {others.map(value => (
+                  <label key={value.userType} className={s.dropdownItem}>
+                    <input
+                      type="checkbox"
+                      checked={selectedKeys.includes(value.userType)}
+                      onChange={() => toggleContactType(value.userType)}
+                    />
+                    {value.userType}
+                  </label>
+                ))}
             </fieldset>
           </div>
         </div>

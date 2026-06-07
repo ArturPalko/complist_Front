@@ -65,9 +65,11 @@
   display: flex;
   flex: 1;
   align-items: center;
-  position: absolute;
+  position: relative;
   padding-top: 5.25px; 
-  margin-left: 442.5px;
+  margin: 0 8px;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .searchInputSupportText {

@@ -27,7 +27,7 @@ export const dataReducer = (state = initialState, action) => {
     // =========================
     case ADD_DATA: {
       const { key, data } = action.payload;
-      debugger
+        
 
       return {
         ...state,

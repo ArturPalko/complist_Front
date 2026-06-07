@@ -324,7 +324,7 @@ export const orderByPositions = (state, pages) => {
 };
 
 export const orderByUserTypes = (state, pages) => {
-  debugger
+    
   if (!Array.isArray(state?.phones)) return state.phones;
 
   // 1. priority map (userTypeId -> priority)
