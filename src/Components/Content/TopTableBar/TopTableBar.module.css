@@ -19,6 +19,7 @@
   height: 1.75em;  
   min-width: 3.125em; 
   min-height: 1.75em; 
+
 }
 
 .switch input {
@@ -86,6 +87,7 @@ input:checked + .slider.green:before {
   margin-left: 0.3125em;
   padding-bottom: 0.125em;
   font-size: 0.85rem;
+  user-select: none;
 }
 
 /* ==============================

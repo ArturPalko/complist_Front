@@ -248,3 +248,14 @@ export const cleanupDragPreview = (el) => {
     el.parentNode.removeChild(el);
   }
 };
+
+
+export const copyToClipboard = async (value) => {
+  try {
+    await navigator.clipboard.writeText(String(value));
+    return true;
+  } catch (e) {
+    console.error("Copy failed:", e);
+    return false;
+  }
+};

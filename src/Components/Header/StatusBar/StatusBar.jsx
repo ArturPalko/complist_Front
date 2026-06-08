@@ -8,9 +8,8 @@ const StatusBar = ({ counts, activeMenu }) => {
 
   if (!Diagram) return null; 
 
-  return   <div style={{ userSelect: "none" }}>
-      <Diagram counts={counts} />
-    </div>
+  return    <Diagram counts={counts} />
+
 };
 
 const mapStateToProps = (state) => ({

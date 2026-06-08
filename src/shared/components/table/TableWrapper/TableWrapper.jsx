@@ -6,7 +6,7 @@ import { getRowClass } from "./helpers";
 import "../../../Css/Table.css";
 
 
-const TableWrapper = ({ tableLogic, tableUI, tableDrag, renderHeader = () => null, renderRowCells }) => {
+const TableWrapper = ({ tableLogic, tableUI, tableDrag, tableHelpers, renderHeader = () => null, renderRowCells }) => {
   const {
     pageData,
     showDigitsFromPressed,
@@ -55,6 +55,7 @@ const TableWrapper = ({ tableLogic, tableUI, tableDrag, renderHeader = () => nul
             page = {page}
             // tableLogic={tableLogic}
             tableDrag = {tableDrag} 
+            tableHelpers = {tableHelpers}
         />
       </table>
     </div>

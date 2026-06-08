@@ -1,0 +1,17 @@
+.cellWrapper {
+  position: relative;
+}
+
+.copyIcon {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+  cursor: pointer;
+  transition: 0.15s;
+}
+
+.cellWrapper:hover .copyIcon {
+  opacity: 1;
+}
