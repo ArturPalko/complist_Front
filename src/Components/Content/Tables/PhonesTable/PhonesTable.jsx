@@ -1,14 +1,28 @@
 import s from "./PhonesTable.module.css";
 import { usePhonesTableLogic } from "../../../../redux/hooks/usePhonesTableLogic";
 import { createTableComponent } from "../../../../shared/components/table/TableWrapper/tableFactory";
-import { countNonUserRowsBefore, getUserRowIndex, handleOnOpenSectionsButtonClick } from "./phonesTableHelpers";
+import {
+  countNonUserRowsBefore,
+  getUserRowIndex,
+  handleOnOpenSectionsButtonClick,
+} from "./phonesTableHelpers";
 import torn_pageImg from "../../../../assets/Img/torn_page.png";
 import { useDispatch } from "react-redux";
+import { TdWrapper } from "../../../../shared/components/TdWrapper/TdWrapper";
 
 const BasePhonesTable = createTableComponent(usePhonesTableLogic);
 
-const PhonesTable = ({ columns, pageNumber, rowsPerPage, isSections }) => {
+const PhonesTable = ({
+  columns,
+  pageNumber,
+  rowsPerPage,
+  isSections,
+}) => {
   const dispatch = useDispatch();
+
+  // =========================
+  // HEADER
+  // =========================
   const renderHeader = () => (
     <>
       <tr>
@@ -39,25 +53,34 @@ const PhonesTable = ({ columns, pageNumber, rowsPerPage, isSections }) => {
     </>
   );
 
-  const renderRowCells = (row, index, tableLogic) => {
+  // =========================
+  // ROWS
+  // =========================
+  const renderRowCells = (
+    row,
+    index,
+    tableLogic,
+    tableUI
+  ) => {
     const nonUserRowsBefore = countNonUserRowsBefore(
       tableLogic.pageData,
       index
     );
 
-const idMap = {
-  department: "departmentId",
-  section: "sectionId",
-  position: "id",
-  userType: "id",
-};
+    const idMap = {
+      department: "departmentId",
+      section: "sectionId",
+      position: "id",
+      userType: "id",
+    };
 
-const idKey = idMap[row.type];
-const dim = tableLogic.getRowDimClasses(row[idKey]);
-
-// console.log("DIM OBJECT", dim);
+    const idKey = idMap[row.type];
+    const dim = tableLogic.getRowDimClasses(row[idKey]);
 
     switch (row.type) {
+      // =========================
+      // GROUP ROWS
+      // =========================
       case "userType":
       case "position":
       case "department":
@@ -90,58 +113,52 @@ const dim = tableLogic.getRowDimClasses(row[idKey]);
           : tableLogic.dashedBlocks.sections.includes(name);
 
         return (
-<td
+      <TdWrapper
+  value={name}
+  tableUI={tableUI}
+  colSpan={6}
+  isHeaderRow={true}
   className={[
     className,
     dim.hidden ? "" : dim.dimAfterSearchNavigationClass,
     dim.hidden ? "" : dim.dimAfterPageNumberPressedClass,
-  ].filter(Boolean).join(" ")}
-  colSpan={6}
+  ]
+    .filter(Boolean)
+    .join(" ")}
 >
-            <div className={s.groupRowContent}>
-              {/* CENTER NAME */}
-              <span>{name}</span>
+  <div className={s.groupRowContent}>
+    <span>{name}</span>
 
-              {/* RIGHT CONTROLS */}
-              {isSections &&
-                Array.isArray(row.sections) &&
-                row.sections.length > 0 && (
-                  <div className={s.groupRowActions}>
-                    <span className={s.sectionsCount}>
-                      ({row.sections.length})
-                    </span>
+    {isSections &&
+      Array.isArray(row.sections) &&
+      row.sections.length > 0 && (
+        <div className={s.groupRowActions}>
+          <span className={s.sectionsCount}>
+            ({row.sections.length})
+          </span>
 
-                    <button
-                      className={s.viewSectionsButton}
-                      onClick={(e) => {
-                            e.stopPropagation();
-
-                            handleOnOpenSectionsButtonClick({
-                              isSections,
-                              item: row,
-                              dispatch,
-                            })(e);
-                          }}
-                    >
-                      Переглянути
-                    </button>
-                  </div>
-                )}
-
-              {/* BREAK IMAGE */}
-              {showBreak && (
-                <img
-                  src={torn_pageImg}
-                  alt="Розрив"
-                  title="Розрив"
-                  className={s.breakImage}
-                />
-              )}
-            </div>
-          </td>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleOnOpenSectionsButtonClick({
+                isSections,
+                item: row,
+                dispatch,
+              })(e);
+            }}
+          >
+            Переглянути
+          </button>
+        </div>
+      )}
+  </div>
+</TdWrapper>
         );
       }
 
+      // =========================
+      // USER ROW
+      // =========================
       case "user": {
         const userRowIndex = getUserRowIndex({
           pageNumber,
@@ -152,35 +169,63 @@ const dim = tableLogic.getRowDimClasses(row[idKey]);
             tableLogic.indexDecrementFromPreviousPages,
         });
 
+        const phoneColumn = columns.find(
+          (c) => c.key === "phones"
+        );
+
         return (
           <>
+            {/* INDEX (NO COPY) */}
             <td>{userRowIndex}</td>
 
+            {/* USER FIELDS */}
             {row.userTypeId !== 1 ? (
               <>
-                <td>{row.userName}</td>
+                <TdWrapper
+                  value={row.userName}
+                  tableUI={tableUI}
+                >
+                  {row.userName}
+                </TdWrapper>
+
                 <td />
               </>
             ) : (
               <>
-                <td>{row.userPosition}</td>
-                <td>{row.userName}</td>
+                <TdWrapper
+                  value={row.userPosition}
+                  tableUI={tableUI}
+                >
+                  {row.userPosition}
+                </TdWrapper>
+
+                <TdWrapper
+                  value={row.userName}
+                  tableUI={tableUI}
+                >
+                  {row.userName}
+                </TdWrapper>
               </>
             )}
 
-            {columns
-              .find((c) => c.key === "phones")
-              ?.subLabels.map((sub) => {
-                const phone = row.phones?.find(
-                  (p) => p.phoneType === sub.label
-                );
+            {/* PHONES */}
+            {phoneColumn?.subLabels.map((sub) => {
+              const phone = row.phones?.find(
+                (p) => p.phoneType === sub.label
+              );
 
-                return (
-                  <td key={sub.key}>
-                    {phone?.phoneName || ""}
-                  </td>
-                );
-              })}
+              const value = phone?.phoneName || "";
+
+              return (
+                <TdWrapper
+                  key={sub.key}
+                  value={value}
+                  tableUI={tableUI}
+                >
+                  {value}
+                </TdWrapper>
+              );
+            })}
           </>
         );
       }

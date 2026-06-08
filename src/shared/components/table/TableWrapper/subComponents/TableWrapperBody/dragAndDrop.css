@@ -4,13 +4,11 @@
 
 .row-edit {
   cursor: grab;
-  user-select: none;
   transition: all 0.2s ease;
 }
 
 .row-edit-default {
   cursor: default;
-  user-select: auto;
 }
 
 .row-dragging {

@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import TableWrapper from "./TableWrapper";
 
-import { useRef, useMemo, useCallback } from "react";
+import { useRef, useMemo, useCallback, useState } from "react";
 import {
   useFoundResults,
   usePageContext,
@@ -17,11 +17,14 @@ import {
 } from "../../../../redux/selectors/selector";
 
 import { useRedirectHighlight } from "../../../../redux/hooks/useRedirectHighLight";
+import { copyToClipboard } from "./subComponents/TableWrapperBody/tableWrapperBody_helpers";
 
 
 export const createTableComponent = (useTableLogic) => {
   return function TableComponent(props) {
     const dispatch = useDispatch();
+    const [hoverCell, setHoverCell] = useState(false);
+  const [copiedCellId, setCopiedCellId] = useState(null);
 
     // =========================
     // REFS
@@ -137,6 +140,13 @@ export const createTableComponent = (useTableLogic) => {
         currentMode,
         editMode,
         page,
+        hoverCell,
+        setHoverCell,
+
+        copiedCellId,
+        setCopiedCellId,
+
+        copyToClipboard,
       }),
       [dispatch, isSections, menu, currentMode, editMode, page]
     );

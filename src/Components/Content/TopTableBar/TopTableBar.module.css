@@ -87,7 +87,6 @@ input:checked + .slider.green:before {
   margin-left: 0.3125em;
   padding-bottom: 0.125em;
   font-size: 0.85rem;
-  user-select: none;
 }
 
 /* ==============================

@@ -24,7 +24,6 @@
 .foundResultsPage {
    -webkit-user-drag: none;
   user-drag: none;
-  user-select: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;

@@ -143,6 +143,7 @@ export const useTableBaseLogic = ({
     isPagesNavbarLinkElementOnCurrentPagePressed,
 
     // table config
-    ...(columns ? { pageColumns: tableColumns } : {}),
+    ...(columns ? { pageColumns: tableColumns } : {})
+  
   };
 };
