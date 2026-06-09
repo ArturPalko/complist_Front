@@ -6,7 +6,7 @@
   width: 100%;
 }
 
-.icon {
+.copyIcon {
   position: absolute;
   top: 4px;
   right: 4px;
@@ -20,4 +20,9 @@
   top: 4px;
   right: 22px;
   font-size: 12px;
+}
+
+/* Під час drag приховуємо */
+:global(.dragging) .copyIcon {
+  display: none;
 }

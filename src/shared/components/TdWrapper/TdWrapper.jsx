@@ -35,7 +35,7 @@ export const TdWrapper = ({
 
       {isHovered && canCopy && (
         <span
-          className={s.icon}
+          className={s.copyIcon}
           onClick={async () => {
             const ok = await tableUI.copyToClipboard(value);
 

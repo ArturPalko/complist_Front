@@ -9,7 +9,7 @@ export const withDropZones = (Component) => {
     const { handleDrop } = props.tableDrag;
     const {isOnFoundResultsPage} = props.tableDrag;
     const showDropZones =  editMode && pageData?.length > 0 && !isOnFoundResultsPage
-
+    
     
     return (
       <>
