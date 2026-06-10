@@ -43,20 +43,7 @@ const TableWrapperBody = ({
   isSections,
   currentMode
 }) => {
-  // const dispatch = useDispatch();
-
-  // const isSections = useSelector(isSectionsMode);
-  // const menu = useSelector(activeMenu);
-  // const currentMode = useSelector(getCurrentMode);
-
-  // const { foundResults } = useFoundResults();
-
-  // const page = useSelector((state) =>
-  //   currentPageByMenu(state, menu)
-  // );
-
-  // const editMode = useSelector(isEditModeSelected);
-// debugger
+  
   const {
     dragIds,
     selectedIds,

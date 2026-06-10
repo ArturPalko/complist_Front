@@ -4,18 +4,20 @@ import { applyPhonesReorder } from "./data-reducerFunctions/applyPhonesReorder.j
 import { chunkIntoPages } from "../../providers/DragProvider/dragProvider-helpers/commonFunctions.js";
 import { rowsPerPage } from "../../../configs/app/constants.js";
 
-// Action type
+// Action types
 const ADD_DATA = "ADD_DATA";
 const SET_ORDER = "SET_ORDER";
+const SET_DICTIONARIES = "SET_DICTIONARIES";
 
 const initialState = {
   "Gov-ua": [],
   Lotus: [],
-
   phones: [],
 
-  // NEW DICTIONARIES
-
+  dictionaries: {
+    positions: [],
+    userTypes: [],
+  },
 };
 
 // Reducer
@@ -27,15 +29,26 @@ export const dataReducer = (state = initialState, action) => {
     // =========================
     case ADD_DATA: {
       const { key, data } = action.payload;
-        
 
       return {
         ...state,
+        [key]: paginateData(data, key, rowsPerPage),
+      };
+    }
 
-        [key]:
-          key === "userTypes" || key === "positions"
-            ? data
-            : paginateData(data, key, rowsPerPage)
+    // =========================
+    // DICTIONARIES
+    // =========================
+    case SET_DICTIONARIES: {
+      const { positions, userTypes } = action.payload;
+
+      return {
+        ...state,
+        dictionaries: {
+          ...state.dictionaries,
+          positions,
+          userTypes,
+        },
       };
     }
 
@@ -45,7 +58,6 @@ export const dataReducer = (state = initialState, action) => {
     case SET_ORDER: {
       const { key, pages, deptId, currentMode } = action.payload;
 
-      // 🔥 phones — complex reorder logic
       if (key === "phones") {
         return {
           ...state,
@@ -53,7 +65,6 @@ export const dataReducer = (state = initialState, action) => {
         };
       }
 
-      // 🔥 everything else — simple pagination
       const newPages = chunkIntoPages(pages, rowsPerPage);
 
       return {
@@ -73,12 +84,22 @@ export const dataReducer = (state = initialState, action) => {
 
 export const addDataActionCreator = (key, data) => ({
   type: ADD_DATA,
-  payload: { key, data }
+  payload: { key, data },
 });
 
-export const setPagesActionCreator = (key, pages, deptId, currentMode) => ({
+export const setPagesActionCreator = (
+  key,
+  pages,
+  deptId,
+  currentMode
+) => ({
   type: SET_ORDER,
   payload: { key, pages, deptId, currentMode },
+});
+
+export const setDictionaries = (payload) => ({
+  type: SET_DICTIONARIES,
+  payload,
 });
 
 // =========================

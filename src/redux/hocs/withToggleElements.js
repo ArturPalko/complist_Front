@@ -19,7 +19,7 @@ import {
 import {SearchToggleContext, PasswordsToggleContext, EditModeToggleContext} from "../contexts/useConetxt.js"
 
 import { redirectToPage } from "../../shared/functions/redirectToPage.js";
-import { fetchPasswordsByType } from "../../dal/api.js"; 
+import { fetchPasswordsByType, fetchDictionariesThunk } from "../../dal/api.js"; 
 import { toggleEditMode } from "../reducers/appMode-reducer.js";
 
 
@@ -84,10 +84,16 @@ const withToggleElements = (type) => (WrappedComponent) => {
 
     
     /* ===== EDITMODE (Redux) ===== */
-    const handleToggleEditMode = (e) => {
-      const checked = e?.target?.checked ?? false;
-      props.toggleEditMode(checked);
-    }
+const handleToggleEditMode = (e) => {
+  const checked = e?.target?.checked ?? false;
+
+  props.toggleEditMode(checked);
+ debugger
+  if (checked) {
+    debugger
+    props.fetchDictionariesThunk();
+  }
+};
 
     return (
       // EditModeContext
@@ -143,7 +149,8 @@ const withToggleElements = (type) => (WrappedComponent) => {
   const mapDispatchToProps = {
     toggleSearchField: toggleSearchFieldActionCreator,
     clearSearchFieldsAndFoundResults,
-    toggleEditMode:toggleEditMode
+    toggleEditMode:toggleEditMode,
+    fetchDictionariesThunk
   };
 
   return connect(mapStateToProps, mapDispatchToProps)(HOC);

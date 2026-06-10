@@ -3,6 +3,7 @@ import axiosRetry from "axios-retry";
 import { passwordUrls} from "./urls";
 import { changeOrderUrl } from "./urls";
 import { current } from "@reduxjs/toolkit";
+import { setDictionaries } from "../redux/reducers/data-reducer/data-reducer";
 
 export const api = axios.create({
   baseURL: "http://localhost:5114", 
@@ -45,6 +46,30 @@ export const fetchPasswordsByType = async (type) => {
   
     return acc;
   }, {});
+};
+
+
+
+export const fetchDictionariesThunk = () => async (dispatch) => {
+ // dispatch(toggleDataIsFetchingActionCreator(true, "dictionaries"));
+debugger
+  try {
+    const { data } = await api.get("/dictionaries");
+debugger
+    dispatch(setDictionaries({
+      positions: data.positions,
+      userTypes: data.userTypes,
+    }));
+
+   // dispatch(setDataIsLoadedActionCreator(true, "dictionaries"));
+
+  } catch (err) {
+    console.error("Dictionaries error:", err.message);
+    throw err;
+
+  } finally {
+ //   dispatch(toggleDataIsFetchingActionCreator(false, "dictionaries"));
+  }
 };
 
 export const changeOrderOfDisplayElements = async (
