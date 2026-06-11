@@ -378,7 +378,7 @@ export const orderByUserTypes = (state, pages) => {
   const pageSize = state.phones[0]?.rows?.length ?? 20;
 
   const chunked = chunkIntoPages(result, pageSize);
-
+debugger
   return chunked.map((p, i) => ({
     ...state.phones[i],
     ...p

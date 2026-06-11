@@ -52,10 +52,10 @@ export const fetchPasswordsByType = async (type) => {
 
 export const fetchDictionariesThunk = () => async (dispatch) => {
  // dispatch(toggleDataIsFetchingActionCreator(true, "dictionaries"));
-debugger
+//debugger
   try {
     const { data } = await api.get("/dictionaries");
-debugger
+//debugger
     dispatch(setDictionaries({
       positions: data.positions,
       userTypes: data.userTypes,

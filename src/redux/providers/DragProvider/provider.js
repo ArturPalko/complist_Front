@@ -14,6 +14,7 @@ import {
   getCurrentMode,
   getDataForMenu,
   getLastVisitedPage,
+  isPositionsMode,
   selectAtiveDepartmentId,
 } from "../../selectors/selector";
 
@@ -209,6 +210,7 @@ const fullData = useMemo(() => {
   const toggleSelect = useCallback(
     (id, e) => {
       const mode = getSelectMode(e);
+      debugger
       
 
       if (mode === "RANGE") {
@@ -365,9 +367,10 @@ if (fullData.length === 2) {
     dispatch(
       setPagesActionCreator(
         menu,
-        menu === "phones"
-          ? payload
-          : reordered,
+        {
+          reordered,
+          payload,
+        },
         depId,
         currentMode
       )

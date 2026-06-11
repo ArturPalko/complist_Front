@@ -51,30 +51,18 @@ export const getDataForMenu = (state, menu) => {
   const isUserTypes = isUserTypesMode(state);
 
   // ========================================
-  // POSITIONS / USER TYPES (FROM PHONES)
+  // POSITIONS / USER TYPES (FROM DICTIONARIES)
   // ========================================
   if (
     edit &&
     menu === "phones" &&
     (isPositions || isUserTypes)
   ) {
-    const data = state.data.phones;
+    const { positions, userTypes } = state.data.dictionaries;
 
-    const extracted = extractPositionsAndTypes(data);
+    const rows = isPositions ? positions : userTypes;
 
-    const rows = isPositions
-      ? extracted?.userPositions ?? []
-      : extracted?.contactTypes ?? [];
-
-    return [
-      {
-        pageIndex: 1,
-        rows: rows.map(item => ({
-          ...item,
-          type: isPositions ? "position" : "userType"
-        }))
-      }
-    ];
+    return rows; // OK
   }
 
   // ========================================

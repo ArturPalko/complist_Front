@@ -15,6 +15,7 @@ export const applyPhonesReorder = (
   switch (currentMode) {
 
     case "positions":
+      debugger
       return orderByPositions(state, pages);
 
     case "userTypes":
