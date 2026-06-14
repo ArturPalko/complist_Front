@@ -2,6 +2,7 @@ import React from "react";
 import { useTopTableBarLogic } from "../../../redux/hooks/useTopTableBarLogic";
 import s from "./TopTableBar.module.css";
 import CheckboxToggle from "./subComponent/CheckboxToggle";
+import ActionsPanel from "./subComponent/ActionPanel/ActionPanel";
 
 const TopTableBar = React.forwardRef(({ title, pageName }, ref) => {
   const {
@@ -13,12 +14,15 @@ const TopTableBar = React.forwardRef(({ title, pageName }, ref) => {
     handleTogglePasswords,
     showSearchToggle,
     showPasswordsToggle,
-    showEditToggle
+    showEditToggle,
+    addPosition
   } = useTopTableBarLogic(pageName);
+
 
   return (
     <div ref={ref} className={s.headerPanel}>
       <h2>{title}</h2>
+      <ActionsPanel onAdd={addPosition}/>
       <div className={s.buttonsBar}>
          {showEditToggle && (
           <CheckboxToggle

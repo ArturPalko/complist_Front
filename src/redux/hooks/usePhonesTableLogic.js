@@ -27,9 +27,9 @@ export const usePhonesTableLogic = (props) => {
 console.log("indexVALUE:",  indexValue)
   
   }  
-   console.log ("index:",index)
-   console.log ("data:", data)
-   console.log("indexVALUE:", indexValue)
+  //  console.log ("index:",index)
+  //  console.log ("data:", data)
+  //  console.log("indexVALUE:", indexValue)
   
 
 

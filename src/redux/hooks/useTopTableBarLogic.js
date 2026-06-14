@@ -2,8 +2,10 @@ import { useSearchToggle, usePasswordsToggle, useEditModeToggle } from "../conte
 import { pageConfigs } from "../../configs/app/pageConfig.js";
 import { useSelector } from "react-redux";
 import { isUserAuthed } from "../selectors/selector.js";
+import { useModal } from "./useLoginModal.js";
 
 export const useTopTableBarLogic = (pageName) => {
+    const { openModal } = useModal();
   // Хуки для керування станом чекбоксів
   const { handleToggleSearchField, valueOfSearchCheckBox } = useSearchToggle();
   const { valueOfpasswordCheckbox, handleTogglePasswords } = usePasswordsToggle();
@@ -11,7 +13,10 @@ export const useTopTableBarLogic = (pageName) => {
 
   const isLoggedIn = useSelector(isUserAuthed);
   
-  
+    const addPosition = () => {
+      debugger
+    openModal("addPosition");
+  };
 
   // Беремо конфіг сторінки
   const config = pageConfigs[pageName] || {};
@@ -31,6 +36,9 @@ export const useTopTableBarLogic = (pageName) => {
     // Прапорці видимості чекбоксів
     showSearchToggle: config.showSearchToggle || false,
     showPasswordsToggle: config.showPasswordsToggle && isLoggedIn || false,
-    showEditToggle:true
+    showEditToggle:true,
+
+    //actions
+    addPosition
   };
 };

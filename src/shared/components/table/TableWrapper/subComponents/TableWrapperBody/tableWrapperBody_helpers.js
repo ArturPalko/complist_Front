@@ -79,6 +79,7 @@ export const getDragProps = ({
 
   startDrag,
   handleDrop,
+  toggleSelect,
   stopDrag,
 
   isOnFoundResultsPage,
@@ -190,6 +191,12 @@ if (menu == "phones" && !currentMode) return
       e.currentTarget._dragPreview = null;
 
       stopDrag?.();
+    },
+    /* =========================
+       CLICK SELECT
+    ========================= */
+    onClick: (e) => {
+      toggleSelect(itemId, e);
     },
   };
 };

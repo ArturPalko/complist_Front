@@ -14,19 +14,20 @@ import Login from "./Components/ModalWindows/Login/Login";
 import { useTrackLocation } from "./redux/hooks/hooks";
 import { Pages } from "./configs/app/constants";
 
-import { useLoginModal } from "./redux/hooks/useLoginModal";
+import { useModal } from "./redux/hooks/useLoginModal";
 import { useCheckAuth } from "./redux/hooks/hooks";
 import { useFiltersData } from "./redux/hooks/useFilters/useFiltersData";
 import { useFiltersEffects } from "./redux/hooks/useFilters/useFiltersEffects";
 import { FiltersContext } from "./redux/contexts/useConetxt";
 import { DragProvider } from "./redux/providers/DragProvider/provider";
 import { useEditModeEffects } from "./redux/hooks/useFilters/useEditModeEffects";
+import ModalRoot from "./Components/ModalWindows/ModalRoot";
 
 function App() {
   useTrackLocation();
   useCheckAuth();
 
-  const { isLoginOpen, closeModal } = useLoginModal();
+const { modal, closeModal } = useModal();
   const filtersData = useFiltersData();
 
   useFiltersEffects(filtersData);
@@ -41,7 +42,7 @@ function App() {
           <NavBar />
 
           <div className="app-wrapper-content">
-            <div className={isLoginOpen ? "content-blur" : ""}>
+            <div className={modal ? "content-blur" : ""}>
               <Routes>
                 <Route path="/error" element={<Error />} />
                 <Route
@@ -84,7 +85,7 @@ function App() {
       </FiltersContext.Provider>
       </DragProvider>
       
-      {isLoginOpen && <Login onClose={closeModal} />}
+  <ModalRoot />
     </>
   );
 }

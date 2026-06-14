@@ -18,10 +18,9 @@
   background: #d0ebff !important;
 }
 
-.row-selected {
-  background: #d0ebff !important;
+tr.row-selected td {
+  background-color: #d0ebff !important;
 }
-
 /* =========================
    DROP POSITION (FIXED)
 ========================= */
