@@ -18,5 +18,6 @@ export const loginUrl = "/login";
 export const logoutUrl = "/logout"
 
 export const dictionariesUrl = "/dictionaries"; 
+export const positionsUrl = "/api/positions"
 
 export const changeOrderUrl= (pageName) => `/changeOrder/${pageName}`

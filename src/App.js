@@ -18,10 +18,11 @@ import { useModal } from "./redux/hooks/useLoginModal";
 import { useCheckAuth } from "./redux/hooks/hooks";
 import { useFiltersData } from "./redux/hooks/useFilters/useFiltersData";
 import { useFiltersEffects } from "./redux/hooks/useFilters/useFiltersEffects";
-import { FiltersContext } from "./redux/contexts/useConetxt";
+import { FiltersContext, ModalWindowConext } from "./redux/contexts/useConetxt";
 import { DragProvider } from "./redux/providers/DragProvider/provider";
 import { useEditModeEffects } from "./redux/hooks/useFilters/useEditModeEffects";
 import ModalRoot from "./Components/ModalWindows/ModalRoot";
+import { ModalWindowProvider } from "./redux/providers/ModalWindowProvider/provider";
 
 function App() {
   useTrackLocation();
@@ -35,6 +36,7 @@ const { modal, closeModal } = useModal();
 
   return (
     <>
+  <ModalWindowProvider>
     <DragProvider>
       <FiltersContext.Provider value={filtersData}>
         <div className="app-wrapper">
@@ -86,6 +88,7 @@ const { modal, closeModal } = useModal();
       </DragProvider>
       
   <ModalRoot />
+  </ModalWindowProvider>
     </>
   );
 }

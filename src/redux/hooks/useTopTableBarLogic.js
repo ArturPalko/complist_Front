@@ -1,44 +1,66 @@
-import { useSearchToggle, usePasswordsToggle, useEditModeToggle } from "../contexts/useConetxt.js";
+import { useSearchToggle, usePasswordsToggle, useEditModeToggle, useModalWindowContext } from "../contexts/useConetxt.js";
 import { pageConfigs } from "../../configs/app/pageConfig.js";
 import { useSelector } from "react-redux";
 import { isUserAuthed } from "../selectors/selector.js";
 import { useModal } from "./useLoginModal.js";
+import { deletePosition as deletePos } from "../../dal/api.js";
+import { selectPositionsDictionary } from "../selectors/selector.js";
+import { useDragContext } from "../contexts/useConetxt.js";
 
 export const useTopTableBarLogic = (pageName) => {
-    const { openModal } = useModal();
-  // Хуки для керування станом чекбоксів
+  const { openModal } = useModal();
+
+  const { selectedIds } = useDragContext();
+  const{setModalData, setModalType}=useModalWindowContext();
+  const positions = useSelector(selectPositionsDictionary);
+
   const { handleToggleSearchField, valueOfSearchCheckBox } = useSearchToggle();
   const { valueOfpasswordCheckbox, handleTogglePasswords } = usePasswordsToggle();
-  const {valueOfEditCheckbox, handleToggleEditMode} = useEditModeToggle();
+  const { valueOfEditCheckbox, handleToggleEditMode } = useEditModeToggle();
 
   const isLoggedIn = useSelector(isUserAuthed);
-  
-    const addPosition = () => {
-      debugger
+
+  const addPosition = () => {
     openModal("addPosition");
   };
 
-  // Беремо конфіг сторінки
+  const deletePosition = () => {
+    if (!selectedIds?.length) return;
+    deletePos(selectedIds);
+  };
+
+  const editPosition = () => {
+    if (!selectedIds?.length) return;
+
+    const id = selectedIds[0];
+
+    const position = positions
+      .flatMap(p => p.rows)
+      .find(r => r.id === selectedIds[0]);
+
+    setModalType ("position")
+    setModalData(position);
+    
+    openModal("editPosition");
+  };
+
   const config = pageConfigs[pageName] || {};
-  
 
   return {
-    // Стани
     valueOfSearchCheckBox,
     valueOfpasswordCheckbox,
     valueOfEditCheckbox,
 
-    // Колбеки
     handleToggleSearchField,
     handleTogglePasswords,
     handleToggleEditMode,
 
-    // Прапорці видимості чекбоксів
     showSearchToggle: config.showSearchToggle || false,
     showPasswordsToggle: config.showPasswordsToggle && isLoggedIn || false,
-    showEditToggle:true,
+    showEditToggle: true,
 
-    //actions
-    addPosition
+    addPosition,
+    editPosition,
+    deletePosition,
   };
 };

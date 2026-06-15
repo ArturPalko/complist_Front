@@ -15,14 +15,16 @@ const TopTableBar = React.forwardRef(({ title, pageName }, ref) => {
     showSearchToggle,
     showPasswordsToggle,
     showEditToggle,
-    addPosition
+    addPosition,
+    editPosition,
+    deletePosition
   } = useTopTableBarLogic(pageName);
 
 
   return (
     <div ref={ref} className={s.headerPanel}>
       <h2>{title}</h2>
-      <ActionsPanel onAdd={addPosition}/>
+      <ActionsPanel onAdd={addPosition} onDelete={deletePosition} onEdit={editPosition}/>
       <div className={s.buttonsBar}>
          {showEditToggle && (
           <CheckboxToggle

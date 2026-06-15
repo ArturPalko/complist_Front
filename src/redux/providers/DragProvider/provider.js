@@ -146,6 +146,17 @@ const fullData = useMemo(() => {
 },
     [pages]);
 
+
+
+
+      useEffect(() => {
+
+       console.log("selectedIds:", selectedIds)
+    
+    
+},
+    [selectedIds]);
+
   useEffect(() => {
 
       // console.log("FullData:", fullData)

@@ -351,6 +351,8 @@ export const getCurrentMode = (state) =>  state.ui.viewMode;
 
 export const selectAtiveDepartmentId = (state)=> state.ui.activeDepartmentId;
 
+export const selectPositionsDictionary = (state) => state.data.dictionaries.positions;
+
 
 
 

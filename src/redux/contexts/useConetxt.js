@@ -78,3 +78,9 @@ export const [DragContext, useDragContext] = createCtx({
   startDrag: () => {},
   endDrag: () => {},
 });
+
+
+// FoundResultsContext
+export const [ModalWindowContext, useModalWindowContext] = createCtx({
+  modalData: null,
+});

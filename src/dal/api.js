@@ -1,7 +1,8 @@
 import axios from "axios";
 import axiosRetry from "axios-retry";
-import { passwordUrls} from "./urls";
+import { dictionariesUrl, passwordUrls} from "./urls";
 import { changeOrderUrl } from "./urls";
+import { positionsUrl } from "./urls";
 import { current } from "@reduxjs/toolkit";
 import { setDictionaries } from "../redux/reducers/data-reducer/data-reducer";
 
@@ -54,7 +55,7 @@ export const fetchDictionariesThunk = () => async (dispatch) => {
  // dispatch(toggleDataIsFetchingActionCreator(true, "dictionaries"));
 //debugger
   try {
-    const { data } = await api.get("/dictionaries");
+    const { data } = await api.get(dictionariesUrl);
 //debugger
     dispatch(setDictionaries({
       positions: data.positions,
@@ -103,4 +104,29 @@ export const changeOrderOfDisplayElements = async (
 
   // 🔥 everything else stays SAME AS BEFORE
   return api.post(sendUrl, dataToPush);
+};
+
+export const addPosition = async (name) => {
+  const payload = {
+    name,
+  };
+debugger
+  return api.post("/api/positions", payload);
+};
+
+// export const deletePosition = async (id) => {
+//   return api.delete(`/api/positions/${id}`);
+// };
+
+
+export const editPosition = async (id, name, priority) => {
+  return api.put(`/api/positions/${id}`, {
+    name,
+    priority,
+  });
+};
+
+
+export const deletePosition = async (ids) => {
+  return api.post("/api/positions/delete", ids);
 };
