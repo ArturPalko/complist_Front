@@ -34,6 +34,7 @@ const onSubmitForm = async (data) => {
   try {
     let value;
 debugger
+console.log("mode =", mode);
     switch (mode) {
       case "edit":
         value = {
@@ -43,6 +44,7 @@ debugger
         };
         break;
       case "add":
+        debugger
         value = data.name.trim();
       break
       case "delete":
@@ -64,6 +66,7 @@ debugger
   } catch (err) {
     console.error("Add position error:", err);
   } finally {
+    debugger
     dispatch(fetchDictionariesThunk());
   }
 };

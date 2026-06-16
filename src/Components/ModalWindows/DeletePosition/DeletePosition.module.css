@@ -1,0 +1,56 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  width: 360px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.text {
+  font-size: 14px;
+  color: #444;
+  margin-bottom: 20px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.cancelButton {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  background: #e5e5e5;
+  cursor: pointer;
+}
+
+.deleteButton {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  background: #e53935;
+  color: white;
+  cursor: pointer;
+}
+
+.deleteButton:hover {
+  background: #d32f2f;
+}

@@ -3,6 +3,7 @@ import { useModalWindowContext } from "../../redux/contexts/useConetxt";
 import { useModal } from "../../redux/hooks/useLoginModal";
 import Login from "../ModalWindows/Login/Login";
 import AddPositionModal from "./AddPosition/AddPositions";
+import DeletePositionModal from "./DeletePosition/DeletePosition";
 
 export default function ModalRoot() {
   const { modal, closeModal } = useModal();
@@ -15,13 +16,19 @@ debugger
       return <Login onClose={closeModal} />;
 
     case "addPosition":
-      return <AddPositionModal onClose={closeModal} onSubmit={addPosition} />;
+      return <AddPositionModal onClose={closeModal}  editValue = {name} onSubmit={addPosition} mode = {mode} modalData = {modalData} />;
 
     case "editPosition":
       return <AddPositionModal onClose={closeModal} editValue = {name} onSubmit = {editPosition} mode = {mode} modalData = {modalData}/>
 
-    case "deletePosition":
-      return <AddPositionModal onClose={closeModal} editValue = {name} onSubmit = {deletePosition} mode = {mode} modalData = {modalData}/>
+   case "deletePosition":
+      return (
+        <DeletePositionModal
+          onClose={closeModal}
+          onConfirm={deletePosition}
+          modalData={modalData}
+        />
+      );
 
     default:
       return null;

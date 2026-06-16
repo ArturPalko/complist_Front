@@ -41,9 +41,9 @@ export function ModalWindowProvider({ children }) {
       closeModal,
       name,
     }),
-    [modalType, modalData, name]
+    [modalType, modalData, name, mode]
   );
-// debugger
+ debugger
   return (
     <ModalWindowContext.Provider value={value}>
       {children}

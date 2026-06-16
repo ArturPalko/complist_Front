@@ -22,7 +22,11 @@ export const useTopTableBarLogic = (pageName) => {
   const isLoggedIn = useSelector(isUserAuthed);
 
   const addPosition = () => {
+      setMode("add")
+          setModalType ("position")
+            setModalData([]);
     openModal("addPosition");
+    debugger
   };
 
   const deletePosition = () => {
