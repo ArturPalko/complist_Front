@@ -7,11 +7,12 @@ import { deletePosition as deletePos } from "../../dal/api.js";
 import { selectPositionsDictionary } from "../selectors/selector.js";
 import { useDragContext } from "../contexts/useConetxt.js";
 
+
 export const useTopTableBarLogic = (pageName) => {
   const { openModal } = useModal();
 
   const { selectedIds } = useDragContext();
-  const{setModalData, setModalType}=useModalWindowContext();
+  const{setModalData, setModalType ,setMode}=useModalWindowContext();
   const positions = useSelector(selectPositionsDictionary);
 
   const { handleToggleSearchField, valueOfSearchCheckBox } = useSearchToggle();
@@ -26,7 +27,11 @@ export const useTopTableBarLogic = (pageName) => {
 
   const deletePosition = () => {
     if (!selectedIds?.length) return;
-    deletePos(selectedIds);
+    setMode("delete")
+    // deletePos(selectedIds);
+      setModalType ("position")
+    setModalData(selectedIds);
+    openModal("deletePosition");
   };
 
   const editPosition = () => {
@@ -38,7 +43,9 @@ export const useTopTableBarLogic = (pageName) => {
       .flatMap(p => p.rows)
       .find(r => r.id === selectedIds[0]);
 
+    setMode("edit")
     setModalType ("position")
+    debugger
     setModalData(position);
     
     openModal("editPosition");

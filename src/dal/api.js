@@ -56,7 +56,7 @@ export const fetchDictionariesThunk = () => async (dispatch) => {
 //debugger
   try {
     const { data } = await api.get(dictionariesUrl);
-//debugger
+debugger
     dispatch(setDictionaries({
       positions: data.positions,
       userTypes: data.userTypes,
@@ -119,7 +119,8 @@ debugger
 // };
 
 
-export const editPosition = async (id, name, priority) => {
+export const editPosition = async ({id, name, priority}) => {
+  debugger
   return api.put(`/api/positions/${id}`, {
     name,
     priority,

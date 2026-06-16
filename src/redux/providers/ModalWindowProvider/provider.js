@@ -10,6 +10,7 @@ export function ModalWindowProvider({ children }) {
   const { selectedIds } = useDragContext();
 
   const [modalType, setModalType] = useState(null);
+  const [mode, setMode] = useState(null);
   const [modalData, setModalData] = useState(null);
 
   // 👇 просто витягуємо name напряму
@@ -17,7 +18,7 @@ export function ModalWindowProvider({ children }) {
     modalType === "position" && modalData
       ? modalData.positionName
       : null;
-debugger
+// debugger
   const openModal = (type, data = null) => {
     setModalType(type);
     setModalData(data);
@@ -30,8 +31,10 @@ debugger
 
   const value = useMemo(
     () => ({
+      mode,
       modalType,
       modalData,
+      setMode,
       setModalData,
       setModalType,
       openModal,
@@ -40,7 +43,7 @@ debugger
     }),
     [modalType, modalData, name]
   );
-debugger
+// debugger
   return (
     <ModalWindowContext.Provider value={value}>
       {children}
