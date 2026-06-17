@@ -5,7 +5,20 @@ import { addPosition } from "../../../dal/api";
 import { fetchDictionariesThunk } from "../../../dal/api";
 import { useDispatch } from "react-redux";
 
-export default function AddPositionModal({ onClose, onSubmit, editValue , mode, modalData}) {
+
+
+
+
+
+
+export default function EntityModal({
+  onClose,
+  onSubmit,
+  editValue,
+  title,
+}) {
+  const dispatch = useDispatch();
+
   const {
     register,
     handleSubmit,
@@ -16,76 +29,47 @@ export default function AddPositionModal({ onClose, onSubmit, editValue , mode, 
       name: "",
     },
   });
- const dispatch = useDispatch();
-  // 🔥 Ось головне — підставляємо editValue в форму
+
+  // підстановка значення для edit
   useEffect(() => {
-    if (editValue) {
-      reset({
-        name: editValue,
-      });
-    } else {
-      reset({
-        name: "",
-      });
-    }
+    debugger
+    reset({
+      name: editValue || "",
+    });
   }, [editValue, reset]);
 
-const onSubmitForm = async (data) => {
-  try {
-    let value;
-debugger
-console.log("mode =", mode);
-    switch (mode) {
-      case "edit":
-        value = {
-          id: modalData.id,
-          name: data.name,
-          priority: modalData.priority,
-        };
-        break;
-      case "add":
-        debugger
-        value = data.name.trim();
-      break
-      case "delete":
-        debugger
-        value = modalData;
-
-      // default:
-      //   value = data.name.trim();
-      //   break;
+  const submitHandler = async (data) => {
+    debugger
+    try {
+      debugger
+      await onSubmit({
+        name: data.name.trim(),
+      });
+      debugger
+      reset({ name: "" });
+      onClose?.();
+    } catch (err) {
+      console.error("EntityModal error:", err);
+    } finally {
+      dispatch(fetchDictionariesThunk());
     }
-    debugger
-
-    // 🔥 ВАЖЛИВО: чекаємо submit
-    await onSubmit?.(value);
-debugger
-    reset({ name: "" });
-    onClose?.();
-
-  } catch (err) {
-    console.error("Add position error:", err);
-  } finally {
-    debugger
-    dispatch(fetchDictionariesThunk());
-  }
-};
+  };
 
   return (
     <div className={s.overlay}>
       <div className={s.modal}>
-        <h2 className={s.title}>Додати посаду</h2>
+        <h2 className={s.title}>{title}</h2>
 
-        <form onSubmit={handleSubmit(onSubmitForm)}>
-          <label className={s.label}>Назва посади</label>
+        <form onSubmit={handleSubmit(submitHandler)}>
+          <label className={s.label}>Назва</label>
 
           <input
             className={s.input}
             type="text"
-            placeholder="Введіть назву посади"
+            placeholder="Введіть значення"
             autoFocus
             {...register("name", {
-              required: "Назва обовʼязкова",
+              required: "Поле обовʼязкове",
               minLength: {
                 value: 2,
                 message: "Мінімум 2 символи",
@@ -94,7 +78,7 @@ debugger
           />
 
           {errors.name && (
-            <p style={{ color: "red" }}>{errors.name.message}</p>
+            <p className={s.error}>{errors.name.message}</p>
           )}
 
           <div className={s.actions}>
@@ -111,7 +95,7 @@ debugger
               className={s.okButton}
               disabled={isSubmitting}
             >
-              {isSubmitting ? "..." : "ОК"}
+              {isSubmitting ? "..." : "Зберегти"}
             </button>
           </div>
         </form>

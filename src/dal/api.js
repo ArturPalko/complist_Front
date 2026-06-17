@@ -106,28 +106,44 @@ export const changeOrderOfDisplayElements = async (
   return api.post(sendUrl, dataToPush);
 };
 
-export const addPosition = async (name) => {
-  const payload = {
-    name,
-  };
-debugger
-  return api.post("/api/positions", payload);
-};
+// export const addPosition = async (name) => {
+//   const payload = {
+//     name,
+//   };
+// debugger
+//   return api.post("/api/positions", payload);
+// };
 
+export const apiAddEntity = (endpoint, name) => {
+  debugger
+  return api.post(`/api/${endpoint}`, 
+    name
+  );
+};
 // export const deletePosition = async (id) => {
 //   return api.delete(`/api/positions/${id}`);
 // };
 
 
-export const editPosition = async ({id, name, priority}) => {
+// export const editPosition = async ({id, name, priority}) => {
+//   debugger
+//   return api.put(`/api/positions/${id}`, {
+//     name,
+//     priority,
+//   });
+// };
+
+export const apiEditEntity = (endpoint, { id, ...data }) => {
   debugger
-  return api.put(`/api/positions/${id}`, {
-    name,
-    priority,
-  });
+  return api.put(`/api/${endpoint}/${id}`, data);
 };
 
+// export const deletePosition = async (ids) => {
+//   return api.post("/api/positions/delete", ids);
+// };
 
-export const deletePosition = async (ids) => {
-  return api.post("/api/positions/delete", ids);
+
+
+export const apiDeleteEntity = (endpoint, ids) => {
+  return api.post(`/api/${endpoint}/delete`, ids);
 };

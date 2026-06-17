@@ -12,13 +12,20 @@ export function ModalWindowProvider({ children }) {
   const [modalType, setModalType] = useState(null);
   const [mode, setMode] = useState(null);
   const [modalData, setModalData] = useState(null);
-
+let name;
   // 👇 просто витягуємо name напряму
-  const name =
-    modalType === "position" && modalData
-      ? modalData.positionName
-      : null;
-// debugger
+  switch (modalType){
+    case "positions":
+      name = modalData.positionName
+      break
+    case "userTypes":
+      name= modalData.userType
+  }
+  // const name =
+  //   modalType === "positions" && modalData
+  //     ? modalData.positionName
+  //     : null;
+ debugger
   const openModal = (type, data = null) => {
     setModalType(type);
     setModalData(data);

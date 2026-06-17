@@ -1,7 +1,7 @@
 import { useSearchToggle, usePasswordsToggle, useEditModeToggle, useModalWindowContext } from "../contexts/useConetxt.js";
 import { pageConfigs } from "../../configs/app/pageConfig.js";
 import { useSelector } from "react-redux";
-import { isUserAuthed } from "../selectors/selector.js";
+import { getCurrentMode, isUserAuthed, selectDictionaryByType } from "../selectors/selector.js";
 import { useModal } from "./useLoginModal.js";
 import { deletePosition as deletePos } from "../../dal/api.js";
 import { selectPositionsDictionary } from "../selectors/selector.js";
@@ -13,17 +13,21 @@ export const useTopTableBarLogic = (pageName) => {
 
   const { selectedIds } = useDragContext();
   const{setModalData, setModalType ,setMode}=useModalWindowContext();
-  const positions = useSelector(selectPositionsDictionary);
+  // const positions = useSelector(selectPositionsDictionary);
+
 
   const { handleToggleSearchField, valueOfSearchCheckBox } = useSearchToggle();
   const { valueOfpasswordCheckbox, handleTogglePasswords } = usePasswordsToggle();
   const { valueOfEditCheckbox, handleToggleEditMode } = useEditModeToggle();
+  const modalType = useSelector(getCurrentMode);
+    const value = useSelector(selectDictionaryByType(modalType));
 
   const isLoggedIn = useSelector(isUserAuthed);
 
   const addPosition = () => {
       setMode("add")
-          setModalType ("position")
+          setModalType (modalType)
+          debugger
             setModalData([]);
     openModal("addPosition");
     debugger
@@ -33,7 +37,7 @@ export const useTopTableBarLogic = (pageName) => {
     if (!selectedIds?.length) return;
     setMode("delete")
     // deletePos(selectedIds);
-      setModalType ("position")
+      setModalType (modalType)
     setModalData(selectedIds);
     openModal("deletePosition");
   };
@@ -43,12 +47,15 @@ export const useTopTableBarLogic = (pageName) => {
 
     const id = selectedIds[0];
 
-    const position = positions
+    // const position = positions
+    //   .flatMap(p => p.rows)
+    //   .find(r => r.id === selectedIds[0]);
+       const position = value
       .flatMap(p => p.rows)
       .find(r => r.id === selectedIds[0]);
 
     setMode("edit")
-    setModalType ("position")
+    setModalType (modalType)
     debugger
     setModalData(position);
     
