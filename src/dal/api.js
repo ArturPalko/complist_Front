@@ -53,13 +53,14 @@ export const fetchPasswordsByType = async (type) => {
 
 export const fetchDictionariesThunk = () => async (dispatch) => {
  // dispatch(toggleDataIsFetchingActionCreator(true, "dictionaries"));
-//debugger
+////debugger
   try {
     const { data } = await api.get(dictionariesUrl);
-debugger
+//debugger
     dispatch(setDictionaries({
       positions: data.positions,
       userTypes: data.userTypes,
+      departments: data.departments
     }));
 
    // dispatch(setDataIsLoadedActionCreator(true, "dictionaries"));
@@ -110,12 +111,12 @@ export const changeOrderOfDisplayElements = async (
 //   const payload = {
 //     name,
 //   };
-// debugger
+// //debugger
 //   return api.post("/api/positions", payload);
 // };
 
 export const apiAddEntity = (endpoint, name) => {
-  debugger
+  //debugger
   return api.post(`/api/${endpoint}`, 
     name
   );
@@ -126,7 +127,7 @@ export const apiAddEntity = (endpoint, name) => {
 
 
 // export const editPosition = async ({id, name, priority}) => {
-//   debugger
+//   //debugger
 //   return api.put(`/api/positions/${id}`, {
 //     name,
 //     priority,
@@ -134,7 +135,7 @@ export const apiAddEntity = (endpoint, name) => {
 // };
 
 export const apiEditEntity = (endpoint, { id, ...data }) => {
-  debugger
+  //debugger
   return api.put(`/api/${endpoint}/${id}`, data);
 };
 

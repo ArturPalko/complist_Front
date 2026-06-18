@@ -25,7 +25,7 @@ let name;
   //   modalType === "positions" && modalData
   //     ? modalData.positionName
   //     : null;
- debugger
+ //debugger
   const openModal = (type, data = null) => {
     setModalType(type);
     setModalData(data);
@@ -50,7 +50,7 @@ let name;
     }),
     [modalType, modalData, name, mode]
   );
- debugger
+ //debugger
   return (
     <ModalWindowContext.Provider value={value}>
       {children}

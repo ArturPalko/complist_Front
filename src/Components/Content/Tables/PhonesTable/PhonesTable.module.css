@@ -31,23 +31,17 @@
   }
 }
 
-.breakImage {
-  float: left;
-  height: 1.3em;
-  width: auto;
-  margin-left: 1.7em;
-}
 
 /* =========================
    GROUP ROW LAYOUT
 ========================= */
 
-.groupRowContent {
-  position: relative;
-  width: 100%;
-  text-align: center;
+.groupRowActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
 }
-
 /* =========================
    RIGHT CONTROLS
 ========================= */

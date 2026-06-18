@@ -111,9 +111,11 @@ const PhonesTable = ({
               (d) => d === name
             )
           : tableLogic.dashedBlocks.sections.includes(name);
+          // debugger
 
         return (
       <TdWrapper
+  showBreak= {showBreak}
   value={name}
   tableUI={tableUI}
   colSpan={6}

@@ -29,7 +29,7 @@ export const dataReducer = (state = initialState, action) => {
     // =========================
     case ADD_DATA: {
       const { key, data } = action.payload;
-// debugger
+// //debugger
       return {
         ...state,
         [key]: paginateData(data, key, rowsPerPage),
@@ -53,14 +53,15 @@ export const dataReducer = (state = initialState, action) => {
     // }
 
 case SET_DICTIONARIES: {
-  const { positions, userTypes } = action.payload;
-// debugger
+  const { positions, userTypes, departments } = action.payload;
+// //debugger
   return {
     ...state,
     dictionaries: {
       ...state.dictionaries,
       positions: paginateData(positions, "positions", rowsPerPage),
       userTypes: paginateData(userTypes, "userTypes", rowsPerPage),
+      departments:paginateData(departments, "departments", rowsPerPage)
     },
   };
 }
@@ -79,7 +80,7 @@ case SET_DICTIONARIES: {
 //   }
 
 //   const newPages = chunkIntoPages(pages, rowsPerPage);
-//   debugger
+//   //debugger
 
 //   if (currentMode === "positions") {
 //     return {
@@ -98,35 +99,54 @@ case SET_DICTIONARIES: {
 // }
 case SET_ORDER: {
   const { key, pages, depId, currentMode } = action.payload;
-
   const { reordered, payload } = pages;
+debugger
+  let newState = { ...state };
 
-  let newState = {
-    ...state,
-  };
+  // 📱 PHONES (окрема логіка reorder)
+  // if (key === "phones") {
+  //   newState.phones = applyPhonesReorder(
+  //     state,
+  //     payload,
+  //     depId,
+  //     currentMode
+  //   );
 
-  // 📱 PHONES — тільки payload (індекси)
-  if (key === "phones") {
-    newState.phones = applyPhonesReorder(
-      state,
-      payload,
-      depId,
-      currentMode
-    );
-  } else {
-    // 📦 інші кейси — повертаємо в paginated формат
-    const newPages = chunkIntoPages(reordered, rowsPerPage);
+  //   return newState;
+  // }
 
-    newState[key] = newPages;
-  }
+  // 📦 ALL OTHER PAGINATED KEYS
+  newState[key] = chunkIntoPages(reordered, rowsPerPage);
 
-  // 📚 dictionaries синхронізуються з mode
+  // 📚 DICTIONARIES UPDATE
   if (currentMode) {
-    const newPages = chunkIntoPages(reordered, rowsPerPage);
-
     newState.dictionaries = {
       ...state.dictionaries,
-      [currentMode]: newPages,
+      [currentMode]: chunkIntoPages(reordered, rowsPerPage),
+    };
+  }
+
+  // 🧩 SPECIAL CASE: sections inside departments
+  if (currentMode === "sections") {
+    const deptId = reordered?.[0]?.departmentId;
+debugger
+    newState.dictionaries = {
+      ...state.dictionaries,
+      departments: state.dictionaries.departments.map(page => ({
+        ...page,
+        rows: page.rows.map(dep => {
+          debugger
+          if (dep.id === deptId) {
+            debugger
+            return {
+              ...dep,
+              sections: reordered,
+            };
+          }
+          
+          return dep;
+        }),
+      })),
     };
   }
 

@@ -1,5 +1,5 @@
 export const getSelectMode = (e) => {
-  debugger
+  //debugger
   if (e?.altKey) return "RANGE";
   if (e?.ctrlKey) return "TOGGLE";
   return "RESET";

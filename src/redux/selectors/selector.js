@@ -91,26 +91,37 @@ export const getDataForMenu = (state, menu) => {
   return state?.data?.[menu] ?? [];
 };
 const selectSectionsByDepartmentId = (state, departmentId) => {
-  const pages = state?.data?.phones ?? [];
-
-  const allRows = pages.flatMap(page => page?.rows ?? []);
-
-
-  const matchedRows = allRows.filter(
-    row =>
-      row.type === "section" &&
-      row.departmentId == departmentId
+  const pages = state?.data?.dictionaries?.departments ?? [];
+// debugger
+  const matchedSections = pages.flatMap(page =>
+    (page?.rows ?? [])
+      .filter(row => row?.sections?.length) // тільки ті, де є sections
+      .flatMap(row =>
+        row.sections
+          .filter(
+            section =>
+              section.departmentId == departmentId // або row.id якщо departmentId на row
+          )
+      )
   );
-
-  if (!matchedRows.length) return [];
-console.log ("matches:", matchedRows)
-  return [
-    {
+// debugger
+  if (!matchedSections.length) return [];
+const wither = matchedSections.map(row => ({
+  ...row,
+  type: "section"
+}));
+//  debugger
+  console.log("matches:", wither);
+// debugger
+let a =[ {
       pageIndex: 1,
-      rows: matchedRows
-    }
-  ];
+      rows: wither
+    }]
+    // debugger
+  return a
 };
+
+
 export const getLoadedForMenu = (state, menu) => Boolean(state.dataState?.[menu]?.dataIsLoaded);
 export const getFetchingForMenu = (state, menu) => Boolean(state.dataState?.[menu]?.dataIsFetching);
 
@@ -360,3 +371,4 @@ export const selectDictionaryByType = (type) => (state) =>
 
 
 
+ 

@@ -32,20 +32,20 @@ export default function EntityModal({
 
   // підстановка значення для edit
   useEffect(() => {
-    debugger
+    //debugger
     reset({
       name: editValue || "",
     });
   }, [editValue, reset]);
 
   const submitHandler = async (data) => {
-    debugger
+    //debugger
     try {
-      debugger
+      //debugger
       await onSubmit({
         name: data.name.trim(),
       });
-      debugger
+      //debugger
       reset({ name: "" });
       onClose?.();
     } catch (err) {

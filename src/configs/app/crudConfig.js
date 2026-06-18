@@ -27,9 +27,10 @@ export const CRUD_CONFIG = {
 
       edit: (data, modalData) => ({
         id: modalData.id,
-        name: data.userType,
+        name: data.name,
         priority: modalData.priority
       }),
     },
   },
 };
+

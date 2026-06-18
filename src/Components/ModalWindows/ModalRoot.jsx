@@ -14,7 +14,7 @@ import { apiAddEntity, apiDeleteEntity, apiEditEntity } from "../../dal/api";
 export default function ModalRoot() {
   const { modal, closeModal } = useModal();
   const { modalType, mode, modalData , name} = useModalWindowContext();
-debugger
+//debugger
   if (!modal) return null;
 
   const config = CRUD_CONFIG[modalType];
@@ -42,15 +42,16 @@ debugger
   // ADD / EDIT
   return (
     <EntityModal
+      title={config.title}
       onClose={closeModal}
       editValue={name}
       mode={mode}
       onSubmit={async (data) => {
         // 🔥 ADD
-        debugger
+        //debugger
         if (mode === "add") {
           const payload = config.mappers.add(data);
-          debugger
+          //debugger
           return apiAddEntity(config.endpoint, payload);
         }
 

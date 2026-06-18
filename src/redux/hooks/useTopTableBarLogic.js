@@ -27,10 +27,10 @@ export const useTopTableBarLogic = (pageName) => {
   const addPosition = () => {
       setMode("add")
           setModalType (modalType)
-          debugger
+          //debugger
             setModalData([]);
     openModal("addPosition");
-    debugger
+    //debugger
   };
 
   const deletePosition = () => {
@@ -56,7 +56,7 @@ export const useTopTableBarLogic = (pageName) => {
 
     setMode("edit")
     setModalType (modalType)
-    debugger
+    //debugger
     setModalData(position);
     
     openModal("editPosition");
