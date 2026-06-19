@@ -8,19 +8,20 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 
 import { DragContext } from "../../contexts/useConetxt";
+import { getDataByMenu } from "../../reducers/data-reducer/data-reducer";
 
+import { setUnsavedOrder } from "../../reducers/ui-reducer";
 import {
   activeMenu,
   getCurrentMode,
   getDataForMenu,
   getLastVisitedPage,
-  isPositionsMode,
   selectAtiveDepartmentId,
 } from "../../selectors/selector";
 
 import { setPagesActionCreator } from "../../reducers/data-reducer/data-reducer";
 
-import { changeOrderOfDisplayElements } from "../../../dal/api";
+import { saveOrder } from "../../../dal/thunks/dataThunks";
 
 import { moveItems } from "./dragProvider-helpers/commonFunctions";
 
@@ -47,35 +48,23 @@ import {
   getRangeIndexes,
   buildRangeIds,
 } from "./dragProvider-helpers/selectRange-helpers";
-
+import { changeOrderOfDisplayElements } from "../../../dal/api";
 
 /* =========================
    PROVIDER
 ========================= */
 
-export const DragProvider = ({
-  children,
-  rowsPerPage = 18,
-}) => {
+export const DragProvider = ({ children, rowsPerPage = 18 }) => {
   const [dragIds, setDragIds] = useState([]);
   const [selectedIds, setSelectedIds] = useState([]);
   const [foundResults, setFoundResults] = useState([]);
   const [dropTargetId, setDropTargetId] = useState(null);
   const [rangeStartId, setRangeStartId] = useState(null);
-  // const [isSectionsMode, setIsSectionsMode] = useState(false);
-  // const [activeDepartment, setActiveDepartment] = useState(null);
-  const depId = useSelector(selectAtiveDepartmentId)
-  const [
-    elementsBeforeSelectedIds,
-    setElementsBeforeSelectedIds,
-  ] = useState([]);
 
-  const [
-    elementsAfterSelectedIds,
-    setElementsAfterSelectedIds,
-  ] = useState([]);
+  const depId = useSelector(selectAtiveDepartmentId);
 
-  
+  const [elementsBeforeSelectedIds, setElementsBeforeSelectedIds] = useState([]);
+  const [elementsAfterSelectedIds, setElementsAfterSelectedIds] = useState([]);
 
   const dispatch = useDispatch();
 
@@ -92,81 +81,46 @@ export const DragProvider = ({
     ) ?? [];
 
   /* =========================
-     FLAT DATA (FIXED)
+     FLAT DATA
   ========================= */
-// useEffect(()=> {console.log ("pages:", pages)}, [pages])
-const fullData = useMemo(() => {
-  if (!Array.isArray(pages) || pages.length === 0) {
-    return [];
-  }
 
-  const rows = pages.flatMap((p) => p?.rows ?? []);
+  const fullData = useMemo(() => {
+    if (!Array.isArray(pages) || pages.length === 0) {
+      return [];
+    }
 
-  if (menu === "phones") {
-    //   
-    return rows
-      .filter((el) =>
-        el?.type === "department" ||
-        el?.type === "section" ||
-        el?.type === "position" ||
-        el.type == "userType"
-      )
-      .map((item) => ({
-        ...item,
+    const rows = pages.flatMap((p) => p?.rows ?? []);
 
-        // 🔥 UNIFIED ID
-        id:
-          item.type === "department"
-            ? item.departmentId
-            : item.type === "section"
-            ? item.sectionId
-            : item.type === "position"
-            ? item.id
-            : item.id
-      }))
-      .filter((el) => el.id != null);
-  }
-//   
-  return rows.map((item) => ({
-    ...item,
-    id: item?.id ?? item?.mailId ?? item?.sectionId,
-  }));
-}, [pages, menu]);
+    if (menu === "phones") {
+      return rows
+        .filter(
+          (el) =>
+            el?.type === "department" ||
+            el?.type === "section" ||
+            el?.type === "position" ||
+            el?.type === "userType"
+        )
+        .map((item) => ({
+          ...item,
+          id:
+            item.type === "department"
+              ? item.departmentId
+              : item.type === "section"
+              ? item.sectionId
+              : item.id,
+        }))
+        .filter((el) => el.id != null);
+    }
 
+    return rows.map((item) => ({
+      ...item,
+      id: item?.id ?? item?.mailId ?? item?.sectionId,
+    }));
+  }, [pages, menu]);
 
   /* =========================
      ESC RESET
   ========================= */
-
-  useEffect(() => {
-
-      // console.log("Pages:", pages)
-    
-    
-},
-    [pages]);
-
-
-
-
-      useEffect(() => {
-
-       console.log("selectedIds:", selectedIds)
-    
-    
-},
-    [selectedIds]);
-
-  useEffect(() => {
-
-      // console.log("FullData:", fullData)
-    
-    
-},
-    [fullData]);
-
-
-
 
   useEffect(() => {
     const handler = (e) => {
@@ -178,9 +132,7 @@ const fullData = useMemo(() => {
     };
 
     window.addEventListener("keydown", handler);
-
-    return () =>
-      window.removeEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
   }, []);
 
   /* =========================
@@ -197,16 +149,10 @@ const fullData = useMemo(() => {
 
       if (!source?.length) return;
 
-      const indexes = getRangeIndexes(
-        source,
-        startId,
-        endId
-      );
-
+      const indexes = getRangeIndexes(source, startId, endId);
       if (!indexes) return;
 
       const [from, to] = indexes;
-
       const range = buildRangeIds(source, from, to);
 
       setSelectedIds(range);
@@ -217,12 +163,10 @@ const fullData = useMemo(() => {
   /* =========================
      SELECT
   ========================= */
-//////////////////////////////////////////////////////
+
   const toggleSelect = useCallback(
     (id, e) => {
       const mode = getSelectMode(e);
-      debugger
-      
 
       if (mode === "RANGE") {
         if (!rangeStartId) {
@@ -236,9 +180,7 @@ const fullData = useMemo(() => {
       }
 
       if (mode === "TOGGLE") {
-        setSelectedIds((prev) =>
-          toggleInArray(prev, id)
-        );
+        setSelectedIds((prev) => toggleInArray(prev, id));
         setRangeStartId(null);
         return;
       }
@@ -255,29 +197,18 @@ const fullData = useMemo(() => {
   const startDrag = useCallback(
     (id) => {
       if (!fullData.length) return;
-      
+
       setRangeStartId(null);
 
-      const dragGroup = getDragGroup(
-        id,
-        selectedIds
-      );
-
+      const dragGroup = getDragGroup(id, selectedIds);
       setDragIds(dragGroup);
 
-      const indexes = getIndexes(
-        dragGroup,
-        fullData
-      );
-
-      const anchorIndex =
-        getAnchorIndex(indexes);
+      const indexes = getIndexes(dragGroup, fullData);
+      const anchorIndex = getAnchorIndex(indexes);
 
       if (anchorIndex === -1) return;
 
-      const { before, after } =
-        splitBeforeAfter(fullData, anchorIndex);
-        //   
+      const { before, after } = splitBeforeAfter(fullData, anchorIndex);
 
       setElementsBeforeSelectedIds(before);
       setElementsAfterSelectedIds(after);
@@ -296,85 +227,83 @@ const fullData = useMemo(() => {
   }, []);
 
   /* =========================
+     SAVE ORDER (CENTRAL LOGIC)
+  ========================= */
+
+  const runSaveOrder = useCallback(
+    (payload) => {
+      return saveOrder({
+        dispatch,
+        menu,
+        depId,
+        currentMode,
+        payload,
+        getDataByMenu
+      });
+    },
+    [dispatch, menu, depId, currentMode]
+  );
+
+  /* =========================
      DROP
   ========================= */
 
 const handleDrop = useCallback(
   (toIndex, page) => {
-      
-    if (!dragIds.length || !fullData.length)
-      return;
+    debugger
+    if (!dragIds.length || !fullData.length) return;
+debugger
+    // 🔥 SWAP CASE
+    if (fullData.length === 2) {
+      const reordered = [fullData[1], fullData[0]];
 
-    /* =========================
-       🔥 EDGE CASE: 2 ITEMS SWAP (FIXED)
-    ========================= */
-
-if (fullData.length === 2) {
-  const reordered = [fullData[1], fullData[0]];
-  const payload = reordered.map((el, index) => ({
-    id: el.sectionId ?? el.departmentId ?? el.id,
-    priority: index + 1,
-  }));
-
-  
+      const payload = reordered.map((el, index) => ({
+        id: el.sectionId ?? el.departmentId ?? el.id,
+        priority: index + 1,
+      }));
+debugger
       dispatch(
         setPagesActionCreator(
           menu,
-          menu === "phones"
-            ? payload
-            : reordered,
+          menu === "phones" ? payload : reordered,
           depId,
           currentMode
         )
       );
 
-      changeOrderOfDisplayElements(
-        payload,
-        menu,
-        depId,
-        currentMode
+      debugger
+
+      // 🔥 SAVE SNAPSHOT (NO API HERE)
+      dispatch(
+        setUnsavedOrder({
+          menu,
+          currentMode,
+          depId,
+          payload,
+        })
       );
 
       endDrag();
       return;
     }
 
-    /* =========================
-       NORMAL FLOW
-    ========================= */
+    // 🔥 NORMAL FLOW
+    const globalToIndex = getGlobalIndex(page, toIndex, rowsPerPage);
 
-    const globalToIndex = getGlobalIndex(
-      page,
-      toIndex,
-      rowsPerPage
-    );
+    const bounds = getDragBounds(dragIds, fullData);
 
-    const bounds = getDragBounds(
-      dragIds,
-      fullData
-    );
-
-    if (
-      isDropInsideSelf(globalToIndex, bounds)
-    ) {
+    if (isDropInsideSelf(globalToIndex, bounds)) {
       endDrag();
       return;
     }
 
-    const reordered = moveItems(
-      fullData,
-      dragIds,
-      globalToIndex
-    );
+    const reordered = moveItems(fullData, dragIds, globalToIndex);
 
     const payload = reordered.map((el, index) => ({
-      id:
-        el.sectionId ??
-        el.departmentId ??
-        el.id,
+      id: el.sectionId ?? el.departmentId ?? el.id,
       priority: index + 1,
     }));
-
+debugger
     dispatch(
       setPagesActionCreator(
         menu,
@@ -386,14 +315,17 @@ if (fullData.length === 2) {
         currentMode
       )
     );
-
-    changeOrderOfDisplayElements(
-      payload,
-      menu,
-      depId,
-      currentMode
+debugger
+    // 🔥 SAVE SNAPSHOT (NO API HERE)
+    dispatch(
+      setUnsavedOrder({
+        menu,
+        currentMode,
+        depId,
+        payload,
+      })
     );
-
+debugger
     endDrag();
   },
   [
@@ -403,8 +335,8 @@ if (fullData.length === 2) {
     menu,
     depId,
     currentMode,
-    endDrag,
     dispatch,
+    endDrag,
   ]
 );
 
@@ -427,18 +359,14 @@ if (fullData.length === 2) {
         fullData,
         rangeStartId,
         setFoundResults,
-        isOnFoundResultsPage:
-          lastPage === "foundResults",
+        isOnFoundResultsPage: lastPage === "foundResults",
         dropTargetId,
         setDropTargetId,
-        // isSectionsMode,
-        // setIsSectionsMode
       }}
     >
       {children}
     </DragContext.Provider>
   );
 };
-
 
 

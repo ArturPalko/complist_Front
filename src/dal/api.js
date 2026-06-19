@@ -107,6 +107,7 @@ export const changeOrderOfDisplayElements = async (
   return api.post(sendUrl, dataToPush);
 };
 
+
 // export const addPosition = async (name) => {
 //   const payload = {
 //     name,

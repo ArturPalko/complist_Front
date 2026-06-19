@@ -17,6 +17,7 @@ const initialState = {
   dictionaries: {
     positions: [],
     userTypes: [],
+    departments:[]
   },
 };
 
@@ -101,57 +102,85 @@ case SET_ORDER: {
   const { key, pages, depId, currentMode } = action.payload;
   const { reordered, payload } = pages;
 debugger
+  console.log("===== SET_ORDER START =====");
+  console.log("key:", key);
+  console.log("currentMode:", currentMode);
+  console.log("depId:", depId);
+
+  console.log("reordered type:", Array.isArray(reordered));
+  console.log("reordered length:", reordered?.length);
+  console.log("reordered sample:", reordered?.[0]);
+
   let newState = { ...state };
 
-  // 📱 PHONES (окрема логіка reorder)
-  // if (key === "phones") {
-  //   newState.phones = applyPhonesReorder(
-  //     state,
-  //     payload,
-  //     depId,
-  //     currentMode
-  //   );
+  // 📦 departments case
+  if (currentMode === "departments") {
+    const newDepartments = chunkIntoPages(reordered, rowsPerPage);
+    debugger
 
-  //   return newState;
-  // }
+    console.log("=== DEPARTMENTS CASE ===");
+    console.log("old reference:", state.dictionaries.departments);
+    console.log("new reference:", newDepartments);
+    console.log(
+      "same reference?",
+      state.dictionaries.departments === newDepartments
+    );
 
-  // 📦 ALL OTHER PAGINATED KEYS
-  newState[key] = chunkIntoPages(reordered, rowsPerPage);
-
-  // 📚 DICTIONARIES UPDATE
-  if (currentMode) {
-    newState.dictionaries = {
-      ...state.dictionaries,
-      [currentMode]: chunkIntoPages(reordered, rowsPerPage),
+    return {
+      ...state,
+      dictionaries: {
+        ...state.dictionaries,
+        departments: newDepartments,
+      },
     };
   }
 
-  // 🧩 SPECIAL CASE: sections inside departments
+  // 📚 sections case
   if (currentMode === "sections") {
+    console.log("=== SECTIONS CASE ===");
+    console.log("departments pages count:", state.dictionaries.departments?.length);
+    debugger
+
     const deptId = reordered?.[0]?.departmentId;
+
+    console.log("target deptId:", deptId);
 debugger
     newState.dictionaries = {
       ...state.dictionaries,
       departments: state.dictionaries.departments.map(page => ({
         ...page,
         rows: page.rows.map(dep => {
-          debugger
-          if (dep.id === deptId) {
+          if (dep.departmentId === deptId) {
             debugger
+            console.log("MATCH FOUND dept:", dep.id);
             return {
               ...dep,
               sections: reordered,
             };
           }
-          
+          debugger
           return dep;
         }),
       })),
     };
+
+    console.log("sections update done");
   }
 
+  console.log("===== SET_ORDER END =====");
+debugger
+
+  if(currentMode == "positions"){
+    const newPositions = chunkIntoPages(reordered, 18);
+    debugger
+    newState.dictionaries = {
+      ...state.dictionaries,
+      positions : newPositions
+    }
+  }
   return newState;
 }
+
     default:
       return state;
   }

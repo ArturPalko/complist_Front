@@ -1,23 +1,31 @@
 .controlsWrapper {
-  position: relative;
-
-  /* 🔥 важливо для вирівнювання з BottomFilter по висоті */
   margin: 0 1em 6.25em 1em;
 
   display: flex;
   align-items: center;
-    gap: 12px; /* або будь-яке значення */
-  
+  justify-content: space-between; /* 🔥 ключ */
+
+  gap: 12px;
 }
 
-/* 🎯 акуратна rounded кнопка */
-.toggleBtn {
-  position: relative;
+/* LEFT GROUP */
+.leftGroup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 
+/* RIGHT GROUP */
+.rightGroup {
+  display: flex;
+  align-items: center;
+}
+
+/* BUTTONS */
+.toggleBtn {
   padding: 0.8em 1.2em;
 
   min-width: 10em;
-  max-width: 100%;
 
   border: 1px solid #ccc;
   border-radius: 999px;
@@ -41,6 +49,46 @@
 
 .toggleBtn.active {
   background: yellow;
+  color: black;
+  border-color: yellow;
+}
+
+/* SAVE BUTTON (separate emphasis) */
+.saveBtn {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+
+  border: none;
+  border-radius: 999px;
+
+  background: #2ecc71;
   color: white;
-  border-color:yellow;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+
+  transition:
+    transform 0.15s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.saveBtn:hover:not(:disabled) {
+  background: #27ae60;
+  transform: scale(1.05);
+  box-shadow: 0 6px 14px rgba(46, 204, 113, 0.3);
+}
+
+.saveBtn:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.saveBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }

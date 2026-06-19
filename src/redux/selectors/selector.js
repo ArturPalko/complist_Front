@@ -22,23 +22,6 @@ export const selectFoundResults = (state, menu) => selectSearchValueByPage(menu)
 
 
 
-// ===================================
-// ===== Дані =====
-// export const getDataForMenu = (state, menu) => {
-//   const data = state?.data?.[menu] ?? [];
-
-//   const active = state.currentPageNumber.activeMenu;
-//   const editMode = isEditModeSelected(state);
-//   
-//   const newW = data.flatMap(page => page.rows);
-//   
-
-//   if ((active === "Gov-ua" || active === "Lotus") && editMode) {
-//     return newW;
-//   }
-
-//   return data;
-// };
 export const getDataForMenu = (state, menu) => {
 
   const edit = isEditModeSelected(state);
@@ -53,11 +36,27 @@ export const getDataForMenu = (state, menu) => {
   // ========================================
   // POSITIONS / USER TYPES (FROM DICTIONARIES)
   // ========================================
+
+if (
+  edit &&
+  menu === "phones" &&
+  (isDepartments || isSection) &&  !activeDepartmentId
+) {
+  return state.data.dictionaries.departments.map(page => ({
+    ...page,
+    rows: page.rows.map(dep => ({
+      ...dep,
+      type: "department"
+    }))
+  }));
+}
+
   if (
     edit &&
     menu === "phones" &&
     (isPositions || isUserTypes)
   ) {
+
     const { positions, userTypes } = state.data.dictionaries;
 
     const rows = isPositions ? positions : userTypes;
@@ -65,30 +64,21 @@ export const getDataForMenu = (state, menu) => {
     return rows; // OK
   }
 
-  // ========================================
-  // DEPARTMENTS / SECTIONS
-  // ========================================
-  if (
-    edit &&
-    menu === "phones" &&
-    (isDepartments || isSection) &&
-    !activeDepartmentId
-  ) {
-    return getPhonesDepartmenstForOrder(state);
-  }
 
   if (
     menu === "phones" &&
     isSection &&
     activeDepartmentId != null
   ) {
+  
     return selectSectionsByDepartmentId(state, activeDepartmentId);
   }
 
   // ========================================
   // DEFAULT
   // ========================================
-  return state?.data?.[menu] ?? [];
+ 
+  return state?.data[menu] ?? [];
 };
 const selectSectionsByDepartmentId = (state, departmentId) => {
   const pages = state?.data?.dictionaries?.departments ?? [];
@@ -371,4 +361,3 @@ export const selectDictionaryByType = (type) => (state) =>
 
 
 
- 

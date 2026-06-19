@@ -1,8 +1,3 @@
-const initialState = {
-  viewMode: null, // "departments" | "sections"
-  activeDepartmentId: null
-};
-
 /* =========================
    ACTION TYPES
 ========================= */
@@ -11,39 +6,80 @@ const TOGGLE_VIEW_MODE = "TOGGLE_VIEW_MODE";
 const RESET_PHONES_UI = "RESET_PHONES_UI";
 const SET_ACTIVE_DEPARTMENT = "SET_ACTIVE_DEPARTMENT";
 
+const SET_UNSAVED_ORDER = "SET_UNSAVED_ORDER";
+const CLEAR_UNSAVED_ORDER = "CLEAR_UNSAVED_ORDER";
+
+
+
+
+
+
+
+const initialState = {
+  viewMode: null, // "departments" | "sections"
+  activeDepartmentId: null,
+
+  // 🔥 snapshot останнього reorder перед save
+  unsavedOrder: null,
+};
+
+
 /* =========================
    REDUCER
 ========================= */
 export const uiReducer = (state = initialState, action) => {
   switch (action.type) {
 
-     case SET_ACTIVE_DEPARTMENT:
+    /* =========================
+       ACTIVE DEPARTMENT
+    ========================= */
+    case SET_ACTIVE_DEPARTMENT:
       return {
         ...state,
-        activeDepartmentId: action.id
+        activeDepartmentId: action.id,
       };
 
-      
-    /* 🔘 set explicit mode */
+    /* =========================
+       VIEW MODE
+    ========================= */
     case SET_VIEW_MODE:
       return {
         ...state,
-        viewMode: action.mode == state.viewMode ? null: action.mode,
-        activeDepartmentId: action.mode == "sections" ? null : state.activeDepartmentId
+        viewMode:
+          action.mode === state.viewMode ? null : action.mode,
+        activeDepartmentId:
+          action.mode === "sections"
+            ? null
+            : state.activeDepartmentId,
       };
 
-    /* 🔁 toggle between departments <-> sections */
     case TOGGLE_VIEW_MODE:
-        
       return {
         ...state,
         viewMode:
           state.viewMode === "sections"
             ? "departments"
-            : "sections"
+            : "sections",
       };
 
-    /* 🔄 reset UI state */
+    /* =========================
+       UNSAVED ORDER (🔥 NEW)
+    ========================= */
+    case SET_UNSAVED_ORDER:
+      return {
+        ...state,
+        unsavedOrder: action.payload,
+      };
+
+    case CLEAR_UNSAVED_ORDER:
+      return {
+        ...state,
+        unsavedOrder: null,
+      };
+
+    /* =========================
+       RESET UI
+    ========================= */
     case RESET_PHONES_UI:
       return initialState;
 
@@ -57,19 +93,30 @@ export const uiReducer = (state = initialState, action) => {
 ========================= */
 export const setPhonesViewMode = (mode) => ({
   type: SET_VIEW_MODE,
-  mode
+  mode,
 });
 
 export const togglePhonesViewMode = () => ({
-  type: TOGGLE_VIEW_MODE
+  type: TOGGLE_VIEW_MODE,
 });
 
 export const resetPhonesUi = () => ({
-  type: RESET_PHONES_UI
+  type: RESET_PHONES_UI,
 });
 
 export const setActiveDepartment = (id) => ({
   type: SET_ACTIVE_DEPARTMENT,
-  id
+  id,
 });
 
+/* =========================
+   UNSAVED ORDER ACTIONS
+========================= */
+export const setUnsavedOrder = (payload) => ({
+  type: SET_UNSAVED_ORDER,
+  payload,
+});
+
+export const clearUnsavedOrder = () => ({
+  type: CLEAR_UNSAVED_ORDER,
+});
