@@ -357,6 +357,7 @@ export const selectPositionsDictionary = (state) => state.data.dictionaries.posi
 export const selectDictionaryByType = (type) => (state) =>
   state.data.dictionaries[type];
 
+export const selectSectionsById = (activeDepartmentId) => (state) =>  selectSectionsByDepartmentId(state, activeDepartmentId);
 
 
 

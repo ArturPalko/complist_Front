@@ -116,11 +116,9 @@ export const changeOrderOfDisplayElements = async (
 //   return api.post("/api/positions", payload);
 // };
 
-export const apiAddEntity = (endpoint, name) => {
-  //debugger
-  return api.post(`/api/${endpoint}`, 
-    name
-  );
+export const apiAddEntity = (endpoint, payload) => {
+  debugger
+  return api.post(`/api/${endpoint}`, payload);
 };
 // export const deletePosition = async (id) => {
 //   return api.delete(`/api/positions/${id}`);
@@ -136,7 +134,7 @@ export const apiAddEntity = (endpoint, name) => {
 // };
 
 export const apiEditEntity = (endpoint, { id, ...data }) => {
-  //debugger
+  debugger
   return api.put(`/api/${endpoint}/${id}`, data);
 };
 

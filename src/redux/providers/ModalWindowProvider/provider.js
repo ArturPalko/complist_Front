@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { ModalWindowContext, useDragContext } from "../../contexts/useConetxt";
 import { useSelector } from "react-redux";
-import { selectPositionsDictionary } from "../../selectors/selector";
+import {  selectPositionsDictionary } from "../../selectors/selector";
 
 
 
@@ -9,18 +9,37 @@ import { selectPositionsDictionary } from "../../selectors/selector";
 export function ModalWindowProvider({ children }) {
   const { selectedIds } = useDragContext();
 
+
   const [modalType, setModalType] = useState(null);
   const [mode, setMode] = useState(null);
   const [modalData, setModalData] = useState(null);
 let name;
+let departmentId;
+debugger
+
+if (!modalData) {
+  name = null;
+  departmentId = null;
+}
   // 👇 просто витягуємо name напряму
   switch (modalType){
     case "positions":
-      name = modalData.positionName
+      debugger
+      name = modalData?.positionName
+      debugger
       break
     case "userTypes":
-      name= modalData.userType
-  }
+      name= modalData?.userType
+      break
+    case "departments":
+      name= modalData?.departmentName
+      break
+    case "sections":
+      name= modalData.sectionName;
+      departmentId = modalData?.departmentId
+      debugger
+      break
+      }
   // const name =
   //   modalType === "positions" && modalData
   //     ? modalData.positionName
@@ -47,6 +66,8 @@ let name;
       openModal,
       closeModal,
       name,
+      departmentId,
+      // sectionName
     }),
     [modalType, modalData, name, mode]
   );

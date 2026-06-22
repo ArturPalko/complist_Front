@@ -14,10 +14,12 @@ import { apiAddEntity, apiDeleteEntity, apiEditEntity } from "../../dal/api";
 export default function ModalRoot() {
   const { modal, closeModal } = useModal();
   const { modalType, mode, modalData , name} = useModalWindowContext();
-//debugger
+
+  debugger
   if (!modal) return null;
 
   const config = CRUD_CONFIG[modalType];
+  debugger
   if (!config) return null;
 
   // LOGIN
@@ -50,8 +52,8 @@ export default function ModalRoot() {
         // 🔥 ADD
         //debugger
         if (mode === "add") {
-          const payload = config.mappers.add(data);
-          //debugger
+          const payload = config.mappers.add(data, modalData);
+          debugger
           return apiAddEntity(config.endpoint, payload);
         }
 

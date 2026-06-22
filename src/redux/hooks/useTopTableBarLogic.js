@@ -1,7 +1,7 @@
 import { useSearchToggle, usePasswordsToggle, useEditModeToggle, useModalWindowContext } from "../contexts/useConetxt.js";
 import { pageConfigs } from "../../configs/app/pageConfig.js";
 import { useSelector } from "react-redux";
-import { getCurrentMode, isUserAuthed, selectDictionaryByType } from "../selectors/selector.js";
+import { getCurrentMode, isUserAuthed, selectAtiveDepartmentId, selectDictionaryByType, selectSectionsById } from "../selectors/selector.js";
 import { useModal } from "./useLoginModal.js";
 import { deletePosition as deletePos } from "../../dal/api.js";
 import { selectPositionsDictionary } from "../selectors/selector.js";
@@ -10,10 +10,13 @@ import { useDragContext } from "../contexts/useConetxt.js";
 
 export const useTopTableBarLogic = (pageName) => {
   const { openModal } = useModal();
+let depr = useSelector(selectAtiveDepartmentId);
 
   const { selectedIds } = useDragContext();
   const{setModalData, setModalType ,setMode}=useModalWindowContext();
-  // const positions = useSelector(selectPositionsDictionary);
+ const positions = useSelector(selectPositionsDictionary);
+ const sections = useSelector(selectSectionsById(depr))
+ debugger
 
 
   const { handleToggleSearchField, valueOfSearchCheckBox } = useSearchToggle();
@@ -24,11 +27,21 @@ export const useTopTableBarLogic = (pageName) => {
 
   const isLoggedIn = useSelector(isUserAuthed);
 
+
   const addPosition = () => {
       setMode("add")
+    
           setModalType (modalType)
           //debugger
-            setModalData([]);
+          if(modalType == "sections"){
+            debugger
+        setModalData({departmentId:depr})
+        debugger
+      }
+      else{
+        setModalData([]);
+      }
+            
     openModal("addPosition");
     //debugger
   };
@@ -41,22 +54,36 @@ export const useTopTableBarLogic = (pageName) => {
     setModalData(selectedIds);
     openModal("deletePosition");
   };
-
+let position;
   const editPosition = () => {
+    debugger
     if (!selectedIds?.length) return;
 
     const id = selectedIds[0];
-
-    // const position = positions
+   if(modalType == "departments"){
+        position = value
+      .flatMap(p => p.rows)
+      .find(r => r.departmentId === selectedIds[0]);
+   }
+    if(modalType == "positions"){
+    //  position = positions
     //   .flatMap(p => p.rows)
     //   .find(r => r.id === selectedIds[0]);
-       const position = value
+      let a = positions
       .flatMap(p => p.rows)
-      .find(r => r.id === selectedIds[0]);
+      position = a.find(r => r.id === selectedIds[0]);
+   }
 
+    if(modalType == "sections"){
+     position = sections
+      .flatMap(p => p.rows)
+      .find(r => r.sectionId === selectedIds[0]);
+   }
+   debugger
+      debugger
     setMode("edit")
     setModalType (modalType)
-    //debugger
+    debugger
     setModalData(position);
     
     openModal("editPosition");

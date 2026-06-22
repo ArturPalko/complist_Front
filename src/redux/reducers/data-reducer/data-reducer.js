@@ -178,6 +178,15 @@ debugger
       positions : newPositions
     }
   }
+
+   if(currentMode == "userTypes"){
+    const newPositions = chunkIntoPages(reordered, 18);
+    debugger
+    newState.dictionaries = {
+      ...state.dictionaries,
+      userTypes : newPositions
+    }
+  }
   return newState;
 }
 
