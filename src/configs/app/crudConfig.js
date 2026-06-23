@@ -1,5 +1,5 @@
 export const CRUD_CONFIG = {
-  positions: {
+  position: {
     title: "Посада",
     endpoint: "positions",
 
@@ -17,7 +17,7 @@ export const CRUD_CONFIG = {
   },
 
 
-  departments: {
+  department: {
     title: "Департаменти",
     endpoint: "departments",
 
@@ -34,7 +34,7 @@ export const CRUD_CONFIG = {
     },
   },
 
-  userTypes: {
+  userType: {
     title: "Тип користувача",
     endpoint: "userTypes",
 
@@ -52,7 +52,7 @@ export const CRUD_CONFIG = {
   },
 
 
-  sections: {
+  section: {
     title: "Секції",
     endpoint: "sections",
 

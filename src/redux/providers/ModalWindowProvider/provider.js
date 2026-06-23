@@ -1,77 +1,75 @@
 import { useState, useMemo, useEffect } from "react";
-import { ModalWindowContext, useDragContext } from "../../contexts/useConetxt";
-import { useSelector } from "react-redux";
-import {  selectPositionsDictionary } from "../../selectors/selector";
-
-
-
+import { useLocation, useNavigate } from "react-router-dom";
+import { ModalWindowContext } from "../../contexts/useConetxt";
 
 export function ModalWindowProvider({ children }) {
-  const { selectedIds } = useDragContext();
+  const location = useLocation();
+  const navigate = useNavigate();
 
+  const query = new URLSearchParams(location.search);
+  const urlModal = query.get("modal");
 
   const [modalType, setModalType] = useState(null);
   const [mode, setMode] = useState(null);
   const [modalData, setModalData] = useState(null);
-let name;
-let departmentId;
-debugger
 
-if (!modalData) {
-  name = null;
-  departmentId = null;
-}
-  // 👇 просто витягуємо name напряму
-  switch (modalType){
-    case "positions":
-      debugger
-      name = modalData?.positionName
-      debugger
-      break
-    case "userTypes":
-      name= modalData?.userType
-      break
-    case "departments":
-      name= modalData?.departmentName
-      break
-    case "sections":
-      name= modalData.sectionName;
-      departmentId = modalData?.departmentId
-      debugger
-      break
-      }
-  // const name =
-  //   modalType === "positions" && modalData
-  //     ? modalData.positionName
-  //     : null;
- //debugger
-  const openModal = (type, data = null) => {
+  // ---------------- OPEN MODAL ----------------
+  const openModal = ({ type, mode = null, data = null }) => {
     setModalType(type);
+    setMode(mode);
     setModalData(data);
+
+    // sync to URL
+    const newQuery = new URLSearchParams(location.search);
+    newQuery.set("modal", type);
+    navigate({ search: newQuery.toString() }, { replace: true });
   };
 
+  // ---------------- CLOSE MODAL ----------------
   const closeModal = () => {
     setModalType(null);
+    setMode(null);
     setModalData(null);
+
+    const newQuery = new URLSearchParams(location.search);
+    newQuery.delete("modal");
+    navigate({ search: newQuery.toString() }, { replace: true });
   };
 
+  // ---------------- URL → CONTEXT SYNC ----------------
+  useEffect(() => {
+    if (!urlModal) {
+      setModalType(null);
+      setMode(null);
+      setModalData(null);
+      return;
+    }
+
+    // якщо модалка вже відкрита — не пересоздаємо
+    if (modalType === urlModal) return;
+
+    setModalType(urlModal);
+    setMode(null);
+    setModalData(null);
+  }, [urlModal]);
+
+  // ---------------- CONTEXT VALUE ----------------
   const value = useMemo(
     () => ({
-      mode,
       modalType,
+      mode,
       modalData,
+
+      setModalType,
       setMode,
       setModalData,
-      setModalType,
+
       openModal,
       closeModal,
-      name,
-      departmentId,
-      // sectionName
     }),
-    [modalType, modalData, name, mode]
+    [modalType, mode, modalData]
   );
- //debugger
+
   return (
     <ModalWindowContext.Provider value={value}>
       {children}

@@ -4,7 +4,13 @@
  */
 import { setActiveDepartment } from "../../../../redux/reducers/ui-reducer";
 
+export const getUserCells = (row) => {
+  if (row.userTypeId !== 1) {
+    return [row.userName, null];
+  }
 
+  return [row.userPosition, row.userName];
+};
 
 export const countNonUserRowsBefore = (pageData, index) => {
   return pageData

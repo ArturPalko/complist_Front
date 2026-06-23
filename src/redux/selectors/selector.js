@@ -331,19 +331,19 @@ export const getPhonesDepartmenstForOrder = createSelector(
 
 export const isSectionsMode = (state) => {
   //console.log ("isSectionsMode:",state.ui.viewMode == "sections" )
-  return state.ui.viewMode == "sections"};
+  return state.ui.viewMode == "section"};
 
 export const isDepartmentsMode = (state) => {
   //console.log ("isSectionsMode:",state.ui.viewMode == "sections" )
-  return state.ui.viewMode == "departments"};
+  return state.ui.viewMode == "department"};
 
 export const isPositionsMode = (state) => {
   //console.log ("isSectionsMode:",state.ui.viewMode == "sections" )
-  return state.ui.viewMode == "positions"};
+  return state.ui.viewMode == "position"};
 
 export const isUserTypesMode = (state) => {
   //console.log ("isSectionsMode:",state.ui.viewMode == "sections" )
-  return state.ui.viewMode == "userTypes"};
+  return state.ui.viewMode == "userType"};
 
 
 export const getCurrentMode = (state) =>  state.ui.viewMode;

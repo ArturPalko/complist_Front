@@ -44,13 +44,8 @@ export const uiReducer = (state = initialState, action) => {
     ========================= */
     case SET_VIEW_MODE:
       return {
-        ...state,
-        viewMode:
-          action.mode === state.viewMode ? null : action.mode,
-        activeDepartmentId:
-          action.mode === "sections"
-            ? null
-            : state.activeDepartmentId,
+        ...initialState,
+        viewMode: action.mode === state.viewMode ? null : action.mode,
       };
 
     case TOGGLE_VIEW_MODE:

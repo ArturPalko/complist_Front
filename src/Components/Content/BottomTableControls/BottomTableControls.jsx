@@ -60,28 +60,28 @@ const handleSave = async () => {
       <div className={s.leftGroup}>
         <button
           className={`${s.toggleBtn} ${isSections ? s.active : ""}`}
-          onClick={() => dispatch(setPhonesViewMode("sections"))}
+          onClick={() => dispatch(setPhonesViewMode("section"))}
         >
           Секції
         </button>
 
         <button
           className={`${s.toggleBtn} ${isDepartments ? s.active : ""}`}
-          onClick={() => dispatch(setPhonesViewMode("departments"))}
+          onClick={() => dispatch(setPhonesViewMode("department"))}
         >
           Департаменти
         </button>
 
         <button
           className={`${s.toggleBtn} ${isPosition ? s.active : ""}`}
-          onClick={() => dispatch(setPhonesViewMode("positions"))}
+          onClick={() => dispatch(setPhonesViewMode("position"))}
         >
           Посади
         </button>
 
         <button
           className={`${s.toggleBtn} ${isUserTypes ? s.active : ""}`}
-          onClick={() => dispatch(setPhonesViewMode("userTypes"))}
+          onClick={() => dispatch(setPhonesViewMode("userType"))}
         >
           Тип користувача
         </button>
