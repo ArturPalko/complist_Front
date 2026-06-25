@@ -99,7 +99,7 @@ export const changeOrderOfDisplayElements = async (
     if (depId) {
       payload.depId = depId;
     }
-
+debugger
     return api.post(sendUrl, payload);
   }
 

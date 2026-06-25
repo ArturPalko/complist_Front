@@ -117,7 +117,7 @@ export const DragProvider = ({ children, rowsPerPage = 18 }) => {
       id: item?.id ?? item?.mailId ?? item?.sectionId,
     }));
   }, [pages, menu]);
-
+debugger
   /* =========================
      ESC RESET
   ========================= */
@@ -362,6 +362,7 @@ debugger
         isOnFoundResultsPage: lastPage === "foundResults",
         dropTargetId,
         setDropTargetId,
+        setSelectedIds
       }}
     >
       {children}

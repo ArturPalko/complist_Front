@@ -1,0 +1,85 @@
+
+.dropZone td {
+  padding: 0;
+  height: 10px;
+}
+
+/* =========================
+   CONTAINER
+========================= */
+
+.zone {
+  position: relative;
+  height: 10px;
+}
+
+/* =========================
+   BASE PULSE LINE
+========================= */
+
+.line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  transform: translateY(-50%);
+  background: rgba(120, 160, 255, 0.25);
+  opacity: 0.6;
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+/* більш помітний pulse */
+@keyframes pulse {
+  0% {
+    opacity: 0.25;
+    transform: translateY(-50%) scaleX(0.85);
+  }
+
+  50% {
+    opacity: 0.75;
+    transform: translateY(-50%) scaleX(1);
+  }
+
+  100% {
+    opacity: 0.25;
+    transform: translateY(-50%) scaleX(0.85);
+  }
+}
+
+/* =========================
+   ACTIVE STATE
+========================= */
+
+.active .line {
+  animation: none;
+  opacity: 1;
+  background: rgba(120, 160, 255, 0.4);
+  box-shadow: 0 0 10px rgba(120, 160, 255, 0.25);
+}
+
+/* =========================
+   LABEL
+========================= */
+
+.label {
+  position: absolute;
+  left: 8px;
+  font-size: 10px;
+  color: rgba(120, 160, 255, 0.85);
+  opacity: 0;
+  transition: opacity 150ms ease;
+  pointer-events: none;
+}
+
+.active .label {
+  opacity: 1;
+}
+
+.top {
+  top: -12px;
+}
+
+.bottom {
+  bottom: -12px;
+}

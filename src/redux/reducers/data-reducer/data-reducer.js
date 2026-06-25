@@ -110,11 +110,11 @@ debugger
   console.log("reordered type:", Array.isArray(reordered));
   console.log("reordered length:", reordered?.length);
   console.log("reordered sample:", reordered?.[0]);
-
+debugger
   let newState = { ...state };
 
   // 📦 departments case
-  if (currentMode === "departments") {
+  if (currentMode === "department") {
     const newDepartments = chunkIntoPages(reordered, rowsPerPage);
     debugger
 
@@ -125,7 +125,7 @@ debugger
       "same reference?",
       state.dictionaries.departments === newDepartments
     );
-
+debugger
     return {
       ...state,
       dictionaries: {
@@ -136,7 +136,7 @@ debugger
   }
 
   // 📚 sections case
-  if (currentMode === "sections") {
+  if (currentMode === "section") {
     console.log("=== SECTIONS CASE ===");
     console.log("departments pages count:", state.dictionaries.departments?.length);
     debugger
@@ -170,7 +170,7 @@ debugger
   console.log("===== SET_ORDER END =====");
 debugger
 
-  if(currentMode == "positions"){
+  if(currentMode == "position"){
     const newPositions = chunkIntoPages(reordered, 18);
     debugger
     newState.dictionaries = {
@@ -179,7 +179,7 @@ debugger
     }
   }
 
-   if(currentMode == "userTypes"){
+   if(currentMode == "userType"){
     const newPositions = chunkIntoPages(reordered, 18);
     debugger
     newState.dictionaries = {

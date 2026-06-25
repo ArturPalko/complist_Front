@@ -15,14 +15,14 @@ export const withDropZones = (Component) => {
       <>
 
       {/* BOTTOM */}
-      <DropZone onDrop={(e) => handleDrop(-1, page)} className="edgeDropTopRow" showDropZones={showDropZones} />
+      <DropZone position={"top"} onDrop={(e) => handleDrop(-1, page)} className="edgeDropTopRow" showDropZones={showDropZones} />
 
         {/* MAIN TABLE BODY (rows) */}
         <Component {...props} />
 
        
       {/* BOTTOM */}
-      <DropZone onDrop={(e) => handleDrop(pageData.length, page)} className="edgeDropBottomRow" showDropZones={showDropZones} />
+      <DropZone position={"bottom"} onDrop={(e) => handleDrop(pageData.length, page)} className="edgeDropBottomRow" showDropZones={showDropZones} />
       </>
     );
   };

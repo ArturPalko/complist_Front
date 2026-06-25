@@ -36,8 +36,8 @@ const { modal, closeModal } = useModal();
 
   return (
     <>
-  <ModalWindowProvider>
-    <DragProvider>
+     <DragProvider>
+    <ModalWindowProvider>
       <FiltersContext.Provider value={filtersData}>
         <div className="app-wrapper">
           <Header />
@@ -85,10 +85,11 @@ const { modal, closeModal } = useModal();
           </div>
         </div>
       </FiltersContext.Provider>
-      </DragProvider>
+   
       
   <ModalRoot />
   </ModalWindowProvider>
+    </DragProvider>
     </>
   );
 }

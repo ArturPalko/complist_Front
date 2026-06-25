@@ -1,10 +1,11 @@
 import { useState, useMemo, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ModalWindowContext } from "../../contexts/useConetxt";
+import { ModalWindowContext, useDragContext } from "../../contexts/useConetxt";
 
 export function ModalWindowProvider({ children }) {
   const location = useLocation();
   const navigate = useNavigate();
+  const {selectedIds, setSelectedIds} = useDragContext();
 
 
   const query = new URLSearchParams(location.search);
@@ -32,6 +33,7 @@ export function ModalWindowProvider({ children }) {
     setModalType(null);
     setMode(null);
     setModalData(null);
+    setSelectedIds([])
 
     const newQuery = new URLSearchParams(location.search);
     newQuery.delete("modal");
