@@ -23,7 +23,7 @@ import { setPagesActionCreator } from "../../reducers/data-reducer/data-reducer"
 
 import { saveOrder } from "../../../dal/thunks/dataThunks";
 
-import { moveItems } from "./dragProvider-helpers/commonFunctions";
+import { chunkIntoPages, moveItems } from "./dragProvider-helpers/commonFunctions";
 
 import {
   getGlobalIndex,
@@ -49,6 +49,7 @@ import {
   buildRangeIds,
 } from "./dragProvider-helpers/selectRange-helpers";
 import { changeOrderOfDisplayElements } from "../../../dal/api";
+import { entityMap } from "../../../configs/app/enitiyMap";
 
 /* =========================
    PROVIDER
@@ -84,39 +85,20 @@ export const DragProvider = ({ children, rowsPerPage = 18 }) => {
      FLAT DATA
   ========================= */
 
-  const fullData = useMemo(() => {
-    if (!Array.isArray(pages) || pages.length === 0) {
-      return [];
-    }
+const fullData = useMemo(() => {
+  if (!Array.isArray(pages) || !pages.length) return [];
 
-    const rows = pages.flatMap((p) => p?.rows ?? []);
-
-    if (menu === "phones") {
-      return rows
-        .filter(
-          (el) =>
-            el?.type === "department" ||
-            el?.type === "section" ||
-            el?.type === "position" ||
-            el?.type === "userType"
-        )
-        .map((item) => ({
-          ...item,
-          id:
-            item.type === "department"
-              ? item.departmentId
-              : item.type === "section"
-              ? item.sectionId
-              : item.id,
-        }))
-        .filter((el) => el.id != null);
-    }
-
-    return rows.map((item) => ({
+  return pages
+    .flatMap((p) => p?.rows ?? [])
+    .filter((item) => entityMap[item?.type])
+    .map((item) => ({
       ...item,
-      id: item?.id ?? item?.mailId ?? item?.sectionId,
-    }));
-  }, [pages, menu]);
+      id:
+        item?.[entityMap[item?.type]?.id] ??
+        item?.id,
+    }))
+    .filter((item) => item.id != null);
+}, [pages]);
 debugger
   /* =========================
      ESC RESET

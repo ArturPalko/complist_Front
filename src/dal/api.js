@@ -60,7 +60,8 @@ export const fetchDictionariesThunk = () => async (dispatch) => {
     dispatch(setDictionaries({
       positions: data.positions,
       userTypes: data.userTypes,
-      departments: data.departments
+      departments: data.departments,
+      phones:data.phonesResult
     }));
 
    // dispatch(setDataIsLoadedActionCreator(true, "dictionaries"));

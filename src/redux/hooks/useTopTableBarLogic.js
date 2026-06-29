@@ -50,7 +50,7 @@ export const useTopTableBarLogic = (pageName) => {
     // permissions UI
     showSearchToggle: config.showSearchToggle || false,
     showPasswordsToggle: config.showPasswordsToggle && isLoggedIn || false,
-    showEditToggle: true,
+    showEditToggle: isLoggedIn || false,
 
     // actions
     add,

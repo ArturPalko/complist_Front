@@ -17,7 +17,12 @@ const initialState = {
   dictionaries: {
     positions: [],
     userTypes: [],
-    departments:[]
+    departments:[],
+    phones:{
+      landline:[],
+      internal:[],
+      cisco:[]
+    }
   },
 };
 
@@ -37,67 +42,28 @@ export const dataReducer = (state = initialState, action) => {
       };
     }
 
-    // =========================
-    // DICTIONARIES
-    // =========================
-    // case SET_DICTIONARIES: {
-    //   const { positions, userTypes } = action.payload;
-
-    //   return {
-    //     ...state,
-    //     dictionaries: {
-    //       ...state.dictionaries,
-    //       positions,
-    //       userTypes,
-    //     },
-    //   };
-    // }
-
 case SET_DICTIONARIES: {
-  const { positions, userTypes, departments } = action.payload;
-// //debugger
+  const { positions, userTypes, departments, phones } = action.payload;
+debugger
   return {
     ...state,
     dictionaries: {
       ...state.dictionaries,
+
       positions: paginateData(positions, "positions", rowsPerPage),
       userTypes: paginateData(userTypes, "userTypes", rowsPerPage),
-      departments:paginateData(departments, "departments", rowsPerPage)
+      departments: paginateData(departments, "departments", rowsPerPage),
+
+      phones: {
+        landline: paginateData(phones[0].phones || [], "landline", rowsPerPage),
+        internal: paginateData(phones[1].phones || [], "internal", rowsPerPage),
+        cisco: paginateData(phones[2].phones || [], "cisco", rowsPerPage),
+      }
     },
   };
 }
 
-    // =========================
-    // REORDER / SET PAGES
-    // =========================
-//    case SET_ORDER: {
-//   const { key, pages, deptId, currentMode } = action.payload;
 
-//   if (key === "phones") {
-//     return {
-//       ...state,
-//       phones: applyPhonesReorder(state, pages, deptId, currentMode),
-//     };
-//   }
-
-//   const newPages = chunkIntoPages(pages, rowsPerPage);
-//   //debugger
-
-//   if (currentMode === "positions") {
-//     return {
-//       ...state,
-//       dictionaries: {
-//         ...state.dictionaries,
-//         positions: newPages,
-//       },
-//     };
-//   }
-
-//   return {
-//     ...state,
-//     [key]: newPages,
-//   };
-// }
 case SET_ORDER: {
   const { key, pages, depId, currentMode } = action.payload;
   const { reordered, payload } = pages;

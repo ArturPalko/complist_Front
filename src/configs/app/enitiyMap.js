@@ -20,4 +20,12 @@ export const entityMap = {
     name: "userType",
     className: "positionsAndUserTypes",
   },
+   user: {
+    id: "userId",
+    name: "userName"
+  },
+  phone: {
+    id: "id",
+    name: "number"
+  },
 };

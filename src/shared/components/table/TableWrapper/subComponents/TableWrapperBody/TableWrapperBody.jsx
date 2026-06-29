@@ -29,6 +29,7 @@ import { getClassName } from "./tableWrapperBody_helpers";
 import { rowsPerPage } from "../../../../../../configs/app/constants";
 
 import { withDropZones } from "../../../../../hooks/withDropedThones";
+import { entityMap } from "../../../../../../configs/app/enitiyMap";
 
 const TableWrapperBody = ({
   pageData,
@@ -66,18 +67,8 @@ const TableWrapperBody = ({
     <tbody className={dragIds.length ? "dragging" : ""}>
 
       {pageData?.map((item, index) => {
-       const itemId =
-  item?.type === "department"
-    ? item.departmentId
-    : item?.type === "section"
-    ? item.sectionId
-    : item?.type === "position"
-    ? item.id
-    : item?.type === "userType"
-    ? item.id
-    : item?.type === "user"
-    ? item.userId
-    :item.id
+      const itemId =
+      item?.[entityMap?.[item?.type]?.id] ?? item?.id;
 const itemKey = `${item.type}-${itemId}`; // React
         const isSelected = selectedIds.includes(itemId);
         const isDragging = dragIds.includes(itemId);

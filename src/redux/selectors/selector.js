@@ -1,5 +1,5 @@
 // selectors.js
-import { createSelector } from "@reduxjs/toolkit";
+import { createSelector, current } from "@reduxjs/toolkit";
 import { Pages } from "../../configs/app/constants";
 import { createCurrentPageSelector } from "./selectorFabrics/createCurrentPageSelector";
 import { countContacts } from "../../Components/NavBar/FilterPanel/countContacts";
@@ -32,11 +32,28 @@ export const getDataForMenu = (state, menu) => {
 
   const isPositions = isPositionsMode(state);
   const isUserTypes = isUserTypesMode(state);
+  const mode = state.ui.viewMode;
 
   // ========================================
   // POSITIONS / USER TYPES (FROM DICTIONARIES)
+  debugger
   // ========================================
-
+if (
+  edit &&  
+  menu === "phones" &&
+  ["landline", "cisco", "internal"].includes(mode)
+)
+{
+  let stateFor =state.data.dictionaries.phones[mode];
+  debugger
+   return state.data.dictionaries.phones[mode].map(page => ({
+    ...page,
+    rows: page.rows.map(dep => ({
+      ...dep,
+      type: "phone"
+    }))
+  }));
+}
 if (
   edit &&
   menu === "phones" &&

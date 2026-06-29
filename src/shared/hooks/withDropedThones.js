@@ -5,10 +5,13 @@ import { DropZone } from "../components/table/TableWrapper/subComponents/DropZon
 
 export const withDropZones = (Component) => {
   const Wrapped = (props) => {
-    const { editMode, pageData,page } = props;
+    const { editMode, pageData,page} = props;
+    const {dragIds} = useDragContext();
     const { handleDrop } = props.tableDrag;
     const {isOnFoundResultsPage} = props.tableDrag;
-    const showDropZones =  editMode && pageData?.length > 0 && !isOnFoundResultsPage
+    debugger
+    const showDropZones = dragIds?.length &&editMode && pageData?.length > 0 && !isOnFoundResultsPage
+  
     
     
     return (

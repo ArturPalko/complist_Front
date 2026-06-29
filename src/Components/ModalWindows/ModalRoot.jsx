@@ -16,9 +16,12 @@ import {
 export default function ModalRoot() {
   const { modalType, mode, modalData, closeModal } =
     useModalWindowContext();
-
+debugger
   // ---------------- NO MODAL ----------------
   if (!modalType) return null;
+    if (modalType === "login") {
+    return <Login onClose={closeModal} />;
+  }
 
   const config = CRUD_CONFIG[modalType];
   if (!config) return null;

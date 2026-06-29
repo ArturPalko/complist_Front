@@ -26,7 +26,7 @@ const TableWrapper = ({ tableLogic, tableUI, tableDrag, tableHelpers, renderHead
         editMode,
         page} = tableUI
 
-
+console.log("PAGE-DATA:", pageData)
   return (
     <div className={`${s.tableWrapper} ${showDigitsFromPressed}`}>
       {shouldShowColNumbers && <ColNumbers pageData={pageData} colNumbersRef={colNumbersRef} />}

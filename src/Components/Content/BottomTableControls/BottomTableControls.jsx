@@ -28,6 +28,8 @@ const BottomTableControls = () => {
   const isPosition = useSelector(isPositionsMode);
   const isUserTypes = useSelector(isUserTypesMode);
 
+  // const phoneTypes = ["ladline", "internal", "cisco"];
+
   const unsavedOrder = useSelector(
     (state) => state.ui.unsavedOrder
   );
@@ -85,6 +87,15 @@ const handleSave = async () => {
         >
           Тип користувача
         </button>
+<select
+  className={s.toggleBtn}
+  // value={phoneType}
+  onChange={(e) => dispatch(setPhonesViewMode(e.target.value))}
+>
+  <option value="landline">Ladline</option>
+  <option value="internal">Internal</option>
+  <option value="cisco">Cisco</option>
+</select>
       </div>
 
       {/* RIGHT SIDE (SAVE) */}
