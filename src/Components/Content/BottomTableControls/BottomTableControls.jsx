@@ -8,6 +8,7 @@ import {
   isDepartmentsMode,
   isPositionsMode,
   isUserTypesMode,
+  getCurrentMode,
 } from "../../../redux/selectors/selector";
 
 import { setPhonesViewMode } from "../../../redux/reducers/ui-reducer";
@@ -27,8 +28,12 @@ const BottomTableControls = () => {
   const isDepartments = useSelector(isDepartmentsMode);
   const isPosition = useSelector(isPositionsMode);
   const isUserTypes = useSelector(isUserTypesMode);
+  const mode = useSelector(getCurrentMode);
 
-  // const phoneTypes = ["ladline", "internal", "cisco"];
+   const phoneTypes = ["landline", "internal", "cisco"];
+   const selectedPhoneType = phoneTypes.includes(mode)
+  ? mode
+  : "";
 
   const unsavedOrder = useSelector(
     (state) => state.ui.unsavedOrder
@@ -88,11 +93,16 @@ const handleSave = async () => {
           Тип користувача
         </button>
 <select
-  className={s.toggleBtn}
-  // value={phoneType}
-  onChange={(e) => dispatch(setPhonesViewMode(e.target.value))}
+   className={`${s.toggleBtn} ${
+    selectedPhoneType ? s.active : ""
+  }`}
+  value={selectedPhoneType}
+  onChange={(e) =>
+    dispatch(setPhonesViewMode(e.target.value || null))
+  }
 >
-  <option value="landline">Ladline</option>
+  <option value="">— Тип телефона —</option>
+  <option value="landline">Landline</option>
   <option value="internal">Internal</option>
   <option value="cisco">Cisco</option>
 </select>
