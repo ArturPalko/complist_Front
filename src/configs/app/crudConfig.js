@@ -23,7 +23,8 @@ export const CRUD_CONFIG = {
 
     mappers: {
       add: (data) => ({
-        name: data.number,
+        number: data.name,
+          phoneTypeId:2
       }),
 
       edit: (data, modalData) => ({
@@ -40,7 +41,8 @@ export const CRUD_CONFIG = {
 
     mappers: {
       add: (data) => ({
-        name: data.number,
+        name: data.name,
+          phoneTypeId:3
       }),
 
       edit: (data, modalData) => ({
