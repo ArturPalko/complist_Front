@@ -1,4 +1,58 @@
 export const CRUD_CONFIG = {
+  landline: {
+    title: "Номер телефона",
+    endpoint: "phones",
+
+    mappers: {
+      add: (data) => ({
+        number: data.name,
+        phoneTypeId:1
+      }),
+
+      edit: (data, modalData) => ({
+        id: modalData.id,
+        name: data.name,
+        priority: modalData.priority
+      }),
+    },
+  },
+
+  internal: {
+    title: "Номер телефона",
+    endpoint: "phones",
+
+    mappers: {
+      add: (data) => ({
+        name: data.number,
+      }),
+
+      edit: (data, modalData) => ({
+        id: modalData.id,
+        name: data.name,
+        priority: modalData.priority,
+      }),
+    },
+  },
+
+  cisco: {
+    title: "Номер телефона",
+    endpoint: "phones",
+
+    mappers: {
+      add: (data) => ({
+        name: data.number,
+      }),
+
+      edit: (data, modalData) => ({
+        id: modalData.id,
+        name: data.name,
+        priority: modalData.priority,
+      }),
+    },
+  },
+
+
+
   position: {
     title: "Посада",
     endpoint: "positions",

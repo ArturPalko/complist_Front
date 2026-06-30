@@ -146,5 +146,6 @@ export const apiEditEntity = (endpoint, { id, ...data }) => {
 
 
 export const apiDeleteEntity = (endpoint, ids) => {
+  debugger
   return api.post(`/api/${endpoint}/delete`, ids);
 };

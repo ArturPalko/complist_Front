@@ -6,11 +6,13 @@ import {
   getUserRowIndex,
   handleOnOpenSectionsButtonClick,
 } from "./phonesTableHelpers";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { TdWrapper } from "../../../../shared/components/TdWrapper/TdWrapper";
 import { entityMap } from "../../../../configs/app/enitiyMap";
 
 const BasePhonesTable = createTableComponent(usePhonesTableLogic);
+
+const PHONE_TYPES = ["landline", "internal", "cisco"];
 
 const PhonesTable = ({
   columns,
@@ -19,6 +21,9 @@ const PhonesTable = ({
   isSections,
 }) => {
   const dispatch = useDispatch();
+  const viewMode = useSelector((state) => state.ui.viewMode);
+
+  const isPhoneEditMode = PHONE_TYPES.includes(viewMode);
 
   // =========================
   // HEADER
@@ -44,8 +49,8 @@ const PhonesTable = ({
       <tr>
         {columns
           .filter((c) => c.key === "phones")
-          .flatMap((col) =>
-            col.subLabels.map((sub, idx) => (
+          .flatMap((col, idx) =>
+            col.subLabels.map((sub) => (
               <th key={sub.key ?? `${col.key}-${idx}`}>
                 {sub.label}
               </th>
@@ -58,19 +63,8 @@ const PhonesTable = ({
   // =========================
   // ROWS
   // =========================
-  const renderRowCells = (
-    row,
-    index,
-    tableLogic,
-    tableUI
-  ) => {
-    const nonUserRowsBefore = countNonUserRowsBefore(
-      tableLogic.pageData,
-      index
-    );
-
+  const renderRowCells = (row, index, tableLogic, tableUI) => {
     const dim = tableLogic.getRowDimClasses(row.dimKey);
-
     const phoneColumn = columns.find((c) => c.key === "phones");
 
     const renderTd = (value, key = null, colSpan = 1) => (
@@ -84,10 +78,10 @@ const PhonesTable = ({
       </TdWrapper>
     );
 
-    // =========================
-    // PHONE MODE ROWS
-    // =========================
-    if (row.type === "phone") {
+    // =====================================================
+    // 📞 PHONE EDIT MODE (NEW UI)
+    // =====================================================
+    if (isPhoneEditMode && row.type === "phone") {
       const phoneRowIndex = getUserRowIndex({
         pageNumber,
         rowsPerPage,
@@ -96,43 +90,41 @@ const PhonesTable = ({
         indexDecrementFromPreviousPages:
           tableLogic.indexDecrementFromPreviousPages,
       });
-        debugger
+
       return (
         <>
+          {/* index */}
           <td>{phoneRowIndex}</td>
 
+          {/* phone number */}
           {renderTd(row.number, `phone-num-${row.id}`)}
 
-          {renderTd(
-            <div className={s.usersList}>
-              {Array.isArray(row.users) && row.users.length > 0 ? (
-                row.users.map((u) => (
-                  <span
-                    key={`user-${row.id}-${u.id}`}
-                    className={s.userItem}
-                  >
-                    {u.name}
-                  </span>
-                ))
-              ) : (
-                <span className={s.emptyUsers}>—</span>
-              )}
-            </div>,
-            `users-${row.id}`,
-            4
-          )}
+          {/* users (🔥 enhanced UI) */}
+         {renderTd(
+  <div className={s.usersInline}>
+    {row.users?.length ? (
+      row.users.map((u) => (
+        <span key={u.id} className={s.userChip}>
+          {u.name}
+        </span>
+      ))
+    ) : (
+      <span className={s.emptyUsers}>—</span>
+    )}
+  </div>,
+  `users-${row.id}`,
+  4
+)}
         </>
       );
     }
 
-    // =========================
-    // GROUP ROWS
-    // =========================
+    // =====================================================
+    // GROUP ROWS (department / section / position)
+    // =====================================================
     if (row.type !== "user") {
       const config = entityMap[row.type];
-
       const name = config ? row[config.name] : row.name;
-
       const className = config?.className ? s[config.className] : "";
 
       const showBreak =
@@ -191,9 +183,14 @@ const PhonesTable = ({
       );
     }
 
-    // =========================
-    // USER ROW
-    // =========================
+    // =====================================================
+    // USER ROW (NORMAL MODE)
+    // =====================================================
+    const nonUserRowsBefore = countNonUserRowsBefore(
+      tableLogic.pageData,
+      index
+    );
+
     const userRowIndex = getUserRowIndex({
       pageNumber,
       rowsPerPage,
@@ -218,15 +215,12 @@ const PhonesTable = ({
 
         {phoneColumn?.subLabels.map((sub, idx) => {
           const phone = row.phones?.find(
-            (p) => p.phoneType === sub.key
+            (p) => p.phoneType === sub.label
           );
-
-          const safeKey =
-            sub.key ?? sub.label ?? `phone-col-${idx}`;
 
           return renderTd(
             phone?.phoneName || "",
-            `phone-${row.id}-${safeKey}`
+            `phone-${row.id}-${idx}`
           );
         })}
       </>

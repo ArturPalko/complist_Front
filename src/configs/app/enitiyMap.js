@@ -1,4 +1,19 @@
 export const entityMap = {
+   landline: {
+    id: "id",
+    name: "number",
+    className: "mainDepartment",
+  },
+  internal: {
+    id: "id",
+    name: "number",
+    className: "mainDepartment",
+  },
+   cisco: {
+    id: "id",
+    name: "number",
+    className: "mainDepartment",
+  },
   department: {
     id: "departmentId",
     name: "departmentName",

@@ -18,6 +18,11 @@ export const useCrudModalActions = (modalType) => {
   const positions = useSelector(selectPositionsDictionary);
   const sections = useSelector(selectSectionsById(depr));
   const departments = useSelector(selectDictionaryByType("departments"))
+  const landlines = useSelector(selectDictionaryByType("landline", "phones"))
+   const internals = useSelector(selectDictionaryByType("internal", "phones"))
+   const ciscos = useSelector(selectDictionaryByType("cisco", "phones"))
+  debugger
+  
 
   const config = CRUD_CONFIG[modalType];
   const entity = entityMap[modalType];
@@ -25,7 +30,10 @@ export const useCrudModalActions = (modalType) => {
   const sources = {
     position:positions,
     section:sections,
-    department:departments
+    department:departments,
+    landline:landlines,
+    internal:internals,
+    cisco:ciscos
   };
 
   // ---------------- ADD ----------------
