@@ -3,6 +3,7 @@ export const getSelectionSource = ({
   foundResults,
   fullData,
 }) => {
+  debugger
   return lastPage === "foundResults"
     ? foundResults
     : fullData;

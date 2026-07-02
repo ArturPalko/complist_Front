@@ -21,7 +21,7 @@ export const useCrudModalActions = (modalType) => {
   const landlines = useSelector(selectDictionaryByType("landline", "phones"))
    const internals = useSelector(selectDictionaryByType("internal", "phones"))
    const ciscos = useSelector(selectDictionaryByType("cisco", "phones"))
-  debugger
+           
   
 
   const config = CRUD_CONFIG[modalType];
@@ -38,9 +38,9 @@ export const useCrudModalActions = (modalType) => {
 
   // ---------------- ADD ----------------
   const add = () => {
-    debugger
+             
     // console.log("DEPR:",depr)
-    debugger
+             
     if (!config) return;
 
     const data =
@@ -68,7 +68,7 @@ if (modalType === "section" && !data.departmentId) return
 
   // ---------------- EDIT ----------------
   const edit = () => {
-    debugger
+             
     if (!config || !entity || !selectedIds?.length) return;
 
     const id = selectedIds[0];
@@ -77,7 +77,7 @@ if (modalType === "section" && !data.departmentId) return
     const item = list
       ?.flatMap((p) => p.rows ?? [])
       .find((r) => r?.[entity.id] === id);
-debugger
+         
     openModal({
       type: modalType,
       mode: "edit",

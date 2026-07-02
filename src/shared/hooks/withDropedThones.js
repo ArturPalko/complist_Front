@@ -9,7 +9,7 @@ export const withDropZones = (Component) => {
     const {dragIds} = useDragContext();
     const { handleDrop } = props.tableDrag;
     const {isOnFoundResultsPage} = props.tableDrag;
-    debugger
+             
     const showDropZones = dragIds?.length &&editMode && pageData?.length > 0 && !isOnFoundResultsPage
   
     

@@ -138,7 +138,7 @@ if (menu == "phones" && !currentMode) return
 
     onDragStart: (e) => {
       startDrag(itemId);
-      // debugger
+      //          
       console.log("selectedIds3:", selectedIds);
 
       const preview =
@@ -147,7 +147,7 @@ if (menu == "phones" && !currentMode) return
       e.dataTransfer.setDragImage(preview, 0, 0);
 
       e.currentTarget._dragPreview = preview;
-      // debugger
+      //          
     },
 
     /* =========================
@@ -220,7 +220,7 @@ export const createDragPreview = (
   });
 
   document.body.appendChild(el);
-// debugger
+//          
   return el;
 };
 

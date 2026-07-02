@@ -90,16 +90,16 @@ const fullData = useMemo(() => {
 
   return pages
     .flatMap((p) => p?.rows ?? [])
-    .filter((item) => entityMap[item?.type])
+    .filter((item) => !item?.type || entityMap[item.type])
     .map((item) => ({
       ...item,
-      id:
-        item?.[entityMap[item?.type]?.id] ??
-        item?.id,
+      id: item?.type
+        ? item?.[entityMap[item.type]?.id] ?? item.id
+        : item.id,
     }))
     .filter((item) => item.id != null);
 }, [pages]);
-debugger
+         
   /* =========================
      ESC RESET
   ========================= */
@@ -128,10 +128,11 @@ debugger
         foundResults,
         fullData,
       });
-
+debugger
       if (!source?.length) return;
 
       const indexes = getRangeIndexes(source, startId, endId);
+      debugger
       if (!indexes) return;
 
       const [from, to] = indexes;
@@ -149,7 +150,7 @@ debugger
   const toggleSelect = useCallback(
     (id, e) => {
       const mode = getSelectMode(e);
-
+debugger
       if (mode === "RANGE") {
         if (!rangeStartId) {
           setRangeStartId(id);
@@ -157,6 +158,7 @@ debugger
         }
 
         selectRange(rangeStartId, id);
+        debugger
         setRangeStartId(null);
         return;
       }
@@ -178,7 +180,7 @@ debugger
 
   const startDrag = useCallback(
     (id) => {
-      debugger
+               
       if (!fullData.length) return;
 
       setRangeStartId(null);
@@ -195,7 +197,7 @@ debugger
 
       setElementsBeforeSelectedIds(before);
       setElementsAfterSelectedIds(after);
-      debugger
+               
     },
     [selectedIds, fullData]
   );
@@ -235,8 +237,9 @@ debugger
 const handleDrop = useCallback(
   (toIndex, page) => {
     debugger
+             
     if (!dragIds.length || !fullData.length) return;
-debugger
+         
     // 🔥 SWAP CASE
     if (fullData.length === 2) {
       const reordered = [fullData[1], fullData[0]];
@@ -245,7 +248,7 @@ debugger
         id: el.sectionId ?? el.departmentId ?? el.id,
         priority: index + 1,
       }));
-debugger
+ 
       dispatch(
         setPagesActionCreator(
           menu,
@@ -255,7 +258,7 @@ debugger
         )
       );
 
-      debugger
+               
 
       // 🔥 SAVE SNAPSHOT (NO API HERE)
       dispatch(
@@ -275,7 +278,7 @@ debugger
     const globalToIndex = getGlobalIndex(page, toIndex, rowsPerPage);
 
     const bounds = getDragBounds(dragIds, fullData);
-
+debugger
     if (isDropInsideSelf(globalToIndex, bounds)) {
       endDrag();
       return;
@@ -287,7 +290,7 @@ debugger
       id: el.sectionId ?? el.departmentId ?? el.id,
       priority: index + 1,
     }));
-debugger
+       debugger  
     dispatch(
       setPagesActionCreator(
         menu,
@@ -299,7 +302,7 @@ debugger
         currentMode
       )
     );
-debugger
+         
     // 🔥 SAVE SNAPSHOT (NO API HERE)
     dispatch(
       setUnsavedOrder({
@@ -309,7 +312,7 @@ debugger
         payload,
       })
     );
-debugger
+         
     endDrag();
   },
   [

@@ -13,12 +13,12 @@ export const fetchDataThunk =
   async (dispatch) => {
 
     const endpoint = dataUrls[menu];
-    debugger
+             
 
     if (!endpoint) {
       throw new Error(`No data URL defined for menu "${menu}"`);
     }
-    debugger
+             
     dispatch(toggleDataIsFetchingActionCreator(true, menu));
 
     try {
@@ -28,7 +28,7 @@ export const fetchDataThunk =
       // SIMPLE FLOW (RESTORED)
       // =========================
       dispatch(actionCreator(menu, data));
-      debugger
+               
 
       dispatch(setDataIsLoadedActionCreator(true, menu));
 
@@ -60,12 +60,12 @@ export const saveOrder = async ({
       depId,
       currentMode
     );
-debugger
+         
     // 🔥 2. sync UI for server-driven menus
     if (menu === "phones" && typeof getDataByMenu === "function") {
-      debugger
+               
         dispatch(setDataIsLoadedActionCreator(false, menu));
-        debugger
+                 
     }
 
     return true;

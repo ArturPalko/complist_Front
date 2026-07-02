@@ -88,9 +88,9 @@ const handleToggleEditMode = (e) => {
   const checked = e?.target?.checked ?? false;
 
   props.toggleEditMode(checked);
-// //debugger
+// //         
   if (checked) {
- //   //debugger
+ //   //         
     props.fetchDictionariesThunk();
   }
 };

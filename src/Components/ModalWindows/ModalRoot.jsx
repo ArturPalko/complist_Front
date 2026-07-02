@@ -16,7 +16,7 @@ import {
 export default function ModalRoot() {
   const { modalType, mode, modalData, closeModal } =
     useModalWindowContext();
-debugger
+         
   // ---------------- NO MODAL ----------------
   if (!modalType) return null;
     if (modalType === "login") {
@@ -24,7 +24,7 @@ debugger
   }
 
   const config = CRUD_CONFIG[modalType];
-  debugger
+           
   if (!config) return null;
 
   // ---------------- DELETE ----------------
@@ -48,7 +48,7 @@ debugger
     ? modalData?.[entity.name] ?? ""
     : "";
         console.log("DEPR:",modalData)
-debugger
+         
   // ---------------- ADD / EDIT ----------------
   return (
     <EntityModal
@@ -60,9 +60,9 @@ debugger
         // ADD
         if (mode === "add") {
                console.log("DEPR:",modalData)
-          debugger
+                   
           const payload = config.mappers.add(data, modalData);
-          debugger
+                   
           return apiAddEntity(config.endpoint, payload);
         }
 

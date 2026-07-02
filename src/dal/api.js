@@ -53,10 +53,10 @@ export const fetchPasswordsByType = async (type) => {
 
 export const fetchDictionariesThunk = () => async (dispatch) => {
  // dispatch(toggleDataIsFetchingActionCreator(true, "dictionaries"));
-////debugger
+////         
   try {
     const { data } = await api.get(dictionariesUrl);
-//debugger
+//         
     dispatch(setDictionaries({
       positions: data.positions,
       userTypes: data.userTypes,
@@ -100,7 +100,7 @@ export const changeOrderOfDisplayElements = async (
     if (depId) {
       payload.depId = depId;
     }
-debugger
+         
     return api.post(sendUrl, payload);
   }
 
@@ -113,12 +113,12 @@ debugger
 //   const payload = {
 //     name,
 //   };
-// //debugger
+// //         
 //   return api.post("/api/positions", payload);
 // };
 
 export const apiAddEntity = (endpoint, payload) => {
-  debugger
+           
   return api.post(`/api/${endpoint}`, payload);
 };
 // export const deletePosition = async (id) => {
@@ -127,7 +127,7 @@ export const apiAddEntity = (endpoint, payload) => {
 
 
 // export const editPosition = async ({id, name, priority}) => {
-//   //debugger
+//   //         
 //   return api.put(`/api/positions/${id}`, {
 //     name,
 //     priority,
@@ -135,7 +135,7 @@ export const apiAddEntity = (endpoint, payload) => {
 // };
 
 export const apiEditEntity = (endpoint, { id, ...data }) => {
-  debugger
+           
   return api.put(`/api/${endpoint}/${id}`, data);
 };
 
@@ -146,6 +146,6 @@ export const apiEditEntity = (endpoint, { id, ...data }) => {
 
 
 export const apiDeleteEntity = (endpoint, ids) => {
-  debugger
+           
   return api.post(`/api/${endpoint}/delete`, ids);
 };

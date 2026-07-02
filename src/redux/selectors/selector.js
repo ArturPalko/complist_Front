@@ -36,7 +36,7 @@ export const getDataForMenu = (state, menu) => {
 
   // ========================================
   // POSITIONS / USER TYPES (FROM DICTIONARIES)
-  debugger
+           
   // ========================================
 if (
   edit &&  
@@ -45,7 +45,7 @@ if (
 )
 {
   let stateFor =state.data.dictionaries.phones[mode];
-  debugger
+           
    return state.data.dictionaries.phones[mode].map(page => ({
     ...page,
     rows: page.rows.map(dep => ({
@@ -99,7 +99,7 @@ if (
 };
 const selectSectionsByDepartmentId = (state, departmentId) => {
   const pages = state?.data?.dictionaries?.departments ?? [];
-// debugger
+//          
   const matchedSections = pages.flatMap(page =>
     (page?.rows ?? [])
       .filter(row => row?.sections?.length) // тільки ті, де є sections
@@ -111,20 +111,20 @@ const selectSectionsByDepartmentId = (state, departmentId) => {
           )
       )
   );
-// debugger
+//          
   if (!matchedSections.length) return [];
 const wither = matchedSections.map(row => ({
   ...row,
   type: "section"
 }));
-//  debugger
+//           
   // console.log("matches:", wither);
-// debugger
+//          
 let a =[ {
       pageIndex: 1,
       rows: wither
     }]
-    // debugger
+    //          
   return a
 };
 
@@ -295,11 +295,13 @@ export const selectIndexesFromCell = (state) => {
 
 export const selectDashedBlocks = (state) => {
   const menu = "phones";
-  const data = getDataForMenu(state, menu);
+  // const data = getDataForMenu(state, menu);
+  const data = state.data.phones
 
   const sourceData = isFilterAppliedSelector(menu)(state)
     ? getFilteredPageData(state, data, menu).data
     : data;
+         debugger    
 
   return findDashedBlocks(sourceData);
 };
@@ -373,11 +375,11 @@ export const selectPositionsDictionary = (state) => state.data.dictionaries.posi
 
 export const selectDictionaryByType =
   (type, upperLevel) => (state) => {
-    debugger
+             
     if (upperLevel) {
       return state.data.dictionaries?.[upperLevel]?.[type] || [];
     }
-    debugger
+             
     return state.data.dictionaries?.[type] || [];
   };
 

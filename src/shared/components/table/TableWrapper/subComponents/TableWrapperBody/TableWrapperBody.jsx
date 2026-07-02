@@ -59,7 +59,11 @@ const TableWrapperBody = ({
     dropTargetId,
     setDropTargetId,
   } = useDragContext();
-
+   const { foundResults } = useFoundResults();
+  useEffect(() => {
+    if (!setFoundResults) return;
+    setFoundResults(foundResults);
+  }, [foundResults, setFoundResults]);
 
 
 
