@@ -131,3 +131,21 @@
   font-size: 12px;
   opacity: 0.5;
 }
+
+
+
+
+.addButton {
+  padding: 4px 10px;
+  border: 1px dashed #2e7d32;
+  border-radius: 4px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.addButton:hover {
+  background: #c8e6c9;
+}

@@ -178,6 +178,7 @@ debugger
 
   const startDrag = useCallback(
     (id) => {
+      debugger
       if (!fullData.length) return;
 
       setRangeStartId(null);
@@ -194,6 +195,7 @@ debugger
 
       setElementsBeforeSelectedIds(before);
       setElementsAfterSelectedIds(after);
+      debugger
     },
     [selectedIds, fullData]
   );

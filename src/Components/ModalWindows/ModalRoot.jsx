@@ -24,6 +24,7 @@ debugger
   }
 
   const config = CRUD_CONFIG[modalType];
+  debugger
   if (!config) return null;
 
   // ---------------- DELETE ----------------
@@ -46,7 +47,8 @@ debugger
   const editValue = entity?.name
     ? modalData?.[entity.name] ?? ""
     : "";
-
+        console.log("DEPR:",modalData)
+debugger
   // ---------------- ADD / EDIT ----------------
   return (
     <EntityModal
@@ -57,7 +59,10 @@ debugger
       onSubmit={async (data) => {
         // ADD
         if (mode === "add") {
+               console.log("DEPR:",modalData)
+          debugger
           const payload = config.mappers.add(data, modalData);
+          debugger
           return apiAddEntity(config.endpoint, payload);
         }
 

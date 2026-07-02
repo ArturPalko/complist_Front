@@ -38,13 +38,16 @@ export const useCrudModalActions = (modalType) => {
 
   // ---------------- ADD ----------------
   const add = () => {
+    debugger
+    // console.log("DEPR:",depr)
+    debugger
     if (!config) return;
 
     const data =
-      modalType === "sections"
+      modalType === "section"
         ? { departmentId: depr }
         : null;
-
+if (modalType === "section" && !data.departmentId) return
     openModal({
       type: modalType,
       mode: "add",

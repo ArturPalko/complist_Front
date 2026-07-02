@@ -3,6 +3,8 @@ import { useTopTableBarLogic } from "../../../redux/hooks/useTopTableBarLogic";
 import s from "./TopTableBar.module.css";
 import CheckboxToggle from "./subComponent/CheckboxToggle";
 import ActionsPanel from "./subComponent/ActionPanel/ActionPanel";
+import { useSelector } from "react-redux";
+import { activeMenu, getCurrentMode, isEditModeSelected } from "../../../redux/selectors/selector";
 
 const TopTableBar = React.forwardRef(({ title, pageName }, ref) => {
   const {
@@ -20,11 +22,15 @@ const TopTableBar = React.forwardRef(({ title, pageName }, ref) => {
     remove
   } = useTopTableBarLogic(pageName);
 
+  const moder = useSelector(isEditModeSelected)
+  const menu = useSelector(activeMenu);
+  const editMode = useSelector(getCurrentMode);
+  const showEditPanel = moder && menu == "phones" && editMode
 
   return (
     <div ref={ref} className={s.headerPanel}>
       <h2>{title}</h2>
-      <ActionsPanel onAdd={add} onDelete={remove} onEdit={edit}/>
+      {showEditPanel && <ActionsPanel onAdd={add} onDelete={remove} onEdit={edit}/>}
       <div className={s.buttonsBar}>
          {showEditToggle && (
           <CheckboxToggle

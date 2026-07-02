@@ -70,6 +70,7 @@ export const getDimGroupRowClasses = ({
    // e.stopPropagation();
       
     if (isSections && item?.type === "department") {
+      debugger
       dispatch(setActiveDepartment(item.departmentId));
       return;
     }

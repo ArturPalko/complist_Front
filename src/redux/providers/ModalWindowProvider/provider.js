@@ -85,7 +85,7 @@ export function ModalWindowProvider({ children }) {
     [modalType, mode, modalData,     location.pathname,
     location.search]
   );
-
+  console.log ("modalka:", modalData)
   return (
     <ModalWindowContext.Provider value={value}>
       {children}
