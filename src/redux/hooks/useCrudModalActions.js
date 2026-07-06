@@ -42,7 +42,7 @@ export const useCrudModalActions = (modalType) => {
     // console.log("DEPR:",depr)
              
     if (!config) return;
-
+debugger
     const data =
       modalType === "section"
         ? { departmentId: depr }

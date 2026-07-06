@@ -386,6 +386,6 @@ export const selectDictionaryByType =
 
 export const selectSectionsById = (activeDepartmentId) => (state) =>  selectSectionsByDepartmentId(state, activeDepartmentId);
 
-
+export const addUsersModeSelected = (state) => state.ui.addUsersMode; 
 
 

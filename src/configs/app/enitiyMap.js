@@ -1,4 +1,4 @@
-export const d = {
+export const entityMap = {
    landline: {
     id: "id",
     name: "number",

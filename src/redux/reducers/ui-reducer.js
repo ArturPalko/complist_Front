@@ -8,7 +8,7 @@ const SET_ACTIVE_DEPARTMENT = "SET_ACTIVE_DEPARTMENT";
 
 const SET_UNSAVED_ORDER = "SET_UNSAVED_ORDER";
 const CLEAR_UNSAVED_ORDER = "CLEAR_UNSAVED_ORDER";
-
+const TOGGLE_ADD_USERS_MODE = "TOGGLE_ADD_USERS_MODE";
 
 
 
@@ -17,6 +17,7 @@ const CLEAR_UNSAVED_ORDER = "CLEAR_UNSAVED_ORDER";
 
 const initialState = {
   viewMode: null, // "departments" | "sections"
+   addUsersMode: false,
   activeDepartmentId: null,
 
   // 🔥 snapshot останнього reorder перед save
@@ -29,6 +30,14 @@ const initialState = {
 ========================= */
 export const uiReducer = (state = initialState, action) => {
   switch (action.type) {
+
+    case TOGGLE_ADD_USERS_MODE:
+      // debugger
+      return {
+        ...state,
+        addUsersMode: !state.addUsersMode
+      };
+
 
     /* =========================
        ACTIVE DEPARTMENT
@@ -86,6 +95,10 @@ export const uiReducer = (state = initialState, action) => {
 /* =========================
    ACTION CREATORS
 ========================= */
+
+export const toggleaddUsersMode = () => ({
+  type: TOGGLE_ADD_USERS_MODE,
+});
 export const setPhonesViewMode = (mode) => ({
   type: SET_VIEW_MODE,
   mode,

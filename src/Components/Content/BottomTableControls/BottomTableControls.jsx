@@ -1,21 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import s from "./BottomTableControls.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import arrangementIcon from "../../../assets/Img/arrange.png";
-
+import humanPng from "../../../assets/Img/human.png";
 import {
   isSectionsMode,
   isDepartmentsMode,
   isPositionsMode,
   isUserTypesMode,
   getCurrentMode,
+  addUsersModeSelected,
 } from "../../../redux/selectors/selector";
 
-import { setPhonesViewMode } from "../../../redux/reducers/ui-reducer";
-
 import {
-  setUnsavedOrder,
+  setPhonesViewMode,
   clearUnsavedOrder,
+  toggleaddUsersMode
 } from "../../../redux/reducers/ui-reducer";
 
 import { changeOrderOfDisplayElements } from "../../../dal/api";
@@ -29,86 +29,162 @@ const BottomTableControls = () => {
   const isPosition = useSelector(isPositionsMode);
   const isUserTypes = useSelector(isUserTypesMode);
   const mode = useSelector(getCurrentMode);
+  const isAddUsers = useSelector(addUsersModeSelected);
 
-   const phoneTypes = ["landline", "internal", "cisco"];
-   const selectedPhoneType = phoneTypes.includes(mode)
-  ? mode
-  : "";
+  const phoneTypes = ["landline", "internal", "cisco"];
+
+  const selectedPhoneType = phoneTypes.includes(mode)
+    ? mode
+    : "";
 
   const unsavedOrder = useSelector(
     (state) => state.ui.unsavedOrder
   );
 
-  // 🚀 SAVE LOGIC
-const handleSave = async () => {
-  if (!unsavedOrder) return;
 
-  try {
-    await changeOrderOfDisplayElements(
-      unsavedOrder.payload,
-      unsavedOrder.menu,
-      unsavedOrder.depId,
-      unsavedOrder.currentMode
-    );
+  const showAddUsersToggle =
+    isSections || isDepartments;
 
-    dispatch(clearUnsavedOrder());
-    dispatch(setDataIsLoadedActionCreator(false, unsavedOrder.menu));
+  const handleSave = async () => {
+    if (!unsavedOrder) return;
 
-  } catch (error) {
-    console.error("Save failed:", error);
-    alert("❌ Не вдалося зберегти зміни. Спробуйте ще раз.");
-  }
-};
+    try {
+      await changeOrderOfDisplayElements(
+        unsavedOrder.payload,
+        unsavedOrder.menu,
+        unsavedOrder.depId,
+        unsavedOrder.currentMode
+      );
+
+      dispatch(clearUnsavedOrder());
+
+      dispatch(
+        setDataIsLoadedActionCreator(
+          false,
+          unsavedOrder.menu
+        )
+      );
+    } catch (error) {
+      console.error("Save failed:", error);
+      alert(
+        "❌ Не вдалося зберегти зміни. Спробуйте ще раз."
+      );
+    }
+  };
 
   return (
     <div className={s.controlsWrapper}>
-      
-      {/* LEFT SIDE */}
+      {/* LEFT */}
       <div className={s.leftGroup}>
-        <button
-          className={`${s.toggleBtn} ${isSections ? s.active : ""}`}
-          onClick={() => dispatch(setPhonesViewMode("section"))}
-        >
-          Секції
-        </button>
+        <div className={s.sectionGroup}>
+          <div
+            className={`${s.addUsersToggle} ${
+              !showAddUsersToggle ? s.hidden : ""
+            }`}
+            onClick={() =>
+              // showAddUsersToggle &&
+              // setAddUsersMode((v) => !v);
+              dispatch(toggleaddUsersMode())
+            }
+            title="Додавання користувачів"
+          >
+            <div
+              className={`${s.addUsersLine} ${
+                isAddUsers
+                  ? s.addUsersLineActive
+                  : ""
+              }`}
+            >
+              <div className={s.addUsersThumb}>
+  <img
+    src={humanPng}
+    alt=""
+    className={s.addUsersIcon}
+  />
+</div>
+            </div>
+          </div>
+
+          <div className={s.sectionButtons}>
+            <button
+              className={`${s.toggleBtn} ${
+                isSections ? s.active : ""
+              }`}
+              onClick={() =>
+                dispatch(
+                  setPhonesViewMode("section")
+                )
+              }
+            >
+              Секції
+            </button>
+
+            <button
+              className={`${s.toggleBtn} ${
+                isDepartments ? s.active : ""
+              }`}
+              onClick={() =>
+                dispatch(
+                  setPhonesViewMode("department")
+                )
+              }
+            >
+              Департаменти
+            </button>
+          </div>
+        </div>
 
         <button
-          className={`${s.toggleBtn} ${isDepartments ? s.active : ""}`}
-          onClick={() => dispatch(setPhonesViewMode("department"))}
-        >
-          Департаменти
-        </button>
-
-        <button
-          className={`${s.toggleBtn} ${isPosition ? s.active : ""}`}
-          onClick={() => dispatch(setPhonesViewMode("position"))}
+          className={`${s.toggleBtn} ${
+            isPosition ? s.active : ""
+          }`}
+          onClick={() =>
+            dispatch(setPhonesViewMode("position"))
+          }
         >
           Посади
         </button>
 
         <button
-          className={`${s.toggleBtn} ${isUserTypes ? s.active : ""}`}
-          onClick={() => dispatch(setPhonesViewMode("userType"))}
+          className={`${s.toggleBtn} ${
+            isUserTypes ? s.active : ""
+          }`}
+          onClick={() =>
+            dispatch(setPhonesViewMode("userType"))
+          }
         >
           Тип користувача
         </button>
-<select
-   className={`${s.toggleBtn} ${
-    selectedPhoneType ? s.active : ""
-  }`}
-  value={selectedPhoneType}
-  onChange={(e) =>
-    dispatch(setPhonesViewMode(e.target.value || null))
-  }
->
-  <option value="">— Тип телефона —</option>
-  <option value="landline">Landline</option>
-  <option value="internal">Internal</option>
-  <option value="cisco">Cisco</option>
-</select>
+
+        <select
+          className={`${s.toggleBtn} ${
+            selectedPhoneType ? s.active : ""
+          }`}
+          value={selectedPhoneType}
+          onChange={(e) =>
+            dispatch(
+              setPhonesViewMode(
+                e.target.value || null
+              )
+            )
+          }
+        >
+          <option value="">
+            — Тип телефона —
+          </option>
+          <option value="landline">
+            Landline
+          </option>
+          <option value="internal">
+            Internal
+          </option>
+          <option value="cisco">
+            Cisco
+          </option>
+        </select>
       </div>
 
-      {/* RIGHT SIDE (SAVE) */}
+      {/* RIGHT */}
       <div className={s.rightGroup}>
         <button
           title="Зберегти порядок"
@@ -125,7 +201,6 @@ const handleSave = async () => {
           <span>Зберегти</span>
         </button>
       </div>
-
     </div>
   );
 };

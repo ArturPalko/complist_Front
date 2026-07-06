@@ -9,6 +9,8 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { TdWrapper } from "../../../../shared/components/TdWrapper/TdWrapper";
 import { entityMap } from "../../../../configs/app/enitiyMap";
+import { useCrudModalActions } from "../../../../redux/hooks/useCrudModalActions";
+import { addUsersModeSelected, getCurrentMode } from "../../../../redux/selectors/selector";
 
 const BasePhonesTable = createTableComponent(usePhonesTableLogic);
 
@@ -20,8 +22,11 @@ const PhonesTable = ({
   rowsPerPage,
   isSections,
 }) => {
+  const modalType = useSelector(getCurrentMode)
+  const { add} = useCrudModalActions(modalType);
   const dispatch = useDispatch();
   const viewMode = useSelector((state) => state.ui.viewMode);
+  const isAddUsers = useSelector (addUsersModeSelected);
 
   const isPhoneEditMode = PHONE_TYPES.includes(viewMode);
 
@@ -129,8 +134,8 @@ const PhonesTable = ({
 
       const showBreak =
         row.type === "department"
-          ? tableLogic.dashedBlocks.departments.includes(name)
-          : tableLogic.dashedBlocks.sections.includes(name);
+          ? tableLogic.dashedBlocks.departments.includes(name) && !isSections
+          : tableLogic.dashedBlocks.sections.includes(name) ;
 
       const totalColumns =
         1 +
@@ -140,6 +145,7 @@ const PhonesTable = ({
 
       return (
         <TdWrapper
+        
           showBreak={showBreak}
           value={name}
           tableUI={tableUI}
@@ -153,32 +159,49 @@ const PhonesTable = ({
             .filter(Boolean)
             .join(" ")}
         >
-          <div className={s.groupRowContent}>
-            <span>{name}</span>
+     <div className={s.groupRowContent}>
+  <span>{name}</span>
 
-            {isSections &&
-              Array.isArray(row.sections) &&
-              row.sections.length > 0 && (
-                <div className={s.groupRowActions}>
-                  <span className={s.sectionsCount}>
-                    ({row.sections.length})
-                  </span>
+  {isSections && (
+    <div className={s.groupRowActions}>
+      {Array.isArray(row.sections) && row.sections.length > 0 ? (
+        <>
+          <span className={s.sectionsCount}>
+            ({row.sections.length})
+          </span>
 
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleOnOpenSectionsButtonClick({
-                        isSections,
-                        item: row,
-                        dispatch,
-                      })(e);
-                    }}
-                  >
-                    Переглянути
-                  </button>
-                </div>
-              )}
-          </div>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleOnOpenSectionsButtonClick({
+                isSections,
+                item: row,
+                dispatch,
+              })(e);
+            }}
+          >
+            Переглянути
+          </button>
+        </>
+      ) : (
+        <button
+          className={s.addButton}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleOnOpenSectionsButtonClick({
+                isSections,
+                item: row,
+                dispatch,
+              })(e);
+           add();
+          }}
+        >
+          + Додати
+        </button>
+      )}
+    </div>
+  )}
+</div>
         </TdWrapper>
       );
     }
@@ -236,3 +259,5 @@ const PhonesTable = ({
 };
 
 export default PhonesTable;
+
+

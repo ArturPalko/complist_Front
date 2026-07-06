@@ -92,3 +92,104 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+
+.leftGroup {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.sectionGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.sectionButtons {
+  display: flex;
+  gap: 8px;
+}
+
+.addUsersToggle {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 3px;
+  cursor: pointer;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.addUsersLine {
+  position: relative;
+
+  width: 100%;
+  height: 3px;
+
+  background: #cfd5dc;
+  border-radius: 999px;
+
+  transition: .2s;
+}
+
+.addUsersLineActive {
+  background: #31b44b;
+}
+
+.addUsersThumb {
+  position: absolute;
+  top: 50%;
+  left: 0;
+
+  width: 10px;
+  height: 10px;
+
+  border-radius: 50%;
+  background: white;
+  border: 2px solid #9aa4b2;
+
+  transform: translate(-2px, -50%);
+  transition: .2s;
+}
+
+.addUsersLineActive .addUsersThumb {
+  left: 100%;
+  transform: translate(-8px, -50%);
+  border-color: #31b44b;
+}
+
+
+
+
+.addUsersThumb {
+  position: absolute;
+  top: 50%;
+  left: 0;
+
+  width: 18px;
+  height: 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  background: white;
+  border: 2px solid #9aa4b2;
+
+  transform: translate(-2px, -50%);
+  transition: .2s;
+}
+
+.addUsersIcon {
+  width: 11px;
+  height: 11px;
+  object-fit: contain;
+}
+
+.addUsersLineActive .addUsersThumb {
+  left: 100%;
+  transform: translate(-10px, -50%);
+  border-color: #31b44b;
+}
