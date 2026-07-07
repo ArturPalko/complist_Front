@@ -65,12 +65,12 @@ export const getDimGroupRowClasses = ({
 };
 
   export const handleOnOpenSectionsButtonClick =
-  ({ isSections, item, dispatch }) =>
+  ({ isSections, isAddUsers, item, dispatch }) =>
   (e) => {
    // e.stopPropagation();
-      
-    if (isSections && item?.type === "department") {
-               
+     debugger 
+    if ((isSections || isAddUsers)  && item?.type === "department") {
+      debugger  
       dispatch(setActiveDepartment(item.departmentId));
       return;
     }

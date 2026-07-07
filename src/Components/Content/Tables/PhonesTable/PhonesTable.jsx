@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { TdWrapper } from "../../../../shared/components/TdWrapper/TdWrapper";
 import { entityMap } from "../../../../configs/app/enitiyMap";
 import { useCrudModalActions } from "../../../../redux/hooks/useCrudModalActions";
-import { addUsersModeSelected, getCurrentMode } from "../../../../redux/selectors/selector";
+import { addUsersModeSelected, getCurrentMode, isDepartmentsMode, selectAtiveDepartmentId, selectUsersByDepartment } from "../../../../redux/selectors/selector";
 
 const BasePhonesTable = createTableComponent(usePhonesTableLogic);
 
@@ -27,9 +27,12 @@ const PhonesTable = ({
   const dispatch = useDispatch();
   const viewMode = useSelector((state) => state.ui.viewMode);
   const isAddUsers = useSelector (addUsersModeSelected);
-
+  const adcitveDep = useSelector(selectAtiveDepartmentId);
+  const users = useSelector(selectUsersByDepartment(adcitveDep))
+  const isDepartmentMode = useSelector(isDepartmentsMode)
   const isPhoneEditMode = PHONE_TYPES.includes(viewMode);
-
+// console.log ("users:", users)
+// console.log ("2222222222:")
   // =========================
   // HEADER
   // =========================
@@ -82,7 +85,17 @@ const PhonesTable = ({
         {value}
       </TdWrapper>
     );
+if (adcitveDep && isDepartmentMode && isAddUsers) {
+  return (
+    <>
+      <td>{index + 1}</td>
 
+      {renderTd(row.name, `name-${row.id}`)}
+      {renderTd(row.userType, `type-${row.id}`)}
+      {renderTd(row.positionName, `position-${row.id}`)}
+    </>
+  );
+}
     // =====================================================
     // 📞 PHONE EDIT MODE (NEW UI)
     // =====================================================
@@ -162,7 +175,7 @@ const PhonesTable = ({
      <div className={s.groupRowContent}>
   <span>{name}</span>
 
-  {isSections && (
+  {(isSections || isAddUsers) && (
     <div className={s.groupRowActions}>
       {Array.isArray(row.sections) && row.sections.length > 0 ? (
         <>
@@ -175,6 +188,7 @@ const PhonesTable = ({
               e.stopPropagation();
               handleOnOpenSectionsButtonClick({
                 isSections,
+                isAddUsers,
                 item: row,
                 dispatch,
               })(e);

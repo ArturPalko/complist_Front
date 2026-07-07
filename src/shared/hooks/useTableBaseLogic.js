@@ -48,6 +48,7 @@ export const useTableBaseLogic = ({
 
   const { isPagesNavbarLinkElementOnCurrentPagePressed } =
     useSearchToggle();
+    console.log("datka:", data)
 
   // ================================
   // safe values

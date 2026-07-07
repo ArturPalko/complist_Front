@@ -1,0 +1,66 @@
+.overlay {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #eef1f5;
+}
+
+.modal {
+  width: 420px;
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.input {
+  height: 36px;
+  border: 1px solid #ccd3db;
+  border-radius: 6px;
+  padding: 0 10px;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+}
+
+.field {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.cancel {
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+  background: #e2e6ea;
+  cursor: pointer;
+}
+
+.save {
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+  background: #2f7df6;
+  color: white;
+  cursor: pointer;
+}

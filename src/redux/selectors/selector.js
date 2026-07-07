@@ -23,9 +23,10 @@ export const selectFoundResults = (state, menu) => selectSearchValueByPage(menu)
 
 
 export const getDataForMenu = (state, menu) => {
-
+debugger
   const edit = isEditModeSelected(state);
   const activeDepartmentId = state.ui.activeDepartmentId;
+  const isAddUsers = addUsersModeSelected(state);
 
   const isSection = isSectionsMode(state);
   const isDepartments = isDepartmentsMode(state);
@@ -38,6 +39,13 @@ export const getDataForMenu = (state, menu) => {
   // POSITIONS / USER TYPES (FROM DICTIONARIES)
            
   // ========================================
+debugger
+if (edit && isAddUsers && activeDepartmentId) {
+  let a = selectUsersByDepartment(activeDepartmentId)(state);
+  debugger;
+return [{pageIndex:1, rows:a}];
+}
+
 if (
   edit &&  
   menu === "phones" &&
@@ -113,19 +121,7 @@ const selectSectionsByDepartmentId = (state, departmentId) => {
   );
 //          
   if (!matchedSections.length) return [];
-const wither = matchedSections.map(row => ({
-  ...row,
-  type: "section"
-}));
-//           
-  // console.log("matches:", wither);
-//          
-let a =[ {
-      pageIndex: 1,
-      rows: wither
-    }]
-    //          
-  return a
+
 };
 
 
@@ -319,7 +315,8 @@ export const isUserAuthed = (state) => {
 }
 
 
-// selector.js
+// 
+
 export const selectBookmarks = (state, menu) => {
   return state.filters?.[menu]?.bookmarks ?? { selectedSubDepts: [], selectedOrder: [] };
 };
@@ -387,5 +384,22 @@ export const selectDictionaryByType =
 export const selectSectionsById = (activeDepartmentId) => (state) =>  selectSectionsByDepartmentId(state, activeDepartmentId);
 
 export const addUsersModeSelected = (state) => state.ui.addUsersMode; 
+
+
+export const selectUsersByDepartment = (departmentId) => (state) => {
+  debugger;
+
+  const departments = state.data.dictionaries.departments;
+
+  const rows = departments.flatMap(element => element.rows);
+
+  const department = rows.find(dep => dep.departmentId == departmentId);
+
+  const users = department?.users ?? [];
+
+  debugger;
+
+  return users;
+};
 
 

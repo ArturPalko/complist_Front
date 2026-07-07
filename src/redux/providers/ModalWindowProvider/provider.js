@@ -41,13 +41,13 @@ export function ModalWindowProvider({ children }) {
     const newQuery = new URLSearchParams(location.search);
     newQuery.delete("modal");
 
-      console.log("Current pathname:", location.pathname);
-  console.log("Current search:", location.search);
-  console.log("New search:", `?${newQuery.toString()}`);
-  console.log(
-    "Navigate to:",
-    `${location.pathname}?${newQuery.toString()}`
-  );
+  //     console.log("Current pathname:", location.pathname);
+  // console.log("Current search:", location.search);
+  // console.log("New search:", `?${newQuery.toString()}`);
+  // console.log(
+  //   "Navigate to:",
+  //   `${location.pathname}?${newQuery.toString()}`
+  // );
     navigate({ search: newQuery.toString() }, { replace: true });
   };
 
@@ -85,7 +85,7 @@ export function ModalWindowProvider({ children }) {
     [modalType, mode, modalData,     location.pathname,
     location.search]
   );
-  console.log ("modalka:", modalData)
+  // console.log ("modalka:", modalData)
   return (
     <ModalWindowContext.Provider value={value}>
       {children}
