@@ -5,6 +5,7 @@ const SET_VIEW_MODE = "SET_VIEW_MODE";
 const TOGGLE_VIEW_MODE = "TOGGLE_VIEW_MODE";
 const RESET_PHONES_UI = "RESET_PHONES_UI";
 const SET_ACTIVE_DEPARTMENT = "SET_ACTIVE_DEPARTMENT";
+const SET_ACTIVE_SECTION = "SET_ACTIVE_SECTION";
 
 const SET_UNSAVED_ORDER = "SET_UNSAVED_ORDER";
 const CLEAR_UNSAVED_ORDER = "CLEAR_UNSAVED_ORDER";
@@ -19,6 +20,7 @@ const initialState = {
   viewMode: null, // "departments" | "sections"
    addUsersMode: false,
   activeDepartmentId: null,
+  activeSectionId: null,
 
   // 🔥 snapshot останнього reorder перед save
   unsavedOrder: null,
@@ -32,7 +34,7 @@ export const uiReducer = (state = initialState, action) => {
   switch (action.type) {
 
     case TOGGLE_ADD_USERS_MODE:
-      // debugger
+       debugger
       return {
         ...state,
         addUsersMode: !state.addUsersMode
@@ -46,6 +48,12 @@ export const uiReducer = (state = initialState, action) => {
       return {
         ...state,
         activeDepartmentId: action.id,
+      };
+
+      case SET_ACTIVE_SECTION:
+      return {
+        ...state,
+        activeSectionId: action.id,
       };
 
     /* =========================
@@ -114,6 +122,10 @@ export const resetPhonesUi = () => ({
 
 export const setActiveDepartment = (id) => ({
   type: SET_ACTIVE_DEPARTMENT,
+  id,
+});
+export const setActiveSection = (id) => ({
+  type: SET_ACTIVE_SECTION,
   id,
 });
 

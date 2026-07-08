@@ -26,6 +26,7 @@ export const getDataForMenu = (state, menu) => {
 debugger
   const edit = isEditModeSelected(state);
   const activeDepartmentId = state.ui.activeDepartmentId;
+  const activeSectionId = state.ui.activeSectionId;
   const isAddUsers = addUsersModeSelected(state);
 
   const isSection = isSectionsMode(state);
@@ -40,11 +41,19 @@ debugger
            
   // ========================================
 debugger
-if (edit && isAddUsers && activeDepartmentId) {
-  let a = selectUsersByDepartment(activeDepartmentId)(state);
+if (edit && isAddUsers  && activeDepartmentId && !isSection) {
+  let a = selectUsersByDepartment(activeDepartmentId, activeSectionId)(state);
   debugger;
 return [{pageIndex:1, rows:a}];
 }
+
+
+if (edit && isAddUsers  && activeDepartmentId && isSection) {
+  let a = selectUsersBySection(activeDepartmentId)(state);
+  debugger;
+return [{pageIndex:1, rows:a}];
+}
+
 
 if (
   edit &&  
@@ -67,6 +76,7 @@ if (
   menu === "phones" &&
   (isDepartments || isSection) &&  !activeDepartmentId
 ) {
+  debugger
   return state.data.dictionaries.departments.map(page => ({
     ...page,
     rows: page.rows.map(dep => ({
@@ -95,6 +105,7 @@ if (
     isSection &&
     activeDepartmentId != null
   ) {
+    debugger
   
     return selectSectionsByDepartmentId(state, activeDepartmentId);
   }
@@ -107,21 +118,28 @@ if (
 };
 const selectSectionsByDepartmentId = (state, departmentId) => {
   const pages = state?.data?.dictionaries?.departments ?? [];
-//          
+
   const matchedSections = pages.flatMap(page =>
     (page?.rows ?? [])
-      .filter(row => row?.sections?.length) // тільки ті, де є sections
+      .filter(row => row?.sections?.length)
       .flatMap(row =>
         row.sections
-          .filter(
-            section =>
-              section.departmentId == departmentId // або row.id якщо departmentId на row
-          )
+          .filter(section => section.departmentId == departmentId)
+          .map(section => ({
+            ...section,
+            type: "section",
+          }))
       )
   );
-//          
+
   if (!matchedSections.length) return [];
 
+  return [
+    {
+      pageIndex: 1,
+      rows: matchedSections,
+    },
+  ];
 };
 
 
@@ -401,5 +419,19 @@ export const selectUsersByDepartment = (departmentId) => (state) => {
 
   return users;
 };
+
+export const selectUsersBySection = (activeDepartmentId,secitonId)=> (state) =>{
+   const departments = state.data.dictionaries.departments;
+   const rows = departments.flatMap(element => element.rows);
+   const department = rows.find(dep => dep.departmentId == activeDepartmentId);
+   const section = department.secions.find(sec => sec.sectionId == secitonId);
+   const users = section.users;
+   
+   debugger
+
+   return users;
+
+
+}
 
 
