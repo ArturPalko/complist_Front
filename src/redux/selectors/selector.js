@@ -27,6 +27,7 @@ debugger
   const edit = isEditModeSelected(state);
   const activeDepartmentId = state.ui.activeDepartmentId;
   const activeSectionId = state.ui.activeSectionId;
+  debugger
   const isAddUsers = addUsersModeSelected(state);
 
   const isSection = isSectionsMode(state);
@@ -40,6 +41,16 @@ debugger
   // POSITIONS / USER TYPES (FROM DICTIONARIES)
            
   // ========================================
+  // if(edit && isAddUsers && !activeSectionId  && isSection) return
+  if (
+  edit &&
+  menu === "phones" &&
+  isSection &&
+  activeDepartmentId != null &&
+  activeSectionId == null
+) {
+  return selectSectionsByDepartmentId(state, activeDepartmentId);
+}
 debugger
 if (edit && isAddUsers  && activeDepartmentId && !isSection) {
   let a = selectUsersByDepartment(activeDepartmentId, activeSectionId)(state);
@@ -49,7 +60,7 @@ return [{pageIndex:1, rows:a}];
 
 
 if (edit && isAddUsers  && activeDepartmentId && isSection) {
-  let a = selectUsersBySection(activeDepartmentId)(state);
+  let a = selectUsersBySection(activeDepartmentId, activeSectionId)(state);
   debugger;
 return [{pageIndex:1, rows:a}];
 }
@@ -385,6 +396,7 @@ export const getCurrentMode = (state) =>  state.ui.viewMode;
 
 
 export const selectAtiveDepartmentId = (state)=> state.ui.activeDepartmentId;
+export const selectActiveSectionId =  (state)=> state.ui.activeSectionId;
 
 export const selectPositionsDictionary = (state) => state.data.dictionaries.positions;
 
@@ -420,11 +432,11 @@ export const selectUsersByDepartment = (departmentId) => (state) => {
   return users;
 };
 
-export const selectUsersBySection = (activeDepartmentId,secitonId)=> (state) =>{
+export const selectUsersBySection = (activeDepartmentId,activeSectionId)=> (state) =>{
    const departments = state.data.dictionaries.departments;
    const rows = departments.flatMap(element => element.rows);
    const department = rows.find(dep => dep.departmentId == activeDepartmentId);
-   const section = department.secions.find(sec => sec.sectionId == secitonId);
+   const section = department.sections.find(sec => sec.sectionId == activeSectionId);
    const users = section.users;
    
    debugger

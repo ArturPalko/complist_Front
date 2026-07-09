@@ -10,6 +10,7 @@ import {
   isUserTypesMode,
   getCurrentMode,
   addUsersModeSelected,
+  selectAtiveDepartmentId,
 } from "../../../redux/selectors/selector";
 
 import {
@@ -25,6 +26,7 @@ const BottomTableControls = () => {
   const dispatch = useDispatch();
 
   const isSections = useSelector(isSectionsMode);
+  const adcitveDep = useSelector(selectAtiveDepartmentId);
   const isDepartments = useSelector(isDepartmentsMode);
   const isPosition = useSelector(isPositionsMode);
   const isUserTypes = useSelector(isUserTypesMode);
@@ -43,7 +45,7 @@ const BottomTableControls = () => {
 
 
   const showAddUsersToggle =
-    isSections || isDepartments;
+    (isSections && adcitveDep)  || isDepartments;
 
   const handleSave = async () => {
     if (!unsavedOrder) return;

@@ -149,3 +149,37 @@
 .addButton:hover {
   background: #c8e6c9;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.navigationHeader {
+  padding: 8px 12px;
+}
+
+.navigationContent {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.backButton {
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  font-weight: 600;
+}
+
+.navigationTitle {
+  font-weight: normal;
+}

@@ -5,12 +5,13 @@ import {
   countNonUserRowsBefore,
   getUserRowIndex,
   handleOnOpenSectionsButtonClick,
+  handleBack
 } from "./phonesTableHelpers";
 import { useDispatch, useSelector } from "react-redux";
 import { TdWrapper } from "../../../../shared/components/TdWrapper/TdWrapper";
 import { entityMap } from "../../../../configs/app/enitiyMap";
 import { useCrudModalActions } from "../../../../redux/hooks/useCrudModalActions";
-import { addUsersModeSelected, getCurrentMode, isDepartmentsMode, selectAtiveDepartmentId, selectUsersByDepartment } from "../../../../redux/selectors/selector";
+import { addUsersModeSelected, getCurrentMode, isDepartmentsMode, isSectionsMode, selectActiveSectionId, selectAtiveDepartmentId, selectUsersByDepartment } from "../../../../redux/selectors/selector";
 
 const BasePhonesTable = createTableComponent(usePhonesTableLogic);
 
@@ -28,6 +29,7 @@ const PhonesTable = ({
   const viewMode = useSelector((state) => state.ui.viewMode);
   const isAddUsers = useSelector (addUsersModeSelected);
   const adcitveDep = useSelector(selectAtiveDepartmentId);
+  const activeSec = useSelector(selectActiveSectionId)
   const users = useSelector(selectUsersByDepartment(adcitveDep))
   const isDepartmentMode = useSelector(isDepartmentsMode)
   const isPhoneEditMode = PHONE_TYPES.includes(viewMode);
@@ -43,6 +45,10 @@ const hasItems = (row) => {
     return isAddUsers
       ? Array.isArray(row.users) && row.users.length > 0
       : Array.isArray(row.sections) && row.sections.length > 0;
+  }
+  if (row.type == "section") {
+    debugger
+    return    Array.isArray(row.users) && row.users.length > 0 
   }
 
   if (row.type === "section") {
@@ -83,7 +89,40 @@ const showActionButton = (row) => {
 
   return false;
 };
-  const renderHeader = () => (
+const showNavigationHeader =
+  adcitveDep != null || activeSec != null;
+
+const totalColumns =
+  1 + columns.reduce((sum, col) => sum + (col.subLabels?.length || 1), 0);
+
+const renderHeader = () => {
+  if (showNavigationHeader) {
+    return (
+      <tr>
+        <th colSpan={totalColumns} className={s.navigationHeader}>
+          <div className={s.navigationContent}>
+            <button
+              type="button"
+              className={s.backButton}
+              onClick={handleBack({
+  activeSec,
+  isAddUsers,
+  dispatch,
+})}
+            >
+              ← Назад
+            </button>
+
+            <span className={s.navigationTitle}>
+              Департамент: IT
+            </span>
+          </div>
+        </th>
+      </tr>
+    );
+  }
+
+  return (
     <>
       <tr>
         <th rowSpan="2">№ п/п</th>
@@ -114,6 +153,7 @@ const showActionButton = (row) => {
       </tr>
     </>
   );
+};
 
   // =========================
   // ROWS
@@ -132,7 +172,7 @@ const showActionButton = (row) => {
         {value}
       </TdWrapper>
     );
-if (adcitveDep && isDepartmentMode && isAddUsers) {
+if (((adcitveDep && isDepartmentMode) || (activeSec && isSectionsMode)) && isAddUsers) {
   return (
     <>
       <td>{index + 1}</td>
@@ -195,8 +235,8 @@ if (adcitveDep && isDepartmentMode && isAddUsers) {
 
       const showBreak =
         row.type === "department"
-          ? tableLogic.dashedBlocks.departments.includes(name) && !isSections
-          : tableLogic.dashedBlocks.sections.includes(name) ;
+          ? tableLogic.dashedBlocks.departments.includes(name) && !isSections && !isAddUsers
+          : tableLogic.dashedBlocks.sections.includes(name) && !isAddUsers;
 
       const totalColumns =
         1 +
@@ -234,6 +274,7 @@ if (adcitveDep && isDepartmentMode && isAddUsers) {
               onClick={(e) => {
                 e.stopPropagation();
                 handleOnOpenSectionsButtonClick({
+                  rowType:row.type,
                   isSections,
                   isAddUsers,
                   item: row,

@@ -2,7 +2,7 @@
  * Рахує кількість НЕ-user рядків ДО поточного індексу
  * (department / section)
  */
-import { setActiveDepartment } from "../../../../redux/reducers/ui-reducer";
+import { setActiveDepartment, setActiveSection, toggleaddUsersMode } from "../../../../redux/reducers/ui-reducer";
 
 export const getUserCells = (row) => {
   if (row.userTypeId !== 1) {
@@ -65,13 +65,40 @@ export const getDimGroupRowClasses = ({
 };
 
   export const handleOnOpenSectionsButtonClick =
-  ({ isSections, isAddUsers, item, dispatch }) =>
+  ({ rowType, isSections, isAddUsers, item, dispatch }) =>
   (e) => {
    // e.stopPropagation();
+   if (rowType == "section"){
+    debugger
+    dispatch(setActiveSection(item.sectionId))
+   }
      debugger 
     if ((isSections || isAddUsers)  && item?.type === "department") {
       debugger  
       dispatch(setActiveDepartment(item.departmentId));
       return;
     }
+  };
+
+
+
+export const handleBack =
+  ({ activeSec, isAddUsers, dispatch }) =>
+  () => {
+    debugger
+    if (activeSec != null) {
+      debugger
+      dispatch(setActiveSection(null));
+      return;
+    }
+
+    // if (isAddUsers) {
+    //   debugger
+    //   dispatch(toggleaddUsersMode());
+    //   dispatch(setActiveDepartment(null));
+    //   return;
+    // }
+debugger
+    dispatch(setActiveDepartment(null));
+    dispatch(setActiveSection(null));
   };
