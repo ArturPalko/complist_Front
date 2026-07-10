@@ -12,10 +12,21 @@ import {
   apiDeleteEntity,
   apiEditEntity,
 } from "../../dal/api";
+import { useSelector } from "react-redux";
+import { isSectionsMode, selectActiveSectionId, selectAtiveDepartmentId } from "../../redux/selectors/selector";
+import AddUser from "./AddUser/AddUser";
 
 export default function ModalRoot() {
   const { modalType, mode, modalData, closeModal } =
     useModalWindowContext();
+  const activeDep = useSelector(selectAtiveDepartmentId);
+  const activeSec = useSelector (selectActiveSectionId);
+  const isSectiosns = useSelector(isSectionsMode);
+debugger
+  if(isSectiosns && activeDep && activeSec && mode=="add"){
+    debugger
+    return <AddUser/>
+  }
          
   // ---------------- NO MODAL ----------------
   if (!modalType) return null;
@@ -48,7 +59,9 @@ export default function ModalRoot() {
     ? modalData?.[entity.name] ?? ""
     : "";
         console.log("DEPR:",modalData)
-         
+     
+        
+        
   // ---------------- ADD / EDIT ----------------
   return (
     <EntityModal

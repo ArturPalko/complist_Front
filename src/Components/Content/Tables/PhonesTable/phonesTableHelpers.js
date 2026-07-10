@@ -64,41 +64,86 @@ export const getDimGroupRowClasses = ({
   };
 };
 
-  export const handleOnOpenSectionsButtonClick =
+export const handleOnOpenSectionsButtonClick =
   ({ rowType, isSections, isAddUsers, item, dispatch }) =>
   (e) => {
-   // e.stopPropagation();
-   if (rowType == "section"){
-    debugger
-    dispatch(setActiveSection(item.sectionId))
-   }
-     debugger 
-    if ((isSections || isAddUsers)  && item?.type === "department") {
-      debugger  
-      dispatch(setActiveDepartment(item.departmentId));
+    if (rowType === "section") {
+      
+      dispatch(
+        setActiveSection({
+          id: item.sectionId,
+          name: item.sectionName,
+        })
+      );
       return;
+    }
+
+    if ((isSections || isAddUsers) && item?.type === "department") {
+      dispatch(
+        setActiveDepartment({
+          id: item.departmentId,
+          name: item.departmentName,
+        })
+      );
     }
   };
 
 
-
 export const handleBack =
-  ({ activeSec, isAddUsers, dispatch }) =>
+  ({
+    activeDep,
+    activeSec,
+    isSections,
+    isAddUsers,
+    dispatch,
+  }) =>
   () => {
-    debugger
+
+    // Користувачі секції -> секції
     if (activeSec != null) {
-      debugger
-      dispatch(setActiveSection(null));
+      dispatch(
+        setActiveSection({
+          id: null,
+          name: null,
+        })
+      );
+
       return;
     }
 
-    // if (isAddUsers) {
-    //   debugger
-    //   dispatch(toggleaddUsersMode());
-    //   dispatch(setActiveDepartment(null));
-    //   return;
-    // }
-debugger
-    dispatch(setActiveDepartment(null));
-    dispatch(setActiveSection(null));
+    // Секції департаменту -> департаменти
+    if (
+      activeDep != null &&
+      activeSec == null &&
+      isSections &&
+      isAddUsers
+    ) {
+
+      
+      dispatch(toggleaddUsersMode());
+
+      dispatch(
+        setActiveDepartment({
+          id: null,
+          name: null,
+        })
+      );
+
+      return;
+    }
+
+    // Секції -> департаменти
+    dispatch(
+      setActiveDepartment({
+        id: null,
+        name: null,
+      })
+    );
+
+    dispatch(
+      setActiveSection({
+        id: null,
+        name: null,
+      })
+    );
   };

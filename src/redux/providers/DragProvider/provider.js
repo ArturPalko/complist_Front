@@ -128,11 +128,11 @@ const fullData = useMemo(() => {
         foundResults,
         fullData,
       });
-debugger
+
       if (!source?.length) return;
 
       const indexes = getRangeIndexes(source, startId, endId);
-      debugger
+      
       if (!indexes) return;
 
       const [from, to] = indexes;
@@ -150,7 +150,7 @@ debugger
   const toggleSelect = useCallback(
     (id, e) => {
       const mode = getSelectMode(e);
-debugger
+
       if (mode === "RANGE") {
         if (!rangeStartId) {
           setRangeStartId(id);
@@ -158,7 +158,7 @@ debugger
         }
 
         selectRange(rangeStartId, id);
-        debugger
+        
         setRangeStartId(null);
         return;
       }
@@ -236,7 +236,7 @@ debugger
 
 const handleDrop = useCallback(
   (toIndex, page) => {
-    debugger
+    
              
     if (!dragIds.length || !fullData.length) return;
          
@@ -278,7 +278,7 @@ const handleDrop = useCallback(
     const globalToIndex = getGlobalIndex(page, toIndex, rowsPerPage);
 
     const bounds = getDragBounds(dragIds, fullData);
-debugger
+
     if (isDropInsideSelf(globalToIndex, bounds)) {
       endDrag();
       return;
@@ -290,7 +290,7 @@ debugger
       id: el.sectionId ?? el.departmentId ?? el.id,
       priority: index + 1,
     }));
-       debugger  
+         
     dispatch(
       setPagesActionCreator(
         menu,

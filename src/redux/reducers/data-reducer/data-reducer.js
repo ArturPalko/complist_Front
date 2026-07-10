@@ -35,7 +35,7 @@ export const dataReducer = (state = initialState, action) => {
     // =========================
     case ADD_DATA: {
       const { key, data } = action.payload;
-// //debugger
+// //
       return {
         ...state,
         [key]: paginateData(data, key, rowsPerPage),
@@ -44,7 +44,7 @@ export const dataReducer = (state = initialState, action) => {
 
 case SET_DICTIONARIES: {
   const { positions, userTypes, departments, phones } = action.payload;
-debugger
+
   return {
     ...state,
     dictionaries: {

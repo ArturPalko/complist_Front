@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import s from "./AddUser.module.css"
+import s from "./AddUser.module.css";
 
 const departments = [
   { id: 1, name: "IT" },
@@ -27,8 +27,6 @@ const userTypes = [
   { id: 2, name: "Керівник" }
 ];
 
- 
- 
 export default function AddUser() {
   const [fullName, setFullName] = useState("");
   const [departmentId, setDepartmentId] = useState("");
@@ -38,28 +36,28 @@ export default function AddUser() {
 
   const availableSections = useMemo(() => {
     return sections.filter(
-      (s) => String(s.departmentId) === String(departmentId)
+      (section) => String(section.departmentId) === String(departmentId)
     );
   }, [departmentId]);
-
+  console.log("AddUser rendered");
   return (
-    <div style={s.overlay}>
-      <div style={s.modal}>
+    <div className={s.overlay}>
+      <div className={s.modal}>
         <h2>Додати користувача</h2>
 
-        <div style={s.field}>
-          <label style={s.label}>ПІБ</label>
+        <div className={s.field}>
+          <label className={s.label}>ПІБ</label>
           <input
-            style={s.input}
+            className={s.input}
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
           />
         </div>
 
-        <div style={s.field}>
-          <label style={s.label}>Посада</label>
+        <div className={s.field}>
+          <label className={s.label}>Посада</label>
           <select
-            style={s.input}
+            className={s.input}
             value={positionId}
             onChange={(e) => setPositionId(e.target.value)}
           >
@@ -72,11 +70,11 @@ export default function AddUser() {
           </select>
         </div>
 
-        <div style={s.row}>
-          <div style={s.field}>
-            <label style={s.label}>Департамент</label>
+        <div className={s.row}>
+          <div className={s.field}>
+            <label className={s.label}>Департамент</label>
             <select
-              style={s.input}
+              className={s.input}
               value={departmentId}
               onChange={(e) => {
                 setDepartmentId(e.target.value);
@@ -92,28 +90,28 @@ export default function AddUser() {
             </select>
           </div>
 
-          <div style={s.field}>
-            <label style={s.label}>Секція</label>
+          <div className={s.field}>
+            <label className={s.label}>Секція</label>
             <select
-              style={s.input}
+              className={s.input}
               value={sectionId}
               disabled={!departmentId}
               onChange={(e) => setSectionId(e.target.value)}
             >
               <option value="">Без секції</option>
-              {availableSections.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name}
+              {availableSections.map((section) => (
+                <option key={section.id} value={section.id}>
+                  {section.name}
                 </option>
               ))}
             </select>
           </div>
         </div>
 
-        <div style={s.field}>
-          <label style={s.label}>Тип користувача</label>
+        <div className={s.field}>
+          <label className={s.label}>Тип користувача</label>
           <select
-            style={s.input}
+            className={s.input}
             value={userTypeId}
             onChange={(e) => setUserTypeId(e.target.value)}
           >
@@ -126,9 +124,9 @@ export default function AddUser() {
           </select>
         </div>
 
-        <div style={s.buttons}>
+        <div className={s.buttons}>
           <button
-            style={s.cancel}
+            className={s.cancel}
             onClick={() => {
               setFullName("");
               setDepartmentId("");
@@ -141,7 +139,7 @@ export default function AddUser() {
           </button>
 
           <button
-            style={s.save}
+            className={s.save}
             onClick={() =>
               console.log({
                 fullName,

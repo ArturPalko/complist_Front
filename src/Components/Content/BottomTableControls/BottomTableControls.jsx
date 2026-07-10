@@ -26,7 +26,7 @@ const BottomTableControls = () => {
   const dispatch = useDispatch();
 
   const isSections = useSelector(isSectionsMode);
-  const adcitveDep = useSelector(selectAtiveDepartmentId);
+  const activeDep = useSelector(selectAtiveDepartmentId);
   const isDepartments = useSelector(isDepartmentsMode);
   const isPosition = useSelector(isPositionsMode);
   const isUserTypes = useSelector(isUserTypesMode);
@@ -45,7 +45,7 @@ const BottomTableControls = () => {
 
 
   const showAddUsersToggle =
-    (isSections && adcitveDep)  || isDepartments;
+    (isSections && activeDep)  || isDepartments;
 
   const handleSave = async () => {
     if (!unsavedOrder) return;

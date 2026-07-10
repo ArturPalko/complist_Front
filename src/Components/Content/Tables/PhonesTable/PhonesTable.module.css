@@ -163,7 +163,7 @@
 
 
 
-.navigationHeader {
+/* .navigationHeader {
   padding: 8px 12px;
 }
 
@@ -182,4 +182,48 @@
 
 .navigationTitle {
   font-weight: normal;
+}
+ */
+
+
+.navigationContent {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.navigationTitle {
+    font-size: 15px;
+    white-space: nowrap;
+}
+
+.departmentTitle {
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.navigationSlash {
+    color: #9ca3af;
+    padding: 0 4px;
+    font-weight: 400;
+}
+
+.sectionTitle {
+    font-weight: 500;
+    color: #4b5563;
+}
+.backButton {
+  background: transparent;
+  border: none;
+  color: #4b5563;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: .2s;
+}
+
+.backButton:hover {
+  color: #2563eb;
+  transform: translateX(-3px);
 }

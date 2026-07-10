@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { TdWrapper } from "../../../../shared/components/TdWrapper/TdWrapper";
 import { entityMap } from "../../../../configs/app/enitiyMap";
 import { useCrudModalActions } from "../../../../redux/hooks/useCrudModalActions";
-import { addUsersModeSelected, getCurrentMode, isDepartmentsMode, isSectionsMode, selectActiveSectionId, selectAtiveDepartmentId, selectUsersByDepartment } from "../../../../redux/selectors/selector";
+import { addUsersModeSelected, getCurrentMode, isDepartmentsMode, isSectionsMode, selectActiveSectionId, selectActiveSectionName, selectAtiveDepartmentId, selectAtiveDepartmentName, selectUsersByDepartment } from "../../../../redux/selectors/selector";
 
 const BasePhonesTable = createTableComponent(usePhonesTableLogic);
 
@@ -28,12 +28,15 @@ const PhonesTable = ({
   const dispatch = useDispatch();
   const viewMode = useSelector((state) => state.ui.viewMode);
   const isAddUsers = useSelector (addUsersModeSelected);
-  const adcitveDep = useSelector(selectAtiveDepartmentId);
+  const activeDep = useSelector(selectAtiveDepartmentId);
   const activeSec = useSelector(selectActiveSectionId)
-  const users = useSelector(selectUsersByDepartment(adcitveDep))
+  const users = useSelector(selectUsersByDepartment(activeDep))
   const isDepartmentMode = useSelector(isDepartmentsMode)
   const isPhoneEditMode = PHONE_TYPES.includes(viewMode);
   const rowTypesForBtn= ["department", "section"]
+  const departmentNameForCapture = useSelector(selectAtiveDepartmentName);
+const sectionNameForCapture = useSelector(selectActiveSectionName);
+
 // console.log ("users:", users)
 // console.log ("2222222222:")
   // =========================
@@ -47,7 +50,7 @@ const hasItems = (row) => {
       : Array.isArray(row.sections) && row.sections.length > 0;
   }
   if (row.type == "section") {
-    debugger
+    
     return    Array.isArray(row.users) && row.users.length > 0 
   }
 
@@ -90,8 +93,10 @@ const showActionButton = (row) => {
   return false;
 };
 const showNavigationHeader =
-  adcitveDep != null || activeSec != null;
-
+  activeDep != null || activeSec != null;
+const headerTitle = activeSec
+  ? `${departmentNameForCapture} / ${sectionNameForCapture}`
+  : departmentNameForCapture;
 const totalColumns =
   1 + columns.reduce((sum, col) => sum + (col.subLabels?.length || 1), 0);
 
@@ -99,23 +104,42 @@ const renderHeader = () => {
   if (showNavigationHeader) {
     return (
       <tr>
-        <th colSpan={totalColumns} className={s.navigationHeader}>
+        <th
+          colSpan={totalColumns}
+          className={s.navigationHeader}
+        >
           <div className={s.navigationContent}>
             <button
               type="button"
               className={s.backButton}
               onClick={handleBack({
-  activeSec,
-  isAddUsers,
-  dispatch,
-})}
+                activeDep,
+                activeSec,
+                isSections,
+                isAddUsers,
+                dispatch,
+              })}
             >
               ← Назад
             </button>
 
-            <span className={s.navigationTitle}>
-              Департамент: IT
-            </span>
+            <div className={s.navigationTitle}>
+              <span className={s.departmentTitle}>
+                {departmentNameForCapture}
+              </span>
+
+              {activeSec && (
+                <>
+                  <span className={s.navigationSlash}>
+                    {" / "}
+                  </span>
+
+                  <span className={s.sectionTitle}>
+                    {sectionNameForCapture}
+                  </span>
+                </>
+              )}
+            </div>
           </div>
         </th>
       </tr>
@@ -129,7 +153,10 @@ const renderHeader = () => {
 
         {columns.map((col) =>
           col.key === "phones" ? (
-            <th key={col.key} colSpan={col.subLabels.length}>
+            <th
+              key={col.key}
+              colSpan={col.subLabels.length}
+            >
               {col.label}
             </th>
           ) : (
@@ -172,7 +199,7 @@ const renderHeader = () => {
         {value}
       </TdWrapper>
     );
-if (((adcitveDep && isDepartmentMode) || (activeSec && isSectionsMode)) && isAddUsers) {
+if (((activeDep && isDepartmentMode) || (activeSec && isSectionsMode)) && isAddUsers) {
   return (
     <>
       <td>{index + 1}</td>

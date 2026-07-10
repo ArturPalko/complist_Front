@@ -23,11 +23,11 @@ export const selectFoundResults = (state, menu) => selectSearchValueByPage(menu)
 
 
 export const getDataForMenu = (state, menu) => {
-debugger
+
   const edit = isEditModeSelected(state);
-  const activeDepartmentId = state.ui.activeDepartmentId;
-  const activeSectionId = state.ui.activeSectionId;
-  debugger
+  const activeDepartmentId = state.ui.activeDepartment.id;
+  const activeSectionId = state.ui.activeSection.id;
+  
   const isAddUsers = addUsersModeSelected(state);
 
   const isSection = isSectionsMode(state);
@@ -51,17 +51,17 @@ debugger
 ) {
   return selectSectionsByDepartmentId(state, activeDepartmentId);
 }
-debugger
+
 if (edit && isAddUsers  && activeDepartmentId && !isSection) {
   let a = selectUsersByDepartment(activeDepartmentId, activeSectionId)(state);
-  debugger;
+  ;
 return [{pageIndex:1, rows:a}];
 }
 
 
 if (edit && isAddUsers  && activeDepartmentId && isSection) {
   let a = selectUsersBySection(activeDepartmentId, activeSectionId)(state);
-  debugger;
+  ;
 return [{pageIndex:1, rows:a}];
 }
 
@@ -87,7 +87,7 @@ if (
   menu === "phones" &&
   (isDepartments || isSection) &&  !activeDepartmentId
 ) {
-  debugger
+  
   return state.data.dictionaries.departments.map(page => ({
     ...page,
     rows: page.rows.map(dep => ({
@@ -116,7 +116,7 @@ if (
     isSection &&
     activeDepartmentId != null
   ) {
-    debugger
+    
   
     return selectSectionsByDepartmentId(state, activeDepartmentId);
   }
@@ -326,7 +326,7 @@ export const selectDashedBlocks = (state) => {
   const sourceData = isFilterAppliedSelector(menu)(state)
     ? getFilteredPageData(state, data, menu).data
     : data;
-         debugger    
+             
 
   return findDashedBlocks(sourceData);
 };
@@ -395,8 +395,14 @@ export const getCurrentMode = (state) =>  state.ui.viewMode;
 
 
 
-export const selectAtiveDepartmentId = (state)=> state.ui.activeDepartmentId;
-export const selectActiveSectionId =  (state)=> state.ui.activeSectionId;
+export const selectAtiveDepartmentId = (state)=> state.ui.activeDepartment.id;
+export const selectActiveSectionId =  (state)=> state.ui.activeSection.id;
+
+
+
+export const selectAtiveDepartmentName = (state)=> state.ui.activeDepartment.name;
+export const selectActiveSectionName =  (state)=> state.ui.activeSection.name;
+
 
 export const selectPositionsDictionary = (state) => state.data.dictionaries.positions;
 
@@ -417,7 +423,7 @@ export const addUsersModeSelected = (state) => state.ui.addUsersMode;
 
 
 export const selectUsersByDepartment = (departmentId) => (state) => {
-  debugger;
+  ;
 
   const departments = state.data.dictionaries.departments;
 
@@ -427,7 +433,7 @@ export const selectUsersByDepartment = (departmentId) => (state) => {
 
   const users = department?.users ?? [];
 
-  debugger;
+  ;
 
   return users;
 };
@@ -439,7 +445,7 @@ export const selectUsersBySection = (activeDepartmentId,activeSectionId)=> (stat
    const section = department.sections.find(sec => sec.sectionId == activeSectionId);
    const users = section.users;
    
-   debugger
+   
 
    return users;
 
