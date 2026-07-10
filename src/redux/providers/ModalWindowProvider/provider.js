@@ -17,6 +17,7 @@ export function ModalWindowProvider({ children }) {
 
   // ---------------- OPEN MODAL ----------------
   const openModal = ({ type, mode = null, data = null }) => {
+    debugger
     if(type=="login") return;
              
     setModalType(type);

@@ -25,7 +25,7 @@ export default function ModalRoot() {
 debugger
   if(isSectiosns && activeDep && activeSec && mode=="add"){
     debugger
-    return <AddUser/>
+    return <AddUser onClose ={closeModal}/>
   }
          
   // ---------------- NO MODAL ----------------
