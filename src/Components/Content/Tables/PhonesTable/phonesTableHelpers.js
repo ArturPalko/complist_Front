@@ -147,3 +147,56 @@ export const handleBack =
       })
     );
   };
+
+
+
+
+
+  export const hasItems = (row, isAddUsers) => {
+  switch (row.type) {
+    case "department":
+      return isAddUsers
+        ? (row.users?.length ?? 0) > 0
+        : (row.sections?.length ?? 0) > 0;
+
+    case "section":
+      return (row.users?.length ?? 0) > 0;
+
+    default:
+      return false;
+  }
+};
+
+export const getItemsCount = (row, isAddUsers) => {
+  switch (row.type) {
+    case "department":
+      return isAddUsers
+        ? row.users?.length ?? 0
+        : row.sections?.length ?? 0;
+
+    case "section":
+      return isAddUsers
+        ? row.users?.length ?? 0
+        : 0;
+
+    default:
+      return 0;
+  }
+};
+
+export const shouldShowActionButton = (
+  row,
+  isSections,
+  isAddUsers
+) => {
+  switch (row.type) {
+    case "department":
+      return isSections || isAddUsers;
+
+    case "section":
+      return isAddUsers;
+
+    default:
+      return false;
+  }
+};

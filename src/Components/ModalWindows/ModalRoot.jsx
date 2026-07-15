@@ -11,9 +11,12 @@ import {
   apiAddEntity,
   apiDeleteEntity,
   apiEditEntity,
+  deleteUser,
+  apiEditUser,
+  addUser
 } from "../../dal/api";
 import { useSelector } from "react-redux";
-import { isSectionsMode, selectActiveSectionId, selectAtiveDepartmentId } from "../../redux/selectors/selector";
+import { isDepartmentsMode, isSectionsMode, selectActiveSectionId, selectAtiveDepartmentId } from "../../redux/selectors/selector";
 import AddUser from "./AddUser/AddUser";
 
 export default function ModalRoot() {
@@ -22,11 +25,65 @@ export default function ModalRoot() {
   const activeDep = useSelector(selectAtiveDepartmentId);
   const activeSec = useSelector (selectActiveSectionId);
   const isSectiosns = useSelector(isSectionsMode);
+  const isDep = useSelector(isDepartmentsMode)
 debugger
-  if(isSectiosns && activeDep && activeSec && mode=="add"){
-    debugger
-    return <AddUser onClose ={closeModal}/>
+
+const handleDelete = async () => {
+  if (
+    (
+      isSectiosns &&
+      activeDep &&
+      activeSec &&
+      mode === "delete"
+    ) ||
+    (
+      isDep &&
+      activeDep &&
+      !activeSec &&
+      mode === "delete"
+    )
+  ) {
+    return deleteUser(modalData);
   }
+
+  return apiDeleteEntity(config.endpoint, modalData);
+};
+
+
+if (
+  (
+    isSectiosns &&
+    activeDep &&
+    activeSec &&
+    (mode === "add" || mode === "edit")
+  ) ||
+  (
+    isDep &&
+    activeDep &&
+    !activeSec &&
+    (mode === "add" || mode === "edit")
+  )
+) {
+  return (
+   <AddUser
+  onClose={closeModal}
+  mode={mode}
+  editValue={mode === "edit" ? modalData : null}
+  onSubmit={async (data) => {
+    if (mode === "add") {
+      return addUser(data);
+    }
+
+    if (mode === "edit") {
+      return apiEditUser({
+        id: modalData.id,
+        ...data,
+      });
+    }
+  }}
+/>
+  );
+}
          
   // ---------------- NO MODAL ----------------
   if (!modalType) return null;
@@ -41,13 +98,11 @@ debugger
   // ---------------- DELETE ----------------
   if (mode === "delete") {
     return (
-      <DeletePositionModal
+     <DeletePositionModal
         title={config.title}
         modalData={modalData}
         onClose={closeModal}
-        onConfirm={async () => {
-          return apiDeleteEntity(config.endpoint, modalData);
-        }}
+        onConfirm={handleDelete}
       />
     );
   }

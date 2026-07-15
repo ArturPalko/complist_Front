@@ -8,46 +8,54 @@ import {
   selectSectionsById,
   selectAtiveDepartmentId,
   selectDictionaryByType,
+  selectActiveSectionId,
+  selectUsersBySection,
+  selectUsersByDepartment,
 } from "../selectors/selector";
 
 export const useCrudModalActions = (modalType) => {
   const { selectedIds } = useDragContext();
   const { openModal } = useModalWindowContext();
 
-  const depr = useSelector(selectAtiveDepartmentId);
+  const activeDep = useSelector(selectAtiveDepartmentId);
+  const activeSec = useSelector(selectActiveSectionId);
+
   const positions = useSelector(selectPositionsDictionary);
-  const sections = useSelector(selectSectionsById(depr));
-  const departments = useSelector(selectDictionaryByType("departments"))
-  const landlines = useSelector(selectDictionaryByType("landline", "phones"))
-   const internals = useSelector(selectDictionaryByType("internal", "phones"))
-   const ciscos = useSelector(selectDictionaryByType("cisco", "phones"))
-           
-  
+  const sections = useSelector(selectSectionsById(activeDep));
+  const departments = useSelector(selectDictionaryByType("departments"));
+  const landlines = useSelector(selectDictionaryByType("landline", "phones"));
+  const internals = useSelector(selectDictionaryByType("internal", "phones"));
+  const ciscos = useSelector(selectDictionaryByType("cisco", "phones"));
+
+  const users = useSelector(
+    activeSec
+      ? selectUsersBySection(activeDep, activeSec)
+      : selectUsersByDepartment(activeDep)
+  );
 
   const config = CRUD_CONFIG[modalType];
   const entity = entityMap[modalType];
 
   const sources = {
-    position:positions,
-    section:sections,
-    department:departments,
-    landline:landlines,
-    internal:internals,
-    cisco:ciscos
+    position: positions,
+    section: sections,
+    department: departments,
+    landline: landlines,
+    internal: internals,
+    cisco: ciscos,
   };
 
   // ---------------- ADD ----------------
   const add = () => {
-             
-    // console.log("DEPR:",depr)
-             
     if (!config) return;
 
     const data =
       modalType === "section"
-        ? { departmentId: depr }
+        ? { departmentId: activeDep }
         : null;
-if (modalType === "section" && !data.departmentId) return
+
+    if (modalType === "section" && !data.departmentId) return;
+
     openModal({
       type: modalType,
       mode: "add",
@@ -68,16 +76,25 @@ if (modalType === "section" && !data.departmentId) return
 
   // ---------------- EDIT ----------------
   const edit = () => {
-             
-    if (!config || !entity || !selectedIds?.length) return;
+    if (!config || !selectedIds?.length) return;
 
     const id = selectedIds[0];
-    const list = sources[modalType];
 
-    const item = list
-      ?.flatMap((p) => p.rows ?? [])
-      .find((r) => r?.[entity.id] === id);
-         
+    let item;
+
+    // Редагування користувачів
+    if (activeDep) {
+      item = users.find(user => Number(user.id) === Number(id));
+    } else {
+      if (!entity) return;
+
+      const list = sources[modalType];
+
+      item = list
+        ?.flatMap(p => p.rows ?? [])
+        .find(r => Number(r?.[entity.id]) === Number(id));
+    }
+
     openModal({
       type: modalType,
       mode: "edit",

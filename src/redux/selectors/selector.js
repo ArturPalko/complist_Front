@@ -438,18 +438,23 @@ export const selectUsersByDepartment = (departmentId) => (state) => {
   return users;
 };
 
-export const selectUsersBySection = (activeDepartmentId,activeSectionId)=> (state) =>{
-   const departments = state.data.dictionaries.departments;
-   const rows = departments.flatMap(element => element.rows);
-   const department = rows.find(dep => dep.departmentId == activeDepartmentId);
-   const section = department.sections.find(sec => sec.sectionId == activeSectionId);
-   const users = section.users;
-   
-   
+export const selectUsersBySection =
+  (activeDepartmentId, activeSectionId) =>
+  (state) => {
+    const departments = state.data.dictionaries.departments ?? [];
 
-   return users;
+    const department = departments
+      .flatMap(d => d.rows)
+      .find(dep => dep.departmentId == activeDepartmentId);
 
+    if (!department) return [];
 
-}
+    const section = department.sections?.find(
+      sec => sec.sectionId == activeSectionId
+    );
 
+    if (!section) return [];
+
+    return section.users ?? [];
+  };
 

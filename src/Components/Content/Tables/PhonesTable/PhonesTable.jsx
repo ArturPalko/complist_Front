@@ -5,13 +5,18 @@ import {
   countNonUserRowsBefore,
   getUserRowIndex,
   handleOnOpenSectionsButtonClick,
-  handleBack
+  handleBack,
+  hasItems,
+  getItemsCount,
+  shouldShowActionButton,
 } from "./phonesTableHelpers";
 import { useDispatch, useSelector } from "react-redux";
 import { TdWrapper } from "../../../../shared/components/TdWrapper/TdWrapper";
 import { entityMap } from "../../../../configs/app/enitiyMap";
 import { useCrudModalActions } from "../../../../redux/hooks/useCrudModalActions";
 import { addUsersModeSelected, getCurrentMode, isDepartmentsMode, isSectionsMode, selectActiveSectionId, selectActiveSectionName, selectAtiveDepartmentId, selectAtiveDepartmentName, selectUsersByDepartment } from "../../../../redux/selectors/selector";
+import { GroupRowActions } from "./GroupRowActions";
+
 
 const BasePhonesTable = createTableComponent(usePhonesTableLogic);
 
@@ -37,61 +42,7 @@ const PhonesTable = ({
   const departmentNameForCapture = useSelector(selectAtiveDepartmentName);
 const sectionNameForCapture = useSelector(selectActiveSectionName);
 
-// console.log ("users:", users)
-// console.log ("2222222222:")
-  // =========================
-  // HEADER
-  // =========================
 
-const hasItems = (row) => {
-  if (row.type === "department") {
-    return isAddUsers
-      ? Array.isArray(row.users) && row.users.length > 0
-      : Array.isArray(row.sections) && row.sections.length > 0;
-  }
-  if (row.type == "section") {
-    
-    return    Array.isArray(row.users) && row.users.length > 0 
-  }
-
-  if (row.type === "section") {
-    return (
-      isAddUsers &&
-      Array.isArray(row.users) &&
-      row.users.length > 0
-    );
-  }
-
-  return false;
-};
-
-const itemsCount = (row) => {
-  if (row.type === "department") {
-    return isAddUsers
-      ? row.users?.length ?? 0
-      : row.sections?.length ?? 0;
-  }
-
-  if (row.type === "section") {
-    return isAddUsers
-      ? row.users?.length ?? 0
-      : 0;
-  }
-
-  return 0;
-};
-
-const showActionButton = (row) => {
-  if (row.type === "department") {
-    return isSections || isAddUsers;
-  }
-
-  if (row.type === "section") {
-    return isAddUsers;
-  }
-
-  return false;
-};
 const showNavigationHeader =
   activeDep != null || activeSec != null;
 const headerTitle = activeSec
@@ -286,53 +237,15 @@ if (((activeDep && isDepartmentMode) || (activeSec && isSectionsMode)) && isAddU
     .filter(Boolean)
     .join(" ")}
 >
-  <div className={s.groupRowContent}>
-    <span>{name}</span>
+<div className={s.groupRowContent}>
+  <span>{name}</span>
 
-    {showActionButton(row) && (
-      <div className={s.groupRowActions}>
-        {hasItems(row) ? (
-          <>
-            <span className={s.sectionsCount}>
-              ({itemsCount(row)})
-            </span>
-
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handleOnOpenSectionsButtonClick({
-                  rowType:row.type,
-                  isSections,
-                  isAddUsers,
-                  item: row,
-                  dispatch,
-                })(e);
-              }}
-            >
-              Переглянути
-            </button>
-          </>
-        ) : (
-          <button
-            className={s.addButton}
-            onClick={(e) => {
-              e.stopPropagation();
-              handleOnOpenSectionsButtonClick({
-                isSections,
-                isAddUsers,
-                item: row,
-                dispatch,
-              })(e);
-
-              add();
-            }}
-          >
-            + Додати
-          </button>
-        )}
-      </div>
-    )}
-  </div>
+  <GroupRowActions
+    row={row}
+    isSections={isSections}
+    isAddUsers={isAddUsers}
+  />
+</div>
 </TdWrapper>
       );
     }

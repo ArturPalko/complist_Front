@@ -1,33 +1,58 @@
 import { useState, useEffect, useMemo } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchDictionariesThunk, addUser } from "../../../dal/api";
 import s from "./AddUser.module.css";
 
 import {
+  selectActiveSectionId,
+  selectAtiveDepartmentId,
   selectDictionaryByType,
   selectPositionsDictionary,
 } from "../../../redux/selectors/selector";
 
-export default function AddUser({ onClose }) {
+export default function AddUser({
+  onClose,
+  mode,
+  editValue,
+  onSubmit
+}) {
+  const dispatch = useDispatch();
+
+  const departmentId = useSelector(selectAtiveDepartmentId);
+  const sectionId = useSelector(selectActiveSectionId);
+
   const [fullName, setFullName] = useState("");
   const [positionId, setPositionId] = useState("");
   const [userTypeId, setUserTypeId] = useState("");
 
-  const positions = useSelector(selectPositionsDictionary)
-    .flatMap(element => element.rows);
+  const positions = useSelector(selectPositionsDictionary).flatMap(
+    element => element.rows
+  );
 
-  const userTypes = useSelector(selectDictionaryByType("userTypes"))
-    .flatMap(element => element.rows);
+  const userTypes = useSelector(selectDictionaryByType("userTypes")).flatMap(
+    element => element.rows
+  );
 
   const defaultUserType = useMemo(
     () => userTypes.find(type => type.userType === "Користувач"),
     [userTypes]
   );
 
+  // Значення за замовчуванням для Add
   useEffect(() => {
-    if (defaultUserType && userTypeId === "") {
+    if (mode === "add" && defaultUserType && userTypeId === "") {
       setUserTypeId(defaultUserType.id);
     }
-  }, [defaultUserType, userTypeId]);
+  }, [mode, defaultUserType, userTypeId]);
+
+  // Автозаповнення для Edit
+  useEffect(() => {
+    if (!editValue) return;
+
+    setFullName(editValue.name ?? "");
+    setPositionId(editValue.positionId ?? "");
+    setUserTypeId(editValue.userTypeId ?? "");
+  }, [editValue]);
 
   const handleCancel = () => {
     setFullName("");
@@ -36,21 +61,32 @@ export default function AddUser({ onClose }) {
     onClose?.();
   };
 
-  const handleSave = () => {
-    console.log({
-      fullName: fullName.trim(),
-      positionId,
-      userTypeId,
-    });
+const handleSave = async () => {
+  const saveData = {
+    name: fullName.trim(),
+    positionId,
+    userTypeId,
+    departmentId,
+    sectionId,
   };
+
+  try {
+    debugger
+    await onSubmit(saveData);
+    onClose?.();
+  } finally {
+    dispatch(fetchDictionariesThunk());
+  }
+};
 
   return (
     <div className={s.overlay}>
       <div className={s.modal}>
-        <h2>Додати користувача</h2>
+        <h2>{mode === "edit" ? "Редагувати користувача" : "Додати користувача"}</h2>
 
         <div className={s.field}>
           <label className={s.label}>ПІБ</label>
+
           <input
             className={s.input}
             value={fullName}
@@ -110,7 +146,7 @@ export default function AddUser({ onClose }) {
             className={s.save}
             onClick={handleSave}
           >
-            Зберегти
+            {mode === "edit" ? "Зберегти" : "Додати"}
           </button>
         </div>
       </div>
