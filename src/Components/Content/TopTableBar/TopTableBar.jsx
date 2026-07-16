@@ -25,8 +25,8 @@ const TopTableBar = React.forwardRef(({ title, pageName }, ref) => {
   const moder = useSelector(isEditModeSelected)
   const menu = useSelector(activeMenu);
   const editMode = useSelector(getCurrentMode);
-  const showEditPanel = moder && menu == "phones" && editMode
-
+  // const showEditPanel = moder && menu == "phones" && editMode
+  const showEditPanel = moder
   return (
     <div ref={ref} className={s.headerPanel}>
       <h2>{title}</h2>

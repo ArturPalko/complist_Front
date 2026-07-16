@@ -11,6 +11,7 @@ import {
   selectActiveSectionId,
   selectUsersBySection,
   selectUsersByDepartment,
+  activeMenu,
 } from "../selectors/selector";
 
 export const useCrudModalActions = (modalType) => {
@@ -26,7 +27,7 @@ export const useCrudModalActions = (modalType) => {
   const landlines = useSelector(selectDictionaryByType("landline", "phones"));
   const internals = useSelector(selectDictionaryByType("internal", "phones"));
   const ciscos = useSelector(selectDictionaryByType("cisco", "phones"));
-
+ const menu = useSelector(activeMenu);
   const users = useSelector(
     activeSec
       ? selectUsersBySection(activeDep, activeSec)
@@ -44,10 +45,13 @@ export const useCrudModalActions = (modalType) => {
     internal: internals,
     cisco: ciscos,
   };
-
+// if (menu == "Lotus"){
+//   modalType = "mailsToUsers"
+// }
   // ---------------- ADD ----------------
   const add = () => {
-    if (!config) return;
+    debugger
+    // if (!config) return;
 
     const data =
       modalType === "section"

@@ -16,8 +16,9 @@ import {
   addUser
 } from "../../dal/api";
 import { useSelector } from "react-redux";
-import { isDepartmentsMode, isSectionsMode, selectActiveSectionId, selectAtiveDepartmentId } from "../../redux/selectors/selector";
+import { activeMenu, isDepartmentsMode, isSectionsMode, selectActiveSectionId, selectAtiveDepartmentId } from "../../redux/selectors/selector";
 import AddUser from "./AddUser/AddUser";
+import AddMail from "./AddMail/AddMails";
 
 export default function ModalRoot() {
   const { modalType, mode, modalData, closeModal } =
@@ -26,6 +27,7 @@ export default function ModalRoot() {
   const activeSec = useSelector (selectActiveSectionId);
   const isSectiosns = useSelector(isSectionsMode);
   const isDep = useSelector(isDepartmentsMode)
+  const menu = useSelector(activeMenu);
 debugger
 
 const handleDelete = async () => {
@@ -48,8 +50,14 @@ const handleDelete = async () => {
 
   return apiDeleteEntity(config.endpoint, modalData);
 };
+debugger
 
-
+// console.log({ menu, modalType });
+// if (menu == "Lotus" && modalType == "mailsToUsers"){
+//   debugger
+//   return <AddMail   onClose={closeModal}/>
+// }
+// debugger
 if (
   (
     isSectiosns &&
