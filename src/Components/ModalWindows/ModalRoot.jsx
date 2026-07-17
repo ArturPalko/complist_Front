@@ -52,12 +52,12 @@ const handleDelete = async () => {
 };
 debugger
 
-// console.log({ menu, modalType });
-// if (menu == "Lotus" && modalType == "mailsToUsers"){
-//   debugger
-//   return <AddMail   onClose={closeModal}/>
-// }
-// debugger
+console.log({ menu, modalType });
+if (menu == "Lotus" && modalType == "mailsToUsers"){
+  debugger
+  return <AddMail   onClose={closeModal}/>
+}
+debugger
 if (
   (
     isSectiosns &&

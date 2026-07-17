@@ -1,4 +1,6 @@
 import { useMemo, useState } from "react";
+import { useSelector } from "react-redux";
+import { selectDictionaryByType } from "../../../redux/selectors/selector";
 
 export default function AddMail({onClose}) {
   const users = [
@@ -26,13 +28,14 @@ export default function AddMail({onClose}) {
 
   const [query, setQuery] = useState("");
   const [opened, setOpened] = useState(false);
-
+ const usersValues =useSelector(selectDictionaryByType("users"));
   const filteredUsers = useMemo(() => {
-    return users.filter((u) =>
+    return usersValues.filter((u) =>
       u.name.toLowerCase().includes(query.toLowerCase())
     );
   }, [query]);
 
+ 
   return (
     <>
       <style>{`
@@ -214,7 +217,7 @@ export default function AddMail({onClose}) {
 
               <input
                 value={
-                  users.find((u) => u.id === ownerId)?.name ?? query
+                  usersValues?.find((u) => u.id === ownerId)?.name ?? query
                 }
                 placeholder="Почніть вводити ПІБ..."
                 onFocus={() => setOpened(true)}
@@ -255,10 +258,9 @@ export default function AddMail({onClose}) {
 
           <div className="buttons">
 
-            <button>Скасувати</button>
+            <button onClick={onClose}>Скасувати</button>
 
             <button
-              onClick={onClose?.()}
             >
               Зберегти
             </button>
