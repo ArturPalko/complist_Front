@@ -62,7 +62,9 @@ export const fetchDictionariesThunk = () => async (dispatch) => {
       userTypes: data.userTypes,
       departments: data.departments,
       phones:data.phonesResult,
-      users:data.users
+      users:data.users,
+      sections: data.sections,
+      deps: data.deps
     }));
 
    // dispatch(setDataIsLoadedActionCreator(true, "dictionaries"));
@@ -146,5 +148,11 @@ export const apiEditUser = ({ id, ...data }) =>{
   return api.put(`api/editUser/${id}`, data)
 }
 
+
+
+export const addMail = (data) =>{
+  debugger
+  return api.post("mails/Lotus/addMail", data)
+}
 
 

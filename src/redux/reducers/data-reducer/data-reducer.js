@@ -43,7 +43,7 @@ export const dataReducer = (state = initialState, action) => {
     }
 
 case SET_DICTIONARIES: {
-  const { positions, userTypes, departments, phones,users } = action.payload;
+  const { positions, userTypes, departments, phones,users,sections, deps } = action.payload;
   debugger
 
   return {
@@ -55,6 +55,8 @@ case SET_DICTIONARIES: {
       userTypes: paginateData(userTypes, "userTypes", rowsPerPage),
       departments: paginateData(departments, "departments", rowsPerPage),
       users: users,
+      sections :sections,
+      deps:deps,
 
 
       phones: {

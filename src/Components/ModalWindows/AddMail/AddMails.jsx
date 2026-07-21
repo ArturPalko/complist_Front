@@ -1,26 +1,11 @@
 import { useMemo, useState } from "react";
-import { useSelector } from "react-redux";
-import { selectDictionaryByType } from "../../../redux/selectors/selector";
+import { useDispatch, useSelector } from "react-redux";
+import { activeMenu, selectDictionaryByType } from "../../../redux/selectors/selector";
+import s from "./AddMail.module.css";
+import { addMail } from "../../../dal/api";
+import { setDataIsLoadedActionCreator } from "../../../redux/reducers/app-reducer";
 
-export default function AddMail({onClose}) {
-  const users = [
-    { id: 1, name: "Іван Петренко" },
-    { id: 2, name: "Олександр Шевченко" },
-    { id: 3, name: "Василь Іванов" },
-  ];
-
-  const departments = [
-    { id: 1, name: "IT" },
-    { id: 2, name: "Бухгалтерія" },
-    { id: 3, name: "Відділ кадрів" },
-  ];
-
-  const sections = [
-    { id: 1, name: "Frontend" },
-    { id: 2, name: "Backend" },
-    { id: 3, name: "DevOps" },
-  ];
-
+export default function AddMail({ onClose }) {
   const [mail, setMail] = useState("");
 
   const [ownerType, setOwnerType] = useState("department");
@@ -28,247 +13,174 @@ export default function AddMail({onClose}) {
 
   const [query, setQuery] = useState("");
   const [opened, setOpened] = useState(false);
- const usersValues =useSelector(selectDictionaryByType("users"));
+
+  const usersValues = useSelector(selectDictionaryByType("users"));
+  const sectionsValues = useSelector(selectDictionaryByType("sections"));
+  const departmentsValues = useSelector(selectDictionaryByType("deps"));
+  const menu = useSelector(activeMenu);
+  const dispatch = useDispatch();
+
   const filteredUsers = useMemo(() => {
     return usersValues.filter((u) =>
       u.name.toLowerCase().includes(query.toLowerCase())
     );
-  }, [query]);
+  }, [usersValues, query]);
 
- 
+  const handleSave = () => {
+    console.log({
+      mail,
+      ownerType,
+      ownerId,
+    });
+
+    // onClose();
+ try{
+  addMail({mail,ownerType,ownerId});
+ }
+ finally{
+dispatch(
+        setDataIsLoadedActionCreator(
+          false,
+          menu
+        )
+      );
+ }
+  };
+  
   return (
-    <>
-      <style>{`
-        .overlay{
-          position:fixed;
-          inset:0;
-          background:rgba(0,0,0,.35);
-          display:flex;
-          justify-content:center;
-          align-items:center;
-          font-family:Arial,Helvetica,sans-serif;
-        }
+    <div className={s.overlay}>
+      <div className={s.modal}>
+        <h2 className={s.title}>Додати Lotus-пошту</h2>
 
-        .modal{
-          width:430px;
-          background:#fff;
-          border-radius:8px;
-          padding:20px;
-          box-shadow:0 8px 25px rgba(0,0,0,.2);
-        }
+        <div className={s.field}>
+          <label className={s.label}>Назва поштової скриньки</label>
 
-        h2{
-          margin:0 0 20px;
-        }
+          <input
+            className={s.input}
+            value={mail}
+            onChange={(e) => setMail(e.target.value)}
+          />
+        </div>
 
-        .field{
-          margin-bottom:18px;
-          position:relative;
-        }
+        <div className={s.field}>
+          <label className={s.label}>Тип власника</label>
 
-        .field label{
-          display:block;
-          margin-bottom:6px;
-          font-weight:600;
-        }
+          <select
+            className={s.select}
+            value={ownerType}
+            onChange={(e) => {
+              setOwnerType(e.target.value);
+              setOwnerId("");
+              setQuery("");
+              setOpened(false);
+            }}
+          >
+            <option value="department">Департамент</option>
+            <option value="section">Секція</option>
+            <option value="user">Користувач</option>
+          </select>
+        </div>
 
-        .field input,
-        .field select{
-          width:100%;
-          padding:10px;
-          box-sizing:border-box;
-          border:1px solid #ccc;
-          border-radius:6px;
-          font-size:14px;
-        }
-
-        .dropdown{
-          position:absolute;
-          top:72px;
-          left:0;
-          right:0;
-          background:#fff;
-          border:1px solid #ccc;
-          border-radius:6px;
-          max-height:220px;
-          overflow-y:auto;
-          z-index:100;
-          box-shadow:0 4px 12px rgba(0,0,0,.15);
-        }
-
-        .option{
-          padding:10px;
-          cursor:pointer;
-        }
-
-        .option:hover{
-          background:#f2f2f2;
-        }
-
-        .empty{
-          padding:10px;
-          text-align:center;
-          color:#888;
-        }
-
-        .buttons{
-          display:flex;
-          justify-content:flex-end;
-          gap:10px;
-          margin-top:20px;
-        }
-
-        .buttons button{
-          padding:8px 18px;
-          border:none;
-          border-radius:6px;
-          cursor:pointer;
-        }
-
-        .buttons button:last-child{
-          background:#4d90fe;
-          color:#fff;
-        }
-
-        .buttons button:first-child{
-          background:#ddd;
-        }
-      `}</style>
-
-      <div className="overlay">
-        <div className="modal">
-
-          <h2>Додати Lotus-пошту</h2>
-
-          <div className="field">
-            <label>Назва поштової скриньки</label>
-
-            <input
-              value={mail}
-              onChange={(e) => setMail(e.target.value)}
-            />
-          </div>
-
-          <div className="field">
-            <label>Тип власника</label>
+        {ownerType === "department" && (
+          <div className={s.field}>
+            <label className={s.label}>Департамент</label>
 
             <select
-              value={ownerType}
-              onChange={(e) => {
-                setOwnerType(e.target.value);
-                setOwnerId("");
-                setQuery("");
-                setOpened(false);
-              }}
+              className={s.select}
+              value={ownerId}
+              onChange={(e) => setOwnerId(Number(e.target.value))}
             >
-              <option value="department">Департамент</option>
-              <option value="section">Секція</option>
-              <option value="user">Користувач</option>
+              <option value="">Оберіть</option>
+
+              {departmentsValues.map((d) => (
+                <option key={d.id} value={d.id}>
+                  {d.name}
+                </option>
+              ))}
             </select>
           </div>
+        )}
 
-          {ownerType === "department" && (
-            <div className="field">
-              <label>Департамент</label>
+        {ownerType === "section" && (
+          <div className={s.field}>
+            <label className={s.label}>Секція</label>
 
-              <select
-                value={ownerId}
-                onChange={(e) => setOwnerId(Number(e.target.value))}
-              >
-                <option value="">Оберіть</option>
-
-                {departments.map((d) => (
-                  <option
-                    key={d.id}
-                    value={d.id}
-                  >
-                    {d.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
-
-          {ownerType === "section" && (
-            <div className="field">
-              <label>Секція</label>
-
-              <select
-                value={ownerId}
-                onChange={(e) => setOwnerId(Number(e.target.value))}
-              >
-                <option value="">Оберіть</option>
-
-                {sections.map((s) => (
-                  <option
-                    key={s.id}
-                    value={s.id}
-                  >
-                    {s.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
-
-          {ownerType === "user" && (
-            <div className="field">
-              <label>Користувач</label>
-
-              <input
-                value={
-                  usersValues?.find((u) => u.id === ownerId)?.name ?? query
-                }
-                placeholder="Почніть вводити ПІБ..."
-                onFocus={() => setOpened(true)}
-                onChange={(e) => {
-                  setOwnerId("");
-                  setQuery(e.target.value);
-                  setOpened(true);
-                }}
-              />
-
-              {opened && (
-                <div className="dropdown">
-
-                  {filteredUsers.map((user) => (
-                    <div
-                      key={user.id}
-                      className="option"
-                      onClick={() => {
-                        setOwnerId(user.id);
-                        setQuery("");
-                        setOpened(false);
-                      }}
-                    >
-                      {user.name}
-                    </div>
-                  ))}
-
-                  {!filteredUsers.length && (
-                    <div className="empty">
-                      Нічого не знайдено
-                    </div>
-                  )}
-
-                </div>
-              )}
-            </div>
-          )}
-
-          <div className="buttons">
-
-            <button onClick={onClose}>Скасувати</button>
-
-            <button
+            <select
+              className={s.select}
+              value={ownerId}
+              onChange={(e) => setOwnerId(Number(e.target.value))}
             >
-              Зберегти
-            </button>
+              <option value="">Оберіть</option>
 
+              {sectionsValues.map((section) => (
+                <option key={section.id} value={section.id}>
+                  {section.name}
+                </option>
+              ))}
+            </select>
           </div>
+        )}
 
+        {ownerType === "user" && (
+          <div className={s.field}>
+            <label className={s.label}>Користувач</label>
+
+            <input
+              className={s.input}
+              value={
+                usersValues.find((u) => u.id === ownerId)?.name ?? query
+              }
+              placeholder="Почніть вводити ПІБ..."
+              onFocus={() => setOpened(true)}
+              onChange={(e) => {
+                setOwnerId("");
+                setQuery(e.target.value);
+                setOpened(true);
+              }}
+            />
+
+            {opened && (
+              <div className={s.dropdown}>
+                {filteredUsers.map((user) => (
+                  <div
+                    key={user.id}
+                    className={s.option}
+                    onClick={() => {
+                      setOwnerId(user.id);
+                      setQuery("");
+                      setOpened(false);
+                    }}
+                  >
+                    {user.name}
+                  </div>
+                ))}
+
+                {!filteredUsers.length && (
+                  <div className={s.empty}>
+                    Нічого не знайдено
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        <div className={s.buttons}>
+          <button
+            className={s.cancelButton}
+            onClick={onClose}
+          >
+            Скасувати
+          </button>
+
+          <button
+            className={s.saveButton}
+            onClick={handleSave}
+          >
+            Зберегти
+          </button>
         </div>
       </div>
-    </>
+    </div>
   );
 }
