@@ -1,11 +1,17 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { activeMenu, selectDictionaryByType } from "../../../redux/selectors/selector";
+import {
+  activeMenu,
+  selectDictionaryByType,
+} from "../../../redux/selectors/selector";
 import s from "./AddMail.module.css";
 import { addMail } from "../../../dal/api";
 import { setDataIsLoadedActionCreator } from "../../../redux/reducers/app-reducer";
 
-export default function AddMail({ onClose }) {
+export default function AddMail({
+  onClose,
+  editValue,
+}) {
   const [mail, setMail] = useState("");
 
   const [ownerType, setOwnerType] = useState("department");
@@ -14,10 +20,20 @@ export default function AddMail({ onClose }) {
   const [query, setQuery] = useState("");
   const [opened, setOpened] = useState(false);
 
-  const usersValues = useSelector(selectDictionaryByType("users"));
-  const sectionsValues = useSelector(selectDictionaryByType("sections"));
-  const departmentsValues = useSelector(selectDictionaryByType("deps"));
+  const usersValues = useSelector(
+    selectDictionaryByType("users")
+  );
+
+  const sectionsValues = useSelector(
+    selectDictionaryByType("sections")
+  );
+
+  const departmentsValues = useSelector(
+    selectDictionaryByType("deps")
+  );
+
   const menu = useSelector(activeMenu);
+
   const dispatch = useDispatch();
 
   const filteredUsers = useMemo(() => {
@@ -26,34 +42,59 @@ export default function AddMail({ onClose }) {
     );
   }, [usersValues, query]);
 
-  const handleSave = () => {
-    console.log({
-      mail,
-      ownerType,
-      ownerId,
-    });
+  useEffect(() => {
+    debugger
+    if (!editValue) return;
+debugger
+    setMail(editValue.name ?? "");
 
-    // onClose();
- try{
-  addMail({mail,ownerType,ownerId});
- }
- finally{
-dispatch(
+    setOwnerType(
+      editValue.ownerType?.toLowerCase() ?? "department"
+    );
+
+    setOwnerId(editValue.ownerId ?? "");
+
+    if (
+      editValue.ownerType?.toLowerCase() === "user"
+    ) {
+      setQuery(editValue.owner ?? "");
+    }
+  }, [editValue]);
+
+  const handleSave = async () => {
+    try {
+      await addMail({
+        mail,
+        ownerType,
+        ownerId,
+      });
+
+      dispatch(
         setDataIsLoadedActionCreator(
           false,
           menu
         )
       );
- }
+
+      onClose();
+    } catch (error) {
+      console.error(error);
+    }
   };
-  
+
   return (
     <div className={s.overlay}>
       <div className={s.modal}>
-        <h2 className={s.title}>Додати Lotus-пошту</h2>
+        <h2 className={s.title}>
+          {editValue
+            ? "Редагувати Lotus-пошту"
+            : "Додати Lotus-пошту"}
+        </h2>
 
         <div className={s.field}>
-          <label className={s.label}>Назва поштової скриньки</label>
+          <label className={s.label}>
+            Назва поштової скриньки
+          </label>
 
           <input
             className={s.input}
@@ -63,7 +104,9 @@ dispatch(
         </div>
 
         <div className={s.field}>
-          <label className={s.label}>Тип власника</label>
+          <label className={s.label}>
+            Тип власника
+          </label>
 
           <select
             className={s.select}
@@ -75,25 +118,42 @@ dispatch(
               setOpened(false);
             }}
           >
-            <option value="department">Департамент</option>
-            <option value="section">Секція</option>
-            <option value="user">Користувач</option>
+            <option value="department">
+              Департамент
+            </option>
+
+            <option value="section">
+              Секція
+            </option>
+
+            <option value="user">
+              Користувач
+            </option>
           </select>
         </div>
 
         {ownerType === "department" && (
           <div className={s.field}>
-            <label className={s.label}>Департамент</label>
+            <label className={s.label}>
+              Департамент
+            </label>
 
             <select
               className={s.select}
               value={ownerId}
-              onChange={(e) => setOwnerId(Number(e.target.value))}
+              onChange={(e) =>
+                setOwnerId(Number(e.target.value))
+              }
             >
-              <option value="">Оберіть</option>
+              <option value="">
+                Оберіть
+              </option>
 
               {departmentsValues.map((d) => (
-                <option key={d.id} value={d.id}>
+                <option
+                  key={d.id}
+                  value={d.id}
+                >
                   {d.name}
                 </option>
               ))}
@@ -103,17 +163,26 @@ dispatch(
 
         {ownerType === "section" && (
           <div className={s.field}>
-            <label className={s.label}>Секція</label>
+            <label className={s.label}>
+              Секція
+            </label>
 
             <select
               className={s.select}
               value={ownerId}
-              onChange={(e) => setOwnerId(Number(e.target.value))}
+              onChange={(e) =>
+                setOwnerId(Number(e.target.value))
+              }
             >
-              <option value="">Оберіть</option>
+              <option value="">
+                Оберіть
+              </option>
 
               {sectionsValues.map((section) => (
-                <option key={section.id} value={section.id}>
+                <option
+                  key={section.id}
+                  value={section.id}
+                >
                   {section.name}
                 </option>
               ))}
@@ -123,12 +192,18 @@ dispatch(
 
         {ownerType === "user" && (
           <div className={s.field}>
-            <label className={s.label}>Користувач</label>
+            <label className={s.label}>
+              Користувач
+            </label>
 
             <input
               className={s.input}
               value={
-                usersValues.find((u) => u.id === ownerId)?.name ?? query
+                usersValues.find(
+                  (u) =>
+                    Number(u.id) ===
+                    Number(ownerId)
+                )?.name ?? query
               }
               placeholder="Почніть вводити ПІБ..."
               onFocus={() => setOpened(true)}
@@ -177,7 +252,9 @@ dispatch(
             className={s.saveButton}
             onClick={handleSave}
           >
-            Зберегти
+            {editValue
+              ? "Зберегти"
+              : "Додати"}
           </button>
         </div>
       </div>

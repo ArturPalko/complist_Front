@@ -1,13 +1,25 @@
 import s from "./DeletePosition.module.css"
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchDictionariesThunk } from "../../../dal/api";
+import { useModalWindowContext } from "../../../redux/contexts/useConetxt";
+import { setDataIsLoadedActionCreator } from "../../../redux/reducers/app-reducer";
+import { activeMenu } from "../../../redux/selectors/selector";
 
 export default function DeletePositionModal({ onClose, onConfirm, modalData }) {
   const dispatch = useDispatch();
-
+ const {modalType} = useModalWindowContext()
+ const menu = useSelector(activeMenu);
+debugger
   const handleDelete = async () => {
+    console.log("MODALTYPE:", modalType)
+    debugger
     await onConfirm(modalData); // ids
-    dispatch(fetchDictionariesThunk());
+        if(modalType == "mailsToUsers"){
+         dispatch(setDataIsLoadedActionCreator(false, menu))
+        }
+        else{
+              dispatch(fetchDictionariesThunk());
+        }
     onClose();
   };
 

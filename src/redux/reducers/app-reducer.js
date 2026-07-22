@@ -10,6 +10,7 @@ const initialState = {
 export const appReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_DATA_IS_LOADED:
+      debugger
       return {
         ...state,
         [action.page]: {

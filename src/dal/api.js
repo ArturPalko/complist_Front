@@ -52,6 +52,7 @@ export const fetchPasswordsByType = async (type) => {
 
 
 export const fetchDictionariesThunk = () => async (dispatch) => {
+  debugger
  // dispatch(toggleDataIsFetchingActionCreator(true, "dictionaries"));
 ////         
   try {
@@ -155,4 +156,7 @@ export const addMail = (data) =>{
   return api.post("mails/Lotus/addMail", data)
 }
 
-
+export const deleteMail = (ids) => {
+  debugger
+  return api.post("mails/deleteMails", ids)
+}

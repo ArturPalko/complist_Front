@@ -12,11 +12,13 @@ import {
   selectUsersBySection,
   selectUsersByDepartment,
   activeMenu,
+  getDataForMenu,
 } from "../selectors/selector";
 
 export const useCrudModalActions = (modalType) => {
   const { selectedIds } = useDragContext();
   const { openModal } = useModalWindowContext();
+
 
   const activeDep = useSelector(selectAtiveDepartmentId);
   const activeSec = useSelector(selectActiveSectionId);
@@ -28,6 +30,7 @@ export const useCrudModalActions = (modalType) => {
   const internals = useSelector(selectDictionaryByType("internal", "phones"));
   const ciscos = useSelector(selectDictionaryByType("cisco", "phones"));
  const menu = useSelector(activeMenu);
+ const dataForMenu = useSelector(state => getDataForMenu(state, menu))
   const users = useSelector(
     activeSec
       ? selectUsersBySection(activeDep, activeSec)
@@ -69,8 +72,10 @@ if (menu == "Lotus"){
 
   // ---------------- DELETE ----------------
   const remove = () => {
-    if (!config || !selectedIds?.length) return;
-
+    debugger
+    // if (!config || !selectedIds?.length) return;
+    if ( !selectedIds?.length) return;
+debugger
     openModal({
       type: modalType,
       mode: "delete",
@@ -80,7 +85,9 @@ if (menu == "Lotus"){
 
   // ---------------- EDIT ----------------
   const edit = () => {
-    if (!config || !selectedIds?.length) return;
+    // if (!config || !selectedIds?.length) return;
+        if ( !selectedIds?.length) return;
+        debugger
 
     const id = selectedIds[0];
 
@@ -89,15 +96,32 @@ if (menu == "Lotus"){
     // Редагування користувачів
     if (activeDep) {
       item = users.find(user => Number(user.id) === Number(id));
-    } else {
-      if (!entity) return;
-
-      const list = sources[modalType];
-
-      item = list
-        ?.flatMap(p => p.rows ?? [])
-        .find(r => Number(r?.[entity.id]) === Number(id));
     }
+    else {
+      // if (!entity) return;
+       
+     let list;
+let item;
+
+if (modalType === "mailsToUsers") {
+  list = dataForMenu;
+
+  item = dataForMenu
+    .flatMap(page => page.rows)
+    .find(row => Number(row.id) === Number(id));
+} else {
+  list = sources[modalType];
+
+  item = list
+    ?.flatMap(p => p.rows ?? [])
+    .find(r => Number(r?.[entity.id]) === Number(id));
+}
+     
+debugger
+  //     item = list
+  //       ?.flatMap(p => p.rows ?? [])
+  //       .find(r => Number(r?.[entity.id]) === Number(id));
+  //   }
 
     openModal({
       type: modalType,
@@ -105,6 +129,7 @@ if (menu == "Lotus"){
       data: item,
     });
   };
+}
 
   return {
     add,

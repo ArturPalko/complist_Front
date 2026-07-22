@@ -13,7 +13,8 @@ import {
   apiEditEntity,
   deleteUser,
   apiEditUser,
-  addUser
+  addUser,
+  deleteMail
 } from "../../dal/api";
 import { useSelector } from "react-redux";
 import { activeMenu, isDepartmentsMode, isSectionsMode, selectActiveSectionId, selectAtiveDepartmentId } from "../../redux/selectors/selector";
@@ -31,6 +32,12 @@ export default function ModalRoot() {
 debugger
 
 const handleDelete = async () => {
+  debugger
+  if(menu == "Lotus" && mode == "delete"){
+    let a = modalData;
+    debugger
+    return deleteMail(modalData)
+  }
   if (
     (
       isSectiosns &&
@@ -53,9 +60,9 @@ const handleDelete = async () => {
 debugger
 
 console.log({ menu, modalType });
-if (menu == "Lotus" && modalType == "mailsToUsers"){
+if (menu == "Lotus" && modalType == "mailsToUsers" && mode != "delete"){
   debugger
-  return <AddMail   onClose={closeModal}/>
+  return <AddMail editValue = {modalData}  onClose={closeModal}/>
 }
 debugger
 if (
@@ -101,8 +108,8 @@ if (
 
   const config = CRUD_CONFIG[modalType];
            
-  if (!config) return null;
-
+  // if (!config) return null;
+debugger
   // ---------------- DELETE ----------------
   if (mode === "delete") {
     return (

@@ -126,5 +126,9 @@ export const CRUD_CONFIG = {
       }),
     },
   },
+
+  mailsToUsers:{
+    title:"Пошта"
+  }
 };
 

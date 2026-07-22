@@ -41,11 +41,12 @@ const withDataLoaderForMenu = (menuName, fetchAction) => (WrappedComponent) => {
 
     // Fetch даних
     useEffect(() => {
+      debugger
       if (isLoaded) return;
 
       setShowPreloader(true);
       setCount(10);
-
+debugger
       const doFetch = async () => {
         try {
           await props.fetchAction(menuName);
