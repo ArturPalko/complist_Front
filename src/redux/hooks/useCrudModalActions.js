@@ -51,9 +51,12 @@ export const useCrudModalActions = (modalType) => {
 if (menu == "Lotus"){
   modalType = "mailsToUsers"
 }
+if (menu == "Gov-ua"){
+  modalType = "mailsToUsersGovua"
+}
   // ---------------- ADD ----------------
   const add = () => {
-    debugger
+       
     // if (!config) return;
 
     const data =
@@ -72,10 +75,10 @@ if (menu == "Lotus"){
 
   // ---------------- DELETE ----------------
   const remove = () => {
-    debugger
+       
     // if (!config || !selectedIds?.length) return;
     if ( !selectedIds?.length) return;
-debugger
+   
     openModal({
       type: modalType,
       mode: "delete",
@@ -85,14 +88,16 @@ debugger
 
   // ---------------- EDIT ----------------
   const edit = () => {
+    console.log("EDIT CALLED", Date.now());
+               debugger
     // if (!config || !selectedIds?.length) return;
         if ( !selectedIds?.length) return;
-        debugger
+   
 
     const id = selectedIds[0];
 
     let item;
-
+   
     // Редагування користувачів
     if (activeDep) {
       item = users.find(user => Number(user.id) === Number(id));
@@ -102,10 +107,17 @@ debugger
        
      let list;
 let item;
-
-if (modalType === "mailsToUsers") {
+debugger
+if (modalType === "mailsToUsers" || modalType == "mailsToUsersGovua") {
+     debugger
   list = dataForMenu;
-
+   console.log("id", id);
+console.log("dataForMenu", dataForMenu);
+console.log(
+  "flat",
+  dataForMenu.flatMap(page => page.rows)
+);
+debugger
   item = dataForMenu
     .flatMap(page => page.rows)
     .find(row => Number(row.id) === Number(id));
@@ -117,12 +129,12 @@ if (modalType === "mailsToUsers") {
     .find(r => Number(r?.[entity.id]) === Number(id));
 }
      
-debugger
+   
   //     item = list
   //       ?.flatMap(p => p.rows ?? [])
   //       .find(r => Number(r?.[entity.id]) === Number(id));
   //   }
-
+   
     openModal({
       type: modalType,
       mode: "edit",

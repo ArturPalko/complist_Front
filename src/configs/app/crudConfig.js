@@ -128,7 +128,40 @@ export const CRUD_CONFIG = {
   },
 
   mailsToUsers:{
-    title:"Пошта"
+    title:"Пошта",
+
+      mappers: {
+      add: (data, modalData) => ({
+        name: data.name,
+        departmentId: String(modalData.departmentId),
+      }),
+
+      edit: (data, modalData) => ({
+        id: modalData.sectionId,
+        name: data.name,
+        priority: modalData.sectionPriority,
+        departmentId: modalData.departmentId,
+      }),
+    },
+  },
+
+  
+  mailsToUsersGovua:{
+    title:"Пошта",
+
+      mappers: {
+      add: (data, modalData) => ({
+        name: data.name,
+        departmentId: String(modalData.departmentId),
+      }),
+
+      edit: (data, modalData) => ({
+        id: modalData.sectionId,
+        name: data.name,
+        priority: modalData.sectionPriority,
+        departmentId: modalData.departmentId,
+      }),
+    },
   }
 };
 

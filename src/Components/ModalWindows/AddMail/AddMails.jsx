@@ -11,11 +11,13 @@ import { setDataIsLoadedActionCreator } from "../../../redux/reducers/app-reduce
 export default function AddMail({
   onClose,
   editValue,
+  onSubmit
 }) {
   const [mail, setMail] = useState("");
 
   const [ownerType, setOwnerType] = useState("department");
   const [ownerId, setOwnerId] = useState("");
+  const [id, setId] = useState("");
 
   const [query, setQuery] = useState("");
   const [opened, setOpened] = useState(false);
@@ -43,16 +45,17 @@ export default function AddMail({
   }, [usersValues, query]);
 
   useEffect(() => {
-    debugger
+       
     if (!editValue) return;
-debugger
+   
     setMail(editValue.name ?? "");
 
     setOwnerType(
       editValue.ownerType?.toLowerCase() ?? "department"
     );
-
+    
     setOwnerId(editValue.ownerId ?? "");
+    setId(editValue.id ?? "")
 
     if (
       editValue.ownerType?.toLowerCase() === "user"
@@ -63,12 +66,19 @@ debugger
 
   const handleSave = async () => {
     try {
-      await addMail({
+      // await addMail({
+      //   mail,
+      //   ownerType,
+      //   ownerId,
+      // });
+
+     
+  await   onSubmit(    {
         mail,
         ownerType,
         ownerId,
-      });
-
+        id
+      })
       dispatch(
         setDataIsLoadedActionCreator(
           false,

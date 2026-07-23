@@ -14,12 +14,15 @@ import {
   deleteUser,
   apiEditUser,
   addUser,
-  deleteMail
+  deleteMail,
+  addMail,
+  editMail
 } from "../../dal/api";
 import { useSelector } from "react-redux";
 import { activeMenu, isDepartmentsMode, isSectionsMode, selectActiveSectionId, selectAtiveDepartmentId } from "../../redux/selectors/selector";
 import AddUser from "./AddUser/AddUser";
 import AddMail from "./AddMail/AddMails";
+import AddGovUa from "./AddMail/AddGovUa";
 
 export default function ModalRoot() {
   const { modalType, mode, modalData, closeModal } =
@@ -29,13 +32,14 @@ export default function ModalRoot() {
   const isSectiosns = useSelector(isSectionsMode);
   const isDep = useSelector(isDepartmentsMode)
   const menu = useSelector(activeMenu);
-debugger
+   
+  const config = CRUD_CONFIG[modalType];
 
 const handleDelete = async () => {
-  debugger
+     
   if(menu == "Lotus" && mode == "delete"){
     let a = modalData;
-    debugger
+       
     return deleteMail(modalData)
   }
   if (
@@ -57,14 +61,58 @@ const handleDelete = async () => {
 
   return apiDeleteEntity(config.endpoint, modalData);
 };
-debugger
+   
 
-console.log({ menu, modalType });
-if (menu == "Lotus" && modalType == "mailsToUsers" && mode != "delete"){
-  debugger
-  return <AddMail editValue = {modalData}  onClose={closeModal}/>
+console.log({ menu, modalType })
+if (menu == "Gov-ua" && modalType == "mailsToUsersGovua" && mode != "delete"){
+     
+  return <AddGovUa editValue = {modalData} 
+   onClose={closeModal}
+   onSubmit={async (data) => {
+        // ADD
+           
+        if (mode === "add") {
+               console.log("DEPR:",modalData)
+                   
+          // const payload = config.mappers.add(data, modalData);
+               debugger    
+          return addMail(data,menu);
+        }
+
+        // EDIT
+        if (mode === "edit") {
+          // const payload = config.mappers.edit(data, modalData);
+             
+          return editMail(data);
+        }
+      }}
+   />
 }
-debugger
+if (menu == "Lotus" && modalType == "mailsToUsers" && mode != "delete"){
+     
+  return <AddMail editValue = {modalData} 
+   onClose={closeModal}
+   onSubmit={async (data) => {
+        // ADD
+           
+        if (mode === "add") {
+               console.log("DEPR:",modalData)
+                   
+          // const payload = config.mappers.add(data, modalData);
+                   
+          return addMail(data, menu);
+        }
+
+        // EDIT
+        if (mode === "edit") {
+          // const payload = config.mappers.edit(data, modalData);
+             
+          return editMail(data);
+        }
+      }}
+   />
+}
+   
 if (
   (
     isSectiosns &&
@@ -106,10 +154,10 @@ if (
     return <Login onClose={closeModal} />;
   }
 
-  const config = CRUD_CONFIG[modalType];
+
            
   // if (!config) return null;
-debugger
+   
   // ---------------- DELETE ----------------
   if (mode === "delete") {
     return (

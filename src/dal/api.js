@@ -49,10 +49,22 @@ export const fetchPasswordsByType = async (type) => {
   }, {});
 };
 
+export const fetchPasswordById = async (
+  type,
+  id
+) => {
+  const endpoint = passwordUrls[type];
+
+  const { data } = await apiPrivate.get(
+    `${endpoint}/${id}`
+  );
+
+  return data?.password ?? "";
+};
 
 
 export const fetchDictionariesThunk = () => async (dispatch) => {
-  debugger
+     
  // dispatch(toggleDataIsFetchingActionCreator(true, "dictionaries"));
 ////         
   try {
@@ -140,23 +152,28 @@ export const addUser = (data) =>{
 
 
 export const deleteUser = (ids) =>{
-  debugger
+     
   return api.post('api/deleteUsers', ids)
 }
 
 export const apiEditUser = ({ id, ...data }) =>{
-  debugger
+     
   return api.put(`api/editUser/${id}`, data)
 }
 
 
 
-export const addMail = (data) =>{
-  debugger
-  return api.post("mails/Lotus/addMail", data)
+export const addMail = (data,menu) =>{
+     
+  return api.post(`mails/${menu}/addMail`, data)
 }
 
 export const deleteMail = (ids) => {
-  debugger
+     
   return api.post("mails/deleteMails", ids)
+}
+
+export const editMail = ({ id, ...data }) =>{
+     
+  return api.put(`mails/editMail/${id}`, data)
 }

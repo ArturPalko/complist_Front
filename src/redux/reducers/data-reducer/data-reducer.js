@@ -44,7 +44,7 @@ export const dataReducer = (state = initialState, action) => {
 
 case SET_DICTIONARIES: {
   const { positions, userTypes, departments, phones,users,sections, deps } = action.payload;
-  debugger
+     
 
   return {
     ...state,

@@ -9,10 +9,10 @@ export default function DeletePositionModal({ onClose, onConfirm, modalData }) {
   const dispatch = useDispatch();
  const {modalType} = useModalWindowContext()
  const menu = useSelector(activeMenu);
-debugger
+   
   const handleDelete = async () => {
     console.log("MODALTYPE:", modalType)
-    debugger
+       
     await onConfirm(modalData); // ids
         if(modalType == "mailsToUsers"){
          dispatch(setDataIsLoadedActionCreator(false, menu))
