@@ -37,10 +37,13 @@ export default function ModalRoot() {
 
 const handleDelete = async () => {
      
-  if(menu == "Lotus" && mode == "delete"){
+  if((menu == "Lotus" || menu == "Gov-ua")  && mode == "delete"){
     let a = modalData;
+       debugger
+       deleteMail(modalData)
        
-    return deleteMail(modalData)
+    return 
+    
   }
   if (
     (
