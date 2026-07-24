@@ -172,8 +172,9 @@ export const deleteMail = (ids) => {
      
   return api.post("mails/deleteMails", ids)
 }
-
-export const editMail = ({ id, ...data }) =>{
-     
-  return api.put(`mails/editMail/${id}`, data)
-}
+export const editMail = ({ id, menu, ...data }) => {
+  return api.put(
+    `mails/${menu}/editMail/${id}`,
+    data
+  );
+};

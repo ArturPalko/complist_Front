@@ -6,7 +6,7 @@ export const conditionsWithoutNegative = {
 };
 
 export const conditionsWithNegative = {
-  hasResponsible: (el) => el.responsibleUser !== "",
+  hasResponsible: (el) => el.responsibleUsers.length > 0,
   passwordKnown: (el) => el.passwordKnown === true,
   hasNewPostName: (el) => el.name != null,
   hasPrevioustName: (el) => el.previousName !== null,

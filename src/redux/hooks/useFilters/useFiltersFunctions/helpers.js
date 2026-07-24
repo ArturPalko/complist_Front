@@ -48,7 +48,7 @@ export const getAlternativeKeysHelper = (key, filterGroups) => {
   if (!key || !filterGroups) return [];
 
   const direct = filterGroups[key] || [];
-
+  debugger
   const reverse = Object.keys(filterGroups).filter(groupKey =>
     filterGroups[groupKey]?.includes(key)
   );

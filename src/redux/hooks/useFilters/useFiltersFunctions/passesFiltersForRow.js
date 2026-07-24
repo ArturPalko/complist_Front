@@ -118,6 +118,7 @@ export const passesFiltersForRow = (
     // =====================================================
     // 🔥 FILTERS (спільні)
     // =====================================================
+      
     const filtersPass =
       activeFilters.length === 0
         ? true
@@ -139,6 +140,7 @@ export const passesFiltersForRow = (
               (a) => typeof conditions[a] === "function" && conditions[a](el)
             );
           });
+            
 
     // =====================================================
     // 🔥 SUB FILTERS

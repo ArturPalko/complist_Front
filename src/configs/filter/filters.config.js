@@ -35,11 +35,14 @@ export const filters = {
     group: FILTER_GROUPS_NAMES.OWNER,
     condition: (el) => el.ownerType === "Section",
   },
-  [FilterKeys.HAS_RESPONSIBLE]: {
+[FilterKeys.HAS_RESPONSIBLE]: {
     label: "Має відповідальну особу",
     group: FILTER_GROUPS_NAMES.POSITIVE,
-    condition: (el) => el.responsibleUser !== "",
+    // condition:  (el) =>  el.responsibleUsers.length > 0,
+      condition:  (el) =>  false,
+
   },
+
   [FilterKeys.PASSWORD_KNOWN]: {
     label: "Пароль відомий",
     group: FILTER_GROUPS_NAMES.POSITIVE,

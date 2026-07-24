@@ -12,11 +12,11 @@ export const computeFilteredChunks = ({
   chunkSize = defaultChunkSize,
   departments
 }) => {
-  
+    
   const activeFilters = Object.entries(state)
     .filter(([key, v]) => v && conditions[key])
     .map(([key]) => key);
-
+  
   const allFilteredIndexes = [];
   const effectiveSubConditions = activeMenu === "phones" ? subConditions : {};
 
@@ -25,7 +25,7 @@ export const computeFilteredChunks = ({
   const hideSections = bookmarkConditions.hideSections || {};
 
   dataForMenu.forEach((element, pageIndex) => {
-    
+      
     const rows = element?.rows || [];
     rows.forEach((row, rowIndex) => {
       let deptName="";
@@ -65,7 +65,7 @@ export const computeFilteredChunks = ({
       }
     });
   });
-
+  
   const chunks = [];
   for (let i = 0; i < allFilteredIndexes.length; i += chunkSize) {
     chunks.push({

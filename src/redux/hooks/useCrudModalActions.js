@@ -89,7 +89,7 @@ if (menu == "Gov-ua"){
   // ---------------- EDIT ----------------
   const edit = () => {
     console.log("EDIT CALLED", Date.now());
-               debugger
+                 
     // if (!config || !selectedIds?.length) return;
         if ( !selectedIds?.length) return;
    
@@ -107,9 +107,9 @@ if (menu == "Gov-ua"){
        
      let list;
 let item;
-debugger
+  
 if (modalType === "mailsToUsers" || modalType == "mailsToUsersGovua") {
-     debugger
+       
   list = dataForMenu;
    console.log("id", id);
 console.log("dataForMenu", dataForMenu);
@@ -117,7 +117,7 @@ console.log(
   "flat",
   dataForMenu.flatMap(page => page.rows)
 );
-debugger
+  
   item = dataForMenu
     .flatMap(page => page.rows)
     .find(row => Number(row.id) === Number(id));

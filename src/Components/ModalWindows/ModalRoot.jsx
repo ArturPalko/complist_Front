@@ -39,7 +39,7 @@ const handleDelete = async () => {
      
   if((menu == "Lotus" || menu == "Gov-ua")  && mode == "delete"){
     let a = modalData;
-       debugger
+         
        deleteMail(modalData)
        
     return 
@@ -78,7 +78,7 @@ if (menu == "Gov-ua" && modalType == "mailsToUsersGovua" && mode != "delete"){
                console.log("DEPR:",modalData)
                    
           // const payload = config.mappers.add(data, modalData);
-               debugger    
+                     
           return addMail(data,menu);
         }
 

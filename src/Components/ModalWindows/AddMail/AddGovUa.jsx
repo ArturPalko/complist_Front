@@ -211,17 +211,18 @@ const handleShowPassword = async () => {
     try {
 
     let a = {id,
+  menu,
   mail,
   ownerType,
   ownerId,
   passwordKnown,
   password,
   responsibleUserIds}  
-debugger
+  
 console.log(a);
       await onSubmit(a);
 
-debugger
+  
 
       dispatch(
         setDataIsLoadedActionCreator(
@@ -230,7 +231,7 @@ debugger
         )
       );
 
-   debugger
+     
       onClose();
 
 

@@ -7,6 +7,7 @@ import {
 import s from "./AddMail.module.css";
 import { addMail } from "../../../dal/api";
 import { setDataIsLoadedActionCreator } from "../../../redux/reducers/app-reducer";
+import { fetchPasswordById } from "../../../dal/api";
 
 export default function AddMail({
   onClose,
@@ -18,6 +19,9 @@ export default function AddMail({
   const [ownerType, setOwnerType] = useState("department");
   const [ownerId, setOwnerId] = useState("");
   const [id, setId] = useState("");
+  const [passwordKnown, setPasswordKnown] = useState(false);
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const [query, setQuery] = useState("");
   const [opened, setOpened] = useState(false);
@@ -43,6 +47,7 @@ export default function AddMail({
       u.name.toLowerCase().includes(query.toLowerCase())
     );
   }, [usersValues, query]);
+  const isEdit = Boolean(editValue?.id);
 
   useEffect(() => {
        
@@ -56,6 +61,7 @@ export default function AddMail({
     
     setOwnerId(editValue.ownerId ?? "");
     setId(editValue.id ?? "")
+    setPasswordKnown(editValue.passwordKnown ?? false);
 
     if (
       editValue.ownerType?.toLowerCase() === "user"
@@ -63,34 +69,72 @@ export default function AddMail({
       setQuery(editValue.owner ?? "");
     }
   }, [editValue]);
+const handleShowPassword = async () => {
 
-  const handleSave = async () => {
-    try {
-      // await addMail({
-      //   mail,
-      //   ownerType,
-      //   ownerId,
-      // });
+  // Add
+  if (!editValue) {
 
-     
-  await   onSubmit(    {
-        mail,
-        ownerType,
-        ownerId,
-        id
-      })
-      dispatch(
-        setDataIsLoadedActionCreator(
-          false,
-          menu
-        )
-      );
+    setPasswordKnown(true);
+    setShowPassword(prev => !prev);
 
-      onClose();
-    } catch (error) {
-      console.error(error);
+    if (!showPassword) {
+      setPassword("");
     }
-  };
+
+    return;
+  }
+
+  // Edit
+  if (showPassword) {
+
+    setShowPassword(false);
+
+    return;
+  }
+
+  try {
+
+    const value = await fetchPasswordById(
+      menu,
+      editValue.id
+    );
+
+    setPassword(value);
+
+    setShowPassword(true);
+
+  } catch (error) {
+
+    console.error(error);
+
+  }
+
+};
+  const handleSave = async () => {
+  try {
+
+    await onSubmit({
+      id,
+      mail,
+      ownerType,
+      ownerId,
+      passwordKnown,
+      password
+    });
+
+    dispatch(
+      setDataIsLoadedActionCreator(
+        false,
+        menu
+      )
+    );
+
+    onClose();
+
+  } catch (error) {
+    console.error(error);
+  }
+};
 
   return (
     <div className={s.overlay}>
@@ -249,6 +293,86 @@ export default function AddMail({
             )}
           </div>
         )}
+
+
+<div className={s.field}>
+
+  <label className={s.label}>
+    Пароль
+  </label>
+
+  {!isEdit && (
+    <>
+      <label className={s.checkboxRow}>
+        <input
+          type="checkbox"
+          checked={passwordKnown}
+          onChange={(e) =>
+            setPasswordKnown(e.target.checked)
+          }
+        />
+
+        Пароль відомий
+      </label>
+
+      {passwordKnown && (
+        <input
+          className={s.input}
+          value={password}
+          placeholder="Введіть пароль"
+          onChange={(e) =>
+            setPassword(e.target.value)
+          }
+        />
+      )}
+    </>
+  )}
+
+  {isEdit && (
+    <>
+      <div className={s.passwordRow}>
+
+        <input
+          type="checkbox"
+          checked={passwordKnown}
+          disabled
+        />
+
+        <button
+          type="button"
+          onClick={handleShowPassword}
+        >
+          {showPassword
+            ? "Сховати"
+            : "Показати"}
+        </button>
+
+      </div>
+
+      {showPassword && (
+        <input
+          className={s.input}
+          value={password}
+          onChange={(e) =>
+            setPassword(e.target.value)
+          }
+        />
+      )}
+    </>
+  )}
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
 
         <div className={s.buttons}>
           <button
