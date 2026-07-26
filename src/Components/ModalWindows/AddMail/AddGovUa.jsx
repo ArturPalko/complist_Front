@@ -42,6 +42,7 @@ export default function AddGovUa({
   const usersValues = useSelector(
     selectDictionaryByType("users")
   );
+  debugger
 
   const sectionsValues = useSelector(
     selectDictionaryByType("sections")
@@ -68,7 +69,7 @@ export default function AddGovUa({
 
   }, [usersValues, query]);
 
-
+debugger
 
   const filteredResponsibleUsers = useMemo(() => {
 
@@ -83,7 +84,7 @@ export default function AddGovUa({
     responsibleQuery
   ]);
 
-
+debugger
 const isEdit = Boolean(editValue?.id);
 
   useEffect(() => {
@@ -121,9 +122,9 @@ const isEdit = Boolean(editValue?.id);
     );
 
 
-    setResponsibleUserIds(
-      editValue.responsibleUserIds ?? []
-    );
+setResponsibleUserIds(
+  editValue.responsibleUsers?.map(user => user.id) ?? []
+);
 
 
     if (

@@ -8,6 +8,10 @@ import s from "./AddMail.module.css";
 import { addMail } from "../../../dal/api";
 import { setDataIsLoadedActionCreator } from "../../../redux/reducers/app-reducer";
 import { fetchPasswordById } from "../../../dal/api";
+import OwnerSelector from "./subComponents/OwnerSelector/OwnerSelector";
+import PasswordField from "./subComponents/PasswordField/PasswordField";
+import FormButtons from "./subComponents/FormButtons/FormButtons";
+
 
 export default function AddMail({
   onClose,
@@ -157,240 +161,37 @@ const handleShowPassword = async () => {
           />
         </div>
 
-        <div className={s.field}>
-          <label className={s.label}>
-            Тип власника
-          </label>
+   <OwnerSelector
+  ownerType={ownerType}
+  ownerId={ownerId}
+  query={query}
+  opened={opened}
 
-          <select
-            className={s.select}
-            value={ownerType}
-            onChange={(e) => {
-              setOwnerType(e.target.value);
-              setOwnerId("");
-              setQuery("");
-              setOpened(false);
-            }}
-          >
-            <option value="department">
-              Департамент
-            </option>
+  users={usersValues}
+  departments={departmentsValues}
+  sections={sectionsValues}
 
-            <option value="section">
-              Секція
-            </option>
+  setOwnerType={setOwnerType}
+  setOwnerId={setOwnerId}
+  setQuery={setQuery}
+  setOpened={setOpened}
+/>
 
-            <option value="user">
-              Користувач
-            </option>
-          </select>
-        </div>
+<PasswordField
+  isEdit={isEdit}
+  password={password}
+  passwordKnown={passwordKnown}
+  showPassword={showPassword}
+  setPassword={setPassword}
+  setPasswordKnown={setPasswordKnown}
+  handleShowPassword={handleShowPassword}
+/>
 
-        {ownerType === "department" && (
-          <div className={s.field}>
-            <label className={s.label}>
-              Департамент
-            </label>
-
-            <select
-              className={s.select}
-              value={ownerId}
-              onChange={(e) =>
-                setOwnerId(Number(e.target.value))
-              }
-            >
-              <option value="">
-                Оберіть
-              </option>
-
-              {departmentsValues.map((d) => (
-                <option
-                  key={d.id}
-                  value={d.id}
-                >
-                  {d.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-
-        {ownerType === "section" && (
-          <div className={s.field}>
-            <label className={s.label}>
-              Секція
-            </label>
-
-            <select
-              className={s.select}
-              value={ownerId}
-              onChange={(e) =>
-                setOwnerId(Number(e.target.value))
-              }
-            >
-              <option value="">
-                Оберіть
-              </option>
-
-              {sectionsValues.map((section) => (
-                <option
-                  key={section.id}
-                  value={section.id}
-                >
-                  {section.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-
-        {ownerType === "user" && (
-          <div className={s.field}>
-            <label className={s.label}>
-              Користувач
-            </label>
-
-            <input
-              className={s.input}
-              value={
-                usersValues.find(
-                  (u) =>
-                    Number(u.id) ===
-                    Number(ownerId)
-                )?.name ?? query
-              }
-              placeholder="Почніть вводити ПІБ..."
-              onFocus={() => setOpened(true)}
-              onChange={(e) => {
-                setOwnerId("");
-                setQuery(e.target.value);
-                setOpened(true);
-              }}
-            />
-
-            {opened && (
-              <div className={s.dropdown}>
-                {filteredUsers.map((user) => (
-                  <div
-                    key={user.id}
-                    className={s.option}
-                    onClick={() => {
-                      setOwnerId(user.id);
-                      setQuery("");
-                      setOpened(false);
-                    }}
-                  >
-                    {user.name}
-                  </div>
-                ))}
-
-                {!filteredUsers.length && (
-                  <div className={s.empty}>
-                    Нічого не знайдено
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        )}
-
-
-<div className={s.field}>
-
-  <label className={s.label}>
-    Пароль
-  </label>
-
-  {!isEdit && (
-    <>
-      <label className={s.checkboxRow}>
-        <input
-          type="checkbox"
-          checked={passwordKnown}
-          onChange={(e) =>
-            setPasswordKnown(e.target.checked)
-          }
-        />
-
-        Пароль відомий
-      </label>
-
-      {passwordKnown && (
-        <input
-          className={s.input}
-          value={password}
-          placeholder="Введіть пароль"
-          onChange={(e) =>
-            setPassword(e.target.value)
-          }
-        />
-      )}
-    </>
-  )}
-
-  {isEdit && (
-    <>
-      <div className={s.passwordRow}>
-
-        <input
-          type="checkbox"
-          checked={passwordKnown}
-          disabled
-        />
-
-        <button
-          type="button"
-          onClick={handleShowPassword}
-        >
-          {showPassword
-            ? "Сховати"
-            : "Показати"}
-        </button>
-
-      </div>
-
-      {showPassword && (
-        <input
-          className={s.input}
-          value={password}
-          onChange={(e) =>
-            setPassword(e.target.value)
-          }
-        />
-      )}
-    </>
-  )}
-
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-        <div className={s.buttons}>
-          <button
-            className={s.cancelButton}
-            onClick={onClose}
-          >
-            Скасувати
-          </button>
-
-          <button
-            className={s.saveButton}
-            onClick={handleSave}
-          >
-            {editValue
-              ? "Зберегти"
-              : "Додати"}
-          </button>
-        </div>
+ <FormButtons
+  onCancel={onClose}
+  onSave={handleSave}
+  isEdit={!!editValue}
+/>
       </div>
     </div>
   );
