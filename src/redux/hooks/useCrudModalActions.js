@@ -48,12 +48,10 @@ export const useCrudModalActions = (modalType) => {
     internal: internals,
     cisco: ciscos,
   };
-if (menu == "Lotus"){
+if (menu == "Lotus" || menu == "Gov-ua"){
   modalType = "mailsToUsers"
 }
-if (menu == "Gov-ua"){
-  modalType = "mailsToUsersGovua"
-}
+
   // ---------------- ADD ----------------
   const add = () => {
        

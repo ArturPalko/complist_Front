@@ -48,7 +48,14 @@ export const pageConfigs = {
     basePath: "/mails/Gov-ua/",
     pageFromURLIndex: 2,
     showSearchToggle: true,      
-    showPasswordsToggle: true    
+    showPasswordsToggle: true,
+    
+    modalWindows: {
+      addMail: {
+        title: "Gov-UA",
+        showResponsibleUsers: true
+      },
+    },
   },
 
   [Pages.LOTUS]: {
@@ -63,6 +70,13 @@ export const pageConfigs = {
     basePath: "/mails/Lotus/",
     pageFromURLIndex: 2,
     showSearchToggle: true,      
-    showPasswordsToggle: true    
-  }
+    showPasswordsToggle: true,
+      modalWindows: {
+        addMail: {
+          title: "Lotus",
+          showResponsibleUsers: false,
+          showOldMailName: true
+        },   
+      }
+  },
 };

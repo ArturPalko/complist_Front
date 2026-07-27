@@ -21,8 +21,8 @@ import {
 import { useSelector } from "react-redux";
 import { activeMenu, isDepartmentsMode, isSectionsMode, selectActiveSectionId, selectAtiveDepartmentId } from "../../redux/selectors/selector";
 import AddUser from "./AddUser/AddUser";
-import AddMail from "./AddMail/AddMails";
-import AddGovUa from "./AddMail/AddGovUa";
+import AddMail from "./AddMail/AddMail";
+;
 
 export default function ModalRoot() {
   const { modalType, mode, modalData, closeModal } =
@@ -67,53 +67,28 @@ const handleDelete = async () => {
    
 
 console.log({ menu, modalType })
-if (menu == "Gov-ua" && modalType == "mailsToUsersGovua" && mode != "delete"){
-     
-  return <AddGovUa editValue = {modalData} 
-   onClose={closeModal}
-   onSubmit={async (data) => {
-        // ADD
-           
+if (
+    ((menu === "Lotus" || menu === "Gov-ua")  && modalType === "mailsToUsers")
+   &&
+  mode !== "delete"
+) {
+  return (
+    <AddMail
+      editValue={modalData}
+      onClose={closeModal}
+      onSubmit={async (data) => {
         if (mode === "add") {
-               console.log("DEPR:",modalData)
-                   
-          // const payload = config.mappers.add(data, modalData);
-                     
-          return addMail(data,menu);
-        }
+          console.log("DEPR:", modalData);
 
-        // EDIT
-        if (mode === "edit") {
-          // const payload = config.mappers.edit(data, modalData);
-             
-          return editMail(data);
-        }
-      }}
-   />
-}
-if (menu == "Lotus" && modalType == "mailsToUsers" && mode != "delete"){
-     
-  return <AddMail editValue = {modalData} 
-   onClose={closeModal}
-   onSubmit={async (data) => {
-        // ADD
-           
-        if (mode === "add") {
-               console.log("DEPR:",modalData)
-                   
-          // const payload = config.mappers.add(data, modalData);
-                   
           return addMail(data, menu);
         }
 
-        // EDIT
         if (mode === "edit") {
-          // const payload = config.mappers.edit(data, modalData);
-             
           return editMail(data);
         }
       }}
-   />
+    />
+  );
 }
    
 if (
