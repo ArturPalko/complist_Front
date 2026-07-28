@@ -1,9 +1,11 @@
 import { setDataIsLoadedActionCreator } from "../../../../redux/reducers/app-reducer";
 
 export const handleSave = async ({
+  autoUpdatePreviousName,
   id,
   menu,
   mail,
+  previousName,
   ownerType,
   ownerId,
   passwordKnown,
@@ -15,9 +17,11 @@ export const handleSave = async ({
 }) => {
   try {
     const data = {
+      autoUpdatePreviousName,
       id,
       menu,
       mail,
+      previousName,
       ownerType,
       ownerId,
       passwordKnown,

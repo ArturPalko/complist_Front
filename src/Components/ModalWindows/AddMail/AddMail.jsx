@@ -28,7 +28,9 @@ export default function AddMail({
   editValue,
   onSubmit
 }) {
-   
+   const [autoUpdatePreviousName, setAutoUpdatePreviousName] =
+  useState(true);
+
   const [mail, setMail] = useState("");
 
   const [ownerType, setOwnerType] = useState("department");
@@ -132,12 +134,14 @@ initializeEditForm(editValue, {
       </h2>
 
        <MailNameField
-  value={mail}
-  onChange={setMail}
-  oldValue={previousName}
-  onOldChange={setPreviousName}
-  showOldField={modalConfig.showOldMailName}
-/>
+        value={mail}
+        onChange={setMail}
+        oldValue={previousName}
+        onOldChange={setPreviousName}
+        showOldField={modalConfig.showOldMailName}
+        autoUpdatePreviousName={autoUpdatePreviousName}
+        setAutoUpdatePreviousName={setAutoUpdatePreviousName}
+      />
 
       <OwnerSelector
         ownerType={ownerType}
@@ -203,18 +207,20 @@ initializeEditForm(editValue, {
         onCancel={onClose}
         onSave={() =>
           handleSave({
-            id,
-            menu,
-            mail,
-            ownerType,
-            ownerId,
-            passwordKnown,
-            password,
-            responsibleUserIds,
-            onSubmit,
-            dispatch,
-            onClose,
-          })
+          autoUpdatePreviousName,
+          id,
+          menu,
+          mail,
+          previousName,
+          ownerType,
+          ownerId,
+          passwordKnown,
+          password,
+          responsibleUserIds,
+          onSubmit,
+          dispatch,
+          onClose,
+        })
         }
         isEdit={!!editValue}
       />

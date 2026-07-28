@@ -7,12 +7,13 @@ export default function MailNameField({
   oldValue,
   onOldChange,
   showOldField,
+  autoUpdatePreviousName,
+  setAutoUpdatePreviousName,
 }) {
   const [showOldName, setShowOldName] = useState(false);
 
   return (
     <div className={s.field}>
-
       <div className={s.header}>
 
         <label className={s.label}>
@@ -22,17 +23,43 @@ export default function MailNameField({
         </label>
 
         {showOldField && (
-          <button
-            type="button"
-            className={`${s.flipButton} ${
-              showOldName ? s.open : ""
-            }`}
-            onClick={() =>
-              setShowOldName(prev => !prev)
-            }
-          >
-            ⇄
-          </button>
+          <div className={s.controls}>
+
+            <button
+              type="button"
+              className={`${s.flipButton} ${
+                showOldName ? s.open : ""
+              }`}
+              onClick={() =>
+                setShowOldName(prev => !prev)
+              }
+              title="Перемич поперендя/нова назва"
+            >
+              ↔
+
+              {oldValue && (
+                <span className={s.badge} />
+              )}
+            </button>
+
+            <button
+              type="button"
+              className={`${s.autoButton} ${
+                autoUpdatePreviousName
+                  ? s.autoOn
+                  : ""
+              }`}
+              onClick={() =>
+                setAutoUpdatePreviousName(
+                  prev => !prev
+                )
+              }
+              title="Автоматично переносити нову назву в попередню"
+            >
+              Auto
+            </button>
+
+          </div>
         )}
 
       </div>
@@ -41,7 +68,9 @@ export default function MailNameField({
 
         <div
           className={`${s.flipCard} ${
-            showOldName ? s.flipped : ""
+            showOldName
+              ? s.flipped
+              : ""
           }`}
         >
 

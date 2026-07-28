@@ -42,6 +42,7 @@ export default function OwnerSelector({
 
   return (
     <>
+      <div> 
       <div className={s.field}>
         <label className={s.label}>
           Тип власника
@@ -145,6 +146,7 @@ export default function OwnerSelector({
           )}
         </div>
       )}
+        </div>
     </>
   );
 }
