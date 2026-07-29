@@ -1,81 +1,42 @@
+import SearchUserSelect from "../../../../../shared/components/forModal/SearchUsersSelect/SearchUserSelect";
+import s from "./ResponsibleUsersSelector.module.css"
 
-import s from "./ResponsibleUsersSelector.module.css";
-
-export default function ResponsibleUsersSelector({
-  ownerType,
+export default function ResponsibleUsers({
   users,
-  responsibleUserIds,
-  responsibleQuery,
-  responsibleOpened,
-  filteredResponsibleUsers,
-  setResponsibleQuery,
-  setResponsibleOpened,
+  responsibleUsers,
   addResponsibleUser,
   removeResponsibleUser,
 }) {
-  if (ownerType === "user") {
-    return null;
-  }
-
   return (
     <div className={s.field}>
       <label className={s.label}>
-        Відповідальні особи
+        Відповідальні користувачі
       </label>
 
-      <input
-        className={s.input}
-        value={responsibleQuery}
-        placeholder="Почніть вводити ПІБ"
-        onFocus={() => setResponsibleOpened(true)}
-        onChange={(e) => {
-          setResponsibleQuery(e.target.value);
-          setResponsibleOpened(true);
-        }}
+      <SearchUserSelect
+        users={users}
+        value={null}
+        onChange={addResponsibleUser}
       />
 
-      {responsibleOpened && (
-        <div className={s.dropdown}>
-          {filteredResponsibleUsers.map((user) => (
-            <div
-              key={user.id}
-              className={s.option}
-              onClick={() => addResponsibleUser(user.id)}
+      <div className={s.selectedUsers}>
+        {responsibleUsers.map((user) => (
+          <div
+            key={user.id}
+            className={s.tag}
+          >
+            <span>{user.name}</span>
+
+            <button
+              type="button"
+              className={s.removeButton}
+              onClick={() => removeResponsibleUser(user.id)}
             >
-              {user.name}
-            </div>
-          ))}
-
-          {!filteredResponsibleUsers.length && (
-            <div className={s.empty}>
-              Нічого не знайдено
-            </div>
-          )}
-        </div>
-      )}
-
-      <div className={s.tags}>
-        {responsibleUserIds.map((id) => {
-          const user = users.find((u) => u.id === id);
-
-          return (
-            <div
-              key={id}
-              className={s.tag}
-            >
-              {user?.name}
-
-              <button
-                type="button"
-                onClick={() => removeResponsibleUser(id)}
-              >
-                ✕
-              </button>
-            </div>
-          );
-        })}
+              ✕
+            </button>
+          </div>
+        ))}
       </div>
     </div>
   );
 }
-

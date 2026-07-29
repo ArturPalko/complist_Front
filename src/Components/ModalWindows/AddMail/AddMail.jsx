@@ -64,10 +64,19 @@ const [previousName, setPreviousName] = useState("");
     selectDictionaryByType("sections")
   );
 
-  const departmentsValues = useSelector(
-    selectDictionaryByType("deps")
-  );
+const departments = useSelector(
+  selectDictionaryByType("deps")
+);
 
+const departmentsValues = useMemo(
+  () =>
+    [...departments].sort((a, b) =>
+      a.name.localeCompare(b.name)
+    ),
+  [departments]
+);;
+
+console.log("departmentValues:", departmentsValues)
 
   const menu = useSelector(activeMenu);
 
