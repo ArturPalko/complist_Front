@@ -1,5 +1,6 @@
 import { useState } from "react";
 import s from "./MailNameField.module.css";
+import form  from "../../../../../shared/Css/form.module.css"
 
 export default function MailNameField({
   value,
@@ -76,7 +77,7 @@ export default function MailNameField({
 
           <div className={s.front}>
             <input
-              className={s.input}
+              className={`${form.input} ${form.focusBlue}`}
               value={value}
               onChange={e =>
                 onChange(e.target.value)
@@ -86,7 +87,7 @@ export default function MailNameField({
 
           <div className={s.back}>
             <input
-              className={s.input}
+              className={`${form.input} ${form.focusBlue}`}
               value={oldValue}
               onChange={e =>
                 onOldChange(e.target.value)

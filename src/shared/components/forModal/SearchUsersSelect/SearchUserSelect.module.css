@@ -1,5 +1,7 @@
 .wrapper {
   position: relative;
+
+  
 }
 
 .dropdown {
@@ -38,6 +40,7 @@
 
   color: #777;
   font-size: 14px;
+  
 }
 
 .input {
@@ -45,6 +48,7 @@
   height: 40px;
 
   padding: 0 12px;
+  box-sizing: border-box;
 
   border: 1px solid #c9c9c9;
   border-radius: 6px;
@@ -57,4 +61,9 @@
   transition:
     border-color .2s,
     box-shadow .2s;
+}
+
+.input:focus {
+  border-color: #0b6ef3;
+  box-shadow: 0 0 0 2px rgba(11, 110, 243, .15);
 }

@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 import s from "./SearchUserSelect.module.css";
 
-
 export default function SearchUserSelect({
   users,
   value,

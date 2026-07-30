@@ -1,0 +1,40 @@
+.input,
+.select {
+  width: 100%;
+  height: 40px;
+
+  padding: 0 12px;
+  box-sizing: border-box;
+
+  border: 1px solid #c9c9c9;
+  border-radius: 6px;
+
+  outline: none;
+  background: #fff;
+
+  font-size: 14px;
+
+  transition:
+    border-color .2s,
+    box-shadow .2s;
+}
+
+.focusBlue:focus {
+  border-color: #0b6ef3;
+  box-shadow: 0 0 0 2px rgba(11, 110, 243, .15);
+}
+
+.focusGray:focus {
+  border: 1px solid #ccc;
+  box-shadow: 0 0 0 2px #ccc;
+  border-radius: 8px;
+}
+
+
+
+ .label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+

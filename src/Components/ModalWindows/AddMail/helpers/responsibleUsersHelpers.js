@@ -5,6 +5,8 @@ export const addResponsibleUser = ({
   setResponsibleQuery,
   setResponsibleOpened,
 }) => {
+
+  if(!userId)
   if (responsibleUserIds.includes(userId)) {
     return;
   }
@@ -26,3 +28,4 @@ export const removeResponsibleUser = ({
     prev.filter(id => id !== userId)
   );
 };
+

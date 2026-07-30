@@ -1,5 +1,5 @@
 import s from "./PasswordField.module.css";
-
+import form from "../../../../../shared/Css/form.module.css"
 export default function PasswordField({
   isEdit,
   password,
@@ -10,8 +10,8 @@ export default function PasswordField({
   handleShowPassword,
 }) {
   return (
-    <div className={s.field}>
-      <label className={s.label}>
+    <div className={s.wrapper}>
+      <label className={form.label}>
         Пароль
       </label>
 
@@ -31,7 +31,7 @@ export default function PasswordField({
 
           {passwordKnown && (
             <input
-              className={s.input}
+              className={`${form.input} ${form.focusGray}`}
               value={password}
               placeholder="Введіть пароль"
               onChange={(e) =>
@@ -63,7 +63,7 @@ export default function PasswordField({
 
           {showPassword && (
             <input
-              className={s.input}
+              className={`${form.input} ${form.focusGray}`}
               value={password}
               onChange={(e) =>
                 setPassword(e.target.value)
@@ -72,6 +72,7 @@ export default function PasswordField({
           )}
         </>
       )}
-    </div>
+      </div>
+   
   );
 }

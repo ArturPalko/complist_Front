@@ -1,12 +1,10 @@
-import { useMemo } from "react";
 import SearchUserSelect from "../../../../../shared/components/forModal/SearchUsersSelect/SearchUserSelect";
-import s from "./OwnerSelector.module.css"
+import s from "./OwnerSelector.module.css";
+import form from "../../../../../shared/Css/form.module.css";
 
 export default function OwnerSelector({
   ownerType,
   ownerId,
-  query,
-  opened,
 
   users,
   departments,
@@ -17,12 +15,6 @@ export default function OwnerSelector({
   setQuery,
   setOpened,
 }) {
-  const filteredUsers = useMemo(() => {
-    return users.filter((u) =>
-      u.name.toLowerCase().includes(query.toLowerCase())
-    );
-  }, [users, query]);
-
   const handleOwnerTypeChange = (value) => {
     setOwnerType(value);
     setOwnerId("");
@@ -42,10 +34,9 @@ export default function OwnerSelector({
         };
 
   return (
-    <>
-      <div> 
-      <div className={s.field}>
-        <label className={s.label}>
+    <div className={s.wrapper}>
+      <div>
+        <label className={form.label}>
           Тип власника
         </label>
 
@@ -71,8 +62,8 @@ export default function OwnerSelector({
       </div>
 
       {ownerType !== "user" && (
-        <div className={s.field}>
-          <label className={s.label}>
+        <div>
+          <label className={form.label}>
             {selectData.label}
           </label>
 
@@ -100,19 +91,18 @@ export default function OwnerSelector({
       )}
 
       {ownerType === "user" && (
-  <div className={s.field}>
-    <label className={s.label}>
-      Користувач
-    </label>
+        <div>
+          <label className={form.label}>
+            Користувач
+          </label>
 
-    <SearchUserSelect
-      users={users}
-      value={ownerId}
-      onChange={setOwnerId}
-    />
-  </div>
-)}
+          <SearchUserSelect
+            users={users}
+            value={ownerId}
+            onChange={setOwnerId}
+          />
         </div>
-    </>
+      )}
+    </div>
   );
 }

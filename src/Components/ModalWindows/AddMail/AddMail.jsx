@@ -210,6 +210,9 @@ initializeEditForm(editValue, {
             setResponsibleUserIds,
           })
         }
+        removeAllResponsibleUsers={() =>
+      setResponsibleUserIds([])
+    }
       /> }
 
       <FormButtons
