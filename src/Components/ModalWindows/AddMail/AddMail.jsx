@@ -186,7 +186,7 @@ initializeEditForm(editValue, {
         }
       />
 
-      {modalConfig.showResponsibleUsers && <ResponsibleUsersSelector
+      {modalConfig.showResponsibleUsers && ownerType!=="user" && <ResponsibleUsersSelector
         ownerType={ownerType}
         users={usersValues}
         responsibleUserIds={responsibleUserIds}
