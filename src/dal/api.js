@@ -178,3 +178,8 @@ export const editMail = ({ id, menu, ...data }) => {
     data
   );
 };
+
+export const addPhone = (data) =>{
+  debugger
+  return api.post("/api/addPhone",data)
+}

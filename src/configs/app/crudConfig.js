@@ -18,7 +18,7 @@ export const CRUD_CONFIG = {
   },
 
   internal: {
-    title: "Номер телефона",
+    title: "Номер телефона інтернела",
     endpoint: "phones",
 
     mappers: {

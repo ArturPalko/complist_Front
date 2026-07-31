@@ -16,12 +16,16 @@ import {
   addUser,
   deleteMail,
   addMail,
-  editMail
+  editMail,
+  addPhone,
+
 } from "../../dal/api";
 import { useSelector } from "react-redux";
 import { activeMenu, isDepartmentsMode, isSectionsMode, selectActiveSectionId, selectAtiveDepartmentId } from "../../redux/selectors/selector";
 import AddUser from "./AddUser/AddUser";
 import AddMail from "./AddMail/AddMail";
+import { PHONE_TYPES } from "../Content/Tables/PhonesTable/PhonesTable";
+import AddPhone from "./AddPhone/AddPhone";
 ;
 
 export default function ModalRoot() {
@@ -32,11 +36,11 @@ export default function ModalRoot() {
   const isSectiosns = useSelector(isSectionsMode);
   const isDep = useSelector(isDepartmentsMode)
   const menu = useSelector(activeMenu);
-   
+  
   const config = CRUD_CONFIG[modalType];
-
+debugger
 const handleDelete = async () => {
-     
+    debugger 
   if((menu == "Lotus" || menu == "Gov-ua")  && mode == "delete"){
     let a = modalData;
          
@@ -45,6 +49,8 @@ const handleDelete = async () => {
     return 
     
   }
+
+
   if (
     (
       isSectiosns &&
@@ -65,6 +71,23 @@ const handleDelete = async () => {
   return apiDeleteEntity(config.endpoint, modalData);
 };
    
+debugger
+  if (PHONE_TYPES.includes(modalType)){
+    debugger
+    return <AddPhone onClose={closeModal} modalType={modalType} onSubmit={async (data) => {
+        debugger
+      if (mode === "add") {
+          console.log("DEPR:", modalData);
+          debugger
+        
+          return addPhone(data);
+        }
+
+        if (mode === "edit") {
+          return editMail(data);
+        }
+      }}/>
+  }
 
 console.log({ menu, modalType })
 if (
@@ -157,7 +180,7 @@ if (
         console.log("DEPR:",modalData)
      
         
-        
+    debugger    
   // ---------------- ADD / EDIT ----------------
   return (
     <EntityModal

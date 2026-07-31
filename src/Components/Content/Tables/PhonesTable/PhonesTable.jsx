@@ -20,7 +20,7 @@ import { GroupRowActions } from "./GroupRowActions";
 
 const BasePhonesTable = createTableComponent(usePhonesTableLogic);
 
-const PHONE_TYPES = ["landline", "internal", "cisco"];
+export const PHONE_TYPES = ["landline", "internal", "cisco"];
 
 const PhonesTable = ({
   columns,

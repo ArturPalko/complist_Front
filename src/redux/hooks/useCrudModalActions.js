@@ -54,6 +54,7 @@ if (menu == "Lotus" || menu == "Gov-ua"){
 
   // ---------------- ADD ----------------
   const add = () => {
+    debugger
        
     // if (!config) return;
 
@@ -61,9 +62,10 @@ if (menu == "Lotus" || menu == "Gov-ua"){
       modalType === "section"
         ? { departmentId: activeDep }
         : null;
+        
 
     if (modalType === "section" && !data.departmentId) return;
-
+debugger
     openModal({
       type: modalType,
       mode: "add",
