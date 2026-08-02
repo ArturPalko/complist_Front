@@ -1,22 +1,42 @@
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import s from "./AddPhone.module.css";
 import form from "../../../shared/Css/form.module.css";
 
-import { selectDictionaryByType } from "../../../redux/selectors/selector";
+import { activeMenu, selectDictionaryByType } from "../../../redux/selectors/selector";
 
 import ResponsibleUsers from "../AddMail/subComponents/ResponsibleUsersSelector/ResponsibleUsersSelector";
 import FormButtons from "../AddMail/subComponents/FormButtons/FormButtons";
+import { setDataIsLoadedActionCreator } from "../../../redux/reducers/app-reducer";
 
-export default function AddPhone({modalType, onClose, onSubmit, editValue = null }) {
+export default function AddPhone({
+  modalType,
+  onClose,
+  onSubmit,
+  editValue = null,
+}) {
   const users = useSelector(selectDictionaryByType("users"));
 
-  const [phone, setPhone] = useState(editValue?.phone ?? "");
-  const [ownerIds, setOwnerIds] = useState(editValue?.ownerIds ?? []);
+  const [phone, setPhone] = useState("");
+  const [ownerIds, setOwnerIds] = useState([]);
+  const dispatch = useDispatch();
+  const menu = useSelector(activeMenu);
+
+  useEffect(() => {
+    if (!editValue) {
+      setPhone("");
+      setOwnerIds([]);
+      return;
+    }
+
+    setPhone(editValue.number ?? "");
+    setOwnerIds(editValue.users?.map((user) => user.id) ?? []);
+  }, [editValue]);
 
   const addOwner = (id) => {
-      if(!id) return
+    if (!id) return;
+
     setOwnerIds((prev) =>
       prev.includes(id) ? prev : [...prev, id]
     );
@@ -32,29 +52,40 @@ export default function AddPhone({modalType, onClose, onSubmit, editValue = null
     setOwnerIds([]);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     let type;
 
-    switch(modalType){
+    switch (modalType) {
+      case "landline":
+        type = 1;
+        break;
+
       case "internal":
-        type = 2
-        break
-      
-      case "lanline":
-        type = 1
-        break
-      
+        type = 2;
+        break;
+
       case "cisco":
-        type = 3
-        break
+        type = 3;
+        break;
+
+      default:
+        type = editValue?.phoneTypeId;
+        break;
     }
-    debugger
-    
-  onSubmit({
-  name: phone,
-  type,
-  assignedUsers: ownerIds,
-});
+
+  await  onSubmit({
+      id: editValue?.id,
+      name: phone,
+      type,
+      assignedUsers: ownerIds,
+    });
+
+     dispatch(
+          setDataIsLoadedActionCreator(
+            false,
+            menu
+          )
+        );
   };
 
   return (

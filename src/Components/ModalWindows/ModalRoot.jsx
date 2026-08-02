@@ -18,6 +18,8 @@ import {
   addMail,
   editMail,
   addPhone,
+  deletePhone,
+  editPhone
 
 } from "../../dal/api";
 import { useSelector } from "react-redux";
@@ -41,6 +43,14 @@ export default function ModalRoot() {
 debugger
 const handleDelete = async () => {
     debugger 
+
+  if (PHONE_TYPES.includes(modalType) && mode == "delete"){
+    deletePhone(modalData)
+  }
+
+
+
+
   if((menu == "Lotus" || menu == "Gov-ua")  && mode == "delete"){
     let a = modalData;
          
@@ -49,6 +59,7 @@ const handleDelete = async () => {
     return 
     
   }
+  
 
 
   if (
@@ -72,9 +83,9 @@ const handleDelete = async () => {
 };
    
 debugger
-  if (PHONE_TYPES.includes(modalType)){
+  if (PHONE_TYPES.includes(modalType) && mode != "delete"){
     debugger
-    return <AddPhone onClose={closeModal} modalType={modalType} onSubmit={async (data) => {
+    return <AddPhone onClose={closeModal} editValue={mode === "edit" ? modalData : null} modalType={modalType} onSubmit={async (data) => {
         debugger
       if (mode === "add") {
           console.log("DEPR:", modalData);
@@ -84,7 +95,7 @@ debugger
         }
 
         if (mode === "edit") {
-          return editMail(data);
+          return editPhone(data);
         }
       }}/>
   }

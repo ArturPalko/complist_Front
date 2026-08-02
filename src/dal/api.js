@@ -183,3 +183,13 @@ export const addPhone = (data) =>{
   debugger
   return api.post("/api/addPhone",data)
 }
+
+export const deletePhone = (ids) => {
+  debugger
+  return api.post("api/deletePhones", ids)
+}
+
+export const editPhone = ({ id, ...data }) => {
+  debugger
+  return api.put(`/api/editPhone/${id}`, data);
+};
