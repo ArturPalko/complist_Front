@@ -18,6 +18,7 @@ import { addUsersModeSelected, getCurrentMode, isDepartmentsMode, isSectionsMode
 import { GroupRowActions } from "./GroupRowActions";
 
 
+
 const BasePhonesTable = createTableComponent(usePhonesTableLogic);
 
 export const PHONE_TYPES = ["landline", "internal", "cisco"];
@@ -52,51 +53,59 @@ const totalColumns =
   1 + columns.reduce((sum, col) => sum + (col.subLabels?.length || 1), 0);
 
 const renderHeader = () => {
-  if (showNavigationHeader) {
-    return (
-      <tr>
-        <th
-          colSpan={totalColumns}
-          className={s.navigationHeader}
-        >
-          <div className={s.navigationContent}>
-            <button
-              type="button"
-              className={s.backButton}
-              onClick={handleBack({
-                activeDep,
-                activeSec,
-                isSections,
-                isAddUsers,
-                dispatch,
-              })}
-            >
-              ← Назад
-            </button>
 
-            <div className={s.navigationTitle}>
-              <span className={s.departmentTitle}>
-                {departmentNameForCapture}
-              </span>
+if (isPhoneEditMode) {
+  return (
+    <tr>
+      <th>№</th>
+      <th>Номер телефону</th>
+      <th>Абоненти</th>
+    </tr>
+  );
+}
 
-              {activeSec && (
-                <>
-                  <span className={s.navigationSlash}>
-                    {" / "}
-                  </span>
+if (showNavigationHeader) {
+  return (
+    <tr>
+      <th
+        colSpan={totalColumns}
+        className={s.navigationHeader}
+      >
+        <div className={s.navigationContent}>
+          <button
+            type="button"
+            className={s.backButton}
+            onClick={handleBack({
+              activeDep,
+              activeSec,
+              isSections,
+              isAddUsers,
+              dispatch,
+            })}
+          >
+            ← Назад
+          </button>
 
-                  <span className={s.sectionTitle}>
-                    {sectionNameForCapture}
-                  </span>
-                </>
-              )}
-            </div>
+          <div className={s.navigationTitle}>
+            <span className={s.departmentTitle}>
+              {departmentNameForCapture}
+            </span>
+
+            {activeSec && (
+              <>
+                <span className={s.navigationSlash}>{" / "}</span>
+
+                <span className={s.sectionTitle}>
+                  {sectionNameForCapture}
+                </span>
+              </>
+            )}
           </div>
-        </th>
-      </tr>
-    );
-  }
-
+        </div>
+      </th>
+    </tr>
+  );
+}
   return (
     <>
       <tr>

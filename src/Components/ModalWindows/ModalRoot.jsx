@@ -46,6 +46,7 @@ const handleDelete = async () => {
 
   if (PHONE_TYPES.includes(modalType) && mode == "delete"){
     deletePhone(modalData)
+    return
   }
 
 

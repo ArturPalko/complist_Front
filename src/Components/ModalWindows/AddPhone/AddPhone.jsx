@@ -5,6 +5,7 @@ import s from "./AddPhone.module.css";
 import form from "../../../shared/Css/form.module.css";
 
 import { activeMenu, selectDictionaryByType } from "../../../redux/selectors/selector";
+import { fetchDictionariesThunk } from "../../../dal/api";
 
 import ResponsibleUsers from "../AddMail/subComponents/ResponsibleUsersSelector/ResponsibleUsersSelector";
 import FormButtons from "../AddMail/subComponents/FormButtons/FormButtons";
@@ -86,6 +87,8 @@ export default function AddPhone({
             menu
           )
         );
+         dispatch(fetchDictionariesThunk());
+  onClose();
   };
 
   return (

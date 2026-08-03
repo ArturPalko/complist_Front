@@ -4,16 +4,18 @@ import { fetchDictionariesThunk } from "../../../dal/api";
 import { useModalWindowContext } from "../../../redux/contexts/useConetxt";
 import { setDataIsLoadedActionCreator } from "../../../redux/reducers/app-reducer";
 import { activeMenu } from "../../../redux/selectors/selector";
+import { PHONE_TYPES } from "../../Content/Tables/PhonesTable/PhonesTable";
 
 export default function DeletePositionModal({ onClose, onConfirm, modalData }) {
   const dispatch = useDispatch();
  const {modalType} = useModalWindowContext()
  const menu = useSelector(activeMenu);
    
-  const handleDelete = async () => {
+   const handleDelete = async () => {
     console.log("MODALTYPE:", modalType)
        
     await onConfirm(modalData); // ids
+
       
         if(modalType == "mailsToUsers" || modalType == "mailsToUsersGovua"){
             
@@ -22,6 +24,14 @@ export default function DeletePositionModal({ onClose, onConfirm, modalData }) {
         else{
               dispatch(fetchDictionariesThunk());
         }
+
+        if(PHONE_TYPES.includes(modalType)){
+       await   dispatch(setDataIsLoadedActionCreator(false, menu))
+          dispatch(fetchDictionariesThunk());
+        }        
+      
+      
+
     onClose();
   };
 

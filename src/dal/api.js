@@ -25,14 +25,23 @@ axiosRetry(api, {
   },
 });
 
+// api.interceptors.response.use(
+//   response => response,
+//   error => {
+//     console.error("API error:", error.message);
+//     return Promise.reject(error);
+//   }
+// );
 api.interceptors.response.use(
   response => response,
-  error => {
-    console.error("API error:", error.message);
-    return Promise.reject(error);
+  err => {
+    console.error("URL:", err.config?.url);
+    console.error("METHOD:", err.config?.method);
+    console.error("STATUS:", err.response?.status);
+
+    return Promise.reject(err);
   }
 );
-
 
 export const fetchPasswordsByType = async (type) => {
   const endpoint = passwordUrls[type];
@@ -186,7 +195,7 @@ export const addPhone = (data) =>{
 
 export const deletePhone = (ids) => {
   debugger
-  return api.post("api/deletePhones", ids)
+  return api.post("/api/deletePhones", ids)
 }
 
 export const editPhone = ({ id, ...data }) => {
