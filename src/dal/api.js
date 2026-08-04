@@ -136,69 +136,37 @@ export const changeOrderOfDisplayElements = async (
 
 
 
+// ---------------- GENERIC CRUD ----------------
+
 export const apiAddEntity = (endpoint, payload) => {
-           
   return api.post(`/api/${endpoint}`, payload);
 };
 
-
 export const apiEditEntity = (endpoint, { id, ...data }) => {
-           
   return api.put(`/api/${endpoint}/${id}`, data);
 };
 
-
-
 export const apiDeleteEntity = (endpoint, ids) => {
-           
   return api.post(`/api/${endpoint}/delete`, ids);
 };
 
+// ---------------- MAILS ----------------
 
-export const addUser = (data) =>{
-  return api.post('api/addUser', data)
-}
+export const addMail = (data, mailType) => {
+  return api.post(`/api/mails/${mailType}`, data);
+};
 
-
-export const deleteUser = (ids) =>{
-     
-  return api.post('api/deleteUsers', ids)
-}
-
-export const apiEditUser = ({ id, ...data }) =>{
-     
-  return api.put(`api/editUser/${id}`, data)
-}
-
-
-
-export const addMail = (data,menu) =>{
-     
-  return api.post(`mails/${menu}/addMail`, data)
-}
-
-export const deleteMail = (ids) => {
-     
-  return api.post("mails/deleteMails", ids)
-}
-export const editMail = ({ id, menu, ...data }) => {
+export const editMail = ({
+  id,
+  mailType,
+  ...data
+}) => {
   return api.put(
-    `mails/${menu}/editMail/${id}`,
+    `/api/mails/${mailType}/${id}`,
     data
   );
 };
 
-export const addPhone = (data) =>{
-  debugger
-  return api.post("/api/addPhone",data)
-}
-
-export const deletePhone = (ids) => {
-  debugger
-  return api.post("/api/deletePhones", ids)
-}
-
-export const editPhone = ({ id, ...data }) => {
-  debugger
-  return api.put(`/api/editPhone/${id}`, data);
+export const deleteMail = (ids) => {
+  return apiDeleteEntity("mails", ids);
 };

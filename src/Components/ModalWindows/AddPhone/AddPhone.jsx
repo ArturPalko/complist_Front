@@ -117,6 +117,8 @@ export default function AddPhone({
         <FormButtons
           onCancel={onClose}
           onSave={handleSave}
+          isEdit={!!editValue}
+          
         />
       </div>
     </div>

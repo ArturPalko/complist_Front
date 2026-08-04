@@ -13,32 +13,52 @@ import {
   selectUsersByDepartment,
   activeMenu,
   getDataForMenu,
+  addUsersModeSelected
 } from "../selectors/selector";
 
 export const useCrudModalActions = (modalType) => {
   const { selectedIds } = useDragContext();
   const { openModal } = useModalWindowContext();
 
-
   const activeDep = useSelector(selectAtiveDepartmentId);
   const activeSec = useSelector(selectActiveSectionId);
 
   const positions = useSelector(selectPositionsDictionary);
   const sections = useSelector(selectSectionsById(activeDep));
-  const departments = useSelector(selectDictionaryByType("departments"));
-  const landlines = useSelector(selectDictionaryByType("landline", "phones"));
-  const internals = useSelector(selectDictionaryByType("internal", "phones"));
-  const ciscos = useSelector(selectDictionaryByType("cisco", "phones"));
- const menu = useSelector(activeMenu);
- const dataForMenu = useSelector(state => getDataForMenu(state, menu))
+  const departments = useSelector(
+    selectDictionaryByType("departments")
+  );
+
+  const landlines = useSelector(
+    selectDictionaryByType("landline", "phones")
+  );
+  const internals = useSelector(
+    selectDictionaryByType("internal", "phones")
+  );
+  const ciscos = useSelector(
+    selectDictionaryByType("cisco", "phones")
+  );
+
+  const menu = useSelector(activeMenu);
+  const dataForMenu = useSelector((state) =>
+    getDataForMenu(state, menu)
+  );
+
   const users = useSelector(
     activeSec
       ? selectUsersBySection(activeDep, activeSec)
       : selectUsersByDepartment(activeDep)
   );
 
-  const config = CRUD_CONFIG[modalType];
-  const entity = entityMap[modalType];
+  const isAddUsers = useSelector(addUsersModeSelected);
+
+  const currentModalType =
+    menu === "Lotus" || menu === "Gov-ua"
+      ? "mailsToUsers"
+      : modalType;
+
+  const config = CRUD_CONFIG[currentModalType];
+  const entity = entityMap[currentModalType];
 
   const sources = {
     position: positions,
@@ -48,100 +68,71 @@ export const useCrudModalActions = (modalType) => {
     internal: internals,
     cisco: ciscos,
   };
-if (menu == "Lotus" || menu == "Gov-ua"){
-  modalType = "mailsToUsers"
-}
 
   // ---------------- ADD ----------------
-  const add = () => {
-    debugger
-       
-    // if (!config) return;
 
+  const add = () => {
     const data =
-      modalType === "section"
+      currentModalType === "section"
         ? { departmentId: activeDep }
         : null;
-        
 
-    if (modalType === "section" && !data.departmentId) return;
-debugger
+    if (
+      currentModalType === "section" &&
+      !data.departmentId
+    )
+      return;
+
     openModal({
-      type: modalType,
+      type: currentModalType,
       mode: "add",
       data,
     });
   };
 
   // ---------------- DELETE ----------------
+
   const remove = () => {
-       
-    // if (!config || !selectedIds?.length) return;
-    if ( !selectedIds?.length) return;
-   
+    if (!selectedIds?.length) return;
+
     openModal({
-      type: modalType,
+      type: currentModalType,
       mode: "delete",
       data: selectedIds,
     });
   };
 
   // ---------------- EDIT ----------------
+
   const edit = () => {
-    console.log("EDIT CALLED", Date.now());
-                 
-    // if (!config || !selectedIds?.length) return;
-        if ( !selectedIds?.length) return;
-   
+    if (!selectedIds?.length) return;
 
     const id = selectedIds[0];
-
     let item;
-   
-    // Редагування користувачів
-    if (activeDep) {
-      item = users.find(user => Number(user.id) === Number(id));
-    }
-    else {
-      // if (!entity) return;
-       
-     let list;
-let item;
-  
-if (modalType === "mailsToUsers" || modalType == "mailsToUsersGovua") {
-       
-  list = dataForMenu;
-   console.log("id", id);
-console.log("dataForMenu", dataForMenu);
-console.log(
-  "flat",
-  dataForMenu.flatMap(page => page.rows)
-);
-  
-  item = dataForMenu
-    .flatMap(page => page.rows)
-    .find(row => Number(row.id) === Number(id));
-} else {
-  list = sources[modalType];
 
-  item = list
-    ?.flatMap(p => p.rows ?? [])
-    .find(r => Number(r?.[entity.id]) === Number(id));
-}
-     
-   
-  //     item = list
-  //       ?.flatMap(p => p.rows ?? [])
-  //       .find(r => Number(r?.[entity.id]) === Number(id));
-  //   }
-   
+    if (activeDep && isAddUsers) {
+      item = users.find(
+        (user) => Number(user.id) === Number(id)
+      );
+    } else if (currentModalType === "mailsToUsers") {
+      item = dataForMenu
+        .flatMap((page) => page.rows)
+        .find((row) => Number(row.id) === Number(id));
+    } else {
+      item = sources[currentModalType]
+        ?.flatMap((page) => page.rows ?? [])
+        .find(
+          (row) =>
+            Number(row?.[entity.id]) === Number(id)
+        );
+    }
+
     openModal({
-      type: modalType,
+      type: currentModalType,
       mode: "edit",
       data: item,
     });
   };
-}
 
   return {
     add,
