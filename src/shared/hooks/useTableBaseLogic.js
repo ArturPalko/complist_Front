@@ -25,6 +25,7 @@ export const useTableBaseLogic = ({
   foundResults = [],
   headerRef,
   titleRef,
+  dataSelector
 }) => {
   // ================================
   // refs
@@ -45,7 +46,7 @@ export const useTableBaseLogic = ({
   // ================================
   const { data, isPreviousPageWasFoundResult } =
     useDataLoader(pageName);
-    
+    debugger
 
   const { isPagesNavbarLinkElementOnCurrentPagePressed } =
     useSearchToggle();

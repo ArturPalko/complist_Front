@@ -5,6 +5,7 @@ import { Route, Routes } from "react-router-dom";
 
 import GovUaMails from "./Components/Content/Pages/GovUaMails/GovUaMails";
 import LotusMails from "./Components/Content/Pages/LotusMails/LotusMails";
+ import Dictionaries from "./Components/Content/Pages/Dicitonaries/Dictionaries";
 import Phones from "./Components/Content/Pages/Phones/Phones";
 import RedirectToCurrentPage from "./shared/components/navigation/RedirectToCurrentPage/RedirectToCurrentPage";
 import Error from "./Components/UI/Error/Error";
@@ -80,6 +81,11 @@ const { modal, closeModal } = useModal();
                     />
                   </Route>
                 </Route>
+                <Route path="/dictionary">
+                      <Route path="foundResults" element={<FoundResults />} />
+                      <Route path=":mode/:pageNumber" element={<Dictionaries />} />
+                      <Route path=":mode" element={<Dictionaries />} />
+                    </Route>
               </Routes>
             </div>
           </div>

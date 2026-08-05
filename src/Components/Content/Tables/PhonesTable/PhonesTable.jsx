@@ -4,119 +4,20 @@ import { createTableComponent } from "../../../../shared/components/table/TableW
 import {
   countNonUserRowsBefore,
   getUserRowIndex,
-  handleOnOpenSectionsButtonClick,
-  handleBack,
-  hasItems,
-  getItemsCount,
-  shouldShowActionButton,
 } from "./phonesTableHelpers";
-import { useDispatch, useSelector } from "react-redux";
-import { TdWrapper } from "../../../../shared/components/TdWrapper/TdWrapper";
-import { entityMap } from "../../../../configs/app/enitiyMap";
-import { useCrudModalActions } from "../../../../redux/hooks/useCrudModalActions";
-import { addUsersModeSelected, getCurrentMode, isDepartmentsMode, isSectionsMode, selectActiveSectionId, selectActiveSectionName, selectAtiveDepartmentId, selectAtiveDepartmentName, selectUsersByDepartment } from "../../../../redux/selectors/selector";
-import { GroupRowActions } from "./GroupRowActions";
-
-
+import torn_pageImg from "../../../../assets/Img/torn_page.png";
 
 const BasePhonesTable = createTableComponent(usePhonesTableLogic);
 
-export const PHONE_TYPES = ["landline", "internal", "cisco"];
-
-const PhonesTable = ({
-  columns,
-  pageNumber,
-  rowsPerPage,
-  isSections,
-}) => {
-  const modalType = useSelector(getCurrentMode)
-  const { add} = useCrudModalActions(modalType);
-  const dispatch = useDispatch();
-  const viewMode = useSelector((state) => state.ui.viewMode);
-  const isAddUsers = useSelector (addUsersModeSelected);
-  const activeDep = useSelector(selectAtiveDepartmentId);
-  const activeSec = useSelector(selectActiveSectionId)
-  const users = useSelector(selectUsersByDepartment(activeDep))
-  const isDepartmentMode = useSelector(isDepartmentsMode)
-  const isPhoneEditMode = PHONE_TYPES.includes(viewMode);
-  const rowTypesForBtn= ["department", "section"]
-  const departmentNameForCapture = useSelector(selectAtiveDepartmentName);
-const sectionNameForCapture = useSelector(selectActiveSectionName);
-
-
-const showNavigationHeader =
-  activeDep != null || activeSec != null;
-const headerTitle = activeSec
-  ? `${departmentNameForCapture} / ${sectionNameForCapture}`
-  : departmentNameForCapture;
-const totalColumns =
-  1 + columns.reduce((sum, col) => sum + (col.subLabels?.length || 1), 0);
-
-const renderHeader = () => {
-
-if (isPhoneEditMode) {
-  return (
-    <tr>
-      <th>№</th>
-      <th>Номер телефону</th>
-      <th>Абоненти</th>
-    </tr>
-  );
-}
-
-if (showNavigationHeader) {
-  return (
-    <tr>
-      <th
-        colSpan={totalColumns}
-        className={s.navigationHeader}
-      >
-        <div className={s.navigationContent}>
-          <button
-            type="button"
-            className={s.backButton}
-            onClick={handleBack({
-              activeDep,
-              activeSec,
-              isSections,
-              isAddUsers,
-              dispatch,
-            })}
-          >
-            ← Назад
-          </button>
-
-          <div className={s.navigationTitle}>
-            <span className={s.departmentTitle}>
-              {departmentNameForCapture}
-            </span>
-
-            {activeSec && (
-              <>
-                <span className={s.navigationSlash}>{" / "}</span>
-
-                <span className={s.sectionTitle}>
-                  {sectionNameForCapture}
-                </span>
-              </>
-            )}
-          </div>
-        </div>
-      </th>
-    </tr>
-  );
-}
-  return (
+const PhonesTable = ({ columns, pageNumber, rowsPerPage }) => {
+  const renderHeader = () => (
     <>
       <tr>
         <th rowSpan="2">№ п/п</th>
 
         {columns.map((col) =>
           col.key === "phones" ? (
-            <th
-              key={col.key}
-              colSpan={col.subLabels.length}
-            >
+            <th key={col.key} colSpan={col.subLabels.length}>
               {col.label}
             </th>
           ) : (
@@ -130,177 +31,116 @@ if (showNavigationHeader) {
       <tr>
         {columns
           .filter((c) => c.key === "phones")
-          .flatMap((col, idx) =>
+          .flatMap((col) =>
             col.subLabels.map((sub) => (
-              <th key={sub.key ?? `${col.key}-${idx}`}>
-                {sub.label}
-              </th>
+              <th key={sub.key}>{sub.label}</th>
             ))
           )}
       </tr>
     </>
   );
-};
 
-  // =========================
-  // ROWS
-  // =========================
-  const renderRowCells = (row, index, tableLogic, tableUI) => {
-    const dim = tableLogic.getRowDimClasses(row.dimKey);
-    const phoneColumn = columns.find((c) => c.key === "phones");
-
-    const renderTd = (value, key = null, colSpan = 1) => (
-      <TdWrapper
-        key={key}
-        value={value}
-        tableUI={tableUI}
-        colSpan={colSpan}
-      >
-        {value}
-      </TdWrapper>
-    );
-if (((activeDep && isDepartmentMode) || (activeSec && isSectionsMode)) && isAddUsers) {
-  return (
-    <>
-      <td>{index + 1}</td>
-
-      {renderTd(row.name, `name-${row.id}`)}
-      {renderTd(row.positionName, `position-${row.id}`)}
-      {renderTd(row.userType, `type-${row.id}`)}
-      
-    </>
-  );
-}
-    // =====================================================
-    // 📞 PHONE EDIT MODE (NEW UI)
-    // =====================================================
-    if (isPhoneEditMode && row.type === "phone") {
-      const phoneRowIndex = getUserRowIndex({
-        pageNumber,
-        rowsPerPage,
-        index,
-        nonUserRowsBefore: 0,
-        indexDecrementFromPreviousPages:
-          tableLogic.indexDecrementFromPreviousPages,
-      });
-
-      return (
-        <>
-          {/* index */}
-          <td>{phoneRowIndex}</td>
-
-          {/* phone number */}
-          {renderTd(row.number, `phone-num-${row.id}`)}
-
-          {/* users (🔥 enhanced UI) */}
-         {renderTd(
-  <div className={s.usersInline}>
-    {row.users?.length ? (
-      row.users.map((u) => (
-        <span key={u.id} className={s.userChip}>
-          {u.name}
-        </span>
-      ))
-    ) : (
-      <span className={s.emptyUsers}>—</span>
-    )}
-  </div>,
-  `users-${row.id}`,
-  4
-)}
-        </>
-      );
-    }
-
-    // =====================================================
-    // GROUP ROWS (department / section / position)
-    // =====================================================
-    if (row.type !== "user") {
-      const config = entityMap[row.type];
-      const name = config ? row[config.name] : row.name;
-      const className = config?.className ? s[config.className] : "";
-
-      const showBreak =
-        row.type === "department"
-          ? tableLogic.dashedBlocks.departments.includes(name) && !isSections && !isAddUsers
-          : tableLogic.dashedBlocks.sections.includes(name) && !isAddUsers;
-
-      const totalColumns =
-        1 +
-        columns.reduce((sum, col) => {
-          return sum + (col.subLabels?.length || 1);
-        }, 0);
-
-      return (
-<TdWrapper
-  showBreak={showBreak}
-  value={name}
-  tableUI={tableUI}
-  colSpan={totalColumns}
-  isHeaderRow={true}
-  className={[
-    className,
-    dim.hidden ? "" : dim.dimAfterSearchNavigationClass,
-    dim.hidden ? "" : dim.dimAfterPageNumberPressedClass,
-  ]
-    .filter(Boolean)
-    .join(" ")}
->
-<div className={s.groupRowContent}>
-  <span>{name}</span>
-
-  <GroupRowActions
-    row={row}
-    isSections={isSections}
-    isAddUsers={isAddUsers}
-  />
-</div>
-</TdWrapper>
-      );
-    }
-
-    // =====================================================
-    // USER ROW (NORMAL MODE)
-    // =====================================================
+  const renderRowCells = (row, index, tableLogic) => {
     const nonUserRowsBefore = countNonUserRowsBefore(
       tableLogic.pageData,
       index
     );
 
-    const userRowIndex = getUserRowIndex({
-      pageNumber,
-      rowsPerPage,
-      index,
-      nonUserRowsBefore,
-      indexDecrementFromPreviousPages:
-        tableLogic.indexDecrementFromPreviousPages,
-    });
+    const dim = tableLogic.getRowDimClasses(row.dimKey);
 
-    const userValues =
-      row.userTypeId !== 1
-        ? [row.userName, null]
-        : [row.userPosition, row.userName];
+    switch (row.type) {
+      case "department":
+      case "section": {
+        const isDepartment = row.type === "department";
+        const name = isDepartment
+          ? row.departmentName
+          : row.sectionName;
 
-    return (
-      <>
-        <td>{userRowIndex}</td>
+        const className = isDepartment
+          ? s.mainDepartment
+          : s.section;
 
-        {userValues.map((value, i) =>
-          value ? renderTd(value, `user-${row.id}-${i}`) : <td key={i} />
-        )}
+        const showBreak = isDepartment
+          ? tableLogic.dashedBlocks.departments.some(
+              (d) => d === name
+            )
+          : tableLogic.dashedBlocks.sections.includes(name);
 
-        {phoneColumn?.subLabels.map((sub, idx) => {
-          const phone = row.phones?.find(
-            (p) => p.phoneType === sub.label
-          );
+        return (
+          <td
+            className={[
+              className,
+              dim.hidden
+                ? ""
+                : dim.dimAfterSearchNavigationClass,
+              dim.hidden
+                ? ""
+                : dim.dimAfterPageNumberPressedClass,
+            ]
+              .filter(Boolean)
+              .join(" ")}
+            colSpan={6}
+          >
+            {name}
 
-          return renderTd(
-            phone?.phoneName || "",
-            `phone-${row.id}-${idx}`
-          );
-        })}
-      </>
-    );
+            {showBreak && (
+              <img
+                src={torn_pageImg}
+                alt="Розрив"
+                title="Розрив"
+                className={s.breakImage}
+              />
+            )}
+          </td>
+        );
+      }
+
+      case "user": {
+        const userRowIndex = getUserRowIndex({
+          pageNumber,
+          rowsPerPage,
+          index,
+          nonUserRowsBefore,
+          indexDecrementFromPreviousPages:
+            tableLogic.indexDecrementFromPreviousPages,
+        });
+
+        return (
+          <>
+            <td>{userRowIndex}</td>
+
+            {row.userTypeId !== 1 ? (
+              <>
+                <td>{row.userName}</td>
+                <td />
+              </>
+            ) : (
+              <>
+                <td>{row.userPosition}</td>
+                <td>{row.userName}</td>
+              </>
+            )}
+
+            {columns
+              .find((c) => c.key === "phones")
+              ?.subLabels.map((sub) => {
+                const phone = row.phones?.find(
+                  (p) => p.phoneType === sub.label
+                );
+
+                return (
+                  <td key={sub.key}>
+                    {phone?.phoneName || ""}
+                  </td>
+                );
+              })}
+          </>
+        );
+      }
+
+      default:
+        return null;
+    }
   };
 
   return (
@@ -312,7 +152,3 @@ if (((activeDep && isDepartmentMode) || (activeSec && isSectionsMode)) && isAddU
 };
 
 export default PhonesTable;
-
-
-
-

@@ -1,5 +1,6 @@
 import PhonesTable from "../../Components/Content/Tables/PhonesTable/PhonesTable.jsx";
 import MailsTable from "../../Components/Content/Tables/MalisTable/MailsTable.jsx"
+import DictionaryTable from "../../Components/Content/Tables/DictionaryTable/DicitonaryTable.jsx";
 import { Pages } from "./constants.js";
 import EllipsesForPhonesSVG from "../../assets/SVG/Diagrams/EllipsesForPhonesSVG.js"
 import ConverForLotusSVG from "../../assets/SVG/Diagrams/ConverForLotusSVG.js";
@@ -9,6 +10,16 @@ import ConverForGovUaSVG from "../../assets/SVG/Diagrams/ConverForGovUaSVG.js"
 
 
 export const pageConfigs = {
+  [Pages.DICTIONARIES]: {
+  title: "Довідники",
+  TableComponent: DictionaryTable,
+  columns: [
+    { key: "name", label: "Назва" }
+  ],
+  basePath: "/dictionary/",
+  pageFromURLIndex: 1,
+  showSearchToggle: true,
+},
   [Pages.PHONES]: {
     StatusDiagram: EllipsesForPhonesSVG,
     title: "Телефони",

@@ -21,6 +21,7 @@ import {
 
 import { changeOrderOfDisplayElements } from "../../../dal/api";
 import { setDataIsLoadedActionCreator } from "../../../redux/reducers/app-reducer";
+import { useNavigate } from "react-router-dom";
 
 const BottomTableControls = () => {
   const dispatch = useDispatch();
@@ -32,7 +33,7 @@ const BottomTableControls = () => {
   const isUserTypes = useSelector(isUserTypesMode);
   const mode = useSelector(getCurrentMode);
   const isAddUsers = useSelector(addUsersModeSelected);
-
+  const navigate = useNavigate()
   const phoneTypes = ["landline", "internal", "cisco"];
 
   const selectedPhoneType = phoneTypes.includes(mode)
@@ -73,6 +74,10 @@ const BottomTableControls = () => {
       );
     }
   };
+  const openMode = (mode) => {
+    dispatch(setPhonesViewMode(mode));
+    navigate(`/dictionary/${mode}`);
+};
 
   return (
     <div className={s.controlsWrapper}>
@@ -113,9 +118,9 @@ const BottomTableControls = () => {
                 isSections ? s.active : ""
               }`}
               onClick={() =>
-                dispatch(
-                  setPhonesViewMode("section")
-                )
+               
+                  openMode(("section"))
+                
               }
             >
               Секції
@@ -125,11 +130,9 @@ const BottomTableControls = () => {
               className={`${s.toggleBtn} ${
                 isDepartments ? s.active : ""
               }`}
-              onClick={() =>
-                dispatch(
-                  setPhonesViewMode("department")
-                )
-              }
+             onClick={() =>
+            openMode(("department"))
+          }
             >
               Департаменти
             </button>
@@ -141,7 +144,7 @@ const BottomTableControls = () => {
             isPosition ? s.active : ""
           }`}
           onClick={() =>
-            dispatch(setPhonesViewMode("position"))
+            openMode(("position"))
           }
         >
           Посади
@@ -152,7 +155,7 @@ const BottomTableControls = () => {
             isUserTypes ? s.active : ""
           }`}
           onClick={() =>
-            dispatch(setPhonesViewMode("userType"))
+            openMode(("userType"))
           }
         >
           Тип користувача
@@ -164,10 +167,9 @@ const BottomTableControls = () => {
           }`}
           value={selectedPhoneType}
           onChange={(e) =>
-            dispatch(
-              setPhonesViewMode(
+            openMode(
+  
                 e.target.value || null
-              )
             )
           }
         >

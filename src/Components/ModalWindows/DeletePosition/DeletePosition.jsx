@@ -4,7 +4,7 @@ import { fetchDictionariesThunk } from "../../../dal/api";
 import { useModalWindowContext } from "../../../redux/contexts/useConetxt";
 import { setDataIsLoadedActionCreator } from "../../../redux/reducers/app-reducer";
 import { activeMenu } from "../../../redux/selectors/selector";
-import { PHONE_TYPES } from "../../Content/Tables/PhonesTable/PhonesTable";
+import { PHONE_TYPES } from "../../../configs/app/constants";
 
 export default function DeletePositionModal({ onClose, onConfirm, modalData }) {
   const dispatch = useDispatch();

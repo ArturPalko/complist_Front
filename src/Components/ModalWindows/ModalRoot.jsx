@@ -28,7 +28,7 @@ import {
   selectAtiveDepartmentId,
 } from "../../redux/selectors/selector";
 
-import { PHONE_TYPES } from "../Content/Tables/PhonesTable/PhonesTable";
+import { PHONE_TYPES } from "../../configs/app/constants";
 import { handleDelete, handleSubmit } from "./helpers";
 
 export default function ModalRoot() {
