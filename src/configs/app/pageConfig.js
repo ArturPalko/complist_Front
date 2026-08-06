@@ -16,8 +16,8 @@ export const pageConfigs = {
   columns: [
     { key: "name", label: "Назва" }
   ],
-  basePath: "/dictionary/",
-  pageFromURLIndex: 1,
+  basePath: "/dictionary/departments/",
+  pageFromURLIndex: 2,
   showSearchToggle: true,
 },
   [Pages.PHONES]: {

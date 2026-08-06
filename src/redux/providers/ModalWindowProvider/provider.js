@@ -34,7 +34,7 @@ export function ModalWindowProvider({ children }) {
 
   // ---------------- CLOSE MODAL ----------------
   const closeModal = () => {
-    debugger
+      
     setModalType(null);
     setMode(null);
     setModalData(null);

@@ -22,6 +22,7 @@ import { togglepagesNavbarLinkElementOnCurrentPage } from "../../../redux/reduce
 
 import PagesNavBarView from "./PagesNavbarView/PagesNavbarView";
 import { handleLastVisitedPage, handleSearchResults, getPageInfoFromPath, getPagesCount } from "./pageUtils";
+import { getCurrentMode } from "../../../redux/selectors/selector";
 
 const PagesNavBar = (props) => {
   const location = useLocation();
@@ -87,6 +88,7 @@ const PagesNavBar = (props) => {
       setLastVisitedPage: props.setLastVisitedPage,
       setFilterPage: props.setFilterPage,
       rememberCurrentPage: props.rememberCurrentPage,
+      currentMode: props.currentMode
     });
 
     lastPageRef.current = { pageName, pageFromURL };
@@ -118,8 +120,12 @@ const PagesNavBar = (props) => {
 
 // --- Redux
 const mapStateToProps = (state) => ({
+  currentMode: getCurrentMode(state),
   activeMenu: activeMenu(state),
-  pagesCount: selectPaginationPagesCount(activeMenu(state))(state),
+ pagesCount: selectPaginationPagesCount(
+    activeMenu(state),
+    getCurrentMode(state)
+)(state),
 
   searchValue: selectSearchValueByPage(activeMenu(state))(state),
   isSearchValueFound: isSearchValueFoundByPage(activeMenu(state))(state),

@@ -58,7 +58,7 @@ const [previousName, setPreviousName] = useState("");
   const usersValues = useSelector(
     selectDictionaryByType("users")
   );
-  debugger
+    
 
   const sectionsValues = useSelector(
     selectDictionaryByType("sections")
@@ -115,7 +115,7 @@ const isEdit = Boolean(editValue?.id);
 
 const modalConfig =
   pageConfigs[menu].modalWindows.addMail;
-debugger
+  
 useEffect(() => {
 initializeEditForm(editValue, {
   setMail,

@@ -66,12 +66,12 @@ const TableWrapperBody = ({
   }, [foundResults, setFoundResults]);
 
 
-debugger
+  
   return (
     <tbody className={dragIds.length ? "dragging" : ""}>
 
       {pageData?.map((item, index) => {
-        debugger
+          
       const itemId =
       item?.[entityMap?.[item?.type]?.id] ?? item?.id;
 const itemKey = `${item.type}-${itemId}`; // React

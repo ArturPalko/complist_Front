@@ -1,23 +1,47 @@
 import { pageConfigs } from "../../../configs/app/pageConfig";
 import { Pages } from "../../../configs/app/constants";
 
-export const handleLastVisitedPage = ({ pageName, pageFromURL, isFilterApplied, searchValue, setLastVisitedPage, setFilterPage, rememberCurrentPage }) => {
-  if (!pageName || !pageFromURL) return;
+export const handleLastVisitedPage = ({
+  pageName,
+  currentMode,
+  pageFromURL,
+  isFilterApplied,
+  searchValue,
+  setLastVisitedPage,
+  setFilterPage,
+  rememberCurrentPage,
 
-  const isApplied = isFilterApplied(pageName);
+}) => {
+  debugger
+  console.log("CurrentMode:", currentMode)
+  if (!pageName || !pageFromURL) return;
+debugger
+  const dictionaryModes = ["positions", "userTypes", "departments"];
+  const phoneModes = ["landline", "internal", "cisco"];
+
+  const pageKey =
+    dictionaryModes.includes(currentMode) ||
+    phoneModes.includes(currentMode)
+      ? currentMode
+      : pageName;
+
+  const isApplied = isFilterApplied(pageKey);
   const results = searchValue?.foundResults || [];
 
-  if (isApplied && results.length > 0) {
-    setLastVisitedPage(pageName, pageFromURL);
-    if (pageFromURL !== "foundResults") {
-      setFilterPage(pageName, pageFromURL);
-    }
-  } else if (!isApplied) {
-    rememberCurrentPage(pageName, pageFromURL);
-  } else if (isApplied && results.length === 0) {
-    setFilterPage(pageName, pageFromURL);
-    setLastVisitedPage(pageName, pageFromURL);
+if (isApplied && results.length > 0) {
+  setLastVisitedPage(pageName, pageFromURL, currentMode);
+
+  if (pageFromURL !== "foundResults") {
+    setFilterPage(pageName, pageFromURL, currentMode);
   }
+
+} else if (!isApplied) {
+  rememberCurrentPage(pageName, pageFromURL, currentMode);
+
+} else if (isApplied && results.length === 0) {
+  setFilterPage(pageName, pageFromURL, currentMode);
+  setLastVisitedPage(pageName, pageFromURL, currentMode);
+}
 };
 
 export const handleSearchResults = ({ isSearchValueFound, searchValue, setShowFoundResultsPage, setIndexes }) => {
@@ -41,13 +65,14 @@ export const getPageInfoFromPath = (pathParts) => {
   let pageFromURL = "1";
 
   if (!pathParts || !pathParts.length) return { pageName, basePath, pageFromURL };
-
+    
   if (pathParts[0] === Pages.PHONES) {
     pageName = Pages.PHONES;
     const config = pageConfigs[pageName];
     basePath = config.basePath;
     pageFromURL = pathParts[config.pageFromURLIndex];
-  } else if (pathParts[0] === "mails") {
+  }
+  else if (pathParts[0] === "mails") {
     const mailType = pathParts[1];
     if (mailType === Pages.LOTUS || mailType === Pages.GOV_UA) {
       pageName = mailType;
@@ -56,13 +81,20 @@ export const getPageInfoFromPath = (pathParts) => {
       pageFromURL = pathParts[config.pageFromURLIndex];
     }
   }
+  else if (pathParts[0] === Pages.DICTIONARIES) {
+    pageName = Pages.DICTIONARIES;
+    const config = pageConfigs[pageName];
+     basePath = config.basePath;
+    pageFromURL = pathParts[config.pageFromURLIndex];
+
+  }
 
   return { pageName, basePath, pageFromURL };
 };
 
 export const getPagesCount = ({ countFiltred, pagesCount, activeMenu, isFilterApplied, pageName }) => {
   let count = countFiltred(activeMenu);
-
+    
   if ((!count || count.length === 0) && !isFilterApplied(pageName)) {
     count = pagesCount;
   }

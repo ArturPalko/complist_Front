@@ -46,7 +46,7 @@ export const useTableBaseLogic = ({
   // ================================
   const { data, isPreviousPageWasFoundResult } =
     useDataLoader(pageName);
-    debugger
+      
 
   const { isPagesNavbarLinkElementOnCurrentPagePressed } =
     useSearchToggle();
@@ -86,7 +86,7 @@ export const useTableBaseLogic = ({
     data,
     pageNumber,
   ]);
-
+  
   // ================================
   // found results logic
   // ================================

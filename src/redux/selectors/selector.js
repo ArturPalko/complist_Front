@@ -198,6 +198,9 @@ export const currentPageByMenu = (state, menu) => {
 export const searchFieldValue = (state, menu) => state.toggledElements.searchField[menu]?.searchValue || "";
 
 // ===================================
+export const getDictionaryPages = (state) =>
+    state.currentPageNumber.dictionary;
+
 // ===== Поточні сторінки =====
 export const getCurrentPageNumberByKey = (key) => (state) =>
   state.currentPageNumber[key]?.lastVisitedPage ?? 1;
@@ -296,7 +299,21 @@ export const getPageIndexDataOfFoundResultsByPage = (pageName) => (state) => {
   return processFoundResults(selectFoundResults(state, pageName));
 };
 
-export const selectPaginationPagesCount = (menu) => (state) => getDataForMenu(state, menu).length || 0;
+
+export const selectPaginationPagesCount =
+  (menu, mode) => (state) => {
+
+    const dictionaryModes = ["positions", "userTypes", "departments"];
+    const phonesSubmodes = ["landline", "internal", "cisco"]
+    if (phonesSubmodes.includes(mode)){
+      return selectDictionaryByType(mode, "phones")(state).length || 0;
+    }
+    if (dictionaryModes.includes(mode)) {
+      return selectDictionaryByType(mode)(state).length || 0;
+    }
+
+    return getDataForMenu(state, menu).length || 0;
+};
 export const isCurrentPageFoundResult = (menu) => (state) =>
   selectPageNumberState(state,menu)?.lastVisitedPage === "foundResults";
 
@@ -377,19 +394,19 @@ export const getPhonesDepartmenstForOrder = createSelector(
 
 export const isSectionsMode = (state) => {
   //console.log ("isSectionsMode:",state.ui.viewMode == "sections" )
-  return state.ui.viewMode == "section"};
+  return state.ui.viewMode == "sections"};
 
 export const isDepartmentsMode = (state) => {
   //console.log ("isSectionsMode:",state.ui.viewMode == "sections" )
-  return state.ui.viewMode == "department"};
+  return state.ui.viewMode == "departments"};
 
 export const isPositionsMode = (state) => {
   //console.log ("isSectionsMode:",state.ui.viewMode == "sections" )
-  return state.ui.viewMode == "position"};
+  return state.ui.viewMode == "positions"};
 
 export const isUserTypesMode = (state) => {
   //console.log ("isSectionsMode:",state.ui.viewMode == "sections" )
-  return state.ui.viewMode == "userType"};
+  return state.ui.viewMode == "userTypes"};
 
 
 export const getCurrentMode = (state) =>  state.ui.viewMode;
@@ -413,7 +430,7 @@ export const selectDictionaryByType =
     if (upperLevel) {
       return state.data.dictionaries?.[upperLevel]?.[type] || [];
     }
-             debugger
+               
     return state.data.dictionaries?.[type] || [];
   };
 

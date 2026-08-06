@@ -61,7 +61,7 @@ export default function ModalRoot() {
   const isUsersContext =
     (isSections && activeDep && activeSec) ||
     (isDep && activeDep && !activeSec);
-debugger
+  
   const config = CRUD_CONFIG[modalType];
 
   const onConfirm = () =>
@@ -85,7 +85,7 @@ debugger
       menu,
       config,
     });
-debugger
+  
   // ---------------- NO MODAL ----------------
 
   if (!modalType) return null;
@@ -142,7 +142,7 @@ if (isMailModal) {
 }
 
 // ---------------- USER ----------------
-debugger
+  
 if (isUsersContext && (isAdd || isEdit)) {
   return (
     <AddUser

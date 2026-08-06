@@ -5,7 +5,7 @@ export const Pages = {
   GOV_UA: "Gov-ua",
   LOTUS: "Lotus",
   PHONES: "phones",
-  DICTIONARIES: "dictionaries"
+  DICTIONARIES: "dictionary"
 };
 
 export const rowsPerPage = 18;

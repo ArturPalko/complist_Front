@@ -11,6 +11,7 @@ import {
   getCurrentMode,
   addUsersModeSelected,
   selectAtiveDepartmentId,
+  getDictionaryPages
 } from "../../../redux/selectors/selector";
 
 import {
@@ -74,9 +75,15 @@ const BottomTableControls = () => {
       );
     }
   };
-  const openMode = (mode) => {
+const dictionaryPages = useSelector(getDictionaryPages);
+
+const openMode = (mode) => {
     dispatch(setPhonesViewMode(mode));
-    navigate(`/dictionary/${mode}`);
+
+    const page =
+        dictionaryPages?.[mode]?.lastVisitedPage ?? 1;
+
+    navigate(`/dictionary/${mode}/${page}`);
 };
 
   return (
@@ -119,7 +126,7 @@ const BottomTableControls = () => {
               }`}
               onClick={() =>
                
-                  openMode(("section"))
+                  openMode(("sections"))
                 
               }
             >
@@ -131,7 +138,7 @@ const BottomTableControls = () => {
                 isDepartments ? s.active : ""
               }`}
              onClick={() =>
-            openMode(("department"))
+            openMode(("departments"))
           }
             >
               Департаменти
@@ -144,7 +151,7 @@ const BottomTableControls = () => {
             isPosition ? s.active : ""
           }`}
           onClick={() =>
-            openMode(("position"))
+            openMode(("positions"))
           }
         >
           Посади
@@ -155,7 +162,7 @@ const BottomTableControls = () => {
             isUserTypes ? s.active : ""
           }`}
           onClick={() =>
-            openMode(("userType"))
+            openMode(("userTypes"))
           }
         >
           Тип користувача
