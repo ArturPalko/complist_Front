@@ -39,6 +39,7 @@ const PagesNavBarView = ({
     pendingPageRef.current = null;
   };
 console.log("basePath:", basePath);
+debugger
   return (
     <div
       className={`${s.navigationOfPage} ${

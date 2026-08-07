@@ -41,25 +41,29 @@ case REMEMBER_CURRENT_PAGE_NUMBER: {
     const isNumberPage = !isNaN(Number(value));
     console.log("CURRENTMODEinreducer:", currentMode)
     if (pageName === "dictionary") {
-        return {
-            ...state,
-            activeMenu: pageName,
 
-            dictionary: {
-                ...state.dictionary,
-
-                [currentMode]: {
-                    ...state.dictionary[currentMode],
-
-                    lastVisitedPage: value,
-
-                    digitPage: isNumberPage
-                        ? Number(value)
-                        : state.dictionary[currentMode].digitPage
-                }
-            }
-        };
+    if (!currentMode) {
+        return state;
     }
+
+    return {
+        ...state,
+
+        dictionary: {
+            ...state.dictionary,
+
+            [currentMode]: {
+                ...state.dictionary[currentMode],
+
+                lastVisitedPage: value,
+
+                digitPage: isNumberPage
+                    ? Number(value)
+                    : state.dictionary[currentMode].digitPage
+            }
+        }
+    };
+}
 
     return {
         ...state,

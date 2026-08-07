@@ -70,7 +70,7 @@ export const useTableBaseLogic = ({
     if (isLastVisitedPageWasFoundResults) {
       return safeFoundResults;
     }
-
+debugger
     if (isFilterApplied) {
       return (
         filteredPageData?.[pageNumber - 1]?.rows ?? []

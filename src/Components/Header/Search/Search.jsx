@@ -7,57 +7,62 @@ import {
   getCountOfFoundResults,
   getDataForMenu,
   getIndexesOfFiltredResults,
-  selectSearchStateByMenu
+  selectSearchStateByMenu,
 } from "../../../redux/selectors/selector.js";
 
-import { addFoundItems, clearSearchForm, updateDraftValue } from "../../../redux/reducers/toggledElements-reducer.js";
+import {
+  addFoundItems,
+  clearSearchForm,
+  updateDraftValue,
+} from "../../../redux/reducers/toggledElements-reducer.js";
 
 import SearchForm from "./SearchForm/SearchForm.jsx";
 import { useFilteredPageData } from "../../../redux/hooks/hooks.js";
 import { runSearch } from "./searchUtils.js";
 
-
-
 const Search = ({
   activeMenu: activeMenuStr,
   searchState,
-  dataForMenu,
+  searchSource,
   isPresentedSearchField,
   getCountOfFoundResults,
   getIndexesOfFiltredResults,
   addFoundItems,
   clearSearchForm,
-  updateDraftValue
+  updateDraftValue,
 }) => {
   const inputRef = useRef(null);
   const [showNotFound, setShowNotFound] = useState(false);
 
-  
-   const { draftValue, searchValue, userSearchedOnce, lastSearchFound} = searchState;
+  const {
+    draftValue,
+    searchValue,
+    userSearchedOnce,
+    lastSearchFound,
+  } = searchState;
 
-  const inputValue = showNotFound ? "Не знайдено" : draftValue || searchValue || "";
+  const inputValue = showNotFound
+    ? "Не знайдено"
+    : draftValue || searchValue || "";
 
-  // Фокус на input
   useEffect(() => {
     if (!showNotFound && inputRef.current) {
       inputRef.current.focus();
     }
   }, [showNotFound, activeMenuStr]);
 
-  // Пошук при зміні індексів фільтрованих результатів
-  useEffect(() => {
-    if (!userSearchedOnce) return;
-    if (!lastSearchFound) return;
-
-    executeSearch();
-  }, [getIndexesOfFiltredResults]);
-
-  const { data: filteredPageData, isFilterApplied } = useFilteredPageData(dataForMenu);
+  const { data: filteredPageData, isFilterApplied } =
+    useFilteredPageData(searchSource);
 
   const executeSearch = () => {
-    const searchTarget = isFilterApplied ? filteredPageData : dataForMenu;
-    const results = runSearch({ searchValue: draftValue, searchTarget });
-    console.log("SEARCH RESULTS:", results);
+    const target = isFilterApplied
+      ? filteredPageData
+      : searchSource;
+
+    const results = runSearch({
+      searchValue: draftValue,
+      searchTarget: target,
+    });
 
     if (!results.length) {
       setShowNotFound(true);
@@ -66,6 +71,12 @@ const Search = ({
 
     addFoundItems(activeMenuStr, draftValue.trim(), results);
   };
+
+  useEffect(() => {
+    if (!userSearchedOnce || !lastSearchFound) return;
+
+    executeSearch();
+  }, [getIndexesOfFiltredResults]);
 
   return (
     <SearchForm
@@ -82,8 +93,12 @@ const Search = ({
         e.preventDefault();
         executeSearch();
       }}
-      handleOnClearSearchFormButtonClick={() => clearSearchForm(activeMenuStr)}
-      getCountOfFoundResults={() => getCountOfFoundResults(activeMenuStr)}
+      handleOnClearSearchFormButtonClick={() =>
+        clearSearchForm(activeMenuStr)
+      }
+      getCountOfFoundResults={() =>
+        getCountOfFoundResults(activeMenuStr)
+      }
     />
   );
 };
@@ -94,17 +109,21 @@ const mapStateToProps = (state) => {
   return {
     activeMenu: menu,
     isPresentedSearchField: isPresentedSearchField(state),
-    dataForMenu: getDataForMenu(state, menu),
+    searchSource: getDataForMenu(state, menu),
     searchState: selectSearchStateByMenu(state, menu),
-    getCountOfFoundResults: (m) => getCountOfFoundResults(state, m),
-    getIndexesOfFiltredResults: getIndexesOfFiltredResults(state, menu)
+    getCountOfFoundResults: (m) =>
+      getCountOfFoundResults(state, m),
+    getIndexesOfFiltredResults: getIndexesOfFiltredResults(state, menu),
   };
 };
 
 const mapDispatchToProps = {
   addFoundItems,
   clearSearchForm,
-  updateDraftValue
+  updateDraftValue,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Search);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Search);

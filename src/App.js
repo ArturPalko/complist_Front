@@ -82,11 +82,20 @@ const { modal, closeModal } = useModal();
                   </Route>
                 </Route>
                 <Route path="/dictionary">
-                      <Route path="foundResults" element={<FoundResults />} />
-                      <Route path=":mode/:pageNumber" element={<Dictionaries />} />
-                      <Route path=":mode" element={<Dictionaries />} />
-                    </Route>
+                <Route path=":mode">
+                  <Route path="foundResults" element={<FoundResults />} />
+                  <Route path=":pageNumber" element={<Dictionaries />} />
+                  <Route index element={<Dictionaries />} />
+                </Route>
+              </Route>
               </Routes>
+
+
+
+
+
+
+              
             </div>
           </div>
         </div>

@@ -23,110 +23,13 @@ export const selectFoundResults = (state, menu) => selectSearchValueByPage(menu)
 
 
 export const getDataForMenu = (state, menu) => {
+  const currentMode = getCurrentMode(state);
 
-  const edit = isEditModeSelected(state);
-  const activeDepartmentId = state.ui.activeDepartment.id;
-  const activeSectionId = state.ui.activeSection.id;
-  
-  const isAddUsers = addUsersModeSelected(state);
-
-  const isSection = isSectionsMode(state);
-  const isDepartments = isDepartmentsMode(state);
-
-  const isPositions = isPositionsMode(state);
-  const isUserTypes = isUserTypesMode(state);
-  const mode = state.ui.viewMode;
-
-  // ========================================
-  // POSITIONS / USER TYPES (FROM DICTIONARIES)
-           
-  // ========================================
-  // if(edit && isAddUsers && !activeSectionId  && isSection) return
-  if (
-  edit &&
-  menu === "phones" &&
-  isSection &&
-  activeDepartmentId != null &&
-  activeSectionId == null
-) {
-  return selectSectionsByDepartmentId(state, activeDepartmentId);
-}
-
-if (edit && isAddUsers  && activeDepartmentId && !isSection) {
-  let a = selectUsersByDepartment(activeDepartmentId, activeSectionId)(state);
-  ;
-return [{pageIndex:1, rows:a}];
-}
-
-
-if (edit && isAddUsers  && activeDepartmentId && isSection) {
-  let a = selectUsersBySection(activeDepartmentId, activeSectionId)(state);
-  ;
-return [{pageIndex:1, rows:a}];
-}
-
-
-if (
-  edit &&  
-  menu === "phones" &&
-  ["landline", "cisco", "internal"].includes(mode)
-)
-{
-  let stateFor =state.data.dictionaries.phones[mode];
-           
-   return state.data.dictionaries.phones[mode].map(page => ({
-    ...page,
-    rows: page.rows.map(dep => ({
-      ...dep,
-      type: "phone"
-    }))
-  }));
-}
-
-if (
-  edit &&
-  menu === "phones" &&
-  (isDepartments || isSection) &&  !activeDepartmentId
-) {
-  
-  return state.data.dictionaries.departments.map(page => ({
-    ...page,
-    rows: page.rows.map(dep => ({
-      ...dep,
-      type: "department"
-    }))
-  }));
-}
-
-  if (
-    edit &&
-    menu === "phones" &&
-    (isPositions || isUserTypes)
-  ) {
-
-    const { positions, userTypes } = state.data.dictionaries;
-
-    const rows = isPositions ? positions : userTypes;
-
-    return rows; // OK
+  if (currentMode) {
+    return getDictionaryData(state);
   }
 
-
-  if (
-    menu === "phones" &&
-    isSection &&
-    activeDepartmentId != null
-  ) {
-    
-  
-    return selectSectionsByDepartmentId(state, activeDepartmentId);
-  }
-
-  // ========================================
-  // DEFAULT
-  // ========================================
- 
-  return state?.data[menu] ?? [];
+  return state.data?.[menu] ?? [];
 };
 const selectSectionsByDepartmentId = (state, departmentId) => {
   const pages = state?.data?.dictionaries?.departments ?? [];
@@ -303,8 +206,11 @@ export const getPageIndexDataOfFoundResultsByPage = (pageName) => (state) => {
 export const selectPaginationPagesCount =
   (menu, mode) => (state) => {
 
-    const dictionaryModes = ["positions", "userTypes", "departments"];
+    const dictionaryModes = ["positions", "userTypes", "departments", "sections"];
     const phonesSubmodes = ["landline", "internal", "cisco"]
+    if(mode == "sections"){
+      return selectDictionaryByType("departments")(state).length || 0;
+    }
     if (phonesSubmodes.includes(mode)){
       return selectDictionaryByType(mode, "phones")(state).length || 0;
     }
@@ -425,15 +331,42 @@ export const selectActiveSectionName =  (state)=> state.ui.activeSection.name;
 export const selectPositionsDictionary = (state) => state.data.dictionaries.positions;
 
 export const selectDictionaryByType =
-  (type, upperLevel) => (state) => {
-             
-    if (upperLevel) {
-      return state.data.dictionaries?.[upperLevel]?.[type] || [];
-    }
-               
-    return state.data.dictionaries?.[type] || [];
-  };
+(type, upperLevel) => (state) => {
 
+  const activeDepartmentId = state.ui.activeDepartment.id;
+  const activeSectionId = state.ui.activeSection.id;
+
+  if (type === "departments") {
+
+    // Користувачі департаменту
+    if (activeDepartmentId != null) {
+      return getDictionaryData(state);
+    }
+
+    return state.data.dictionaries.departments || [];
+  }
+
+  if (type === "sections") {
+
+    // Користувачі секції
+    if (activeSectionId != null) {
+      return getDictionaryData(state);
+    }
+
+    // Секції департаменту
+    if (activeDepartmentId != null) {
+      return getDictionaryData(state);
+    }
+
+    return state.data.dictionaries.departments || [];
+  }
+
+  if (upperLevel) {
+    return state.data.dictionaries?.[upperLevel]?.[type] || [];
+  }
+
+  return state.data.dictionaries?.[type] || [];
+};
 
 export const selectSectionsById = (activeDepartmentId) => (state) =>  selectSectionsByDepartmentId(state, activeDepartmentId);
 
@@ -509,17 +442,23 @@ export const selectUsersBySection =
     ];
   }
 
-  if (edit && isAddUsers && activeDepartmentId && isSection) {
-    return [
-      {
-        pageIndex: 1,
-        rows: selectUsersBySection(
-          activeDepartmentId,
-          activeSectionId
-        )(state),
-      },
-    ];
-  }
+  if (
+  edit &&
+  isAddUsers &&
+  isSection &&
+  activeDepartmentId != null &&
+  activeSectionId != null
+) {
+  return [
+    {
+      pageIndex: 1,
+      rows: selectUsersBySection(
+        activeDepartmentId,
+        activeSectionId
+      )(state),
+    },
+  ];
+}
 
   // ==========================
   // PHONE EDIT MODE

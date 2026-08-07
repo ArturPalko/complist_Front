@@ -1,8 +1,5 @@
-import React, { useState } from "react";
-import s from "./BottomTableControls.module.css";
 import { useDispatch, useSelector } from "react-redux";
-import arrangementIcon from "../../../assets/Img/arrange.png";
-import humanPng from "../../../assets/Img/human.png";
+
 import {
   isSectionsMode,
   isDepartmentsMode,
@@ -11,7 +8,9 @@ import {
   getCurrentMode,
   addUsersModeSelected,
   selectAtiveDepartmentId,
-  getDictionaryPages
+  getDictionaryPages,
+  getCurrentPageNumberByKey,
+  activeMenu
 } from "../../../redux/selectors/selector";
 
 import {
@@ -23,6 +22,10 @@ import {
 import { changeOrderOfDisplayElements } from "../../../dal/api";
 import { setDataIsLoadedActionCreator } from "../../../redux/reducers/app-reducer";
 import { useNavigate } from "react-router-dom";
+import { useRef, useEffect } from "react";
+import { pageConfigs } from "../../../configs/app/pageConfig";
+import { handleRedirectWhenModeCleared } from "./helpers";
+import BottomTableControlsView from "./BottomTableControlsView";
 
 const BottomTableControls = () => {
   const dispatch = useDispatch();
@@ -46,6 +49,53 @@ const BottomTableControls = () => {
   );
 
 
+
+
+const dictionaryPages = useSelector(getDictionaryPages);
+
+const currentMode = useSelector(getCurrentMode);
+const currentMenu = useSelector(activeMenu);
+const currentPage = useSelector(getCurrentPageNumberByKey(currentMenu));
+
+const previousModeRef = useRef(currentMode);
+
+const config = pageConfigs[currentMenu];
+
+
+useEffect(() => {
+
+    handleRedirectWhenModeCleared({
+        previousMode: previousModeRef.current,
+        currentMode,
+        dictionaryPages,
+        currentMenu,
+        currentPage,
+        config,
+        navigate,
+    });
+
+
+    previousModeRef.current = currentMode;
+
+
+}, [
+    currentMode,
+    currentMenu,
+    currentPage,
+    dictionaryPages,
+    config,
+    navigate,
+]);
+
+
+
+
+
+
+
+
+
+  
   const showAddUsersToggle =
     (isSections && activeDep)  || isDepartments;
 
@@ -75,7 +125,7 @@ const BottomTableControls = () => {
       );
     }
   };
-const dictionaryPages = useSelector(getDictionaryPages);
+
 
 const openMode = (mode) => {
     dispatch(setPhonesViewMode(mode));
@@ -86,134 +136,33 @@ const openMode = (mode) => {
     navigate(`/dictionary/${mode}/${page}`);
 };
 
-  return (
-    <div className={s.controlsWrapper}>
-      {/* LEFT */}
-      <div className={s.leftGroup}>
-        <div className={s.sectionGroup}>
-          <div
-            className={`${s.addUsersToggle} ${
-              !showAddUsersToggle ? s.hidden : ""
-            }`}
-            onClick={() =>
-              // showAddUsersToggle &&
-              // setAddUsersMode((v) => !v);
-              dispatch(toggleaddUsersMode())
-            }
-            title="Додавання користувачів"
-          >
-            <div
-              className={`${s.addUsersLine} ${
-                isAddUsers
-                  ? s.addUsersLineActive
-                  : ""
-              }`}
-            >
-              <div className={s.addUsersThumb}>
-  <img
-    src={humanPng}
-    alt=""
-    className={s.addUsersIcon}
+
+return (
+  <BottomTableControlsView
+
+    showAddUsersToggle={showAddUsersToggle}
+
+    isAddUsers={isAddUsers}
+
+    isSections={isSections}
+    isDepartments={isDepartments}
+    isPosition={isPosition}
+    isUserTypes={isUserTypes}
+
+    selectedPhoneType={selectedPhoneType}
+
+    unsavedOrder={unsavedOrder}
+
+    onToggleAddUsers={() =>
+      dispatch(toggleaddUsersMode())
+    }
+
+    onOpenMode={openMode}
+
+    onSave={handleSave}
+
   />
-</div>
-            </div>
-          </div>
-
-          <div className={s.sectionButtons}>
-            <button
-              className={`${s.toggleBtn} ${
-                isSections ? s.active : ""
-              }`}
-              onClick={() =>
-               
-                  openMode(("sections"))
-                
-              }
-            >
-              Секції
-            </button>
-
-            <button
-              className={`${s.toggleBtn} ${
-                isDepartments ? s.active : ""
-              }`}
-             onClick={() =>
-            openMode(("departments"))
-          }
-            >
-              Департаменти
-            </button>
-          </div>
-        </div>
-
-        <button
-          className={`${s.toggleBtn} ${
-            isPosition ? s.active : ""
-          }`}
-          onClick={() =>
-            openMode(("positions"))
-          }
-        >
-          Посади
-        </button>
-
-        <button
-          className={`${s.toggleBtn} ${
-            isUserTypes ? s.active : ""
-          }`}
-          onClick={() =>
-            openMode(("userTypes"))
-          }
-        >
-          Тип користувача
-        </button>
-
-        <select
-          className={`${s.toggleBtn} ${
-            selectedPhoneType ? s.active : ""
-          }`}
-          value={selectedPhoneType}
-          onChange={(e) =>
-            openMode(
-  
-                e.target.value || null
-            )
-          }
-        >
-          <option value="">
-            — Тип телефона —
-          </option>
-          <option value="landline">
-            Landline
-          </option>
-          <option value="internal">
-            Internal
-          </option>
-          <option value="cisco">
-            Cisco
-          </option>
-        </select>
-      </div>
-
-      {/* RIGHT */}
-      <div className={s.rightGroup}>
-        <button
-          title="Зберегти порядок"
-          aria-label="Зберегти порядок"
-          className={s.saveBtn}
-          onClick={handleSave}
-          disabled={!unsavedOrder}
-        >
-          <img
-            src={arrangementIcon}
-            alt=""
-            className={s.icon}
-          />
-          <span>Зберегти</span>
-        </button>
-      </div>
-    </div>
-  );
-};
+);
+}
 
 export default BottomTableControls;

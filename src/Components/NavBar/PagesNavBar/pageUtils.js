@@ -81,13 +81,17 @@ export const getPageInfoFromPath = (pathParts) => {
       pageFromURL = pathParts[config.pageFromURLIndex];
     }
   }
-  else if (pathParts[0] === Pages.DICTIONARIES) {
+ else if (pathParts[0] === Pages.DICTIONARIES) {
     pageName = Pages.DICTIONARIES;
-    const config = pageConfigs[pageName];
-     basePath = config.basePath;
-    pageFromURL = pathParts[config.pageFromURLIndex];
 
-  }
+    const config = pageConfigs[pageName];
+
+    const mode = pathParts[1];
+
+    basePath = `/dictionary/${mode}/`;
+
+    pageFromURL = pathParts[config.pageFromURLIndex];
+}
 
   return { pageName, basePath, pageFromURL };
 };

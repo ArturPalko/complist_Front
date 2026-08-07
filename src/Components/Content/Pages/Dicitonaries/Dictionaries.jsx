@@ -8,7 +8,8 @@ const DictionaryPage = createPageBase(Pages.DICTIONARIES);
 
 const Dictionaries = () => {
   const data = useSelector(getDictionaryData);
-
+debugger
+console.log ("dataInDicitonary:", data)
   return (
     <DataLoaderContext.Provider
       value={{
