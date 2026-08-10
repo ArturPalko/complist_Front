@@ -105,7 +105,27 @@ case SET_FILTER_PAGE: {
         }
     };
 }
+ case SET_PREVIOUS_LOCATION:
+            return {
+                ...state,
+                previousLocation: action.previousLocation
+            };
+        case SET_FILTER_PAGE: {
+        const pageNumber =
+            typeof action.pageNumber === "number"
+            ? action.pageNumber
+            : Number(action.pageNumber);
 
+        return {
+            ...state,
+            activeMenu: action.pageName,
+            [action.pageName]: {
+            ...state[action.pageName],
+            filterPage: !isNaN(pageNumber) ? pageNumber : state[action.pageName].filterPage
+            }
+        };
+        }
+        
 case SET_LAST_VISITED_PAGE: {
     if (action.pageName === "dictionary") {
         return {

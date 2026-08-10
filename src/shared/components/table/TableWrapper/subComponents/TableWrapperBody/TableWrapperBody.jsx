@@ -66,7 +66,7 @@ const TableWrapperBody = ({
   }, [foundResults, setFoundResults]);
 
 
-  debugger
+    
   return (
     <tbody className={dragIds.length ? "dragging" : ""}>
 

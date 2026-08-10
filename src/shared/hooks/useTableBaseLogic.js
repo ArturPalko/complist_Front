@@ -41,13 +41,13 @@ export const useTableBaseLogic = ({
   const isLastVisitedPageWasFoundResults =
     useSelector(isCurrentPageFoundResult(pageName));
 
-  // ================================
+ debugger  // ================================
   // data loading
   // ================================
   const { data, isPreviousPageWasFoundResult } =
     useDataLoader(pageName);
       
-
+debugger
   const { isPagesNavbarLinkElementOnCurrentPagePressed } =
     useSearchToggle();
     // console.log("datka:", data)
@@ -70,7 +70,7 @@ export const useTableBaseLogic = ({
     if (isLastVisitedPageWasFoundResults) {
       return safeFoundResults;
     }
-debugger
+  
     if (isFilterApplied) {
       return (
         filteredPageData?.[pageNumber - 1]?.rows ?? []
@@ -101,7 +101,7 @@ debugger
       isPagesNavbarLinkElementOnCurrentPagePressed,
     isPreviousPageWasFoundResult,
   });
-
+debugger
   // ================================
   // sync row heights
   // ================================

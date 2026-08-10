@@ -44,7 +44,7 @@ const foundResults = searchState.foundResults ?? [];
     const targetPage = cellData.currentPage;
     const config = pageConfigs[pageName];
     const url = config ? `${config.basePath}${targetPage}` : "/";
-
+      
     setClickedRow(true);
   
     if (isSetionType && !isSections) {

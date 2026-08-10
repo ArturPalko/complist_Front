@@ -12,10 +12,10 @@ export const handleLastVisitedPage = ({
   rememberCurrentPage,
 
 }) => {
-  debugger
+    
   console.log("CurrentMode:", currentMode)
   if (!pageName || !pageFromURL) return;
-debugger
+  
   const dictionaryModes = ["positions", "userTypes", "departments"];
   const phoneModes = ["landline", "internal", "cisco"];
 

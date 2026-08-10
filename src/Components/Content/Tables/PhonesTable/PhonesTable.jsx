@@ -47,6 +47,7 @@ const PhonesTable = ({ columns, pageNumber, rowsPerPage }) => {
     );
 
     const dim = tableLogic.getRowDimClasses(row.dimKey);
+    //       
 
     switch (row.type) {
       case "department":

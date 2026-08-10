@@ -5,85 +5,106 @@ import {
   selectDashedBlocks,
   selectFoundResults,
   isEditModeSelected,
-  selectIndexesFromCell
+  selectIndexesFromCell,
+  getCurrentMode,
 } from "../selectors/selector";
 import { getDimGroupRowClasses } from "../../Components/Content/Tables/PhonesTable/phonesTableHelpers";
 import s from "../../Components/Content/Tables/PhonesTable/PhonesTable.module.css";
 
-
 export const usePhonesTableLogic = (props) => {
-  
   const tableLogic = useTableBaseLogic({ ...props });
 
-  const index = useSelector(state => selectIndexesFromCell(state));
+  const index = useSelector((state) => selectIndexesFromCell(state));
+
   let data = tableLogic.pageData;
-  
 
-   let currentData = data[index-1];
-  //  let indexValue = currentData.departmentId || currentData.setionId || currentData.id
- let indexValue = currentData?.sectionId  ||currentData?.departmentId  || currentData?.id
-   
-  if(indexValue){
-console.log("indexVALUE:",  indexValue)
-  
-  }  
-  //  console.log ("index:",index)
-  //  console.log ("data:", data)
-  //  console.log("indexVALUE:", indexValue)
-  
+  let currentData = data[index - 1];
 
+  let indexValue =
+    currentData?.sectionId ||
+    currentData?.departmentId ||
+    currentData?.id;
 
-  const indexDecrementFromPreviousPages = useSelector(getDepartmentsAndSectionsPerPage)
+  if (indexValue) {
+    console.log("indexVALUE:", indexValue);
+  }
+
+  const indexDecrementFromPreviousPages = useSelector(
+    getDepartmentsAndSectionsPerPage
+  )
     .slice(0, props.pageNumber - 1)
     .reduce((acc, val) => acc + val, 0);
 
   const dashedBlocks = useSelector(selectDashedBlocks);
 
-  // 🔥 NEW: stopDismiss deps
+  // ==========================================
+  // SEARCH RESULTS
+  // ==========================================
+
+  const currentMode = useSelector(getCurrentMode);
+
+  const searchMenu = currentMode
+    ? "dictionary"
+    : "phones";
+      
   const foundResults = useSelector((state) =>
-    selectFoundResults(state, "phones")
+    selectFoundResults(state, searchMenu)
   );
+      
+  console.log("🔥 DIM SEARCH:", {
+    currentMode,
+    searchMenu,
+    foundResults,
+  });
+
+  // ==========================================
+  // EDIT MODE
+  // ==========================================
 
   const isEditMode = useSelector(isEditModeSelected);
 
   const foundResultsInclude = (id) =>
     foundResults?.some((item) => item.id === id);
 
-  const stopDismiss = (id) =>{
-//     if(data.length <15){
-//         
-// return
-//     } 
-    if(index.length>0 ){
-      //   
-   return  foundResultsInclude(indexValue) && isEditMode && indexValue ==id;
-    }
-    else{
-    return  foundResultsInclude(id) && isEditMode;
-    }
-    
+  // ==========================================
+  // STOP DIMMING
+  // ==========================================
 
-  }
-    
+  const stopDismiss = (id) => {
+          
+    if (index.length > 0) {
+            
+      return (
+        foundResultsInclude(indexValue) &&
+        isEditMode &&
+        indexValue == id
+      );
+    } else {
+      return foundResultsInclude(id) && isEditMode;
+    }
+  };
 
-  // 🔥 IMPORTANT: helper per row
+  // ==========================================
+  // ROW DIM CLASSES
+  // ==========================================
+
   const getRowDimClasses = (id) => {
-  //     console.log("ID:", id);
-  // console.log("stopDismiss:", stopDismiss(id));
-    //   
-    if (stopDismiss(id)) 
-     {
-      //   
-      return { hidden: true }
+    if (stopDismiss(id)) {
+      return {
+        hidden: true,
+      };
     }
-    
-//   
+
     return getDimGroupRowClasses({
       hasFoundResults:
         props.indexesOfFoundResultsForCurrentPage?.length > 0,
-      showPreviousPageHighlight: tableLogic.showPreviousPageHighlight,
+
+      showPreviousPageHighlight:
+        tableLogic.showPreviousPageHighlight,
+
       isPagesNavbarLinkElementOnCurrentPagePressed:
         tableLogic.isPagesNavbarLinkElementOnCurrentPagePressed,
+
       styles: s,
     });
   };
@@ -92,6 +113,6 @@ console.log("indexVALUE:",  indexValue)
     ...tableLogic,
     indexDecrementFromPreviousPages,
     dashedBlocks,
-    getRowDimClasses, // 👈 замість dimClasses
+    getRowDimClasses,
   };
 };

@@ -42,12 +42,48 @@ export const getUserRowIndex = ({
  * Формує класи для приглушення (dim) group rows
  * (department / section)
  */
+// export const getDimGroupRowClasses = ({
+//   hasFoundResults,
+//   showPreviousPageHighlight,
+//   isPagesNavbarLinkElementOnCurrentPagePressed,
+//   styles,
+// }) => {
+//   const dimAfterSearchNavigationClass =
+//     hasFoundResults && showPreviousPageHighlight
+//       ? styles.dimGroupRowFade
+//       : "";
+
+//   const dimAfterPageNumberPressedClass =
+//     hasFoundResults && isPagesNavbarLinkElementOnCurrentPagePressed
+//       ? styles.dimGroupRow
+//       : "";
+//     
+//   return {
+//     dimAfterSearchNavigationClass,
+//     dimAfterPageNumberPressedClass,
+//   };
+// };
+
+
 export const getDimGroupRowClasses = ({
   hasFoundResults,
   showPreviousPageHighlight,
   isPagesNavbarLinkElementOnCurrentPagePressed,
   styles,
 }) => {
+    debugger    
+ console.log("=== getDimGroupRowClasses ===");
+console.log("hasFoundResults:", hasFoundResults);
+console.log(
+  "showPreviousPageHighlight:",
+  showPreviousPageHighlight
+);
+console.log(
+  "isPagesNavbarLinkElementOnCurrentPagePressed:",
+  isPagesNavbarLinkElementOnCurrentPagePressed
+);
+console.log("styles:", styles);
+
   const dimAfterSearchNavigationClass =
     hasFoundResults && showPreviousPageHighlight
       ? styles.dimGroupRowFade
@@ -58,11 +94,22 @@ export const getDimGroupRowClasses = ({
       ? styles.dimGroupRow
       : "";
 
+  console.log("DIM RESULT:", {
+    dimAfterSearchNavigationClass,
+    dimAfterPageNumberPressedClass,
+  });
+
+      ;
+
   return {
     dimAfterSearchNavigationClass,
     dimAfterPageNumberPressedClass,
   };
 };
+
+
+
+
 
 export const handleOnOpenSectionsButtonClick =
   ({ rowType, isSections, isAddUsers, item, dispatch }) =>

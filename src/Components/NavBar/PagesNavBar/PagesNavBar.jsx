@@ -1,5 +1,5 @@
-import  { useEffect, useState, useRef } from "react";
-import {useLocation } from "react-router-dom";
+import { useEffect, useState, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import { connect, useSelector } from "react-redux";
 
 import {
@@ -10,6 +10,7 @@ import {
   selectSearchValueByPage,
   isSearchValueFoundByPage,
   isEditModeSelected,
+  getCurrentMode,
 } from "../../../redux/selectors/selector";
 
 import {
@@ -18,31 +19,63 @@ import {
   setLastVisitedPage,
 } from "../../../redux/reducers/pagesNavbar-reducer";
 
-import { togglepagesNavbarLinkElementOnCurrentPage } from "../../../redux/reducers/toggledElements-reducer";
+import {
+  togglepagesNavbarLinkElementOnCurrentPage,
+} from "../../../redux/reducers/toggledElements-reducer";
 
 import PagesNavBarView from "./PagesNavbarView/PagesNavbarView";
-import { handleLastVisitedPage, handleSearchResults, getPageInfoFromPath, getPagesCount } from "./pageUtils";
-import { getCurrentMode } from "../../../redux/selectors/selector";
+
+import {
+  handleLastVisitedPage,
+  handleSearchResults,
+  getPageInfoFromPath,
+  getPagesCount,
+} from "./pageUtils";
+
+import { Pages } from "../../../configs/app/constants";
 
 const PagesNavBar = (props) => {
   const location = useLocation();
+
   const pressTimer = useRef(null);
   const isPressed = useRef(false);
+
   const delay = 1000;
 
-  const [showFoundResultPage, setShowFoundResultsPage] = useState(false);
+  const [showFoundResultPage, setShowFoundResultsPage] =
+    useState(false);
+
   const [indexes, setIndexes] = useState([]);
 
-  // --- Ref для останньої обробленої сторінки
-  const lastPageRef = useRef({ pageName: null, pageFromURL: null });
+  // Ref для останньої обробленої сторінки
+  const lastPageRef = useRef({
+    pageName: null,
+    pageFromURL: null,
+  });
 
-  // --- Витягуємо pageName, basePath, pageFromURL
-  const pathParts = location.pathname.split("/").filter(Boolean);
-  const { pageName, basePath, pageFromURL } = getPageInfoFromPath(pathParts);
-  const isFoundResultsPage = pageFromURL === "foundResults";
+  // =====================================================
+  // URL
+  // =====================================================
+
+  const pathParts = location.pathname
+    .split("/")
+    .filter(Boolean);
+
+  const {
+    pageName,
+    basePath,
+    pageFromURL,
+  } = getPageInfoFromPath(pathParts);
+
+  const isFoundResultsPage =
+    pageFromURL === "foundResults";
+
   const editMode = useSelector(isEditModeSelected);
 
-  // --- Кількість сторінок
+  // =====================================================
+  // КІЛЬКІСТЬ СТОРІНОК
+  // =====================================================
+
   const count = getPagesCount({
     countFiltred: props.countFiltred,
     pagesCount: props.pagesCount,
@@ -51,11 +84,15 @@ const PagesNavBar = (props) => {
     pageName,
   });
 
-  // --- Обробники натискання на NavLink
+  // =====================================================
+  // НАТИСКАННЯ НА НОМЕР СТОРІНКИ
+  // =====================================================
+
   const handleNavLinkPressed = (e) => {
     if (pageFromURL === e.currentTarget.textContent) {
       pressTimer.current = setTimeout(() => {
         props.togglepagesNavbarLinkElementOnCurrentPage(true);
+
         isPressed.current = true;
       }, delay);
     }
@@ -63,21 +100,27 @@ const PagesNavBar = (props) => {
 
   const handleNavLinkUnpressed = () => {
     clearTimeout(pressTimer.current);
+
     if (isPressed.current) {
       props.togglepagesNavbarLinkElementOnCurrentPage(false);
+
       isPressed.current = false;
     }
   };
 
-  // --- Effect для оновлення останньої відвіданої сторінки
+  // =====================================================
+  // ОСТАННЯ ВІДВІДАНА СТОРІНКА
+  // =====================================================
+
   useEffect(() => {
     if (!pageName || !pageFromURL) return;
 
-    // Якщо ця сторінка вже оброблена, нічого не робимо
     if (
       lastPageRef.current.pageName === pageName &&
       lastPageRef.current.pageFromURL === pageFromURL
-    ) return;
+    ) {
+      return;
+    }
 
     handleLastVisitedPage({
       pageName,
@@ -88,13 +131,19 @@ const PagesNavBar = (props) => {
       setLastVisitedPage: props.setLastVisitedPage,
       setFilterPage: props.setFilterPage,
       rememberCurrentPage: props.rememberCurrentPage,
-      currentMode: props.currentMode
+      currentMode: props.currentMode,
     });
 
-    lastPageRef.current = { pageName, pageFromURL };
+    lastPageRef.current = {
+      pageName,
+      pageFromURL,
+    };
   }, [pageName, pageFromURL]);
 
-  // --- Effect для обробки пошуку
+  // =====================================================
+  // ПОШУК
+  // =====================================================
+
   useEffect(() => {
     handleSearchResults({
       isSearchValueFound: props.isSearchValueFound,
@@ -102,43 +151,143 @@ const PagesNavBar = (props) => {
       setShowFoundResultsPage,
       setIndexes,
     });
-  }, [props.isSearchValueFound, props.searchValue]);
+  }, [
+    props.isSearchValueFound,
+    props.searchValue,
+  ]);
+
+  // =====================================================
+  // RENDER
+  // =====================================================
 
   return (
     <PagesNavBarView
-      editMode={editMode}
-      basePath={basePath}
+      {...props}
       count={count}
+      pageFromURL={pageFromURL}
+      basePath={basePath}
       showFoundResultPage={showFoundResultPage}
-      isFoundResultsPage={isFoundResultsPage}
+      setShowFoundResultsPage={setShowFoundResultsPage}
       indexes={indexes}
+      isFoundResultsPage={isFoundResultsPage}
       handleNavLinkPressed={handleNavLinkPressed}
       handleNavLinkUnpressed={handleNavLinkUnpressed}
+      editMode={editMode}
     />
   );
 };
 
-// --- Redux
-const mapStateToProps = (state) => ({
-  currentMode: getCurrentMode(state),
-  activeMenu: activeMenu(state),
- pagesCount: selectPaginationPagesCount(
-    activeMenu(state),
-    getCurrentMode(state)
-)(state),
+// =====================================================
+// REDUX
+// =====================================================
 
-  searchValue: selectSearchValueByPage(activeMenu(state))(state),
-  isSearchValueFound: isSearchValueFoundByPage(activeMenu(state))(state),
+const mapStateToProps = (state) => {
+  const menu = activeMenu(state);
+  const currentMode = getCurrentMode(state);
 
-  countFiltred: (menu) => getCountOfPageForFiltredResults(state, menu),
-  isFilterApplied: (menu) => isFilterAppliedSelector(menu)(state),
-});
+  /*
+   * ===================================================
+   * ВАЖЛИВО
+   * ===================================================
+   *
+   * Звичайні сторінки:
+   *
+   *   Gov-ua
+   *   Lotus
+   *   phones
+   *
+   * використовують власний searchField.
+   *
+   * Dictionary:
+   *
+   *   positions
+   *   departments
+   *   sections
+   *   userTypes
+   *
+   * використовують один:
+   *
+   *   searchField.dictionary
+   */
+
+  const searchKey = currentMode
+    ? Pages.DICTIONARIES
+    : menu;
+
+  console.log(
+    "PagesNavBar searchKey:",
+    searchKey
+  );
+
+  console.log(
+    "PagesNavBar currentMode:",
+    currentMode
+  );
+
+  console.log(
+    "PagesNavBar searchValue:",
+    selectSearchValueByPage(searchKey)(state)
+  );
+
+  console.log(
+    "PagesNavBar isSearchValueFound:",
+    isSearchValueFoundByPage(searchKey)(state)
+  );
+
+  return {
+    currentMode,
+
+    activeMenu: menu,
+
+    pagesCount: selectPaginationPagesCount(
+      menu,
+      currentMode
+    )(state),
+
+    /*
+     * Тут головна зміна:
+     *
+     * Dictionary -> dictionary
+     * Інші меню -> activeMenu
+     */
+
+    searchValue:
+      selectSearchValueByPage(searchKey)(state),
+
+    isSearchValueFound:
+      isSearchValueFoundByPage(searchKey)(state),
+
+    countFiltred: (menu) =>
+      getCountOfPageForFiltredResults(
+        state,
+        menu
+      ),
+
+    isFilterApplied: (menu) =>
+      isFilterAppliedSelector(menu)(state),
+  };
+};
+
+// =====================================================
+// DISPATCH
+// =====================================================
 
 const mapDispatchToProps = {
-  rememberCurrentPage: rememberCurrentPagesActionCreator,
+  rememberCurrentPage:
+    rememberCurrentPagesActionCreator,
+
   togglepagesNavbarLinkElementOnCurrentPage,
+
   setFilterPage,
+
   setLastVisitedPage,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(PagesNavBar);
+// =====================================================
+// CONNECT
+// =====================================================
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PagesNavBar);

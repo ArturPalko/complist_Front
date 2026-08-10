@@ -57,7 +57,7 @@ export const useFoundResults = (
 
 
   const tooManyResults = presentRows.length > rowsPerPage;
-
+  
   return {
     presentRows,
     indexDataOfFoundResultsForFoundResultsPage,

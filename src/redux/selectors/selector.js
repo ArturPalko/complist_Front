@@ -185,8 +185,17 @@ export const isEditModeSelected = (state) => state.appMode.editMode;
 
 export const isPreviousPageWasFoundResult = (menu) => (state) => {
   if (!menu) return false;
+
+  const currentMode = getCurrentMode(state);
+  const previousLocation = state.currentPageNumber.previousLocation;
+
+  if (currentMode) {
+    return previousLocation === `/dictionary/${currentMode}/foundResults`;
+  }
+
   const baseLink = getBaseLinkByMenu(menu);
-  return state.currentPageNumber.previousLocation === `${baseLink}/foundResults`;
+
+  return previousLocation === `${baseLink}/foundResults`;
 };
 
 

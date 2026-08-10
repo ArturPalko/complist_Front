@@ -96,10 +96,28 @@ if (showNavigationHeader) {
   // =========================
   // ROWS
   // =========================
+  
   const renderRowCells = (row, index, tableLogic, tableUI) => {
-    const dim = tableLogic.getRowDimClasses(row.dimKey);
-    const phoneColumn = columns.find((c) => c.key === "phones");
+    const config = entityMap[row.type];
 
+const id = config
+  ? row[config.id]
+  : row.id;
+    const dim = tableLogic.getRowDimClasses(id);
+    const phoneColumn = columns.find((c) => c.key === "phones");
+  // console.log("DICTIONARY ROW DIM:", {
+  //   row,
+  //   dimKey: row.dimKey,
+  //   dim,
+  //   isPressed: tableUI?.isPressed,
+  // });
+  console.log("=== DICTIONARY DIM KEY ===", {
+  row,
+  rowId: row.id,
+  rowType: row.type,
+  dimKey: row.dimKey,
+});
+//       
     const renderTd = (value, key = null, colSpan = 1) => (
       <TdWrapper
         key={key}

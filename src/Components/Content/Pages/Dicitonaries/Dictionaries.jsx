@@ -1,6 +1,16 @@
 import { useSelector } from "react-redux";
-import { DataLoaderContext } from "../../../../redux/contexts/useConetxt";
-import { getDictionaryData } from "../../../../redux/selectors/selector";
+import { useContext } from "react";
+
+import {
+  getDictionaryData,
+  isPreviousPageWasFoundResult,
+} from "../../../../redux/selectors/selector";
+
+import {
+  FoundResultsContext,
+  DataLoaderContext,
+} from "../../../../redux/contexts/useConetxt";
+
 import { createPageBase } from "../../../../shared/components/page/GenericPage/pageFactory";
 import { Pages } from "../../../../configs/app/constants";
 
@@ -8,13 +18,30 @@ const DictionaryPage = createPageBase(Pages.DICTIONARIES);
 
 const Dictionaries = () => {
   const data = useSelector(getDictionaryData);
-debugger
-console.log ("dataInDicitonary:", data)
+
+  const foundResultsContext = useContext(FoundResultsContext);
+
+  const previousPageWasFoundResult = useSelector(
+    isPreviousPageWasFoundResult("dictionary")
+  );
+
+  const finalData = foundResultsContext?.foundResults
+    ? [
+        {
+          pageIndex: 1,
+          rows: foundResultsContext.foundResults,
+          type: foundResultsContext.currentMode,
+        },
+      ]
+    : data;
+
+  console.log("DICTIONARY previousPageWasFoundResult:", previousPageWasFoundResult);
+
   return (
     <DataLoaderContext.Provider
       value={{
-        data,
-        isPreviousPageWasFoundResult: false,
+        data: finalData,
+        isPreviousPageWasFoundResult: previousPageWasFoundResult,
       }}
     >
       <DictionaryPage />

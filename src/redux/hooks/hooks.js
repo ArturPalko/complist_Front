@@ -39,9 +39,34 @@ export const useCheckAuth = () => {
 };
 
 
-export const useIndexesForPage = (pageKey) => {
+// export const useIndexesForPage = (pageKey) => {
 
-  const indexesFromIndexCell = useSelector(state => selectIndexesFromCell(state));
+//   const indexesFromIndexCell = useSelector(state => selectIndexesFromCell(state));
+
+//   const indexesFromPage = useSelector(
+//     createSelector(
+//       state => state,
+//       state => pageKey,
+//       (state, pageKey) => {
+//         const pageNumber = getCurrentPageNumberByKey(pageKey)(state);
+//         const data = getPageIndexDataOfFoundResultsByPage(pageKey)(state) || [];
+//         return data
+//           .filter(item => Number(item.currentPage) === Number(pageNumber))
+//           .map(item => item.index);
+//       }
+//     )
+//   );
+// const indexes =
+//   indexesFromIndexCell.length == 1
+//     ? indexesFromIndexCell // обгортаємо число в масив
+//     : indexesFromPage;
+//   return indexes;
+// };
+
+export const useIndexesForPage = (pageKey) => {
+  const indexesFromIndexCell = useSelector(
+    state => selectIndexesFromCell(state)
+  );
 
   const indexesFromPage = useSelector(
     createSelector(
@@ -49,21 +74,43 @@ export const useIndexesForPage = (pageKey) => {
       state => pageKey,
       (state, pageKey) => {
         const pageNumber = getCurrentPageNumberByKey(pageKey)(state);
-        const data = getPageIndexDataOfFoundResultsByPage(pageKey)(state) || [];
-        return data
-          .filter(item => Number(item.currentPage) === Number(pageNumber))
+        const data =
+          getPageIndexDataOfFoundResultsByPage(pageKey)(state) || [];
+
+        const indexes = data
+          .filter(
+            item =>
+              Number(item.currentPage) === Number(pageNumber)
+          )
           .map(item => item.index);
+
+        console.log("=== useIndexesForPage ===", {
+          pageKey,
+          pageNumber,
+          data,
+          indexesFromIndexCell,
+          indexes,
+        });
+
+        return indexes;
       }
     )
   );
-const indexes =
-  indexesFromIndexCell.length == 1
-    ? indexesFromIndexCell // обгортаємо число в масив
-    : indexesFromPage;
+
+  const indexes =
+    indexesFromIndexCell.length === 1
+      ? indexesFromIndexCell
+      : indexesFromPage;
+
+  console.log("=== FINAL INDEXES ===", {
+    pageKey,
+    indexesFromIndexCell,
+    indexesFromPage,
+    finalIndexes: indexes,
+  });
+
   return indexes;
 };
-
-
 
 
 
