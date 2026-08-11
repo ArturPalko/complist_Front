@@ -12,7 +12,7 @@ export default function DeletePositionModal({ onClose, onConfirm, modalData }) {
  const menu = useSelector(activeMenu);
    
    const handleDelete = async () => {
-    console.log("MODALTYPE:", modalType)
+
        
     await onConfirm(modalData); // ids
 

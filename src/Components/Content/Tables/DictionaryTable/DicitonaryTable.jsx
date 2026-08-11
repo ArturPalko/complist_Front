@@ -105,19 +105,7 @@ const id = config
   : row.id;
     const dim = tableLogic.getRowDimClasses(id);
     const phoneColumn = columns.find((c) => c.key === "phones");
-  // console.log("DICTIONARY ROW DIM:", {
-  //   row,
-  //   dimKey: row.dimKey,
-  //   dim,
-  //   isPressed: tableUI?.isPressed,
-  // });
-  console.log("=== DICTIONARY DIM KEY ===", {
-  row,
-  rowId: row.id,
-  rowType: row.type,
-  dimKey: row.dimKey,
-});
-//       
+      
     const renderTd = (value, key = null, colSpan = 1) => (
       <TdWrapper
         key={key}

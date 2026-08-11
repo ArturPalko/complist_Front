@@ -1,3 +1,4 @@
+
 import { forwardRef } from "react";
 import s from "./SearchForm.module.css";
 import cross from "../../../../assets/Img/cross.png";
@@ -11,15 +12,18 @@ const SearchForm = forwardRef((props, ref) => {
     isPresentedSearchField,
     handleOnSearchButtonClick,
     handleOnClearSearchFormButtonClick,
-    getCountOfFoundResults
+    getCountOfFoundResults,
   } = props;
 
   if (!isPresentedSearchField) return null;
 
-  const count = getCountOfFoundResults(); 
+  const count = getCountOfFoundResults();
 
   return (
-    <div className={s.searchBlock} onDragStart={(e) => e.preventDefault()}>
+    <div
+      className={s.searchBlock}
+      onDragStart={(e) => e.preventDefault()}
+    >
       <form className={s.form}>
         <input
           ref={ref}
@@ -30,7 +34,13 @@ const SearchForm = forwardRef((props, ref) => {
           onChange={(e) => setInputValue(e.target.value)}
           disabled={showNotFound}
         />
-        <img src={cross} onClick={handleOnClearSearchFormButtonClick} alt="clear" />
+
+        <img
+          src={cross}
+          onClick={handleOnClearSearchFormButtonClick}
+          alt="clear"
+        />
+
         <button
           className={s.searchButton}
           type="submit"
@@ -38,7 +48,24 @@ const SearchForm = forwardRef((props, ref) => {
         >
           Пошук
         </button>
+
+        <div className={s.searchModeSwitcher}>
+          <button
+            type="button"
+            className={`${s.searchModeButton} ${s.activeSearchMode}`}
+          >
+            Результати
+          </button>
+
+          <button
+            type="button"
+            className={s.searchModeButton}
+          >
+            Фільтр
+          </button>
+        </div>
       </form>
+
       {count > 0 && (
         <div className={s.resultsInfo}>
           <img src={loupe} alt="loupe" />
@@ -50,5 +77,7 @@ const SearchForm = forwardRef((props, ref) => {
     </div>
   );
 });
+
+
 
 export default SearchForm;

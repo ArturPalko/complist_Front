@@ -41,16 +41,16 @@ export const useTableBaseLogic = ({
   const isLastVisitedPageWasFoundResults =
     useSelector(isCurrentPageFoundResult(pageName));
 
- debugger  // ================================
+
   // data loading
   // ================================
   const { data, isPreviousPageWasFoundResult } =
     useDataLoader(pageName);
       
-debugger
+
   const { isPagesNavbarLinkElementOnCurrentPagePressed } =
     useSearchToggle();
-    // console.log("datka:", data)
+
 
   // ================================
   // safe values
@@ -90,6 +90,7 @@ debugger
   // ================================
   // found results logic
   // ================================
+  
   const {
     showDigitsFromPressed,
     shouldShowColNumbers,
@@ -101,7 +102,6 @@ debugger
       isPagesNavbarLinkElementOnCurrentPagePressed,
     isPreviousPageWasFoundResult,
   });
-debugger
   // ================================
   // sync row heights
   // ================================

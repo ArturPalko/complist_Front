@@ -13,7 +13,7 @@ export const handleLastVisitedPage = ({
 
 }) => {
     
-  console.log("CurrentMode:", currentMode)
+
   if (!pageName || !pageFromURL) return;
   
   const dictionaryModes = ["positions", "userTypes", "departments"];

@@ -139,7 +139,7 @@ if (menu == "phones" && !currentMode) return
     onDragStart: (e) => {
       startDrag(itemId);
       //          
-      console.log("selectedIds3:", selectedIds);
+
 
       const preview =
         createDragPreview(item, selectedIds);

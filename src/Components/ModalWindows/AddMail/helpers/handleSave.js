@@ -29,7 +29,7 @@ export const handleSave = async ({
       responsibleUserIds,
     };
 
-    console.log(data);
+
 
     await onSubmit(data);
 

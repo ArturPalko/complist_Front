@@ -214,25 +214,7 @@ const mapStateToProps = (state) => {
     ? Pages.DICTIONARIES
     : menu;
 
-  console.log(
-    "PagesNavBar searchKey:",
-    searchKey
-  );
 
-  console.log(
-    "PagesNavBar currentMode:",
-    currentMode
-  );
-
-  console.log(
-    "PagesNavBar searchValue:",
-    selectSearchValueByPage(searchKey)(state)
-  );
-
-  console.log(
-    "PagesNavBar isSearchValueFound:",
-    isSearchValueFoundByPage(searchKey)(state)
-  );
 
   return {
     currentMode,

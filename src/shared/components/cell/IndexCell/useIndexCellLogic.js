@@ -5,6 +5,8 @@ import { addIndexesFromIndexCell } from "../../../../redux/reducers/toggledEleme
 import { useDispatch, useSelector } from "react-redux";
 import { activeMenu, isSectionsMode, selectSearchStateByMenu } from "../../../../redux/selectors/selector";
 import { getIndexesForSection } from "./helpers";
+import { getCurrentMode } from "../../../../redux/selectors/selector";
+import { Pages } from "../../../../configs/app/constants";
 
 export const useIndexCellLogic = (
   index,
@@ -28,7 +30,7 @@ export const useIndexCellLogic = (
   );
 
   const isSections = useSelector(isSectionsMode)
-
+const currentMode = useSelector(state => getCurrentMode(state))
 
 const foundResults = searchState.foundResults ?? [];
 
@@ -38,43 +40,52 @@ const foundResults = searchState.foundResults ?? [];
   const handleMouseEnter = useCallback(() => setHoveredRow(true), []);
   const handleMouseLeave = useCallback(() => setHoveredRow(false), []);
 
-  const handleClick = useCallback(() => {
-    if (!cellData) return;
+const handleClick = useCallback(() => {
+  if (!cellData) return;
 
-    const targetPage = cellData.currentPage;
-    const config = pageConfigs[pageName];
-    const url = config ? `${config.basePath}${targetPage}` : "/";
-      
-    setClickedRow(true);
-  
-    if (isSetionType && !isSections) {
-        
-      const currentIndex = foundResults.findIndex(
-        (item) => item.index === cellData.index && item.currentPage == targetPage
+  const targetPage = cellData.currentPage;
+  const config = pageConfigs[pageName];
+
+  const url =
+    pageName === Pages.DICTIONARIES
+      ? `/dictionary/${currentMode}/${targetPage}`
+      : config
+        ? `${config.basePath}${targetPage}`
+        : "/";
+
+  setClickedRow(true);
+
+  if (isSetionType && !isSections) {
+    const currentIndex = foundResults.findIndex(
+      (item) =>
+        item.index === cellData.index &&
+        item.currentPage == targetPage
+    );
+
+    if (currentIndex !== -1) {
+      const indexes = getIndexesForSection(
+        foundResults,
+        currentIndex,
+        targetPage
       );
-      
-      
-      if (currentIndex !== -1) {
-        const indexes = getIndexesForSection(foundResults, currentIndex,targetPage);
-        
-        
-        dispatch(addIndexesFromIndexCell(indexes));
-      }
-    } else if (true) {
-        
-      dispatch(addIndexesFromIndexCell([cellData.index]));
-    }
 
-    setTimeout(() => navigate(url), 300);
-  }, [
-    cellData,
-    pageName,
-    navigate,
-    dispatch,
-    foundResults,
-    isSetionType,
-    isNonUserRowType,
-  ]);
+      dispatch(addIndexesFromIndexCell(indexes));
+    }
+  } else {
+    dispatch(addIndexesFromIndexCell([cellData.index]));
+  }
+
+  setTimeout(() => navigate(url), 300);
+}, [
+  cellData,
+  pageName,
+  currentMode,
+  isSetionType,
+  isSections,
+  foundResults,
+  dispatch,
+  navigate,
+]);
 
   return {
     cellData,

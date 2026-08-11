@@ -21,6 +21,7 @@ import SearchForm from "./SearchForm/SearchForm.jsx";
 import { useFilteredPageData } from "../../../redux/hooks/hooks.js";
 import { runSearch } from "./searchUtils.js";
 import { Pages } from "../../../configs/app/constants.js";
+import { clearDictionarySearchResults } from "./searchUtils.js";
 
 const Search = ({
   activeMenu: activeMenuStr,
@@ -114,14 +115,6 @@ const Search = ({
       searchTarget: target,
     });
 
-    console.log("========== SEARCH ==========");
-    console.log("activeMenu:", activeMenuStr);
-    console.log("currentMode:", currentMode);
-    console.log("searchKey:", searchKey);
-    console.log("draftValue:", draftValue);
-    console.log("searchSource:", searchSource);
-    console.log("results:", results);
-    console.log("============================");
 
     if (!results.length) {
       setShowNotFound(true);
@@ -131,19 +124,6 @@ const Search = ({
       }, 1000);
     }
 
-    /*
-     * ГОЛОВНА ЗМІНА
-     *
-     * Dictionary:
-     *
-     *   addFoundItems("dictionary", ...)
-     *
-     * Звичайні меню:
-     *
-     *   addFoundItems("Gov-ua", ...)
-     *   addFoundItems("Lotus", ...)
-     *   addFoundItems("phones", ...)
-     */
 
     addFoundItems(
       searchKey,
@@ -157,6 +137,15 @@ const Search = ({
    * RENDER
    * =====================================================
    */
+const previousModeRef = useRef(currentMode);
+
+useEffect(() => {
+  clearDictionarySearchResults(
+    currentMode,
+    previousModeRef,
+    clearSearchForm
+  );
+}, [currentMode, clearSearchForm]);
 
   return (
     <SearchForm
@@ -216,11 +205,6 @@ const mapStateToProps = (state) => {
     ? Pages.DICTIONARIES
     : menu;
 
-  console.log("========== SEARCH REDUX ==========");
-  console.log("activeMenu:", menu);
-  console.log("currentMode:", currentMode);
-  console.log("searchKey:", searchKey);
-  console.log("==================================");
 
   return {
     activeMenu: menu,

@@ -38,7 +38,6 @@ const PagesNavBarView = ({
     clearTimeout(timerRef.current);
     pendingPageRef.current = null;
   };
-// console.log("basePath:", basePath);
   
   return (
     <div

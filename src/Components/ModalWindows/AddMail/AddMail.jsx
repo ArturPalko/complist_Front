@@ -76,7 +76,7 @@ const departmentsValues = useMemo(
   [departments]
 );;
 
-console.log("departmentValues:", departmentsValues)
+
 
   const menu = useSelector(activeMenu);
 

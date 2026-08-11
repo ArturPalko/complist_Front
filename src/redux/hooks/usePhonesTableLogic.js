@@ -25,9 +25,6 @@ export const usePhonesTableLogic = (props) => {
     currentData?.departmentId ||
     currentData?.id;
 
-  if (indexValue) {
-    console.log("indexVALUE:", indexValue);
-  }
 
   const indexDecrementFromPreviousPages = useSelector(
     getDepartmentsAndSectionsPerPage
@@ -51,12 +48,6 @@ export const usePhonesTableLogic = (props) => {
     selectFoundResults(state, searchMenu)
   );
       
-  console.log("🔥 DIM SEARCH:", {
-    currentMode,
-    searchMenu,
-    foundResults,
-  });
-
   // ==========================================
   // EDIT MODE
   // ==========================================

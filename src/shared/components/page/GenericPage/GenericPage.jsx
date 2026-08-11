@@ -21,6 +21,7 @@ const GenericPage = ({
   const pageNumber = usePageNumber();
   const isEditMode = !useSelector(isEditModeSelected);
   const indexes = useIndexesForPage(pageName);
+
     
   const isSections = useSelector (isSectionsMode)
   

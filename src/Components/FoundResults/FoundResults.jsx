@@ -58,12 +58,6 @@ const FoundResults = ({
     : activeMenu;
 
 
-  console.log("========== FOUND RESULTS ==========");
-  console.log("activeMenu:", activeMenu);
-  console.log("currentMode:", currentMode);
-  console.log("searchKey:", searchKey);
-  console.log("data:", data);
-  console.log("foundSearchValues:", foundSearchValues);
 
 
   const {
@@ -77,21 +71,6 @@ const FoundResults = ({
     isFilterApplied
   );
 
-
-  console.log(
-    "presentRows:",
-    presentRows
-  );
-
-  console.log(
-    "indexData:",
-    indexDataOfFoundResultsForFoundResultsPage
-  );
-
-  console.log(
-    "tooManyResults:",
-    tooManyResults
-  );
 
 
   /*
@@ -164,16 +143,6 @@ const mapStateToProps = (state) => {
       selectSearchValueByPage(searchKey)(state),
   };
 
-
-  console.log(
-    "FoundResults mapState searchKey:",
-    searchKey
-  );
-
-  console.log(
-    "FoundResults search value:",
-    selectSearchValueByPage(searchKey)(state)
-  );
 
 
   return {

@@ -71,18 +71,8 @@ export const getDimGroupRowClasses = ({
   isPagesNavbarLinkElementOnCurrentPagePressed,
   styles,
 }) => {
-    debugger    
- console.log("=== getDimGroupRowClasses ===");
-console.log("hasFoundResults:", hasFoundResults);
-console.log(
-  "showPreviousPageHighlight:",
-  showPreviousPageHighlight
-);
-console.log(
-  "isPagesNavbarLinkElementOnCurrentPagePressed:",
-  isPagesNavbarLinkElementOnCurrentPagePressed
-);
-console.log("styles:", styles);
+  
+
 
   const dimAfterSearchNavigationClass =
     hasFoundResults && showPreviousPageHighlight
@@ -94,10 +84,7 @@ console.log("styles:", styles);
       ? styles.dimGroupRow
       : "";
 
-  console.log("DIM RESULT:", {
-    dimAfterSearchNavigationClass,
-    dimAfterPageNumberPressedClass,
-  });
+ 
 
       ;
 

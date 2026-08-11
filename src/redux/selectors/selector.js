@@ -190,7 +190,10 @@ export const isPreviousPageWasFoundResult = (menu) => (state) => {
   const previousLocation = state.currentPageNumber.previousLocation;
 
   if (currentMode) {
-    return previousLocation === `/dictionary/${currentMode}/foundResults`;
+    return (
+      previousLocation?.startsWith("/dictionary/") &&
+      previousLocation?.endsWith("/foundResults")
+    );
   }
 
   const baseLink = getBaseLinkByMenu(menu);
@@ -308,19 +311,15 @@ export const getPhonesDepartmenstForOrder = createSelector(
 
 
 export const isSectionsMode = (state) => {
-  //console.log ("isSectionsMode:",state.ui.viewMode == "sections" )
   return state.ui.viewMode == "sections"};
 
 export const isDepartmentsMode = (state) => {
-  //console.log ("isSectionsMode:",state.ui.viewMode == "sections" )
   return state.ui.viewMode == "departments"};
 
 export const isPositionsMode = (state) => {
-  //console.log ("isSectionsMode:",state.ui.viewMode == "sections" )
   return state.ui.viewMode == "positions"};
 
-export const isUserTypesMode = (state) => {
-  //console.log ("isSectionsMode:",state.ui.viewMode == "sections" )
+export const isUserTypesMode = (state) => {  
   return state.ui.viewMode == "userTypes"};
 
 

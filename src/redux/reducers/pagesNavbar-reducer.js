@@ -39,7 +39,6 @@ case REMEMBER_CURRENT_PAGE_NUMBER: {
     const currentMode = action.currentMode;
     const value = action.pageNumber;
     const isNumberPage = !isNaN(Number(value));
-    console.log("CURRENTMODEinreducer:", currentMode)
     if (pageName === "dictionary") {
 
     if (!currentMode) {

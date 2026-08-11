@@ -1,4 +1,30 @@
 import { excludedKeys } from "../../../configs/search/excludedKeys";
+import { Pages } from "../../../configs/app/constants";
+
+
+
+export const clearDictionarySearchResults = (
+  currentMode,
+  previousModeRef,
+  clearSearchForm
+) => {
+  const previousMode = previousModeRef.current;
+
+  if (
+    currentMode &&
+    previousMode !== currentMode
+  ) {
+    clearSearchForm(Pages.DICTIONARIES);
+  }
+
+  previousModeRef.current = currentMode;
+};
+
+
+
+
+
+
 
 export const runSearch = ({ searchValue, searchTarget }) => {
   const query = searchValue.trim().toLowerCase();
@@ -71,7 +97,7 @@ export const runSearch = ({ searchValue, searchTarget }) => {
               currentPage: page.pageIndex,
               index,
             });
-                    console.log("Results:", foundResults)
+                  
           }
         }
       }
