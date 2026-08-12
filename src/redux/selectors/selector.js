@@ -531,3 +531,8 @@ export const selectUsersBySection =
 
   return [];
 };
+
+  export const getSearchMode = (state) => state.ui.searchMode;
+
+  export const selectFoundResultsByPage = (page) => (state) =>
+  state.toggledElements.searchField?.[page]?.foundResults ?? [];

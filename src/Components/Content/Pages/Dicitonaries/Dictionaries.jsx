@@ -35,7 +35,7 @@ const Dictionaries = () => {
       ]
     : data;
 
-  console.log("DICTIONARY previousPageWasFoundResult:", previousPageWasFoundResult);
+
 
   return (
     <DataLoaderContext.Provider

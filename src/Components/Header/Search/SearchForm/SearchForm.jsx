@@ -13,6 +13,8 @@ const SearchForm = forwardRef((props, ref) => {
     handleOnSearchButtonClick,
     handleOnClearSearchFormButtonClick,
     getCountOfFoundResults,
+    searchMode,
+    onSearchModeChange
   } = props;
 
   if (!isPresentedSearchField) return null;
@@ -52,14 +54,20 @@ const SearchForm = forwardRef((props, ref) => {
         <div className={s.searchModeSwitcher}>
           <button
             type="button"
-            className={`${s.searchModeButton} ${s.activeSearchMode}`}
+           className={`${s.searchModeButton} ${
+    searchMode === "results" ? s.activeSearchMode : s.inactiveSearchMode
+  }`}
+            onClick={() => onSearchModeChange("results")}
           >
             Результати
           </button>
 
           <button
             type="button"
-            className={s.searchModeButton}
+          className={`${s.searchModeButton} ${
+    searchMode === "filter" ? s.activeSearchMode : s.inactiveSearchMode
+  }`}
+            onClick={() => onSearchModeChange("filter")}
           >
             Фільтр
           </button>

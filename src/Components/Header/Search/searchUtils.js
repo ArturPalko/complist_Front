@@ -31,19 +31,19 @@ export const runSearch = ({ searchValue, searchTarget }) => {
   if (query.length < 3) return [];
 
   const foundResults = [];
+
   const getIdByRowType = (row) => {
-  const idMap = {
-    section: row.sectionId,
-    department: row.departmentId,
-    user: row.userId,
-    position: row.id,
-    userType: row.id
+    const idMap = {
+      section: row.sectionId,
+      department: row.departmentId,
+      user: row.userId,
+      position: row.id,
+      userType: row.id
+    };
+
+    return idMap[row.type];
   };
 
-  return idMap[row.type];
-};
-
-  //  нормалізація будь-якого значення
   const normalize = (val) => {
     if (val === null || val === undefined) return "";
     return String(val).toLowerCase().trim();
@@ -59,7 +59,7 @@ export const runSearch = ({ searchValue, searchTarget }) => {
 
       const index = rowIndex + 1;
 
-      //  1. SEARCH IN ROW (верхній рівень)
+      // 1. SEARCH IN ROW
       const matchedKey = Object.entries(row).find(
         ([key, value]) =>
           !excludedKeys.includes(key) &&
@@ -69,40 +69,39 @@ export const runSearch = ({ searchValue, searchTarget }) => {
 
       if (matchedKey) {
         const [key, value] = matchedKey;
-  
+
         foundResults.push({
           id: getIdByRowType(row),
           elementType: row.type,
           dataKey: key,
           dataValue: value,
           currentPage: page.pageIndex,
-          index,
+          index
         });
 
-        continue; 
+        continue;
       }
 
-      //  2. DEPSEC (object)
+      // 2. DEPSEC
       const depSec = row.depSec;
+
       if (depSec && typeof depSec === "object") {
         for (const [key, value] of Object.entries(depSec)) {
           if (excludedKeys.includes(key)) continue;
 
           if (normalize(value).includes(query)) {
-            
             foundResults.push({
               elementType: row.type,
               dataKey: key,
               dataValue: value,
               currentPage: page.pageIndex,
-              index,
+              index
             });
-                  
           }
         }
       }
 
-      //  3. PHONES
+      // 3. PHONES
       if (Array.isArray(row.phones)) {
         for (const phone of row.phones) {
           const phoneName = phone?.phoneName;
@@ -113,10 +112,26 @@ export const runSearch = ({ searchValue, searchTarget }) => {
               dataKey: "phoneName",
               dataValue: phoneName,
               currentPage: page.pageIndex,
-              index,
+              index
             });
           }
-       
+        }
+      }
+
+      // 4. USERS
+      if (Array.isArray(row.users)) {
+        for (const user of row.users) {
+          const userName = user?.name;
+
+          if (normalize(userName).includes(query)) {
+            foundResults.push({
+              elementType: row.type,
+              dataKey: "name",
+              dataValue: userName,
+              currentPage: page.pageIndex,
+              index
+            });
+          }
         }
       }
     }

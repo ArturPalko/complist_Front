@@ -103,17 +103,7 @@ export const useIndexesForPage = (pageKey) => {
         const data =
           getPageIndexDataOfFoundResultsByPage(pageKey)(state) || [];
 
-        console.log(
-          "========== useIndexesForPage =========="
-        );
-
-        console.log("1️⃣ pageKey:", pageKey);
-
-        console.log("2️⃣ currentMode:", currentMode);
-
-        console.log("3️⃣ pageNumber:", pageNumber);
-
-        console.log("4️⃣ pageIndexData:", data);
+     
 
         const indexes = data
           .filter(
@@ -123,20 +113,14 @@ export const useIndexesForPage = (pageKey) => {
           )
           .map((item) => item.index);
 
-        console.log(
-          "5️⃣ indexesFromPage:",
-          indexes
-        );
+     
 
         return indexes;
       }
     )
   );
 
-  console.log(
-    "6️⃣ indexesFromIndexCell:",
-    indexesFromIndexCell
-  );
+ 
 
   // Якщо IndexCell вже передав індекси —
   // використовуємо їх.
@@ -149,10 +133,7 @@ export const useIndexesForPage = (pageKey) => {
       ? indexesFromIndexCell
       : indexesFromPage;
 
-  console.log(
-    "7️⃣ FINAL indexes:",
-    indexes
-  );
+ 
 
   return indexes;
 };

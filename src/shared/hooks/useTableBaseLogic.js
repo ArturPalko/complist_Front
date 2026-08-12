@@ -6,17 +6,26 @@ import {
   useFoundResultsColNumbersLogic,
 } from "../../redux/hooks/hooks";
 
+import { useFoundResults } from "../../redux/hooks/useFoundResults";
 import { useRowHeights } from "../../redux/hooks/useSyncRowHeights";
 
 import {
   activeMenu,
   isCurrentPageFoundResult,
+  getSearchMode,
+  getCurrentMode,
+  selectSearchStateByMenu,
 } from "../../redux/selectors/selector";
 
 import {
   useDataLoader,
   useSearchToggle,
 } from "../../redux/contexts/useConetxt";
+
+import {
+  Pages,
+  rowsPerPage,
+} from "../../configs/app/constants";
 
 export const useTableBaseLogic = ({
   columns,
@@ -25,86 +34,206 @@ export const useTableBaseLogic = ({
   foundResults = [],
   headerRef,
   titleRef,
-  dataSelector
+  dataSelector,
 }) => {
   // ================================
   // refs
   // ================================
+
   const rowRefs = useRef([]);
   const colNumbersRef = useRef([]);
 
   // ================================
   // redux state
   // ================================
+
   const pageName = useSelector(activeMenu);
+  const currentMode = useSelector(getCurrentMode);
+  const searchMode = useSelector(getSearchMode);
+
+  const isSearchFilterMode =
+    searchMode === "filter";
+
+  const searchKey = currentMode
+    ? Pages.DICTIONARIES
+    : pageName;
 
   const isLastVisitedPageWasFoundResults =
-    useSelector(isCurrentPageFoundResult(pageName));
+    useSelector(
+      isCurrentPageFoundResult(pageName)
+    );
 
+  // ================================
+  // search state
+  // ================================
 
+  const searchState = useSelector((state) =>
+    selectSearchStateByMenu(
+      state,
+      searchKey
+    )
+  );
+
+  // ================================
   // data loading
   // ================================
-  const { data, isPreviousPageWasFoundResult } =
-    useDataLoader(pageName);
-      
 
-  const { isPagesNavbarLinkElementOnCurrentPagePressed } =
-    useSearchToggle();
+  const {
+    data,
+    isPreviousPageWasFoundResult,
+  } = useDataLoader(pageName);
 
+  const {
+    isPagesNavbarLinkElementOnCurrentPagePressed,
+  } = useSearchToggle();
 
   // ================================
   // safe values
   // ================================
-  const safeFoundResults = foundResults ?? [];
+
+  const safeFoundResults =
+    foundResults ?? [];
 
   // ================================
   // filtering
   // ================================
-  const { data: filteredPageData, isFilterApplied } =
-    useFilteredPageData(data);
+
+  const {
+    data: filteredPageData,
+    isFilterApplied,
+  } = useFilteredPageData(data);
+
+  // ================================
+  // search results
+  // ================================
+
+  const {
+    presentRows: searchResultRows,
+  } = useFoundResults(
+    data,
+    {
+      [searchKey]: searchState,
+    },
+    searchKey,
+    isFilterApplied
+  );
+
+  const hasSearchResults =
+    searchResultRows.length > 0;
 
   // ================================
   // pageData calculation
   // ================================
+
   const pageData = useMemo(() => {
+    /*
+     * ==========================================
+     * СТАРИЙ FOUND RESULTS MODE
+     * ==========================================
+     *
+     * Якщо відкривається стара сторінка
+     * /foundResults — залишаємо стару
+     * поведінку.
+     */
+
     if (isLastVisitedPageWasFoundResults) {
       return safeFoundResults;
     }
-  
-    if (isFilterApplied) {
-      return (
-        filteredPageData?.[pageNumber - 1]?.rows ?? []
+
+    /*
+     * ==========================================
+     * НОВИЙ SEARCH FILTER MODE
+     * ==========================================
+     *
+     * useFoundResults повертає плоский масив:
+     *
+     * [
+     *   row,
+     *   row,
+     *   row,
+     *   ...
+     * ]
+     *
+     * Тут розбиваємо його на сторінки.
+     */
+
+    if (
+      isSearchFilterMode &&
+      hasSearchResults
+    ) {
+      const startIndex =
+        (pageNumber - 1) *
+        rowsPerPage;
+
+      const endIndex =
+        startIndex + rowsPerPage;
+
+      return searchResultRows.slice(
+        startIndex,
+        endIndex
       );
     }
 
-    return data?.[pageNumber - 1]?.rows ?? [];
+    /*
+     * ==========================================
+     * ЗВИЧАЙНИЙ ФІЛЬТР ДОДАТКА
+     * ==========================================
+     */
+
+    if (isFilterApplied) {
+      return (
+        filteredPageData?.[
+          pageNumber - 1
+        ]?.rows ?? []
+      );
+    }
+
+    /*
+     * ==========================================
+     * ЗВИЧАЙНИЙ РЕЖИМ
+     * ==========================================
+     */
+
+    return (
+      data?.[
+        pageNumber - 1
+      ]?.rows ?? []
+    );
   }, [
     isLastVisitedPageWasFoundResults,
+    isSearchFilterMode,
+    hasSearchResults,
+    searchResultRows,
     safeFoundResults,
     isFilterApplied,
     filteredPageData,
     data,
     pageNumber,
   ]);
-  
+
   // ================================
   // found results logic
   // ================================
-  
+
   const {
     showDigitsFromPressed,
     shouldShowColNumbers,
     showPreviousPageHighlight,
   } = useFoundResultsColNumbersLogic({
     isLastVisitedPageWasFoundResults,
+
     indexesOfFoundResultsForCurrentPage,
+
     isPagesNavbarLinkPressed:
       isPagesNavbarLinkElementOnCurrentPagePressed,
+
     isPreviousPageWasFoundResult,
   });
+
   // ================================
   // sync row heights
   // ================================
+
   useRowHeights(
     rowRefs,
     colNumbersRef,
@@ -116,21 +245,29 @@ export const useTableBaseLogic = ({
   // ================================
   // columns count
   // ================================
+
   const tableColumns = useMemo(() => {
-    if (!columns) return undefined;
+    if (!columns) {
+      return undefined;
+    }
 
     const column = columns.find(
       (c) => c.key === pageName
     );
 
     return column?.subLabels?.length;
-  }, [columns, pageName]);
+  }, [
+    columns,
+    pageName,
+  ]);
 
   // ================================
   // return
   // ================================
+
   return {
-    // data
+    data,
+
     pageData,
 
     // refs
@@ -146,7 +283,10 @@ export const useTableBaseLogic = ({
     isPagesNavbarLinkElementOnCurrentPagePressed,
 
     // table config
-    ...(columns ? { pageColumns: tableColumns } : {})
-  
+    ...(columns
+      ? {
+          pageColumns: tableColumns,
+        }
+      : {}),
   };
 };

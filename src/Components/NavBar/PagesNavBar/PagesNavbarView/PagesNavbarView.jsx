@@ -13,6 +13,7 @@ const PagesNavBarView = ({
   handleNavLinkPressed,
   handleNavLinkUnpressed,
   handleDropOnPage,
+  searchMode,
 }) => {
   const navigate = useNavigate();
   const { dragIds, endDrag } = useDragContext();
@@ -21,6 +22,8 @@ const PagesNavBarView = ({
   const timerRef = useRef(null);
 
   const isDragActive = Boolean(editMode && dragIds?.length);
+
+  const isSearchFilterMode = searchMode === "filter";
 
   const goToPage = (page) => {
     if (!isDragActive) return;
@@ -38,28 +41,30 @@ const PagesNavBarView = ({
     clearTimeout(timerRef.current);
     pendingPageRef.current = null;
   };
-  
+
   return (
     <div
       className={`${s.navigationOfPage} ${
         isDragActive ? s.editMode : ""
       }`}
     >
-      {/* 🔥 FOUND RESULTS (ONLY NORMAL MODE) */}
-      {(showFoundResultPage || isFoundResultsPage) && !isDragActive && (
-        <NavLink
-          to={`${basePath}foundResults`}
-          className={({ isActive }) =>
-            `${s.foundResultsPage} ${
-              isActive ? s.activeLink : ""
-            }`
-          }
-        >
-          R
-        </NavLink>
-      )}
+      {/* FOUND RESULTS — ONLY NORMAL SEARCH MODE */}
+      {!isSearchFilterMode &&
+        (showFoundResultPage || isFoundResultsPage) &&
+        !isDragActive && (
+          <NavLink
+            to={`${basePath}foundResults`}
+            className={({ isActive }) =>
+              `${s.foundResultsPage} ${
+                isActive ? s.activeLink : ""
+              }`
+            }
+          >
+            R
+          </NavLink>
+        )}
 
-      {/* 🔥 PAGES (HORIZONTAL OR VERTICAL DEPENDS ON MODE) */}
+      {/* PAGES */}
       {count > 0 &&
         Array.from({ length: count }, (_, i) => {
           const pageNumber = i + 1;
@@ -88,6 +93,7 @@ const PagesNavBarView = ({
                   `${s.pageNavigator} ${
                     isActive ? s.activeLink : ""
                   } ${
+                    !isSearchFilterMode &&
                     indexes.includes(pageNumber)
                       ? s.containsSearchedValues
                       : ""
@@ -96,7 +102,7 @@ const PagesNavBarView = ({
               >
                 {pageNumber}
 
-                {/* 🔥 ARROW ONLY IN DRAG MODE */}
+                {/* ARROW ONLY IN DRAG MODE */}
                 {isDragActive && (
                   <span className={s.dragArrow}>›››</span>
                 )}

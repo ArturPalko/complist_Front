@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { connect, useSelector } from "react-redux";
 
@@ -11,6 +11,8 @@ import {
   isSearchValueFoundByPage,
   isEditModeSelected,
   getCurrentMode,
+  getSearchMode,
+  selectFoundResultsByPage,
 } from "../../../redux/selectors/selector";
 
 import {
@@ -32,30 +34,28 @@ import {
   getPagesCount,
 } from "./pageUtils";
 
-import { Pages } from "../../../configs/app/constants";
+import {
+  Pages,
+  rowsPerPage,
+} from "../../../configs/app/constants";
 
 const PagesNavBar = (props) => {
   const location = useLocation();
+  const searchMode = useSelector(getSearchMode);
+  const editMode = useSelector(isEditModeSelected);
 
   const pressTimer = useRef(null);
   const isPressed = useRef(false);
-
-  const delay = 1000;
-
-  const [showFoundResultPage, setShowFoundResultsPage] =
-    useState(false);
-
-  const [indexes, setIndexes] = useState([]);
-
-  // Ref для останньої обробленої сторінки
   const lastPageRef = useRef({
     pageName: null,
     pageFromURL: null,
   });
 
-  // =====================================================
-  // URL
-  // =====================================================
+  const delay = 1000;
+
+  const [showFoundResultPage, setShowFoundResultsPage] =
+    useState(false);
+  const [indexes, setIndexes] = useState([]);
 
   const pathParts = location.pathname
     .split("/")
@@ -70,13 +70,15 @@ const PagesNavBar = (props) => {
   const isFoundResultsPage =
     pageFromURL === "foundResults";
 
-  const editMode = useSelector(isEditModeSelected);
+  const hasSearchResults =
+    searchMode === "filter" &&
+    props.foundResults?.length > 0;
 
-  // =====================================================
-  // КІЛЬКІСТЬ СТОРІНОК
-  // =====================================================
+  const filterPagesCount = Math.ceil(
+    (props.foundResults?.length ?? 0) / rowsPerPage
+  );
 
-  const count = getPagesCount({
+  const normalPagesCount = getPagesCount({
     countFiltred: props.countFiltred,
     pagesCount: props.pagesCount,
     activeMenu: props.activeMenu,
@@ -84,15 +86,14 @@ const PagesNavBar = (props) => {
     pageName,
   });
 
-  // =====================================================
-  // НАТИСКАННЯ НА НОМЕР СТОРІНКИ
-  // =====================================================
+  const count = hasSearchResults
+    ? filterPagesCount
+    : normalPagesCount;
 
   const handleNavLinkPressed = (e) => {
     if (pageFromURL === e.currentTarget.textContent) {
       pressTimer.current = setTimeout(() => {
         props.togglepagesNavbarLinkElementOnCurrentPage(true);
-
         isPressed.current = true;
       }, delay);
     }
@@ -103,14 +104,9 @@ const PagesNavBar = (props) => {
 
     if (isPressed.current) {
       props.togglepagesNavbarLinkElementOnCurrentPage(false);
-
       isPressed.current = false;
     }
   };
-
-  // =====================================================
-  // ОСТАННЯ ВІДВІДАНА СТОРІНКА
-  // =====================================================
 
   useEffect(() => {
     if (!pageName || !pageFromURL) return;
@@ -132,17 +128,18 @@ const PagesNavBar = (props) => {
       setFilterPage: props.setFilterPage,
       rememberCurrentPage: props.rememberCurrentPage,
       currentMode: props.currentMode,
+      searchMode: props.searchMode,
     });
 
     lastPageRef.current = {
       pageName,
       pageFromURL,
     };
-  }, [pageName, pageFromURL]);
-
-  // =====================================================
-  // ПОШУК
-  // =====================================================
+  }, [
+    pageName,
+    pageFromURL,
+    props.searchMode,
+  ]);
 
   useEffect(() => {
     handleSearchResults({
@@ -156,9 +153,15 @@ const PagesNavBar = (props) => {
     props.searchValue,
   ]);
 
-  // =====================================================
-  // RENDER
-  // =====================================================
+  useEffect(() => {
+  if (
+    searchMode === "filter" &&
+    props.foundResults?.length > 0 &&
+    pageFromURL !== "1"
+  ) {
+    // тут navigate на першу сторінку
+  }
+}, [searchMode, props.foundResults]);
 
   return (
     <PagesNavBarView
@@ -173,71 +176,39 @@ const PagesNavBar = (props) => {
       handleNavLinkPressed={handleNavLinkPressed}
       handleNavLinkUnpressed={handleNavLinkUnpressed}
       editMode={editMode}
+      searchMode={props.searchMode}
     />
   );
 };
 
-// =====================================================
-// REDUX
-// =====================================================
-
 const mapStateToProps = (state) => {
   const menu = activeMenu(state);
   const currentMode = getCurrentMode(state);
-
-  /*
-   * ===================================================
-   * ВАЖЛИВО
-   * ===================================================
-   *
-   * Звичайні сторінки:
-   *
-   *   Gov-ua
-   *   Lotus
-   *   phones
-   *
-   * використовують власний searchField.
-   *
-   * Dictionary:
-   *
-   *   positions
-   *   departments
-   *   sections
-   *   userTypes
-   *
-   * використовують один:
-   *
-   *   searchField.dictionary
-   */
+  const searchMode = getSearchMode(state);
 
   const searchKey = currentMode
     ? Pages.DICTIONARIES
     : menu;
 
-
-
   return {
     currentMode,
-
     activeMenu: menu,
+    searchMode,
 
-    pagesCount: selectPaginationPagesCount(
-      menu,
-      currentMode
-    )(state),
-
-    /*
-     * Тут головна зміна:
-     *
-     * Dictionary -> dictionary
-     * Інші меню -> activeMenu
-     */
+    pagesCount:
+      selectPaginationPagesCount(
+        menu,
+        currentMode
+      )(state),
 
     searchValue:
       selectSearchValueByPage(searchKey)(state),
 
     isSearchValueFound:
       isSearchValueFoundByPage(searchKey)(state),
+
+    foundResults:
+      selectFoundResultsByPage(searchKey)(state),
 
     countFiltred: (menu) =>
       getCountOfPageForFiltredResults(
@@ -250,24 +221,13 @@ const mapStateToProps = (state) => {
   };
 };
 
-// =====================================================
-// DISPATCH
-// =====================================================
-
 const mapDispatchToProps = {
   rememberCurrentPage:
     rememberCurrentPagesActionCreator,
-
   togglepagesNavbarLinkElementOnCurrentPage,
-
   setFilterPage,
-
   setLastVisitedPage,
 };
-
-// =====================================================
-// CONNECT
-// =====================================================
 
 export default connect(
   mapStateToProps,

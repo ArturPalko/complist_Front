@@ -9,6 +9,7 @@ import {
   getIndexesOfFiltredResults,
   selectSearchStateByMenu,
   getCurrentMode,
+  getSearchMode,
 } from "../../../redux/selectors/selector.js";
 
 import {
@@ -22,6 +23,7 @@ import { useFilteredPageData } from "../../../redux/hooks/hooks.js";
 import { runSearch } from "./searchUtils.js";
 import { Pages } from "../../../configs/app/constants.js";
 import { clearDictionarySearchResults } from "./searchUtils.js";
+import { setSearchMode } from "../../../redux/reducers/ui-reducer.js";
 
 const Search = ({
   activeMenu: activeMenuStr,
@@ -34,6 +36,8 @@ const Search = ({
   addFoundItems,
   clearSearchForm,
   updateDraftValue,
+  searchMode,
+  setSearchMode
 }) => {
   const inputRef = useRef(null);
   const [showNotFound, setShowNotFound] = useState(false);
@@ -155,6 +159,10 @@ useEffect(() => {
 
       inputValue={inputValue}
 
+      searchMode= {searchMode}
+      
+      onSearchModeChange={(mode) => setSearchMode(mode)}
+      
       setInputValue={(value) =>
         value !== ""
           ? updateDraftValue(searchKey, value)
@@ -177,6 +185,7 @@ useEffect(() => {
       getCountOfFoundResults={() =>
         getCountOfFoundResults(searchKey)
       }
+      
     />
   );
 };
@@ -214,6 +223,7 @@ const mapStateToProps = (state) => {
     isPresentedSearchField:
       isPresentedSearchField(state),
 
+    searchMode:getSearchMode(state),
     /*
      * Дані, по яких фактично виконується пошук.
      *
@@ -251,6 +261,7 @@ const mapStateToProps = (state) => {
         state,
         searchKey
       ),
+      
   };
 };
 
@@ -263,6 +274,7 @@ const mapDispatchToProps = {
   addFoundItems,
   clearSearchForm,
   updateDraftValue,
+  setSearchMode
 };
 
 

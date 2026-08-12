@@ -13,6 +13,8 @@ const CLEAR_UNSAVED_ORDER = "CLEAR_UNSAVED_ORDER";
 
 const TOGGLE_ADD_USERS_MODE = "TOGGLE_ADD_USERS_MODE";
 
+const SET_SEARCH_MODE = "SET_SEARCH_MODE";
+
 /* =========================
    INITIAL STATE
 ========================= */
@@ -27,6 +29,8 @@ const initialState = {
 
   // snapshot останнього reorder перед save
   unsavedOrder: null,
+
+  searchMode: "results"
 };
 
 /* =========================
@@ -35,6 +39,13 @@ const initialState = {
 
 export const uiReducer = (state = initialState, action) => {
   switch (action.type) {
+
+    case SET_SEARCH_MODE:
+      return{
+        ...state,
+        searchMode:action.payload
+      }
+
     case TOGGLE_ADD_USERS_MODE:
       return {
         ...state,
@@ -148,4 +159,9 @@ export const setUnsavedOrder = (payload) => ({
 
 export const clearUnsavedOrder = () => ({
   type: CLEAR_UNSAVED_ORDER,
+});
+
+export const setSearchMode = (payload) => ({
+  type: SET_SEARCH_MODE,
+  payload
 });

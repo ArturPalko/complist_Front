@@ -25,26 +25,41 @@ export const useFoundResults = (
 
         if (!samePage) return false;
 
-        //  1. row fields
+        // 1. row fields
         const inRow = Object.values(row)
           .filter((v) => typeof v === "string")
-          .some((v) => normalize(v) === normalize(result.dataValue));
+          .some(
+            (v) =>
+              normalize(v) === normalize(result.dataValue)
+          );
 
-        //  2. phones
+        // 2. phones
         const inPhones = row.phones?.some(
           (phone) =>
-            normalize(phone?.phoneName) === normalize(result.dataValue)
+            normalize(phone?.phoneName) ===
+            normalize(result.dataValue)
         );
 
-        //  3. depSec (OBJECT)
+        // 3. depSec
         const inDepSec =
           row.depSec &&
           typeof row.depSec === "object" &&
           Object.values(row.depSec)
             .filter((v) => typeof v === "string")
-            .some((v) => normalize(v) === normalize(result.dataValue));
+            .some(
+              (v) =>
+                normalize(v) ===
+                normalize(result.dataValue)
+            );
 
-        return inRow || inPhones || inDepSec;
+        // 4. users
+        const inUsers = row.users?.some(
+          (user) =>
+            normalize(user?.name) ===
+            normalize(result.dataValue)
+        );
+
+        return inRow || inPhones || inDepSec || inUsers;
       })
     )
   );
@@ -55,9 +70,9 @@ export const useFoundResults = (
       index: r.index,
     }));
 
+  const tooManyResults =
+    presentRows.length > rowsPerPage;
 
-  const tooManyResults = presentRows.length > rowsPerPage;
-  
   return {
     presentRows,
     indexDataOfFoundResultsForFoundResultsPage,
