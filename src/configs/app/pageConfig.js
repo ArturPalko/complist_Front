@@ -11,6 +11,7 @@ import ConverForGovUaSVG from "../../assets/SVG/Diagrams/ConverForGovUaSVG.js"
 
 export const pageConfigs = {
   [Pages.DICTIONARIES]: {
+  StatusDiagram: EllipsesForPhonesSVG,
   title: "Довідники",
   TableComponent: DictionaryTable,
   columns: [

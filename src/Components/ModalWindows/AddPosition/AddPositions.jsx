@@ -17,6 +17,7 @@ export default function EntityModal({
   editValue,
   title,
 }) {
+  debugger
   const dispatch = useDispatch();
 
   const {

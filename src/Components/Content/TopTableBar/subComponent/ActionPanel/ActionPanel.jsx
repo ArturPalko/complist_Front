@@ -2,7 +2,7 @@ import ActionButton from "./ActionButton/ActionButton";
 import s from "./ActionPanel.module.css";
 import { useDragContext } from "../../../../../redux/contexts/useConetxt";
 import { useSelector } from "react-redux";
-import { isUserTypesMode } from "../../../../../redux/selectors/selector";
+import { isSectionsMode, isUserTypesMode, selectAtiveDepartmentId } from "../../../../../redux/selectors/selector";
 
 export default function ActionsPanel({
   onAdd,
@@ -10,7 +10,13 @@ export default function ActionsPanel({
   onDelete,
 }) {
   const { selectedIds } = useDragContext();
-  const disabled = useSelector(isUserTypesMode);
+  const isSections = useSelector(isSectionsMode);
+  const isUserTypes = useSelector(isUserTypesMode);
+  const activeDep = useSelector(selectAtiveDepartmentId);
+
+const disabled =
+  isUserTypes ||
+  (isSections && !activeDep);
 
   return (
     <div className={s.panel}>

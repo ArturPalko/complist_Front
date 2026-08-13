@@ -76,7 +76,7 @@ case SET_ORDER: {
   let newState = { ...state };
 
   // 📦 departments
-  if (currentMode === "department") {
+  if (currentMode === "departments") {
     const newDepartments = chunkIntoPages(reordered, rowsPerPage);
 
     return {
@@ -89,7 +89,7 @@ case SET_ORDER: {
   }
 
   // 📚 sections
-  if (currentMode === "section") {
+  if (currentMode === "sections") {
     const deptId = reordered?.[0]?.departmentId;
 
     newState.dictionaries = {
@@ -111,7 +111,7 @@ case SET_ORDER: {
   }
 
   // 📌 positions
-  if (currentMode === "position") {
+  if (currentMode === "positions") {
     return {
       ...state,
       dictionaries: {
@@ -122,7 +122,7 @@ case SET_ORDER: {
   }
 
   // 👤 user types
-  if (currentMode === "userType") {
+  if (currentMode === "userTypes") {
     return {
       ...state,
       dictionaries: {

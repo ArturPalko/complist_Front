@@ -1,6 +1,10 @@
 import { useSelector } from "react-redux";
 
-import { useModalWindowContext, useDragContext } from "../contexts/useConetxt"; 
+import {
+  useModalWindowContext,
+  useDragContext,
+} from "../contexts/useConetxt";
+
 import { CRUD_CONFIG } from "../../configs/app/crudConfig";
 import { entityMap } from "../../configs/app/enitiyMap";
 
@@ -26,6 +30,7 @@ export const useCrudModalActions = (modalType) => {
   const activeSec = useSelector(selectActiveSectionId);
 
   const currentMode = useSelector(getCurrentMode);
+  const menu = useSelector(activeMenu);
 
   const positions = useSelector(selectPositionsDictionary);
 
@@ -35,6 +40,10 @@ export const useCrudModalActions = (modalType) => {
 
   const departments = useSelector(
     selectDictionaryByType("departments")
+  );
+
+  const userTypes = useSelector(
+    selectDictionaryByType("userTypes")
   );
 
   const landlines = useSelector(
@@ -48,8 +57,6 @@ export const useCrudModalActions = (modalType) => {
   const ciscos = useSelector(
     selectDictionaryByType("cisco", "phones")
   );
-
-  const menu = useSelector(activeMenu);
 
   const dataForMenu = useSelector((state) =>
     getDataForMenu(state, menu)
@@ -71,13 +78,24 @@ export const useCrudModalActions = (modalType) => {
       ? "mailsToUsers"
       : modalType;
 
+  const entityTypeMap = {
+    positions: "position",
+    departments: "department",
+    sections: "section",
+    userTypes: "userType",
+  };
+
+  const entityType =
+    entityTypeMap[currentModalType] ?? currentModalType;
+
   const config = CRUD_CONFIG[currentModalType];
-  const entity = entityMap[currentModalType];
+  const entity = entityMap[entityType];
 
   const sources = {
-    position: positions,
-    section: sections,
-    department: departments,
+    positions,
+    departments,
+    sections,
+    userTypes,
     landline: landlines,
     internal: internals,
     cisco: ciscos,
@@ -87,17 +105,10 @@ export const useCrudModalActions = (modalType) => {
 
   const add = () => {
     const data =
-      currentModalType === "section"
+      currentModalType === "sections"
         ? { departmentId: activeDep }
         : null;
-
-    if (
-      currentModalType === "section" &&
-      !data.departmentId
-    ) {
-      return;
-    }
-
+  
     openModal({
       type: currentModalType,
       mode: "add",
@@ -131,17 +142,16 @@ export const useCrudModalActions = (modalType) => {
       );
     } else if (currentModalType === "mailsToUsers") {
       item = dataForMenu
-        .flatMap((page) => page.rows)
+        .flatMap((page) => page.rows ?? [])
         .find(
-          (row) =>
-            Number(row.id) === Number(id)
+          (row) => Number(row.id) === Number(id)
         );
     } else {
       item = sources[currentModalType]
         ?.flatMap((page) => page.rows ?? [])
         .find(
           (row) =>
-            Number(row?.[entity.id]) === Number(id)
+            Number(row?.[entity?.id]) === Number(id)
         );
     }
 

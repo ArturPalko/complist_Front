@@ -106,30 +106,13 @@ export const changeOrderOfDisplayElements = async (
   depId,
   currentMode
 ) => {
-
-  const dataToPush = elements.map(el => ({
+  const dataToPush = elements.map((el) => ({
     id: el.id,
-    priority: el.priority
+    priority: el.priority,
   }));
 
-  const sendUrl = changeOrderUrl(menu);
+  const sendUrl = changeOrderUrl(currentMode || menu);
 
-  // 🔥 phones special case
-  if (menu === "phones") {
-
-    const payload = {
-      items: dataToPush,
-      mode: currentMode,
-    };
-
-    if (depId) {
-      payload.depId = depId;
-    }
-         
-    return api.post(sendUrl, payload);
-  }
-
-  // 🔥 everything else stays SAME AS BEFORE
   return api.post(sendUrl, dataToPush);
 };
 

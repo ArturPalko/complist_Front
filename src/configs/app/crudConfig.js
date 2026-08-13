@@ -2,17 +2,15 @@ export const CRUD_CONFIG = {
   landline: {
     title: "Номер телефона",
     endpoint: "phones",
-
     mappers: {
       add: (data) => ({
         number: data.name,
-        phoneTypeId:1
+        phoneTypeId: 1,
       }),
-
       edit: (data, modalData) => ({
         id: modalData.id,
         name: data.name,
-        priority: modalData.priority
+        priority: modalData.priority,
       }),
     },
   },
@@ -20,13 +18,11 @@ export const CRUD_CONFIG = {
   internal: {
     title: "Номер телефона інтернела",
     endpoint: "phones",
-
     mappers: {
       add: (data) => ({
         number: data.name,
-          phoneTypeId:2
+        phoneTypeId: 2,
       }),
-
       edit: (data, modalData) => ({
         id: modalData.id,
         name: data.name,
@@ -38,13 +34,11 @@ export const CRUD_CONFIG = {
   cisco: {
     title: "Номер телефона",
     endpoint: "phones",
-
     mappers: {
       add: (data) => ({
         name: data.name,
-          phoneTypeId:3
+        phoneTypeId: 3,
       }),
-
       edit: (data, modalData) => ({
         id: modalData.id,
         name: data.name,
@@ -53,17 +47,13 @@ export const CRUD_CONFIG = {
     },
   },
 
-
-
-  position: {
+  positions: {
     title: "Посада",
     endpoint: "positions",
-
     mappers: {
       add: (data) => ({
         name: data.name,
       }),
-
       edit: (data, modalData) => ({
         id: modalData.id,
         name: data.name,
@@ -72,16 +62,13 @@ export const CRUD_CONFIG = {
     },
   },
 
-
-  department: {
+  departments: {
     title: "Департаменти",
     endpoint: "departments",
-
     mappers: {
       add: (data) => ({
         name: data.name,
       }),
-
       edit: (data, modalData) => ({
         id: modalData.departmentId,
         name: data.name,
@@ -90,34 +77,29 @@ export const CRUD_CONFIG = {
     },
   },
 
-  userType: {
+  userTypes: {
     title: "Тип користувача",
     endpoint: "userTypes",
-
     mappers: {
       add: (data) => ({
         name: data.name,
       }),
-
       edit: (data, modalData) => ({
         id: modalData.id,
         name: data.name,
-        priority: modalData.priority
+        priority: modalData.priority,
       }),
     },
   },
 
-
-  section: {
+  sections: {
     title: "Секції",
     endpoint: "sections",
-
     mappers: {
       add: (data, modalData) => ({
         name: data.name,
         departmentId: String(modalData.departmentId),
       }),
-
       edit: (data, modalData) => ({
         id: modalData.sectionId,
         name: data.name,
@@ -127,15 +109,13 @@ export const CRUD_CONFIG = {
     },
   },
 
-  mailsToUsers:{
-    title:"Пошта",
-
-      mappers: {
+  mailsToUsers: {
+    title: "Пошта",
+    mappers: {
       add: (data, modalData) => ({
         name: data.name,
         departmentId: String(modalData.departmentId),
       }),
-
       edit: (data, modalData) => ({
         id: modalData.sectionId,
         name: data.name,
@@ -145,16 +125,13 @@ export const CRUD_CONFIG = {
     },
   },
 
-  
-  mailsToUsersGovua:{
-    title:"Пошта",
-
-      mappers: {
+  mailsToUsersGovua: {
+    title: "Пошта",
+    mappers: {
       add: (data, modalData) => ({
         name: data.name,
         departmentId: String(modalData.departmentId),
       }),
-
       edit: (data, modalData) => ({
         id: modalData.sectionId,
         name: data.name,
@@ -162,6 +139,5 @@ export const CRUD_CONFIG = {
         departmentId: modalData.departmentId,
       }),
     },
-  }
+  },
 };
-

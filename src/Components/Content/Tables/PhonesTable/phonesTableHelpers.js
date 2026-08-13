@@ -101,6 +101,7 @@ export const getDimGroupRowClasses = ({
 export const handleOnOpenSectionsButtonClick =
   ({ rowType, isSections, isAddUsers, item, dispatch }) =>
   (e) => {
+    debugger
     if (rowType === "section") {
       
       dispatch(
@@ -111,7 +112,7 @@ export const handleOnOpenSectionsButtonClick =
       );
       return;
     }
-
+debugger
     if ((isSections || isAddUsers) && item?.type === "department") {
       dispatch(
         setActiveDepartment({

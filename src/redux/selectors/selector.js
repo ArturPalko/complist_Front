@@ -19,7 +19,7 @@ import { buildDepartmentPages } from "./selectorFabrics/buildDepartmentsPages";
 const selectPageNumberState = (state, menu) => state.currentPageNumber[menu];
 export const selectFoundResults = (state, menu) => selectSearchValueByPage(menu)(state)?.foundResults ?? [];
 
-
+export const getCurrentMode = (state) =>  state.ui.viewMode;
 
 
 export const getDataForMenu = (state, menu) => {
@@ -118,13 +118,18 @@ export const getLotusCount = makeGetCountByMenu(Pages.LOTUS);
 export const getGovUaCount = makeGetCountByMenu(Pages.GOV_UA);
 
 export const getCountsForActiveMenu = createSelector(
-  [activeMenu, getPhonesCount, getLotusCount, getGovUaCount],
-  (menu, phonesCount, lotusCount, govUaCount) => {
+  [activeMenu, getCurrentMode, getPhonesCount, getLotusCount, getGovUaCount],
+  (menu, currentMode, phonesCount, lotusCount, govUaCount) => {
+    if (currentMode) {
+      return phonesCount;
+    }
+
     const map = {
       [Pages.PHONES]: phonesCount,
       [Pages.LOTUS]: lotusCount,
       [Pages.GOV_UA]: govUaCount,
     };
+
     return map[menu] ?? 0;
   }
 );
@@ -323,7 +328,7 @@ export const isUserTypesMode = (state) => {
   return state.ui.viewMode == "userTypes"};
 
 
-export const getCurrentMode = (state) =>  state.ui.viewMode;
+// export const getCurrentMode = (state) =>  state.ui.viewMode;
 
 
 
