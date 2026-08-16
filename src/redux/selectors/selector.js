@@ -13,7 +13,8 @@ import { getFilteredPageData } from "../../shared/functions/getDataByIndexes";
 import { makeGetDepSecByMenu } from "./selectorFabrics/makeDepSecByMenu";
 import { useSelector } from "react-redux";
 import { buildDepartmentPages } from "./selectorFabrics/buildDepartmentsPages";
-
+import { getDictionaryCount } from "./helpFunctions/getDictionaryCount";
+import { countDictionaryRows } from "./helpFunctions/countDictionaryRows";
 // =====Допоміжні селектори=======================
 
 const selectPageNumberState = (state, menu) => state.currentPageNumber[menu];
@@ -56,7 +57,117 @@ const selectSectionsByDepartmentId = (state, departmentId) => {
     },
   ];
 };
+  export const getDictionaryData = (state) => {
+  const edit = isEditModeSelected(state);
 
+  const activeDepartmentId = state.ui.activeDepartment.id;
+  const activeSectionId = state.ui.activeSection.id;
+
+  const isAddUsers = addUsersModeSelected(state);
+
+  const isSection = isSectionsMode(state);
+  const isDepartments = isDepartmentsMode(state);
+  const isPositions = isPositionsMode(state);
+  const isUserTypes = isUserTypesMode(state);
+
+  const mode = state.ui.viewMode;
+
+  // ==========================
+  // USERS
+  // ==========================
+  if (edit && isAddUsers && activeDepartmentId && !isSection) {
+    return [
+      {
+        pageIndex: 1,
+        rows: selectUsersByDepartment(
+          activeDepartmentId,
+          activeSectionId
+        )(state),
+      },
+    ];
+  }
+
+  if (
+  edit &&
+  isAddUsers &&
+  isSection &&
+  activeDepartmentId != null &&
+  activeSectionId != null
+) {
+  return [
+    {
+      pageIndex: 1,
+      rows: selectUsersBySection(
+        activeDepartmentId,
+        activeSectionId
+      )(state),
+    },
+  ];
+}
+
+  // ==========================
+  // PHONE EDIT MODE
+  // ==========================
+  if (edit && ["landline", "internal", "cisco"].includes(mode)) {
+    return state.data.dictionaries.phones[mode].map((page) => ({
+      ...page,
+      rows: page.rows.map((row) => ({
+        ...row,
+        type: "phone",
+      })),
+    }));
+  }
+
+  // ==========================
+  // DEPARTMENTS
+  // ==========================
+  if (edit && (isDepartments || isSection) && !activeDepartmentId) {
+    return state.data.dictionaries.departments.map((page) => ({
+      ...page,
+      rows: page.rows.map((row) => ({
+        ...row,
+        type: "department",
+      })),
+    }));
+  }
+
+  // ==========================
+  // SECTIONS
+  // ==========================
+  if (edit && isSection && activeDepartmentId != null) {
+    return selectSectionsByDepartmentId(state, activeDepartmentId);
+  }
+
+  // ==========================
+  // POSITIONS
+  // ==========================
+  if (isPositions) {
+    return state.data.dictionaries.positions.map((page) => ({
+      ...page,
+      type: "position",
+      rows: page.rows.map((row) => ({
+        ...row,
+        type: "position",
+      })),
+    }));
+  }
+
+  // ==========================
+  // USER TYPES
+  // ==========================
+  if (isUserTypes) {
+    return state.data.dictionaries.userTypes.map((page) => ({
+      ...page,
+      type: "userType",
+      rows: page.rows.map((row) => ({
+        ...row,
+        type: "userType",
+      })),
+    }));
+  }
+
+  return [];
+};
 
 export const getLoadedForMenu = (state, menu) => Boolean(state.dataState?.[menu]?.dataIsLoaded);
 export const getFetchingForMenu = (state, menu) => Boolean(state.dataState?.[menu]?.dataIsFetching);
@@ -118,16 +229,41 @@ export const getLotusCount = makeGetCountByMenu(Pages.LOTUS);
 export const getGovUaCount = makeGetCountByMenu(Pages.GOV_UA);
 
 export const getCountsForActiveMenu = createSelector(
-  [activeMenu, getCurrentMode, getPhonesCount, getLotusCount, getGovUaCount],
-  (menu, currentMode, phonesCount, lotusCount, govUaCount) => {
+  [
+    activeMenu,
+    getCurrentMode,
+    getPhonesCount,
+    getLotusCount,
+    getGovUaCount,
+    getDictionaryData,
+    state => state.ui.activeDepartment.id,
+    state => state.ui.activeSection.id
+  ],
+  (
+    menu,
+    currentMode,
+    phonesCount,
+    lotusCount,
+    govUaCount,
+    dictionaryData,
+    activeDepartmentId,
+    activeSectionId
+  ) => {
     if (currentMode) {
-      return phonesCount;
+      const count = countDictionaryRows(dictionaryData);
+
+      return getDictionaryCount(
+        currentMode,
+        count,
+        activeDepartmentId,
+        activeSectionId
+      );
     }
 
     const map = {
       [Pages.PHONES]: phonesCount,
       [Pages.LOTUS]: lotusCount,
-      [Pages.GOV_UA]: govUaCount,
+      [Pages.GOV_UA]: govUaCount
     };
 
     return map[menu] ?? 0;
@@ -425,117 +561,117 @@ export const selectUsersBySection =
 
   //////////////// новий селекто для дікшенс
 
-  export const getDictionaryData = (state) => {
-  const edit = isEditModeSelected(state);
+//   export const getDictionaryData = (state) => {
+//   const edit = isEditModeSelected(state);
 
-  const activeDepartmentId = state.ui.activeDepartment.id;
-  const activeSectionId = state.ui.activeSection.id;
+//   const activeDepartmentId = state.ui.activeDepartment.id;
+//   const activeSectionId = state.ui.activeSection.id;
 
-  const isAddUsers = addUsersModeSelected(state);
+//   const isAddUsers = addUsersModeSelected(state);
 
-  const isSection = isSectionsMode(state);
-  const isDepartments = isDepartmentsMode(state);
-  const isPositions = isPositionsMode(state);
-  const isUserTypes = isUserTypesMode(state);
+//   const isSection = isSectionsMode(state);
+//   const isDepartments = isDepartmentsMode(state);
+//   const isPositions = isPositionsMode(state);
+//   const isUserTypes = isUserTypesMode(state);
 
-  const mode = state.ui.viewMode;
+//   const mode = state.ui.viewMode;
 
-  // ==========================
-  // USERS
-  // ==========================
-  if (edit && isAddUsers && activeDepartmentId && !isSection) {
-    return [
-      {
-        pageIndex: 1,
-        rows: selectUsersByDepartment(
-          activeDepartmentId,
-          activeSectionId
-        )(state),
-      },
-    ];
-  }
+//   // ==========================
+//   // USERS
+//   // ==========================
+//   if (edit && isAddUsers && activeDepartmentId && !isSection) {
+//     return [
+//       {
+//         pageIndex: 1,
+//         rows: selectUsersByDepartment(
+//           activeDepartmentId,
+//           activeSectionId
+//         )(state),
+//       },
+//     ];
+//   }
 
-  if (
-  edit &&
-  isAddUsers &&
-  isSection &&
-  activeDepartmentId != null &&
-  activeSectionId != null
-) {
-  return [
-    {
-      pageIndex: 1,
-      rows: selectUsersBySection(
-        activeDepartmentId,
-        activeSectionId
-      )(state),
-    },
-  ];
-}
+//   if (
+//   edit &&
+//   isAddUsers &&
+//   isSection &&
+//   activeDepartmentId != null &&
+//   activeSectionId != null
+// ) {
+//   return [
+//     {
+//       pageIndex: 1,
+//       rows: selectUsersBySection(
+//         activeDepartmentId,
+//         activeSectionId
+//       )(state),
+//     },
+//   ];
+// }
 
-  // ==========================
-  // PHONE EDIT MODE
-  // ==========================
-  if (edit && ["landline", "internal", "cisco"].includes(mode)) {
-    return state.data.dictionaries.phones[mode].map((page) => ({
-      ...page,
-      rows: page.rows.map((row) => ({
-        ...row,
-        type: "phone",
-      })),
-    }));
-  }
+//   // ==========================
+//   // PHONE EDIT MODE
+//   // ==========================
+//   if (edit && ["landline", "internal", "cisco"].includes(mode)) {
+//     return state.data.dictionaries.phones[mode].map((page) => ({
+//       ...page,
+//       rows: page.rows.map((row) => ({
+//         ...row,
+//         type: "phone",
+//       })),
+//     }));
+//   }
 
-  // ==========================
-  // DEPARTMENTS
-  // ==========================
-  if (edit && (isDepartments || isSection) && !activeDepartmentId) {
-    return state.data.dictionaries.departments.map((page) => ({
-      ...page,
-      rows: page.rows.map((row) => ({
-        ...row,
-        type: "department",
-      })),
-    }));
-  }
+//   // ==========================
+//   // DEPARTMENTS
+//   // ==========================
+//   if (edit && (isDepartments || isSection) && !activeDepartmentId) {
+//     return state.data.dictionaries.departments.map((page) => ({
+//       ...page,
+//       rows: page.rows.map((row) => ({
+//         ...row,
+//         type: "department",
+//       })),
+//     }));
+//   }
 
-  // ==========================
-  // SECTIONS
-  // ==========================
-  if (edit && isSection && activeDepartmentId != null) {
-    return selectSectionsByDepartmentId(state, activeDepartmentId);
-  }
+//   // ==========================
+//   // SECTIONS
+//   // ==========================
+//   if (edit && isSection && activeDepartmentId != null) {
+//     return selectSectionsByDepartmentId(state, activeDepartmentId);
+//   }
 
-  // ==========================
-  // POSITIONS
-  // ==========================
-  if (isPositions) {
-    return state.data.dictionaries.positions.map((page) => ({
-      ...page,
-      type: "position",
-      rows: page.rows.map((row) => ({
-        ...row,
-        type: "position",
-      })),
-    }));
-  }
+//   // ==========================
+//   // POSITIONS
+//   // ==========================
+//   if (isPositions) {
+//     return state.data.dictionaries.positions.map((page) => ({
+//       ...page,
+//       type: "position",
+//       rows: page.rows.map((row) => ({
+//         ...row,
+//         type: "position",
+//       })),
+//     }));
+//   }
 
-  // ==========================
-  // USER TYPES
-  // ==========================
-  if (isUserTypes) {
-    return state.data.dictionaries.userTypes.map((page) => ({
-      ...page,
-      type: "userType",
-      rows: page.rows.map((row) => ({
-        ...row,
-        type: "userType",
-      })),
-    }));
-  }
+//   // ==========================
+//   // USER TYPES
+//   // ==========================
+//   if (isUserTypes) {
+//     return state.data.dictionaries.userTypes.map((page) => ({
+//       ...page,
+//       type: "userType",
+//       rows: page.rows.map((row) => ({
+//         ...row,
+//         type: "userType",
+//       })),
+//     }));
+//   }
 
-  return [];
-};
+//   return [];
+// };
 
   export const getSearchMode = (state) => state.ui.searchMode;
 

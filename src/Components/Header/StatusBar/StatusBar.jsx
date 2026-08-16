@@ -7,9 +7,11 @@ import {
 import { pageConfigs } from "../../../configs/app/pageConfig.js";
 
 const StatusBar = ({ counts, activeMenu, currentMode }) => {
+  
   const configKey = currentMode ? "dictionary" : activeMenu;
+  
   const Diagram = pageConfigs[configKey]?.StatusDiagram;
-
+  console.log("я обійшов дебаг")
   if (!Diagram) return null;
 
   return <Diagram counts={counts} />;

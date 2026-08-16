@@ -8,11 +8,11 @@ import { setDictionaries } from "../redux/reducers/data-reducer/data-reducer";
 
 export const api = axios.create({
   baseURL: "http://localhost:5114", 
-  timeout: 10000
+  timeout: 40000
 });
 export const apiPrivate = axios.create({
   baseURL: "http://localhost:5114",
-  timeout: 10000,
+  timeout: 40000,
   withCredentials: true, // критично для отримання cookie
 });
 // Автоматичні повтори запитів при помилках

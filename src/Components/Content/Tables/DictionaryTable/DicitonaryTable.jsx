@@ -22,10 +22,10 @@ import NavigationHeader from "./subComponents/NavigationHeader/NavigationHeader"
 import { pageComponents } from "../../../../configs/app/pageComponent";
 import { pageConfigs } from "../../../../configs/app/pageConfig";
 import { Pages } from "../../../../configs/app/constants";
+import { PHONE_TYPES } from "../../../../configs/app/constants";
 
 const BasePhonesTable = createTableComponent(usePhonesTableLogic);
 
-export const PHONE_TYPES = ["landline", "internal", "cisco"];
 
  const DictionaryTable = ({
 //   columns,
