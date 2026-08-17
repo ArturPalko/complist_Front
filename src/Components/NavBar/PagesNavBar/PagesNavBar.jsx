@@ -13,6 +13,8 @@ import {
   getCurrentMode,
   getSearchMode,
   selectFoundResultsByPage,
+  selectAtiveDepartmentId,
+  selectActiveSectionId,
 } from "../../../redux/selectors/selector";
 
 import {
@@ -41,11 +43,25 @@ import {
 
 const PagesNavBar = (props) => {
   const location = useLocation();
+
   const searchMode = useSelector(getSearchMode);
   const editMode = useSelector(isEditModeSelected);
 
+  const activeDepartmentId = useSelector(
+    selectAtiveDepartmentId
+  );
+
+  const activeSectionId = useSelector(
+    selectActiveSectionId
+  );
+
+  const isNestedContext =
+    activeDepartmentId !== null ||
+    activeSectionId !== null;
+
   const pressTimer = useRef(null);
   const isPressed = useRef(false);
+
   const lastPageRef = useRef({
     pageName: null,
     pageFromURL: null,
@@ -55,6 +71,7 @@ const PagesNavBar = (props) => {
 
   const [showFoundResultPage, setShowFoundResultsPage] =
     useState(false);
+
   const [indexes, setIndexes] = useState([]);
 
   const pathParts = location.pathname
@@ -75,7 +92,8 @@ const PagesNavBar = (props) => {
     props.foundResults?.length > 0;
 
   const filterPagesCount = Math.ceil(
-    (props.foundResults?.length ?? 0) / rowsPerPage
+    (props.foundResults?.length ?? 0) /
+      rowsPerPage
   );
 
   const normalPagesCount = getPagesCount({
@@ -93,7 +111,10 @@ const PagesNavBar = (props) => {
   const handleNavLinkPressed = (e) => {
     if (pageFromURL === e.currentTarget.textContent) {
       pressTimer.current = setTimeout(() => {
-        props.togglepagesNavbarLinkElementOnCurrentPage(true);
+        props.togglepagesNavbarLinkElementOnCurrentPage(
+          true
+        );
+
         isPressed.current = true;
       }, delay);
     }
@@ -103,7 +124,10 @@ const PagesNavBar = (props) => {
     clearTimeout(pressTimer.current);
 
     if (isPressed.current) {
-      props.togglepagesNavbarLinkElementOnCurrentPage(false);
+      props.togglepagesNavbarLinkElementOnCurrentPage(
+        false
+      );
+
       isPressed.current = false;
     }
   };
@@ -118,18 +142,21 @@ const PagesNavBar = (props) => {
       return;
     }
 
-    handleLastVisitedPage({
-      pageName,
-      pageFromURL,
-      isFilterApplied: props.isFilterApplied,
-      lastVisitedPage: props.lastVisitedPage,
-      currentFilterPage: props.currentFilterPage,
-      setLastVisitedPage: props.setLastVisitedPage,
-      setFilterPage: props.setFilterPage,
-      rememberCurrentPage: props.rememberCurrentPage,
-      currentMode: props.currentMode,
-      searchMode: props.searchMode,
-    });
+    if (!isNestedContext) {
+      handleLastVisitedPage({
+        pageName,
+        pageFromURL,
+        isFilterApplied: props.isFilterApplied,
+        lastVisitedPage: props.lastVisitedPage,
+        currentFilterPage: props.currentFilterPage,
+        setLastVisitedPage: props.setLastVisitedPage,
+        setFilterPage: props.setFilterPage,
+        rememberCurrentPage:
+          props.rememberCurrentPage,
+        currentMode: props.currentMode,
+        searchMode: props.searchMode,
+      });
+    }
 
     lastPageRef.current = {
       pageName,
@@ -139,11 +166,13 @@ const PagesNavBar = (props) => {
     pageName,
     pageFromURL,
     props.searchMode,
+    isNestedContext,
   ]);
 
   useEffect(() => {
     handleSearchResults({
-      isSearchValueFound: props.isSearchValueFound,
+      isSearchValueFound:
+        props.isSearchValueFound,
       searchValue: props.searchValue,
       setShowFoundResultsPage,
       setIndexes,
@@ -153,28 +182,28 @@ const PagesNavBar = (props) => {
     props.searchValue,
   ]);
 
-  useEffect(() => {
-  if (
-    searchMode === "filter" &&
-    props.foundResults?.length > 0 &&
-    pageFromURL !== "1"
-  ) {
-    // тут navigate на першу сторінку
-  }
-}, [searchMode, props.foundResults]);
-
   return (
     <PagesNavBarView
       {...props}
       count={count}
       pageFromURL={pageFromURL}
       basePath={basePath}
-      showFoundResultPage={showFoundResultPage}
-      setShowFoundResultsPage={setShowFoundResultsPage}
+      showFoundResultPage={
+        showFoundResultPage
+      }
+      setShowFoundResultsPage={
+        setShowFoundResultsPage
+      }
       indexes={indexes}
-      isFoundResultsPage={isFoundResultsPage}
-      handleNavLinkPressed={handleNavLinkPressed}
-      handleNavLinkUnpressed={handleNavLinkUnpressed}
+      isFoundResultsPage={
+        isFoundResultsPage
+      }
+      handleNavLinkPressed={
+        handleNavLinkPressed
+      }
+      handleNavLinkUnpressed={
+        handleNavLinkUnpressed
+      }
       editMode={editMode}
       searchMode={props.searchMode}
     />
@@ -205,10 +234,14 @@ const mapStateToProps = (state) => {
       selectSearchValueByPage(searchKey)(state),
 
     isSearchValueFound:
-      isSearchValueFoundByPage(searchKey)(state),
+      isSearchValueFoundByPage(searchKey)(
+        state
+      ),
 
     foundResults:
-      selectFoundResultsByPage(searchKey)(state),
+      selectFoundResultsByPage(searchKey)(
+        state
+      ),
 
     countFiltred: (menu) =>
       getCountOfPageForFiltredResults(
@@ -224,8 +257,11 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
   rememberCurrentPage:
     rememberCurrentPagesActionCreator,
+
   togglepagesNavbarLinkElementOnCurrentPage,
+
   setFilterPage,
+
   setLastVisitedPage,
 };
 

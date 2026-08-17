@@ -1,8 +1,12 @@
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 import s from "./PhonesTable.module.css";
 import { useCrudModalActions } from "../../../../redux/hooks/useCrudModalActions";
-import { getCurrentMode } from "../../../../redux/selectors/selector";
+import {
+  getCurrentMode,
+  activeMenu,
+} from "../../../../redux/selectors/selector";
 
 import {
   handleOnOpenSectionsButtonClick,
@@ -17,8 +21,11 @@ export const GroupRowActions = ({
   isAddUsers,
 }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const modalType = useSelector(getCurrentMode);
+  const currentMenu = useSelector(activeMenu);
+
   const { add } = useCrudModalActions(modalType);
 
   const handleClick = (e) => {
@@ -30,6 +37,9 @@ export const GroupRowActions = ({
       isAddUsers,
       item: row,
       dispatch,
+      navigate,
+      currentMenu,
+      currentMode: modalType,
     })(e);
   };
 

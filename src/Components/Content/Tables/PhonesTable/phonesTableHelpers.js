@@ -99,30 +99,44 @@ export const getDimGroupRowClasses = ({
 
 
 export const handleOnOpenSectionsButtonClick =
-  ({ rowType, isSections, isAddUsers, item, dispatch }) =>
+  ({
+    rowType,
+    isSections,
+    isAddUsers,
+    item,
+    dispatch,
+    navigate,
+    currentMenu,
+    currentMode,
+  }) =>
   (e) => {
-    debugger
     if (rowType === "section") {
-      
       dispatch(
         setActiveSection({
           id: item.sectionId,
           name: item.sectionName,
         })
       );
+
+      navigate(`/dictionary/${currentMode || currentMenu}/1`);
+
       return;
     }
-debugger
-    if ((isSections || isAddUsers) && item?.type === "department") {
+
+    if (
+      (isSections || isAddUsers) &&
+      item?.type === "department"
+    ) {
       dispatch(
         setActiveDepartment({
           id: item.departmentId,
           name: item.departmentName,
         })
       );
+
+      navigate(`/dictionary/${currentMode || currentMenu}/1`);
     }
   };
-
 
 export const handleBack =
   ({
