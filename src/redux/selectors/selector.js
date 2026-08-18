@@ -677,3 +677,64 @@ export const selectUsersBySection =
 
   export const selectFoundResultsByPage = (page) => (state) =>
   state.toggledElements.searchField?.[page]?.foundResults ?? [];
+
+
+  export const selectPhonesByUserId = (userId) => (state) => {
+  if (!userId) {
+    return {
+      landline: null,
+      internal: null,
+      cisco: null,
+    };
+  }
+
+  const phones = state.data.dictionaries.phones;
+
+  const result = {
+    landline: null,
+    internal: null,
+    cisco: null,
+  };
+
+  Object.keys(result).forEach((phoneType) => {
+    const pages = phones?.[phoneType] ?? [];
+
+    const phoneRows = pages.flatMap(
+      (page) => page.rows ?? []
+    );
+
+    const phone = phoneRows.find(
+      (phone) =>
+        phone.users?.some(
+          (user) => String(user.id) === String(userId)
+        )
+    );
+
+    if (phone) {
+      result[phoneType] = phone.number;
+    }
+  });
+
+  return result;
+};
+
+
+export const selectAllUsers = (state) => {
+  const departments =
+    state.data.dictionaries.departments ?? [];
+
+  const users = departments
+    .flatMap((page) => page.rows ?? [])
+    .flatMap((department) => [
+      ...(department.users ?? []),
+      ...(department.sections ?? []).flatMap(
+        (section) => section.users ?? []
+      ),
+    ]);
+
+  return Array.from(
+    new Map(
+      users.map((user) => [user.id, user])
+    ).values()
+  );
+};

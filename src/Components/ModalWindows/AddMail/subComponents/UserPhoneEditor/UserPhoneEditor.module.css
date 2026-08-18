@@ -1,0 +1,117 @@
+.editor {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e5e5;
+}
+
+.selectedUser {
+  margin-bottom: 20px;
+}
+
+.selectedUserName {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.selectedUserInfo {
+  font-size: 14px;
+  color: #777;
+}
+
+.sectionTitle {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.phoneRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.type {
+  width: 80px;
+  flex-shrink: 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.phoneRow > :global(.select),
+.phoneRow select {
+  flex: 1;
+}
+
+.clear {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: #777;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.clear:hover {
+  background: #f1f1f1;
+  color: #d33;
+}
+
+.hint {
+  margin-top: 8px;
+  margin-bottom: 24px;
+  font-size: 12px;
+  color: #888;
+}
+
+.transfer {
+  margin-top: 20px;
+}
+
+.transferTitle {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.secondary {
+  padding: 9px 16px;
+  border: 1px solid #d6d6d6;
+  border-radius: 6px;
+  background: #fff;
+  color: #333;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.secondary:hover {
+  background: #f5f5f5;
+}
+
+.transferBox {
+  margin-top: 10px;
+}
+
+.status {
+  margin-top: 16px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: #f5f5f5;
+  color: #555;
+  font-size: 13px;
+}
+
+.secondaryActive {
+  background: #a3b0bd;
+  border-color: #a3b0bd;
+  color: #fff;
+}
+
+.secondaryActive:hover {
+  background: #0069d9;
+  border-color: #0069d9;
+}

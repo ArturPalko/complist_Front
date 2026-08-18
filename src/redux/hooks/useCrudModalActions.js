@@ -72,10 +72,11 @@ export const useCrudModalActions = (modalType) => {
 
   const isDictionaryMode = Boolean(currentMode);
 
-  const currentModalType =
-    !isDictionaryMode &&
-    (menu === "Lotus" || menu === "Gov-ua")
-      ? "mailsToUsers"
+const currentModalType =
+  !isDictionaryMode && (menu === "Lotus" || menu === "Gov-ua")
+    ? "mailsToUsers"
+    : !isDictionaryMode && menu === "phones"
+      ? "phonesToUsers"
       : modalType;
 
   const entityTypeMap = {

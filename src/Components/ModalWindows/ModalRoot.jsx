@@ -19,10 +19,12 @@ import {
   isSectionsMode,
   selectActiveSectionId,
   selectAtiveDepartmentId,
+  selectDictionaryByType
 } from "../../redux/selectors/selector";
 
 import { PHONE_TYPES } from "../../configs/app/constants";
 import { handleDelete, handleSubmit } from "./helpers";
+import BindPhonesToUser from "./BindPhonesToUser/BindPhonesToUser";
 
 export default function ModalRoot() {
   const {
@@ -56,6 +58,8 @@ export default function ModalRoot() {
     (menu === "Lotus" || menu === "Gov-ua") &&
     !isDictionaryMode;
 
+  const isPhonesMenu = menu == "phones";
+
   const isMailModal =
     isMailMenu &&
     modalType === "mailsToUsers";
@@ -64,7 +68,17 @@ export default function ModalRoot() {
     (isSections && activeDep && activeSec) ||
     (isDep && activeDep && !activeSec);
 
+  
+  const isBindPhonesModal = isPhonesMenu && modalType == "phonesToUsers";
+
   const config = CRUD_CONFIG[modalType];
+  
+
+   const departments = useSelector(
+      selectDictionaryByType("departments")
+    );
+
+  console.log(departments)
 
   const onConfirm = () =>
     handleDelete({
@@ -112,6 +126,10 @@ export default function ModalRoot() {
     onSubmit,
     mode,
   };
+
+  if(isBindPhonesModal){
+    return (<BindPhonesToUser deprs={departments}  onClose={closeModal}/>)
+  }
 
   if (isPhoneModal) {
     return (

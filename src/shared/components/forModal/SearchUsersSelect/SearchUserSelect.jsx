@@ -2,19 +2,20 @@ import { useMemo, useState } from "react";
 import s from "./SearchUserSelect.module.css";
 
 export default function SearchUserSelect({
-  users,
+  users = [],
   value,
   onChange,
   placeholder = "Почніть вводити ПІБ...",
+  onFocus,
 }) {
   const [query, setQuery] = useState("");
   const [opened, setOpened] = useState(false);
 
   const filteredUsers = useMemo(() => {
-    const search = query.toLowerCase();
+    const search = (query ?? "").toLowerCase();
 
     return users.filter((user) =>
-      user.name.toLowerCase().includes(search)
+      (user.name ?? "").toLowerCase().includes(search)
     );
   }, [users, query]);
 
@@ -28,9 +29,12 @@ export default function SearchUserSelect({
         className={s.input}
         value={selectedUser?.name ?? query}
         placeholder={placeholder}
-        onFocus={() => setOpened(true)}
-        onChange={(e) => {
-          setQuery(e.target.value);
+        onFocus={(event) => {
+          setOpened(true);
+          onFocus?.(event);
+        }}
+        onChange={(event) => {
+          setQuery(event.target.value);
           onChange("");
           setOpened(true);
         }}
