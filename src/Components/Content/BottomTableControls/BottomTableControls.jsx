@@ -99,32 +99,34 @@ useEffect(() => {
   const showAddUsersToggle =
     (isSections && activeDep)  || isDepartments;
 
-  const handleSave = async () => {
-    if (!unsavedOrder) return;
-    debugger
-    try {
-      await changeOrderOfDisplayElements(
-        unsavedOrder.payload,
-        unsavedOrder.menu,
-        unsavedOrder.depId,
+ const handleSave = async () => {
+  if (!unsavedOrder) return;
+
+  try {
+    await changeOrderOfDisplayElements(
+      unsavedOrder.payload,
+      unsavedOrder.menu,
+      unsavedOrder.depId,
+      unsavedOrder.currentMode
+    );
+
+    dispatch(clearUnsavedOrder());
+
+    dispatch(
+      setDataIsLoadedActionCreator(
+        false,
         unsavedOrder.currentMode
-      );
-
-      dispatch(clearUnsavedOrder());
-
-      dispatch(
-        setDataIsLoadedActionCreator(
-          false,
-          unsavedOrder.menu
-        )
-      );
-    } catch (error) {
-      console.error("Save failed:", error);
-      alert(
-        "❌ Не вдалося зберегти зміни. Спробуйте ще раз."
-      );
-    }
-  };
+          ? "phones"
+          : unsavedOrder.menu
+      )
+    );
+  } catch (error) {
+    console.error("Save failed:", error);
+    alert(
+      "❌ Не вдалося зберегти зміни. Спробуйте ще раз."
+    );
+  }
+};
 
 
 const openMode = (mode) => {

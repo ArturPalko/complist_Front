@@ -32,7 +32,7 @@ export default function BindPhonesToUserView({
   showTransfer,
   onToggleTransfer,
   transferUsers,
-  transferUserId,
+  transferId,
   onTransferUserChange,
 
   status,
@@ -78,7 +78,7 @@ export default function BindPhonesToUserView({
               showTransfer={showTransfer}
               onToggleTransfer={onToggleTransfer}
               transferUsers={transferUsers}
-              transferUserId={transferUserId}
+              transferId={transferId}
               onTransferUserChange={onTransferUserChange}
               status={status}
             />

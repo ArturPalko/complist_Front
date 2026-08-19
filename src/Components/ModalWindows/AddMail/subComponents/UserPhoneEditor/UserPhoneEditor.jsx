@@ -28,7 +28,7 @@ export default function UserPhoneEditor({
   showTransfer,
   onToggleTransfer,
   transferUsers,
-  transferUserId,
+  transferId,
   onTransferUserChange,
   status,
 }) {
@@ -115,7 +115,7 @@ export default function UserPhoneEditor({
           >
            <SearchUserSelect
             users={transferUsers}
-            value={transferUserId}
+            value={transferId}
             onChange={onTransferUserChange}
             onFocus={() => {
                 transferBoxRef.current?.scrollIntoView({

@@ -23,26 +23,25 @@ export default function SearchPhoneSelect({
   const selectedPhone = useMemo(
     () =>
       phones.find(
-        (phone) =>
-          String(phone.number) === String(value)
+        (phone) => String(phone.id) === String(value)
       ),
     [phones, value]
   );
 
-  const handleSelect = (phoneValue) => {
-    onChange(phoneValue);
+  const handleSelect = (phoneId) => {
+    onChange(phoneId);
     setQuery("");
     setOpened(false);
   };
 
   const handleInputChange = (event) => {
-    const value = event.target.value;
+    const inputValue = event.target.value;
 
-    setQuery(value);
+    setQuery(inputValue);
     setOpened(true);
 
-    if (!value) {
-      onChange("__none__");
+    if (!inputValue) {
+      onChange("");
     }
   };
 
@@ -62,7 +61,7 @@ export default function SearchPhoneSelect({
             className={s.option}
             onMouseDown={(event) => {
               event.preventDefault();
-              handleSelect("__none__");
+              handleSelect("");
             }}
           >
             Не призначено
@@ -74,7 +73,7 @@ export default function SearchPhoneSelect({
               className={s.option}
               onMouseDown={(event) => {
                 event.preventDefault();
-                handleSelect(phone.number);
+                handleSelect(phone.id);
               }}
             >
               {phone.number}

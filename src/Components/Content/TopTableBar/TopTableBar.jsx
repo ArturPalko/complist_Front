@@ -30,7 +30,7 @@ const TopTableBar = React.forwardRef(({ title, pageName }, ref) => {
   return (
     <div ref={ref} className={s.headerPanel}>
       <h2>{title}</h2>
-      {showEditPanel && <ActionsPanel onAdd={add} onDelete={remove} onEdit={edit}/>}
+      {showEditPanel && <ActionsPanel editMode={editMode} menu={menu} onAdd={add} onDelete={remove} onEdit={edit}/>}
       <div className={s.buttonsBar}>
          {showEditToggle && (
           <CheckboxToggle

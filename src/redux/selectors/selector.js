@@ -480,42 +480,36 @@ export const selectActiveSectionName =  (state)=> state.ui.activeSection.name;
 export const selectPositionsDictionary = (state) => state.data.dictionaries.positions;
 
 export const selectDictionaryByType =
-(type, upperLevel) => (state) => {
+  (type, upperLevel) => (state) => {
+    const activeDepartmentId = state.ui.activeDepartment.id;
+    const activeSectionId = state.ui.activeSection.id;
 
-  const activeDepartmentId = state.ui.activeDepartment.id;
-  const activeSectionId = state.ui.activeSection.id;
+    if (type === "departments") {
+      if (activeDepartmentId != null) {
+        return getDictionaryData(state);
+      }
 
-  if (type === "departments") {
-
-    // Користувачі департаменту
-    if (activeDepartmentId != null) {
       return getDictionaryData(state);
     }
 
-    return state.data.dictionaries.departments || [];
-  }
+    if (type === "sections") {
+      if (activeSectionId != null) {
+        return getDictionaryData(state);
+      }
 
-  if (type === "sections") {
+      if (activeDepartmentId != null) {
+        return getDictionaryData(state);
+      }
 
-    // Користувачі секції
-    if (activeSectionId != null) {
       return getDictionaryData(state);
     }
 
-    // Секції департаменту
-    if (activeDepartmentId != null) {
-      return getDictionaryData(state);
+    if (upperLevel) {
+      return state.data.dictionaries?.[upperLevel]?.[type] || [];
     }
 
-    return state.data.dictionaries.departments || [];
-  }
-
-  if (upperLevel) {
-    return state.data.dictionaries?.[upperLevel]?.[type] || [];
-  }
-
-  return state.data.dictionaries?.[type] || [];
-};
+    return state.data.dictionaries?.[type] || [];
+  };
 
 export const selectSectionsById = (activeDepartmentId) => (state) =>  selectSectionsByDepartmentId(state, activeDepartmentId);
 
@@ -679,7 +673,46 @@ export const selectUsersBySection =
   state.toggledElements.searchField?.[page]?.foundResults ?? [];
 
 
-  export const selectPhonesByUserId = (userId) => (state) => {
+//   export const selectPhonesByUserId = (userId) => (state) => {
+//   if (!userId) {
+//     return {
+//       landline: null,
+//       internal: null,
+//       cisco: null,
+//     };
+//   }
+
+//   const phones = state.data.dictionaries.phones;
+
+//   const result = {
+//     landline: null,
+//     internal: null,
+//     cisco: null,
+//   };
+
+//   Object.keys(result).forEach((phoneType) => {
+//     const pages = phones?.[phoneType] ?? [];
+
+//     const phoneRows = pages.flatMap(
+//       (page) => page.rows ?? []
+//     );
+
+//     const phone = phoneRows.find(
+//       (phone) =>
+//         phone.users?.some(
+//           (user) => String(user.id) === String(userId)
+//         )
+//     );
+
+//     if (phone) {
+//       result[phoneType] = phone.number;
+//     }
+//   });
+
+//   return result;
+// };
+
+export const selectPhonesByUserId = (userId) => (state) => {
   if (!userId) {
     return {
       landline: null,
@@ -703,22 +736,19 @@ export const selectUsersBySection =
       (page) => page.rows ?? []
     );
 
-    const phone = phoneRows.find(
-      (phone) =>
-        phone.users?.some(
-          (user) => String(user.id) === String(userId)
-        )
+    const phone = phoneRows.find((phone) =>
+      phone.users?.some(
+        (user) => String(user.id) === String(userId)
+      )
     );
 
     if (phone) {
-      result[phoneType] = phone.number;
+      result[phoneType] = phone.id;
     }
   });
 
   return result;
 };
-
-
 export const selectAllUsers = (state) => {
   const departments =
     state.data.dictionaries.departments ?? [];

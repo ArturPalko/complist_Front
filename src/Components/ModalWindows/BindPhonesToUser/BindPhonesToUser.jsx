@@ -6,24 +6,26 @@ import {
   selectPhonesByUserId,
   selectDictionaryByType,
   selectAllUsers,
+  activeMenu,
 } from "../../../redux/selectors/selector";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import BindPhonesToUserView from "./BindPhonesToUserView/BindPhonesToUserView";
-
+import { setDataIsLoadedActionCreator } from "../../../redux/reducers/app-reducer";
+import { fetchDictionariesThunk } from "../../../dal/api";
 
 const EMPTY_PHONE_VALUES = {
-  landline: "__none__",
-  internal: "__none__",
-  cisco: "__none__",
+  landline: "",
+  internal: "",
+  cisco: "",
 };
 
-export default function BindPhonesToUser({ onClose, deprs }) {
+export default function BindPhonesToUser({onSubmit, onClose, deprs }) {
   const [departmentId, setDepartmentId] = useState("");
   const [sectionId, setSectionId] = useState("all");
   const [selectedUserId, setSelectedUserId] = useState(null);
 
   const [showTransfer, setShowTransfer] = useState(false);
-  const [transferUserId, setTransferUserId] = useState("");
+  const [transferId, settransferId] = useState("");
 
   const [status, setStatus] = useState("");
 
@@ -32,9 +34,8 @@ export default function BindPhonesToUser({ onClose, deprs }) {
   );
 
 
-
-
-
+ const dispatch = useDispatch();
+  const menu = useSelector(activeMenu)
 
 
 
@@ -88,7 +89,7 @@ export default function BindPhonesToUser({ onClose, deprs }) {
   const userPhones = useSelector(
     selectPhonesByUserId(selectedUserId)
   );
-
+console.log("userPhones:::",userPhones)
   const landlines = useSelector(
     selectDictionaryByType("landline", "phones")
   );
@@ -141,11 +142,11 @@ export default function BindPhonesToUser({ onClose, deprs }) {
       return;
     }
 
-    setPhoneValues({
-      landline: userPhones?.landline || "__none__",
-      internal: userPhones?.internal || "__none__",
-      cisco: userPhones?.cisco || "__none__",
-    });
+   setPhoneValues({
+  landline: userPhones?.landline || "",
+  internal: userPhones?.internal || "",
+  cisco: userPhones?.cisco || "",
+});
   }, [selectedUserId]);
 
   const handleDepartmentChange = (event) => {
@@ -156,7 +157,7 @@ export default function BindPhonesToUser({ onClose, deprs }) {
     setSelectedUserId(null);
 
     setShowTransfer(false);
-    setTransferUserId("");
+    settransferId("");
     setStatus("");
     setPhoneValues(EMPTY_PHONE_VALUES);
   };
@@ -166,7 +167,7 @@ export default function BindPhonesToUser({ onClose, deprs }) {
     setSelectedUserId(null);
 
     setShowTransfer(false);
-    setTransferUserId("");
+    settransferId("");
     setStatus("");
     setPhoneValues(EMPTY_PHONE_VALUES);
   };
@@ -175,7 +176,7 @@ export default function BindPhonesToUser({ onClose, deprs }) {
     setSelectedUserId(user.id);
 
     setShowTransfer(false);
-    setTransferUserId("");
+    settransferId("");
     setStatus("");
   };
 
@@ -189,10 +190,11 @@ export default function BindPhonesToUser({ onClose, deprs }) {
   };
 
   const handleClearPhone = (type) => {
-    setPhoneValues((prev) => ({
-      ...prev,
-      [type]: "__none__",
-    }));
+  setPhoneValues((prev) => ({
+    ...prev,
+    [type]: "",
+  }));
+
 
     setStatus(
       `Значення ${type} буде очищено після збереження.`
@@ -209,16 +211,27 @@ export default function BindPhonesToUser({ onClose, deprs }) {
     );
   };
 
-const handleSave = () => {
+const handleSave = async () => {
   if (!selectedUser) return;
 
   const data = {
     userId: selectedUser.id,
     phones: phoneValues,
-    transferUserId: transferUserId || null,
+    transferId: transferId || null,
   };
 
-  console.log(data);
+  console.log("sendData:::", data);
+
+  await  onSubmit(data);
+       dispatch(
+            setDataIsLoadedActionCreator(
+              false,
+              menu
+            )
+          );
+           dispatch(fetchDictionariesThunk());
+    // onClose();
+
 };
 
   return (
@@ -243,11 +256,11 @@ const handleSave = () => {
       showTransfer={showTransfer}
       onToggleTransfer={() => {
         setShowTransfer((value) => !value);
-        setTransferUserId("");
+        settransferId("");
       }}
       transferUsers={transferUsers}
-      transferUserId={transferUserId}
-      onTransferUserChange={setTransferUserId}
+      transferId={transferId}
+      onTransferUserChange={settransferId}
       status={status}
       onUnbindAll={handleUnbindAll}
       onSave={handleSave}

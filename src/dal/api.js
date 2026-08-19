@@ -1,37 +1,35 @@
 import axios from "axios";
 import axiosRetry from "axios-retry";
-import { dictionariesUrl, passwordUrls} from "./urls";
-import { changeOrderUrl } from "./urls";
-import { positionsUrl } from "./urls";
-import { current } from "@reduxjs/toolkit";
+import { dictionariesUrl, passwordUrls, changeOrderUrl } from "./urls";
 import { setDictionaries } from "../redux/reducers/data-reducer/data-reducer";
 
 export const api = axios.create({
-  baseURL: "http://localhost:5114", 
+  baseURL: "http://localhost:5114",
   timeout: 40000
 });
+
 export const apiPrivate = axios.create({
   baseURL: "http://localhost:5114",
   timeout: 40000,
-  withCredentials: true, // критично для отримання cookie
-});
-// Автоматичні повтори запитів при помилках
-axiosRetry(api, {
-  retries: 3, // кількість повторів
-  retryDelay: (retryCount) => retryCount * 500, 
-  retryCondition: (error) => {
-    
-    return axiosRetry.isNetworkOrIdempotentRequestError(error);
-  },
+  withCredentials: true
 });
 
-// api.interceptors.response.use(
-//   response => response,
-//   error => {
-//     console.error("API error:", error.message);
-//     return Promise.reject(error);
-//   }
-// );
+axiosRetry(api, {
+  retries: 3,
+  retryDelay: (retryCount) => retryCount * 500,
+  retryCondition: (error) => {
+    return axiosRetry.isNetworkOrIdempotentRequestError(error);
+  }
+});
+
+axiosRetry(apiPrivate, {
+  retries: 3,
+  retryDelay: (retryCount) => retryCount * 500,
+  retryCondition: (error) => {
+    return axiosRetry.isNetworkOrIdempotentRequestError(error);
+  }
+});
+
 api.interceptors.response.use(
   response => response,
   err => {
@@ -43,8 +41,20 @@ api.interceptors.response.use(
   }
 );
 
+apiPrivate.interceptors.response.use(
+  response => response,
+  err => {
+    console.error("PRIVATE API URL:", err.config?.url);
+    console.error("PRIVATE API METHOD:", err.config?.method);
+    console.error("PRIVATE API STATUS:", err.response?.status);
+
+    return Promise.reject(err);
+  }
+);
+
 export const fetchPasswordsByType = async (type) => {
   const endpoint = passwordUrls[type];
+
   if (!endpoint) {
     throw new Error(`No password URL defined for menu "${type}"`);
   }
@@ -53,50 +63,34 @@ export const fetchPasswordsByType = async (type) => {
 
   return data.reduce((acc, item) => {
     acc[item.id] = item.password;
-  
     return acc;
   }, {});
 };
 
-export const fetchPasswordById = async (
-  type,
-  id
-) => {
+export const fetchPasswordById = async (type, id) => {
   const endpoint = passwordUrls[type];
 
-  const { data } = await apiPrivate.get(
-    `${endpoint}/${id}`
-  );
+  const { data } = await apiPrivate.get(`${endpoint}/${id}`);
 
   return data?.password ?? "";
 };
 
-
 export const fetchDictionariesThunk = () => async (dispatch) => {
-     
- // dispatch(toggleDataIsFetchingActionCreator(true, "dictionaries"));
-////         
   try {
-    const { data } = await api.get(dictionariesUrl);
-//         
+    const { data } = await apiPrivate.get(dictionariesUrl);
+
     dispatch(setDictionaries({
       positions: data.positions,
       userTypes: data.userTypes,
       departments: data.departments,
-      phones:data.phonesResult,
-      users:data.users,
+      phones: data.phonesResult,
+      users: data.users,
       sections: data.sections,
       deps: data.deps
     }));
-
-   // dispatch(setDataIsLoadedActionCreator(true, "dictionaries"));
-
   } catch (err) {
     console.error("Dictionaries error:", err.message);
     throw err;
-
-  } finally {
- //   dispatch(toggleDataIsFetchingActionCreator(false, "dictionaries"));
   }
 };
 
@@ -108,35 +102,32 @@ export const changeOrderOfDisplayElements = async (
 ) => {
   const dataToPush = elements.map((el) => ({
     id: el.id,
-    priority: el.priority,
+    priority: el.priority
   }));
 
   const sendUrl = changeOrderUrl(currentMode || menu);
 
-  return api.post(sendUrl, dataToPush);
+  return apiPrivate.post(sendUrl, dataToPush);
 };
-
-
-
 
 // ---------------- GENERIC CRUD ----------------
 
 export const apiAddEntity = (endpoint, payload) => {
-  return api.post(`/api/${endpoint}`, payload);
+  return apiPrivate.post(`/api/${endpoint}`, payload);
 };
 
 export const apiEditEntity = (endpoint, { id, ...data }) => {
-  return api.put(`/api/${endpoint}/${id}`, data);
+  return apiPrivate.put(`/api/${endpoint}/${id}`, data);
 };
 
 export const apiDeleteEntity = (endpoint, ids) => {
-  return api.post(`/api/${endpoint}/delete`, ids);
+  return apiPrivate.post(`/api/${endpoint}/delete`, ids);
 };
 
 // ---------------- MAILS ----------------
 
 export const addMail = (data, mailType) => {
-  return api.post(`/api/mails/${mailType}`, data);
+  return apiPrivate.post(`/api/mails/${mailType}`, data);
 };
 
 export const editMail = ({
@@ -144,7 +135,7 @@ export const editMail = ({
   mailType,
   ...data
 }) => {
-  return api.put(
+  return apiPrivate.put(
     `/api/mails/${mailType}/${id}`,
     data
   );
@@ -152,4 +143,10 @@ export const editMail = ({
 
 export const deleteMail = (ids) => {
   return apiDeleteEntity("mails", ids);
+};
+
+// ---------------- ASSIGN PHONES ----------------
+
+export const apiAssignPhonesToUser = (data) => {
+  return apiPrivate.put(`/api/assignPhonesToUsers`, data);
 };

@@ -94,6 +94,7 @@ export default function ModalRoot() {
       isAdd,
       isEdit,
       isPhoneModal,
+      isBindPhonesModal,
       isMailModal,
       isUsersContext,
       data,
@@ -128,7 +129,7 @@ export default function ModalRoot() {
   };
 
   if(isBindPhonesModal){
-    return (<BindPhonesToUser deprs={departments}  onClose={closeModal}/>)
+    return (<BindPhonesToUser onSubmit={onSubmit} deprs={departments}  onClose={closeModal}/>)
   }
 
   if (isPhoneModal) {

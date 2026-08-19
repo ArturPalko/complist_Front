@@ -5,7 +5,7 @@ import {
   countNonUserRowsBefore,
   getUserRowIndex,
 } from "./phonesTableHelpers";
-import torn_pageImg from "../../../../assets/Img/torn_page.png";
+import { TdWrapper } from "../../../../shared/components/TdWrapper/TdWrapper";
 
 const BasePhonesTable = createTableComponent(usePhonesTableLogic);
 
@@ -40,19 +40,19 @@ const PhonesTable = ({ columns, pageNumber, rowsPerPage }) => {
     </>
   );
 
-  const renderRowCells = (row, index, tableLogic) => {
+  const renderRowCells = (row, index, tableLogic, tableUI) => {
     const nonUserRowsBefore = countNonUserRowsBefore(
       tableLogic.pageData,
       index
     );
 
     const dim = tableLogic.getRowDimClasses(row.dimKey);
-    //       
 
     switch (row.type) {
       case "department":
       case "section": {
         const isDepartment = row.type === "department";
+
         const name = isDepartment
           ? row.departmentName
           : row.sectionName;
@@ -68,7 +68,12 @@ const PhonesTable = ({ columns, pageNumber, rowsPerPage }) => {
           : tableLogic.dashedBlocks.sections.includes(name);
 
         return (
-          <td
+          <TdWrapper
+            showBreak={showBreak}
+            value={name}
+            tableUI={tableUI}
+            colSpan={6}
+            isHeaderRow={true}
             className={[
               className,
               dim.hidden
@@ -80,19 +85,9 @@ const PhonesTable = ({ columns, pageNumber, rowsPerPage }) => {
             ]
               .filter(Boolean)
               .join(" ")}
-            colSpan={6}
           >
             {name}
-
-            {showBreak && (
-              <img
-                src={torn_pageImg}
-                alt="Розрив"
-                title="Розрив"
-                className={s.breakImage}
-              />
-            )}
-          </td>
+          </TdWrapper>
         );
       }
 

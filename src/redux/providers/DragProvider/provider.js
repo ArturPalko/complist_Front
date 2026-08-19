@@ -103,7 +103,14 @@ const fullData = useMemo(() => {
     }))
     .filter((item) => item.id != null);
 }, [pages]);
-         
+
+console.log ("FullData:", fullData)
+
+console.log("DnD DEBUG", {
+  currentMode,
+  pages,
+  fullData,
+});
   /* =========================
      ESC RESET
   ========================= */
@@ -334,6 +341,22 @@ const handleDrop = useCallback(
   /* =========================
      PROVIDER
   ========================= */
+
+
+
+// console.log("DnD DEBUG", {
+//   menu,
+//   currentMode,
+//   depId,
+//   pages,
+//   fullData,
+//   dragIds,
+// });
+
+
+
+
+
 
   return (
     <DragContext.Provider
