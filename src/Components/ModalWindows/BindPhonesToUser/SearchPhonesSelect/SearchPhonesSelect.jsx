@@ -1,14 +1,25 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import s from "../../../../shared/components/forModal/SearchUsersSelect/SearchUserSelect.module.css";
 
 export default function SearchPhoneSelect({
   phones = [],
   value,
   onChange,
-  placeholder = "Оберіть телефон...",
+  placeholder = "НЕ ПРИЗНАЧЕНО",
 }) {
   const [query, setQuery] = useState("");
   const [opened, setOpened] = useState(false);
+
+  const wrapperRef = useRef(null);
+
+  const selectedPhone = useMemo(
+    () =>
+      phones.find(
+        (phone) =>
+          String(phone.id) === String(value)
+      ),
+    [phones, value]
+  );
 
   const filteredPhones = useMemo(() => {
     const search = query.trim().toLowerCase();
@@ -20,13 +31,37 @@ export default function SearchPhoneSelect({
     );
   }, [phones, query]);
 
-  const selectedPhone = useMemo(
-    () =>
-      phones.find(
-        (phone) => String(phone.id) === String(value)
-      ),
-    [phones, value]
-  );
+  // Закриваємо dropdown при кліку поза компонентом
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target)
+      ) {
+        setOpened(false);
+        setQuery("");
+      }
+    };
+
+    document.addEventListener(
+      "mousedown",
+      handleClickOutside
+    );
+
+    return () => {
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      );
+    };
+  }, []);
+
+  // Якщо значення очистили ззовні
+  useEffect(() => {
+    if (!value) {
+      setQuery("");
+    }
+  }, [value]);
 
   const handleSelect = (phoneId) => {
     onChange(phoneId);
@@ -45,13 +80,23 @@ export default function SearchPhoneSelect({
     }
   };
 
+  const handleFocus = () => {
+    setOpened(true);
+    setQuery("");
+  };
+
   return (
-    <div className={s.wrapper}>
+    <div
+      ref={wrapperRef}
+      className={s.wrapper}
+    >
       <input
         className={s.input}
-        value={selectedPhone?.number ?? query}
+        value={
+          selectedPhone?.number ?? query
+        }
         placeholder={placeholder}
-        onFocus={() => setOpened(true)}
+        onFocus={handleFocus}
         onChange={handleInputChange}
       />
 

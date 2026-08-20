@@ -481,6 +481,15 @@ export const selectPositionsDictionary = (state) => state.data.dictionaries.posi
 
 export const selectDictionaryByType =
   (type, upperLevel) => (state) => {
+    if (upperLevel) {
+      return state.data.dictionaries?.[upperLevel]?.[type] ?? [];
+    }
+
+    return state.data.dictionaries?.[type] ?? [];
+  };
+
+export const selectDictionaryDataForDrag =
+  (type, upperLevel) => (state) => {
     const activeDepartmentId = state.ui.activeDepartment.id;
     const activeSectionId = state.ui.activeSection.id;
 

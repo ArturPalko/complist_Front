@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+
 }
 
 .field + .field {
@@ -24,8 +25,24 @@
   font-size: 14px;
   outline: none;
   cursor: pointer;
+  
 }
 
 .select:focus {
   border-color: #999;
 }
+
+.allUsersOption {
+  font-weight: 600;
+}
+
+
+
+
+
+
+
+
+
+
+

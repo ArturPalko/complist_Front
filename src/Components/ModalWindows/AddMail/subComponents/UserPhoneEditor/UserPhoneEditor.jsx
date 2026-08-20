@@ -1,4 +1,3 @@
-import { useEffect, useRef } from "react";
 import styles from "./UserPhoneEditor.module.css";
 import SearchUserSelect from "../../../../../shared/components/forModal/SearchUsersSelect/SearchUserSelect";
 import SearchPhoneSelect from "../../../BindPhonesToUser/SearchPhonesSelect/SearchPhonesSelect";
@@ -30,19 +29,9 @@ export default function UserPhoneEditor({
   transferUsers,
   transferId,
   onTransferUserChange,
+  onTransferInputFocus,
   status,
 }) {
-  const transferBoxRef = useRef(null);
-
-  useEffect(() => {
-    if (showTransfer) {
-      transferBoxRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
-    }
-  }, [showTransfer]);
-
   if (!selectedUser) return null;
 
   return (
@@ -81,6 +70,7 @@ export default function UserPhoneEditor({
           />
 
           <button
+            type="button"
             className={styles.clear}
             onClick={() => onClearPhone(type.id)}
           >
@@ -100,8 +90,11 @@ export default function UserPhoneEditor({
         </div>
 
         <button
+          type="button"
           className={`${styles.secondary} ${
-            showTransfer ? styles.secondaryActive : ""
+            showTransfer
+              ? styles.secondaryActive
+              : ""
           }`}
           onClick={onToggleTransfer}
         >
@@ -109,21 +102,13 @@ export default function UserPhoneEditor({
         </button>
 
         {showTransfer && (
-          <div
-            className={styles.transferBox}
-            ref={transferBoxRef}
-          >
-           <SearchUserSelect
-            users={transferUsers}
-            value={transferId}
-            onChange={onTransferUserChange}
-            onFocus={() => {
-                transferBoxRef.current?.scrollIntoView({
-                behavior: "smooth",
-                block: "center",
-                });
-            }}
-            placeholder="Почніть вводити ПІБ..."
+          <div className={styles.transferBox}>
+            <SearchUserSelect
+              users={transferUsers}
+              value={transferId}
+              onChange={onTransferUserChange}
+              onFocus={onTransferInputFocus}
+              placeholder="Почніть вводити ПІБ..."
             />
           </div>
         )}
@@ -137,3 +122,5 @@ export default function UserPhoneEditor({
     </div>
   );
 }
+
+

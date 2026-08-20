@@ -17,7 +17,7 @@ import {
   getDataForMenu,
   getLastVisitedPage,
   selectAtiveDepartmentId,
-  selectDictionaryByType
+  selectDictionaryDataForDrag
 } from "../../selectors/selector";
 
 import { setPagesActionCreator } from "../../reducers/data-reducer/data-reducer";
@@ -79,7 +79,7 @@ export const DragProvider = ({ children, rowsPerPage = 18 }) => {
 
  const pages = useSelector((state) =>
   currentMode
-    ? selectDictionaryByType(currentMode)(state)
+    ? selectDictionaryDataForDrag(currentMode)(state)
     : menu
       ? getDataForMenu(state, menu)
       : []

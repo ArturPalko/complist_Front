@@ -1,182 +1,114 @@
-import { useEffect, useMemo, useState } from "react";
-import {
-  selectSectionsById,
-  selectUsersBySection,
-  selectUsersByDepartment,
-  selectPhonesByUserId,
-  selectDictionaryByType,
-  selectAllUsers,
-  activeMenu,
-} from "../../../redux/selectors/selector";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+
+import { activeMenu } from "../../../redux/selectors/selector";
+
 import BindPhonesToUserView from "./BindPhonesToUserView/BindPhonesToUserView";
-import { setDataIsLoadedActionCreator } from "../../../redux/reducers/app-reducer";
+
+import {
+  setDataIsLoadedActionCreator,
+} from "../../../redux/reducers/app-reducer";
+
 import { fetchDictionariesThunk } from "../../../dal/api";
 
-const EMPTY_PHONE_VALUES = {
-  landline: "",
-  internal: "",
-  cisco: "",
-};
 
-export default function BindPhonesToUser({onSubmit, onClose, deprs }) {
+
+import { EMPTY_PHONE_VALUES } from "../../../redux/hooks/useBindPhonesToUserData/helpers";
+import useBindPhonesToUserData from "../../../redux/hooks/useBindPhonesToUserData/useBindPhonesToUserData";
+import { scrollContainerToBottom } from "./helpers";
+
+export default function BindPhonesToUser({
+  onSubmit,
+  onClose,
+  deprs,
+}) {
   const [departmentId, setDepartmentId] = useState("");
   const [sectionId, setSectionId] = useState("all");
   const [selectedUserId, setSelectedUserId] = useState(null);
-
   const [showTransfer, setShowTransfer] = useState(false);
-  const [transferId, settransferId] = useState("");
-
+  const [transferId, setTransferId] = useState("");
   const [status, setStatus] = useState("");
+  const [phoneValues, setPhoneValues] = useState({
+    ...EMPTY_PHONE_VALUES,
+  });
 
-  const [phoneValues, setPhoneValues] = useState(
-    EMPTY_PHONE_VALUES
-  );
+  const formRef = useRef(null);
 
+  const dispatch = useDispatch();
+  const menu = useSelector(activeMenu);
 
- const dispatch = useDispatch();
-  const menu = useSelector(activeMenu)
-
-
-
-  const departments = useMemo(
-    () => deprs.flatMap((page) => page.rows ?? []),
-    [deprs]
-  );
-
-  const selectedDepartment = useMemo(
-    () =>
-      departments.find(
-        (item) =>
-          String(item.departmentId) === String(departmentId)
-      ),
-    [departments, departmentId]
-  );
-
-  const sectionsPages = useSelector(
-    selectSectionsById(
-      departmentId ? Number(departmentId) : null
-    )
-  );
-
-  const sections = useMemo(
-    () => sectionsPages.flatMap((page) => page.rows ?? []),
-    [sectionsPages]
-  );
-
-  const users = useSelector(
-    sectionId !== "all"
-      ? selectUsersBySection(
-          Number(departmentId),
-          Number(sectionId)
-        )
-      : selectUsersByDepartment(
-          Number(departmentId)
-        )
-  );
-
-  const allUsers = useSelector(selectAllUsers);
-
-  const selectedUser = useMemo(
-    () =>
-      users.find(
-        (user) =>
-          Number(user.id) === Number(selectedUserId)
-      ),
-    [users, selectedUserId]
-  );
-
-  const userPhones = useSelector(
-    selectPhonesByUserId(selectedUserId)
-  );
-console.log("userPhones:::",userPhones)
-  const landlines = useSelector(
-    selectDictionaryByType("landline", "phones")
-  );
-
-  const internals = useSelector(
-    selectDictionaryByType("internal", "phones")
-  );
-
-  const ciscos = useSelector(
-    selectDictionaryByType("cisco", "phones")
-  );
-
-  const phoneOptions = useMemo(
-    () => ({
-      landline: landlines.flatMap(
-        (page) => page.rows ?? []
-      ),
-      internal: internals.flatMap(
-        (page) => page.rows ?? []
-      ),
-      cisco: ciscos.flatMap(
-        (page) => page.rows ?? []
-      ),
-    }),
-    [landlines, internals, ciscos]
-  );
-
-  const hasPhone = (userId, phoneType) => {
-    return phoneOptions[phoneType]?.some((phone) =>
-      phone.users?.some(
-        (phoneUser) =>
-          Number(phoneUser.id) === Number(userId)
-      )
-    );
-  };
-
-  const transferUsers = useMemo(
-    () =>
-      allUsers.filter(
-        (user) =>
-          Number(user.id) !== Number(selectedUserId) &&
-          user.name
-      ),
-    [allUsers, selectedUserId]
-  );
-
+const {
+  departments,
+  selectedDepartment,
+  sections,
+  users,
+  selectedUser,
+  userPhones,
+  phoneOptions,
+  hasPhone,
+  transferUsers,
+} = useBindPhonesToUserData({
+  deprs,
+  departmentId,
+  sectionId,
+  selectedUserId,
+});
+  // LOAD USER PHONES
+  // userPhones intentionally not in dependencies,
+  // so local phone changes are not overwritten by Redux.
   useEffect(() => {
     if (!selectedUserId) {
-      setPhoneValues(EMPTY_PHONE_VALUES);
+      setPhoneValues({
+        ...EMPTY_PHONE_VALUES,
+      });
       return;
     }
 
-   setPhoneValues({
-  landline: userPhones?.landline || "",
-  internal: userPhones?.internal || "",
-  cisco: userPhones?.cisco || "",
-});
+    setPhoneValues({
+      landline: userPhones?.landline || "",
+      internal: userPhones?.internal || "",
+      cisco: userPhones?.cisco || "",
+    });
   }, [selectedUserId]);
 
-  const handleDepartmentChange = (event) => {
-    const value = event.target.value;
+  // COMMON SCROLL
+useEffect(() => {
+  if (!selectedUserId && !showTransfer) {
+    return;
+  }
 
-    setDepartmentId(value);
-    setSectionId("all");
+  scrollContainerToBottom(formRef.current);
+}, [selectedUserId, showTransfer]);
+
+const handleTransferInputFocus = () => {
+  scrollContainerToBottom(formRef.current);
+};
+
+  const resetSelection = () => {
     setSelectedUserId(null);
-
     setShowTransfer(false);
-    settransferId("");
+    setTransferId("");
     setStatus("");
-    setPhoneValues(EMPTY_PHONE_VALUES);
+    setPhoneValues({
+      ...EMPTY_PHONE_VALUES,
+    });
+  };
+
+  const handleDepartmentChange = (event) => {
+    setDepartmentId(event.target.value);
+    setSectionId("all");
+    resetSelection();
   };
 
   const handleSectionChange = (event) => {
     setSectionId(event.target.value);
-    setSelectedUserId(null);
-
-    setShowTransfer(false);
-    settransferId("");
-    setStatus("");
-    setPhoneValues(EMPTY_PHONE_VALUES);
+    resetSelection();
   };
 
   const handleSelectUser = (user) => {
     setSelectedUserId(user.id);
-
     setShowTransfer(false);
-    settransferId("");
+    setTransferId("");
     setStatus("");
   };
 
@@ -190,11 +122,10 @@ console.log("userPhones:::",userPhones)
   };
 
   const handleClearPhone = (type) => {
-  setPhoneValues((prev) => ({
-    ...prev,
-    [type]: "",
-  }));
-
+    setPhoneValues((prev) => ({
+      ...prev,
+      [type]: "",
+    }));
 
     setStatus(
       `Значення ${type} буде очищено після збереження.`
@@ -204,35 +135,41 @@ console.log("userPhones:::",userPhones)
   const handleUnbindAll = () => {
     if (!selectedUser) return;
 
-    setPhoneValues(EMPTY_PHONE_VALUES);
+    setPhoneValues({
+      ...EMPTY_PHONE_VALUES,
+    });
 
     setStatus(
       "Усі телефони буде відв'язано після збереження."
     );
   };
 
-const handleSave = async () => {
-  if (!selectedUser) return;
-
-  const data = {
-    userId: selectedUser.id,
-    phones: phoneValues,
-    transferId: transferId || null,
+  const handleToggleTransfer = () => {
+    setShowTransfer((value) => !value);
+    setTransferId("");
   };
 
-  console.log("sendData:::", data);
 
-  await  onSubmit(data);
-       dispatch(
-            setDataIsLoadedActionCreator(
-              false,
-              menu
-            )
-          );
-           dispatch(fetchDictionariesThunk());
-    // onClose();
 
-};
+  const handleSave = async () => {
+    if (!selectedUser) return;
+
+    const data = {
+      userId: selectedUser.id,
+      phones: phoneValues,
+      transferId: transferId || null,
+    };
+
+    console.log("sendData:::", data);
+
+    await onSubmit(data);
+
+    dispatch(
+      setDataIsLoadedActionCreator(false, menu)
+    );
+
+    dispatch(fetchDictionariesThunk());
+  };
 
   return (
     <BindPhonesToUserView
@@ -254,16 +191,15 @@ const handleSave = async () => {
       onPhoneChange={handlePhoneChange}
       onClearPhone={handleClearPhone}
       showTransfer={showTransfer}
-      onToggleTransfer={() => {
-        setShowTransfer((value) => !value);
-        settransferId("");
-      }}
+      onToggleTransfer={handleToggleTransfer}
       transferUsers={transferUsers}
       transferId={transferId}
-      onTransferUserChange={settransferId}
+      onTransferUserChange={setTransferId}
+      onTransferInputFocus={handleTransferInputFocus}
       status={status}
       onUnbindAll={handleUnbindAll}
       onSave={handleSave}
+      formRef={formRef}
     />
   );
 }

@@ -1,6 +1,4 @@
 import styles from './BindPhonesToUserView.module.css'
-import SearchUserSelect from "../../../../shared/components/forModal/SearchUsersSelect/SearchUserSelect";
-import SearchPhoneSelect from "../SearchPhonesSelect/SearchPhonesSelect";
 import DepartmentSectionSelect from "../SearchPhonesSelect/subComponents/DepartmentSectionSelect/DepartmentSectionSelect";
 import UserPhoneEditor from "../../AddMail/subComponents/UserPhoneEditor/UserPhoneEditor";
 import UsersList from '../SearchPhonesSelect/subComponents/UsersList/UsersList';
@@ -39,15 +37,17 @@ export default function BindPhonesToUserView({
 
   onUnbindAll,
   onSave,
+  formRef,
+ onTransferInputFocus
 }) {
   return (
-    <div className={styles.overlay}>
-      <div className={styles.modal}>
+    <div  className={styles.overlay}>
+      <div  className={styles.modal}>
         <BindPhonesToUserHeader
           onClose={onClose}
         />
 
-        <div className={styles.content}>
+        <div ref={formRef} className={styles.content}>
           <DepartmentSectionSelect
             departments={departments}
             departmentId={departmentId}
@@ -81,6 +81,7 @@ export default function BindPhonesToUserView({
               transferId={transferId}
               onTransferUserChange={onTransferUserChange}
               status={status}
+              onTransferInputFocus={onTransferInputFocus}
             />
           )}
         </div>
@@ -95,3 +96,5 @@ export default function BindPhonesToUserView({
     </div>
   );
 }
+
+

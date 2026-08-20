@@ -3,11 +3,11 @@ import styles from "./UsersList.module.css";
 const PHONE_TYPES = [
   {
     id: "landline",
-    label: "Landline",
+    label: "Міський",
   },
   {
     id: "internal",
-    label: "Internal",
+    label: "Внутрішній",
   },
   {
     id: "cisco",
@@ -20,6 +20,7 @@ export default function UsersList({
   selectedUserId,
   onSelectUser,
   hasPhone,
+  formRef
 }) {
   return (
     <div className={styles.usersBlock}>

@@ -9,6 +9,10 @@ export default function DepartmentSectionSelect({
   onDepartmentChange,
   onSectionChange,
 }) {
+  const truncateText = (text, maxLength = 85) =>
+  text.length > maxLength
+    ? `${text.slice(0, maxLength)}...`
+    : text;
   return (
     <>
       <div className={styles.field}>
@@ -25,14 +29,15 @@ export default function DepartmentSectionSelect({
             Оберіть підрозділ...
           </option>
 
-          {departments.map((department) => (
-            <option
-              key={department.departmentId}
-              value={department.departmentId}
-            >
-              {department.departmentName}
-            </option>
-          ))}
+     {departments.map((department) => (
+        <option
+          key={department.departmentId}
+          value={department.departmentId}
+          title={department.departmentName}
+        >
+          {truncateText(department.departmentName)}
+        </option>
+      ))}
         </select>
       </div>
 
@@ -47,9 +52,9 @@ export default function DepartmentSectionSelect({
             value={sectionId}
             onChange={onSectionChange}
           >
-            <option value="all">
-              Усі користувачі підрозділу
-            </option>
+            <option className={styles.allUsersOption} value="all">
+               ───  Користувачі без секції ───
+          </option>
 
             {sections.map((section) => (
               <option
