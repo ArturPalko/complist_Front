@@ -17,7 +17,7 @@ export const usePhonesTableLogic = (props) => {
   const index = useSelector((state) => selectIndexesFromCell(state));
 
   let data = tableLogic.pageData;
-  // console.log("dataInUseTableLogic:", data)
+
 
   let currentData = data[index - 1];
 

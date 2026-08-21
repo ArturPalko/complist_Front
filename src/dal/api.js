@@ -102,10 +102,12 @@ export const changeOrderOfDisplayElements = async (
 ) => {
   const dataToPush = elements.map((el) => ({
     id: el.id,
-    priority: el.priority
+    priority: el.priority,
   }));
 
-  const sendUrl = changeOrderUrl(currentMode || menu);
+  const pageName = currentMode || "mails";
+
+  const sendUrl = changeOrderUrl(pageName);
 
   return apiPrivate.post(sendUrl, dataToPush);
 };
@@ -132,11 +134,11 @@ export const addMail = (data, mailType) => {
 
 export const editMail = ({
   id,
-  mailType,
+  menu,
   ...data
 }) => {
   return apiPrivate.put(
-    `/api/mails/${mailType}/${id}`,
+    `/api/mails/${menu}/${id}`,
     data
   );
 };

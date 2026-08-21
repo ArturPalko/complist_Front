@@ -78,7 +78,7 @@ export default function ModalRoot() {
       selectDictionaryByType("departments")
     );
 
-  console.log(departments)
+
 
   const onConfirm = () =>
     handleDelete({

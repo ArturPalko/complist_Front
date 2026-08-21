@@ -8,10 +8,6 @@ import {
 
 import s from "./AddMail.module.css";
 
-import {
-  setDataIsLoadedActionCreator
-} from "../../../redux/reducers/app-reducer";
-import { fetchPasswordById } from "../../../dal/api";
 import ResponsibleUsersSelector from "./subComponents/ResponsibleUsersSelector/ResponsibleUsersSelector";
 import FormButtons from "./subComponents/FormButtons/FormButtons";
 import PasswordField from "./subComponents/PasswordField/PasswordField";
@@ -117,16 +113,18 @@ const modalConfig =
   pageConfigs[menu].modalWindows.addMail;
   
 useEffect(() => {
-initializeEditForm(editValue, {
-  setMail,
-  setPreviousName,
-  setOwnerType,
-  setOwnerId,
-  setId,
-  setPasswordKnown,
-  setResponsibleUserIds,
-  setQuery,
-});
+  console.log("EDIT VALUE:", editValue);
+
+  initializeEditForm(editValue, {
+    setMail,
+    setPreviousName,
+    setOwnerType,
+    setOwnerId,
+    setId,
+    setPasswordKnown,
+    setResponsibleUserIds,
+    setQuery,
+  });
 }, [editValue]);
 
 

@@ -43,6 +43,7 @@ export async function handleSubmit({
   menu,
   config,
 }) {
+  debugger
   if (isBindPhonesModal) {
     return apiAssignPhonesToUser(data);
   }
@@ -56,7 +57,7 @@ export async function handleSubmit({
   if (isMailModal) {
     return isAdd
       ? addMail(data, menu)
-      : editMail(data);
+      : editMail(data,menu);
   }
 
   if (isUsersContext) {

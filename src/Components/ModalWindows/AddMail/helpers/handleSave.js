@@ -15,6 +15,7 @@ export const handleSave = async ({
   dispatch,
   onClose,
 }) => {
+  debugger
   try {
     const data = {
       autoUpdatePreviousName,

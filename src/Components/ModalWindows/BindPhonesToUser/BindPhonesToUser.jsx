@@ -151,25 +151,33 @@ const handleTransferInputFocus = () => {
 
 
 
-  const handleSave = async () => {
-    if (!selectedUser) return;
+const handleSave = async () => {
+  if (!selectedUser) return;
 
-    const data = {
-      userId: selectedUser.id,
-      phones: phoneValues,
-      transferId: transferId || null,
-    };
-
-    console.log("sendData:::", data);
-
-    await onSubmit(data);
-
-    dispatch(
-      setDataIsLoadedActionCreator(false, menu)
-    );
-
-    dispatch(fetchDictionariesThunk());
+  const data = {
+    userId: selectedUser.id,
+    phones: phoneValues,
+    transferId: transferId || null,
   };
+
+
+  await onSubmit(data);
+
+  if (transferId) {
+    setPhoneValues({
+      ...EMPTY_PHONE_VALUES,
+    });
+
+    setTransferId("");
+    setShowTransfer(false);
+  }
+
+  dispatch(
+    setDataIsLoadedActionCreator(false, menu)
+  );
+
+  dispatch(fetchDictionariesThunk());
+};
 
   return (
     <BindPhonesToUserView
