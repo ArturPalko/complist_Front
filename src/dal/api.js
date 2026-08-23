@@ -78,7 +78,7 @@ export const fetchPasswordById = async (type, id) => {
 export const fetchDictionariesThunk = () => async (dispatch) => {
   try {
     const { data } = await apiPrivate.get(dictionariesUrl);
-
+debugger
     dispatch(setDictionaries({
       positions: data.positions,
       userTypes: data.userTypes,

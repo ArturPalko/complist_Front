@@ -1,4 +1,8 @@
-export const initializeEditForm = (editValue, setters) => {
+export const initializeEditForm = (
+  editValue,
+  setters,
+  sections = []
+) => {
   if (!editValue) {
     return;
   }
@@ -8,6 +12,8 @@ export const initializeEditForm = (editValue, setters) => {
     setPreviousName,
     setOwnerType,
     setOwnerId,
+    setOwnerIds,
+    setSectionDepartmentId,
     setId,
     setPasswordKnown,
     setResponsibleUserIds,
@@ -34,6 +40,32 @@ export const initializeEditForm = (editValue, setters) => {
     editValue.ownerId ?? ""
   );
 
+  const ownerIds =
+    editValue.ownerIds ?? [];
+
+  setOwnerIds(ownerIds);
+
+  // =========================
+  // SECTION
+  // =========================
+
+  if (
+    ownerType === "section" &&
+    ownerIds.length > 0
+  ) {
+    const firstSection = sections.find(
+      section =>
+        Number(section.id) ===
+        Number(ownerIds[0])
+    );
+
+    if (firstSection) {
+      setSectionDepartmentId(
+        firstSection.departmentId
+      );
+    }
+  }
+
   setId(
     editValue.id ?? ""
   );
@@ -43,7 +75,9 @@ export const initializeEditForm = (editValue, setters) => {
   );
 
   setResponsibleUserIds(
-    editValue.responsibleUsers?.map(user => user.id) ?? []
+    editValue.responsibleUsers?.map(
+      user => user.id
+    ) ?? []
   );
 
   if (ownerType === "user") {

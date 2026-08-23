@@ -1,10 +1,12 @@
 import { useMailsTableLogic } from "../../../../redux/hooks/useMailsTableLogic";
 import { createTableComponent } from "../../../../shared/components/table/TableWrapper/tableFactory";
 import { TdWrapper } from "../../../../shared/components/TdWrapper/TdWrapper";
-import ResponsibleUserPreview from "./subComponents/ResponsibleUsers/ResponsibleUsersPreview";
 
+import ResponsibleUserPreview from "./subComponents/ResponsibleUsers/ResponsibleUsersPreview";
+import SectionsPreview from "./subComponents/ResponsibleUsers/SectionPreview/SectionsPreview";
 
 const BaseMailsTable = createTableComponent(useMailsTableLogic);
+
 
 const MailsTable = ({
   columns,
@@ -13,15 +15,23 @@ const MailsTable = ({
   rowsPerPage,
   pageNumber,
 }) => {
+
   const renderHeader = () => (
     <tr>
       <th>№ п/п</th>
+
       {columns.map((col) => (
-        <th key={col.key}>{col.label}</th>
+        <th key={col.key}>
+          {col.label}
+        </th>
       ))}
-      {showPasswords && <th>Пароль</th>}
+
+      {showPasswords && (
+        <th>Пароль</th>
+      )}
     </tr>
   );
+
 
   const renderRowCells = (
     item,
@@ -35,7 +45,13 @@ const MailsTable = ({
         {(pageNumber - 1) * rowsPerPage + index + 1}
       </td>
 
+
       {columns.map((col) => {
+
+        // =========================
+        // Responsible users
+        // =========================
+
         if (col.key === "responsibleUser") {
           return (
             <ResponsibleUserPreview
@@ -46,6 +62,37 @@ const MailsTable = ({
             />
           );
         }
+
+
+        // =========================
+        // Sections
+        // =========================
+
+     if (
+  col.key === "departmentOrSection" &&
+  item.ownerType?.toLowerCase() === "section" &&
+  Array.isArray(item.ownerIds) &&
+  item.ownerIds.length > 1
+){
+          return (
+            <TdWrapper
+              key={col.key}
+              cellKey={col.key}
+              rowId={item.id}
+              value={item.sections}
+              tableUI={tableUI}
+            >
+              <SectionsPreview
+                sections={item.sections}
+              />
+            </TdWrapper>
+          );
+        }
+
+
+        // =========================
+        // Default
+        // =========================
 
         return (
           <TdWrapper
@@ -60,6 +107,7 @@ const MailsTable = ({
         );
       })}
 
+
       {showPasswords && (
         <TdWrapper
           cellKey="password"
@@ -73,6 +121,7 @@ const MailsTable = ({
     </>
   );
 
+
   return (
     <BaseMailsTable
       showPasswords={showPasswords}
@@ -82,5 +131,6 @@ const MailsTable = ({
     />
   );
 };
+
 
 export default MailsTable;
