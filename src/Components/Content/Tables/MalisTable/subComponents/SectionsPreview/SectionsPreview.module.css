@@ -1,0 +1,149 @@
+.wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.ownerDisplayName {
+  color: #303640;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.label {
+  color: #777f8a;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.empty {
+  color: #999;
+  font-size: 13px;
+}
+
+.toggleButton {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: 1px solid #d8dee8;
+  border-radius: 5px;
+
+  background: #f7f9fc;
+  color: #4b5563;
+
+  cursor: pointer;
+}
+
+.toggleButton:hover {
+  background: #eef2f7;
+}
+
+.arrow {
+  display: block;
+  font-size: 10px;
+  line-height: 1;
+  transition: transform 0.15s ease;
+}
+
+.arrowUp {
+  transform: rotate(180deg);
+}
+
+.tooltip {
+  position: absolute;
+
+  left: 0;
+  bottom: calc(100% + 8px);
+
+  width: max-content;
+  min-width: 220px;
+  max-width: 620px;
+
+  padding: 10px 12px;
+
+  background: #202124;
+  color: #fff;
+
+  border-radius: 6px;
+
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+
+  z-index: 1000;
+}
+
+.tooltipDown {
+  top: calc(100% + 8px);
+  bottom: auto;
+}
+
+.tooltipHidden {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.tooltipTitle {
+  padding-bottom: 8px;
+  margin-bottom: 7px;
+
+  border-bottom: 1px solid #3a3b3e;
+
+  font-size: 12px;
+  font-weight: 600;
+  color: #d9dadd;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+
+  max-height: 250px;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  padding-right: 6px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  font-size: 13px;
+  line-height: 1.3;
+
+  color: #f1f1f1;
+
+  white-space: nowrap;
+}
+
+.dot {
+  flex-shrink: 0;
+
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+
+  background: #bfc3c9;
+}

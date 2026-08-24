@@ -1,7 +1,8 @@
 import s from "./ResponsibleUsersPreview.module.css";
 import { TdWrapper } from "../../../../../../shared/components/TdWrapper/TdWrapper";
+import { useTooltipPlacement } from "../../../../../../redux/hooks/useToolTipPlacement";
 
- const getResponsibleUserPreview = (
+const getResponsibleUserPreview = (
   userName,
   responsibleUsers = []
 ) => {
@@ -18,11 +19,32 @@ const ResponsibleUserPreview = ({
   tableUI,
 }) => {
   const users = item.responsibleUsers ?? [];
+  console.log("RESPONSIBLE USERS:", {
+  id: item.id,
+  userName: item.userName,
+  responsibleUsers: item.responsibleUsers,
+  users,
+});
+
+  const {
+    triggerRef,
+    tooltipRef,
+    isBottom,
+    updatePlacement,
+  } = useTooltipPlacement();
 
   const preview = getResponsibleUserPreview(
     item.userName,
     users
   );
+
+  const handleMouseEnter = () => {
+    if (item.userName || users.length <= 1) {
+      return;
+    }
+
+    updatePlacement();
+  };
 
   return (
     <TdWrapper
@@ -31,11 +53,20 @@ const ResponsibleUserPreview = ({
       value={preview}
       tableUI={tableUI}
     >
-      <div className={s.tooltipWrapper}>
+      <div
+        ref={triggerRef}
+        className={s.tooltipWrapper}
+        onMouseEnter={handleMouseEnter}
+      >
         {preview}
 
         {!item.userName && users.length > 1 && (
-          <div className={s.tooltip}>
+          <div
+            ref={tooltipRef}
+            className={`${s.tooltip} ${
+              isBottom ? s.tooltipBottom : ""
+            }`}
+          >
             {users.map((user) => (
               <div
                 key={user.id}

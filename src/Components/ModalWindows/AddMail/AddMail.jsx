@@ -12,13 +12,17 @@ import ResponsibleUsersSelector from "./subComponents/ResponsibleUsersSelector/R
 import FormButtons from "./subComponents/FormButtons/FormButtons";
 import PasswordField from "./subComponents/PasswordField/PasswordField";
 import OwnerSelector from "./subComponents/OwnerSelector/OwnerSelector";
+
 import { initializeEditForm } from "./helpers/initializeEditForm";
+
 import {
   addResponsibleUser,
   removeResponsibleUser,
 } from "./helpers/responsibleUsersHelpers";
+
 import { handleSave } from "./helpers/handleSave";
 import { handleShowPassword } from "./helpers/handleShowPassword";
+
 import { pageConfigs } from "../../../configs/app/pageConfig";
 import MailNameField from "./subComponents/MailNameField/MailNameField";
 
@@ -27,36 +31,80 @@ export default function AddMail({
   editValue,
   onSubmit,
 }) {
-  const [autoUpdatePreviousName, setAutoUpdatePreviousName] =
-    useState(true);
+  // =========================
+  // General form state
+  // =========================
+
+  const [
+    autoUpdatePreviousName,
+    setAutoUpdatePreviousName,
+  ] = useState(true);
 
   const [mail, setMail] = useState("");
+  const [previousName, setPreviousName] = useState("");
 
-  const [ownerType, setOwnerType] = useState("department");
+  // =========================
+  // Owner
+  // =========================
+
+  const [ownerType, setOwnerType] =
+    useState("department");
+
+  // Для department / user
   const [ownerId, setOwnerId] = useState("");
 
-  // Новий state для декількох секцій
+  // Для section
   const [ownerIds, setOwnerIds] = useState([]);
+
+  // Департамент, до якого належать вибрані секції
+  const [
+    sectionDepartmentId,
+    setSectionDepartmentId,
+  ] = useState("");
+
+  // =========================
+  // Mail data
+  // =========================
 
   const [id, setId] = useState("");
 
-  const [passwordKnown, setPasswordKnown] = useState(false);
+  const [passwordKnown, setPasswordKnown] =
+    useState(false);
+
   const [password, setPassword] = useState("");
 
-  const [responsibleUserIds, setResponsibleUserIds] = useState([]);
+  // =========================
+  // Responsible users
+  // =========================
+
+  const [
+    responsibleUserIds,
+    setResponsibleUserIds,
+  ] = useState([]);
+
+  const [
+    responsibleQuery,
+    setResponsibleQuery,
+  ] = useState("");
+
+  const [
+    responsibleOpened,
+    setResponsibleOpened,
+  ] = useState(false);
+
+  // =========================
+  // User search
+  // =========================
 
   const [query, setQuery] = useState("");
   const [opened, setOpened] = useState(false);
 
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] =
+    useState(false);
 
-  const [responsibleQuery, setResponsibleQuery] = useState("");
-  const [responsibleOpened, setResponsibleOpened] = useState(false);
-
-  const [previousName, setPreviousName] = useState("");
-
-  const [sectionDepartmentId, setSectionDepartmentId] =
-  useState("");
+  // =========================
+  // Redux
+  // =========================
 
   const usersValues = useSelector(
     selectDictionaryByType("users")
@@ -70,6 +118,14 @@ export default function AddMail({
     selectDictionaryByType("deps")
   );
 
+  const menu = useSelector(activeMenu);
+
+  const dispatch = useDispatch();
+
+  // =========================
+  // Departments sorted
+  // =========================
+
   const departmentsValues = useMemo(
     () =>
       [...departments].sort((a, b) =>
@@ -78,9 +134,9 @@ export default function AddMail({
     [departments]
   );
 
-  const menu = useSelector(activeMenu);
-
-  const dispatch = useDispatch();
+  // =========================
+  // Filter users
+  // =========================
 
   const filteredUsers = useMemo(() => {
     return usersValues.filter((user) =>
@@ -90,164 +146,277 @@ export default function AddMail({
     );
   }, [usersValues, query]);
 
+  // =========================
+  // Filter responsible users
+  // =========================
+
   const filteredResponsibleUsers = useMemo(() => {
     return usersValues.filter((user) =>
       user.name
         .toLowerCase()
-        .includes(responsibleQuery.toLowerCase())
+        .includes(
+          responsibleQuery.toLowerCase()
+        )
     );
   }, [
     usersValues,
     responsibleQuery,
   ]);
 
+  // =========================
+  // Edit mode
+  // =========================
+
   const isEdit = Boolean(editValue?.id);
 
   const modalConfig =
     pageConfigs[menu].modalWindows.addMail;
 
-  useEffect(() => {
-    console.log("EDIT VALUE:", editValue);
 
-initializeEditForm(
-  editValue,
-  {
-    setMail,
-    setPreviousName,
-    setOwnerType,
-    setOwnerId,
-    setOwnerIds,
-    setSectionDepartmentId,
-    setId,
-    setPasswordKnown,
-    setResponsibleUserIds,
-    setQuery,
-  },
-  sectionsValues
-);
-  }, [editValue]);
+
+  const [ownerDisplayName, setOwnerDisplayName] =
+  useState("");
+
+  // =========================
+  // Initialize edit form
+  // =========================
+
+  useEffect(() => {
+    console.log(
+      "EDIT VALUE:",
+      editValue
+    );
+
+    initializeEditForm(
+      editValue,
+      {
+        setMail,
+        setPreviousName,
+
+        setOwnerType,
+        setOwnerId,
+        setOwnerIds,
+        setSectionDepartmentId,
+
+        setId,
+
+        setPasswordKnown,
+
+        setResponsibleUserIds,
+
+        setQuery,
+        setOwnerDisplayName,
+      },
+      sectionsValues
+    );
+  }, [
+    editValue,
+    sectionsValues,
+  ]);
+
+  // =========================
+  // Render
+  // =========================
 
   return (
     <div className={s.overlay}>
       <div className={s.modal}>
+
+        {/* =========================
+            Title
+        ========================= */}
+
         <h2 className={s.title}>
           {editValue
             ? `Редагувати ${modalConfig.title} пошту`
             : `Додати ${modalConfig.title} пошту`}
         </h2>
 
+        {/* =========================
+            Mail name
+        ========================= */}
+
         <MailNameField
           value={mail}
           onChange={setMail}
+
           oldValue={previousName}
           onOldChange={setPreviousName}
-          showOldField={modalConfig.showOldMailName}
-          autoUpdatePreviousName={autoUpdatePreviousName}
+
+          showOldField={
+            modalConfig.showOldMailName
+          }
+
+          autoUpdatePreviousName={
+            autoUpdatePreviousName
+          }
+
           setAutoUpdatePreviousName={
             setAutoUpdatePreviousName
           }
         />
 
-<OwnerSelector
-  ownerType={ownerType}
-  ownerId={ownerId}
-  ownerIds={ownerIds}
+        {/* =========================
+            Owner selector
+        ========================= */}
 
-  sectionDepartmentId={sectionDepartmentId}
-  setSectionDepartmentId={setSectionDepartmentId}
+        <OwnerSelector
+          ownerDisplayName={ownerDisplayName}
+          setOwnerDisplayName={setOwnerDisplayName}
+          ownerType={ownerType}
 
-  query={query}
-  opened={opened}
+          ownerId={ownerId}
+          ownerIds={ownerIds}
 
-  users={usersValues}
-  departments={departmentsValues}
-  sections={sectionsValues}
+          sectionDepartmentId={
+            sectionDepartmentId
+          }
 
-  setOwnerType={setOwnerType}
-  setOwnerId={setOwnerId}
-  setOwnerIds={setOwnerIds}
+          setSectionDepartmentId={
+            setSectionDepartmentId
+          }
 
-  setQuery={setQuery}
-  setOpened={setOpened}
-/>
+          query={query}
+          opened={opened}
+
+          users={usersValues}
+          departments={departmentsValues}
+          sections={sectionsValues}
+
+          setOwnerType={setOwnerType}
+
+          setOwnerId={setOwnerId}
+          setOwnerIds={setOwnerIds}
+
+          setQuery={setQuery}
+          setOpened={setOpened}
+        />
+
+        {/* =========================
+            Password
+        ========================= */}
 
         <PasswordField
           isEdit={isEdit}
+
           password={password}
           passwordKnown={passwordKnown}
+
           showPassword={showPassword}
+
           setPassword={setPassword}
           setPasswordKnown={setPasswordKnown}
+
           handleShowPassword={() =>
             handleShowPassword({
               showPassword,
               setShowPassword,
+
               setPassword,
+
               menu,
-              id: editValue.id,
+
+              id: editValue?.id,
             })
           }
         />
+
+        {/* =========================
+            Responsible users
+        ========================= */}
 
         {modalConfig.showResponsibleUsers &&
           ownerType !== "user" && (
             <ResponsibleUsersSelector
               ownerType={ownerType}
+
               users={usersValues}
-              responsibleUserIds={responsibleUserIds}
-              responsibleQuery={responsibleQuery}
-              responsibleOpened={responsibleOpened}
+
+              responsibleUserIds={
+                responsibleUserIds
+              }
+
+              responsibleQuery={
+                responsibleQuery
+              }
+
+              responsibleOpened={
+                responsibleOpened
+              }
+
               filteredResponsibleUsers={
                 filteredResponsibleUsers
               }
+
               setResponsibleQuery={
                 setResponsibleQuery
               }
+
               setResponsibleOpened={
                 setResponsibleOpened
               }
+
               addResponsibleUser={(userId) =>
                 addResponsibleUser({
                   userId,
+
                   responsibleUserIds,
+
                   setResponsibleUserIds,
+
                   setResponsibleQuery,
+
                   setResponsibleOpened,
                 })
               }
+
               removeResponsibleUser={(userId) =>
                 removeResponsibleUser({
                   userId,
+
                   setResponsibleUserIds,
                 })
               }
+
               removeAllResponsibleUsers={() =>
                 setResponsibleUserIds([])
               }
             />
           )}
 
+        {/* =========================
+            Form buttons
+        ========================= */}
+
         <FormButtons
           onCancel={onClose}
+
           onSave={() =>
-            handleSave({
-              autoUpdatePreviousName,
-              id,
-              menu,
-              mail,
-              previousName,
-              ownerType,
-              ownerId,
-              passwordKnown,
-              password,
-              responsibleUserIds,
-              onSubmit,
-              dispatch,
-              onClose,
-            })
+        handleSave({
+  autoUpdatePreviousName,
+  id,
+  menu,
+  mail,
+  previousName,
+
+  ownerType,
+  ownerId,
+  ownerIds,
+  ownerDisplayName,
+
+  passwordKnown,
+  password,
+  responsibleUserIds,
+
+  onSubmit,
+  dispatch,
+  onClose,
+})
           }
+
           isEdit={!!editValue}
         />
+
       </div>
     </div>
   );

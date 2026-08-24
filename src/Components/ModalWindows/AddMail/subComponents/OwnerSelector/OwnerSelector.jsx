@@ -6,35 +6,30 @@ export default function OwnerSelector({
   ownerType,
   ownerId,
   ownerIds,
-
   sectionDepartmentId,
-
   users,
   departments,
   sections,
-
   setOwnerType,
   setOwnerId,
   setOwnerIds,
   setSectionDepartmentId,
-
   setQuery,
   setOpened,
+  ownerDisplayName,
+  setOwnerDisplayName,
 }) {
   const handleOwnerTypeChange = (value) => {
     setOwnerType(value);
-
-    // Старий одиночний owner
     setOwnerId("");
-
-    // Секції
     setOwnerIds([]);
-
-    // Департамент-фільтр для секцій
     setSectionDepartmentId("");
-
     setQuery("");
     setOpened(false);
+
+    if (value !== "none" && value !== "section") {
+      setOwnerDisplayName("");
+    }
   };
 
   const handleSectionDepartmentChange = (e) => {
@@ -44,9 +39,8 @@ export default function OwnerSelector({
       value === "" ? "" : Number(value)
     );
 
-    // При зміні департаменту старі секції більше
-    // не повинні залишатися вибраними
     setOwnerIds([]);
+    setOwnerDisplayName("");
   };
 
   const handleSectionChange = (e) => {
@@ -56,6 +50,10 @@ export default function OwnerSelector({
     );
 
     setOwnerIds(selectedIds);
+
+    if (selectedIds.length <= 1) {
+      setOwnerDisplayName("");
+    }
   };
 
   const filteredSections =
@@ -67,16 +65,15 @@ export default function OwnerSelector({
             Number(sectionDepartmentId)
         );
 
-        console.log("DEPARTMENTS:", departments);
-console.log("SECTIONS:", sections);
-console.log(
-  "SELECTED DEPARTMENT:",
-  sectionDepartmentId
-);
+  const showOwnerDisplayName =
+    ownerType === "none" ||
+    (
+      ownerType === "section" &&
+      ownerIds.length > 1
+    );
 
   return (
     <div className={s.wrapper}>
-      {/* Тип власника */}
       <div>
         <label className={form.label}>
           Тип власника
@@ -89,23 +86,25 @@ console.log(
             handleOwnerTypeChange(e.target.value)
           }
         >
-          <option value="department">
-            Департамент
-          </option>
+          <optgroup label="Власник">
+            <option value="department">
+              Підрозділ
+            </option>
+            <option value="section">
+              Секція
+            </option>
+            <option value="user">
+              Користувач
+            </option>
+          </optgroup>
 
-          <option value="section">
-            Секції
-          </option>
-
-          <option value="user">
-            Користувач
-          </option>
+          <optgroup label="Інше">
+            <option value="none">
+              Без власника
+            </option>
+          </optgroup>
         </select>
       </div>
-
-      {/* ========================= */}
-      {/* DEPARTMENT */}
-      {/* ========================= */}
 
       {ownerType === "department" && (
         <div>
@@ -140,13 +139,8 @@ console.log(
         </div>
       )}
 
-      {/* ========================= */}
-      {/* SECTION */}
-      {/* ========================= */}
-
       {ownerType === "section" && (
         <>
-          {/* Департамент-фільтр */}
           <div>
             <label className={form.label}>
               Департамент
@@ -155,9 +149,7 @@ console.log(
             <select
               className={s.select}
               value={sectionDepartmentId}
-              onChange={
-                handleSectionDepartmentChange
-              }
+              onChange={handleSectionDepartmentChange}
             >
               <option value="">
                 Оберіть департамент
@@ -174,7 +166,6 @@ console.log(
             </select>
           </div>
 
-          {/* Секції */}
           {sectionDepartmentId !== "" && (
             <div>
               <label className={form.label}>
@@ -207,10 +198,6 @@ console.log(
         </>
       )}
 
-      {/* ========================= */}
-      {/* USER */}
-      {/* ========================= */}
-
       {ownerType === "user" && (
         <div>
           <label className={form.label}>
@@ -221,6 +208,24 @@ console.log(
             users={users}
             value={ownerId}
             onChange={setOwnerId}
+          />
+        </div>
+      )}
+
+      {showOwnerDisplayName && (
+        <div>
+          <label className={form.label}>
+            Умовна назва власника
+          </label>
+
+          <input
+            type="text"
+            className={s.select}
+            value={ownerDisplayName ?? ""}
+            onChange={(e) =>
+              setOwnerDisplayName(e.target.value)
+            }
+            placeholder="Наприклад: Автомобільний МП «Львів»"
           />
         </div>
       )}

@@ -106,10 +106,17 @@ export const changeOrderOfDisplayElements = async (
   }));
 
   const pageName = currentMode || "mails";
-
   const sendUrl = changeOrderUrl(pageName);
 
-  return apiPrivate.post(sendUrl, dataToPush);
+  const payload =
+    pageName === "sections"
+      ? {
+          depId,
+          items: dataToPush,
+        }
+      : dataToPush;
+
+  return apiPrivate.post(sendUrl, payload);
 };
 
 // ---------------- GENERIC CRUD ----------------

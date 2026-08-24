@@ -45,27 +45,29 @@ export const pageConfigs = {
     
   },
 
-  [Pages.GOV_UA]: {
-    StatusDiagram: ConverForGovUaSVG,
-    title: "Поштові скриньки customs.gov.ua",
-    TableComponent: MailsTable,
-    columns: [
-      { key: "mailName", label: "найменування скриньки" },
-      { key: "departmentOrSection", label: "найменування підрозділу" },
-      { key: "responsibleUser", label: "відповідальна особа" },
-    ],
-    basePath: "/mails/Gov-ua/",
-    pageFromURLIndex: 2,
-    showSearchToggle: true,      
-    showPasswordsToggle: true,
-    
-    modalWindows: {
-      addMail: {
-        title: "Gov-UA",
-        showResponsibleUsers: true
-      },
+[Pages.GOV_UA]: {
+  StatusDiagram: ConverForGovUaSVG,
+  title: "Поштові скриньки customs.gov.ua",
+  TableComponent: MailsTable,
+
+  columns: [
+    { key: "name", label: "найменування скриньки" },
+    { key: "owner", label: "найменування підрозділу" },
+    { key: "responsibleUser", label: "відповідальна особа" },
+  ],
+
+  basePath: "/mails/Gov-ua/",
+  pageFromURLIndex: 2,
+  showSearchToggle: true,
+  showPasswordsToggle: true,
+
+  modalWindows: {
+    addMail: {
+      title: "Gov-UA",
+      showResponsibleUsers: true,
     },
   },
+},
 
   [Pages.LOTUS]: {
     StatusDiagram: ConverForLotusSVG,

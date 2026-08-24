@@ -3,10 +3,11 @@ import { createTableComponent } from "../../../../shared/components/table/TableW
 import { TdWrapper } from "../../../../shared/components/TdWrapper/TdWrapper";
 
 import ResponsibleUserPreview from "./subComponents/ResponsibleUsers/ResponsibleUsersPreview";
-import SectionsPreview from "./subComponents/ResponsibleUsers/SectionPreview/SectionsPreview";
+import SectionsPreview from "./subComponents/SectionsPreview/SectionsPreview";
+
+import s from "./MailsTable.module.css";
 
 const BaseMailsTable = createTableComponent(useMailsTableLogic);
-
 
 const MailsTable = ({
   columns,
@@ -15,7 +16,6 @@ const MailsTable = ({
   rowsPerPage,
   pageNumber,
 }) => {
-
   const renderHeader = () => (
     <tr>
       <th>№ п/п</th>
@@ -26,12 +26,9 @@ const MailsTable = ({
         </th>
       ))}
 
-      {showPasswords && (
-        <th>Пароль</th>
-      )}
+      {showPasswords && <th>Пароль</th>}
     </tr>
   );
-
 
   const renderRowCells = (
     item,
@@ -39,88 +36,101 @@ const MailsTable = ({
     tableLogic,
     tableUI,
     tableDrag
-  ) => (
-    <>
-      <td>
-        {(pageNumber - 1) * rowsPerPage + index + 1}
-      </td>
+  ) => {
+    const isSectionOwner =
+      item.ownerType?.toLowerCase() === "section";
 
+    const hasMultipleSections =
+      Array.isArray(item.ownerIds) &&
+      item.ownerIds.length > 1;
 
-      {columns.map((col) => {
+    const showSectionsPreview =
+      isSectionOwner && hasMultipleSections;
 
-        // =========================
-        // Responsible users
-        // =========================
+    const isNoOwner =
+      item.ownerType?.toLowerCase() === "none";
 
-        if (col.key === "responsibleUser") {
-          return (
-            <ResponsibleUserPreview
-              key={col.key}
-              item={item}
-              col={col}
-              tableUI={tableUI}
-            />
-          );
-        }
+    return (
+      <>
+        <td>
+          {(pageNumber - 1) * rowsPerPage + index + 1}
+        </td>
 
+        {columns.map((col) => {
+          if (col.key === "responsibleUser") {
+            return (
+              <ResponsibleUserPreview
+                key={col.key}
+                item={item}
+                col={col}
+                tableUI={tableUI}
+              />
+            );
+          }
 
-        // =========================
-        // Sections
-        // =========================
+          const isOwnerColumn =
+            col.key === "departmentOrSection" ||
+            col.key === "owner";
 
-     if (
-  col.key === "departmentOrSection" &&
-  item.ownerType?.toLowerCase() === "section" &&
-  Array.isArray(item.ownerIds) &&
-  item.ownerIds.length > 1
-){
+          if (isOwnerColumn && isNoOwner) {
+            return (
+              <TdWrapper
+                key={col.key}
+                cellKey={col.key}
+                rowId={item.id}
+                value={item[col.key]}
+                tableUI={tableUI}
+              >
+                <span className={s.noOwnerDisplayName}>
+                  {item[col.key]}
+                </span>
+              </TdWrapper>
+            );
+          }
+
+          if (isOwnerColumn && showSectionsPreview) {
+            return (
+              <TdWrapper
+                key={col.key}
+                cellKey={col.key}
+                rowId={item.id}
+                value={item.sections}
+                tableUI={tableUI}
+              >
+                <SectionsPreview
+                  sections={item.sections}
+                  ownerDisplayName={item.ownerDisplayName}
+                />
+              </TdWrapper>
+            );
+          }
+
           return (
             <TdWrapper
               key={col.key}
               cellKey={col.key}
               rowId={item.id}
-              value={item.sections}
+              value={item[col.key]}
               tableUI={tableUI}
             >
-              <SectionsPreview
-                sections={item.sections}
-              />
+              {item[col.key]}
             </TdWrapper>
           );
-        }
+        })}
 
-
-        // =========================
-        // Default
-        // =========================
-
-        return (
+        {showPasswords && (
           <TdWrapper
-            key={col.key}
-            cellKey={col.key}
+            cellKey="password"
             rowId={item.id}
-            value={item[col.key]}
+            value={passwordsMap[item.id] || "—"}
             tableUI={tableUI}
           >
-            {item[col.key]}
+            {passwordsMap[item.id] || "—"}
           </TdWrapper>
-        );
-      })}
-
-
-      {showPasswords && (
-        <TdWrapper
-          cellKey="password"
-          rowId={item.id}
-          value={passwordsMap[item.id] || "—"}
-          tableUI={tableUI}
-        >
-          {passwordsMap[item.id] || "—"}
-        </TdWrapper>
-      )}
-    </>
-  );
-
+        )}
+      </>
+    );
+  };
 
   return (
     <BaseMailsTable
@@ -131,6 +141,5 @@ const MailsTable = ({
     />
   );
 };
-
 
 export default MailsTable;

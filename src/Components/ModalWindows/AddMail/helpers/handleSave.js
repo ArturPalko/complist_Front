@@ -6,16 +6,20 @@ export const handleSave = async ({
   menu,
   mail,
   previousName,
+
   ownerType,
   ownerId,
+  ownerIds,
+  ownerDisplayName,
+
   passwordKnown,
   password,
   responsibleUserIds,
+
   onSubmit,
   dispatch,
   onClose,
 }) => {
-  debugger
   try {
     const data = {
       autoUpdatePreviousName,
@@ -23,14 +27,18 @@ export const handleSave = async ({
       menu,
       mail,
       previousName,
+
       ownerType,
       ownerId,
+      ownerIds,
+      ownerDisplayName,
+
       passwordKnown,
       password,
       responsibleUserIds,
     };
 
-
+    console.log("SAVE DATA:", data);
 
     await onSubmit(data);
 

@@ -17,7 +17,7 @@ export const countMailData = (data) => {
     element.rows.forEach(row => {
       if (row.name != null) hasNewPostName++;
       if (row.passwordKnown !== false) passwordKnown++;
-      if (row.responsibleUser) hasResponsibleUser++;
+      if (row.hasResponsible) hasResponsibleUser++;
 
       switch (row.ownerType) {
         case "User": personalMails++; break;

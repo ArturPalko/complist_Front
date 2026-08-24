@@ -1,34 +1,36 @@
-.tooltipWrapper{
-    position:relative;
-    display:inline-block;
-    cursor:default;
+.tooltip {
+  position: absolute;
+  left: 50%;
+  bottom: 120%;
+  transform: translateX(-50%);
+
+  display: none;
+
+  width: max-content;
+  max-width: 620px;
+
+  padding: 8px 10px;
+
+  background: #2d2d2d;
+  color: #fff;
+
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+
+  z-index: 999;
+  white-space: nowrap;
 }
 
-.tooltip{
-    position:absolute;
-    left:50%;
-    bottom:120%;
-    transform:translateX(-50%);
-    display:none;
-
-    min-width:180px;
-    padding:8px 10px;
-
-    background:#2d2d2d;
-    color:#fff;
-
-    border-radius:6px;
-    box-shadow:0 4px 12px rgba(0,0,0,.25);
-
-    z-index:999;
-    white-space:nowrap;
+.tooltipWrapper:hover .tooltip {
+  display: block;
 }
 
-.tooltipWrapper:hover .tooltip{
-    display:block;
+.tooltipBottom {
+  top: 120%;
+  bottom: auto;
 }
 
-.tooltipItem{
-    padding:2px 0;
-    font-size:12px;
+.tooltipItem {
+  padding: 2px 0;
+  font-size: 12px;
 }

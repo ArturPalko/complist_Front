@@ -14,6 +14,7 @@ export const initializeEditForm = (
     setOwnerId,
     setOwnerIds,
     setSectionDepartmentId,
+    setOwnerDisplayName,
     setId,
     setPasswordKnown,
     setResponsibleUserIds,
@@ -45,9 +46,9 @@ export const initializeEditForm = (
 
   setOwnerIds(ownerIds);
 
-  // =========================
-  // SECTION
-  // =========================
+  setOwnerDisplayName(
+    editValue.ownerDisplayName ?? ""
+  );
 
   if (
     ownerType === "section" &&
