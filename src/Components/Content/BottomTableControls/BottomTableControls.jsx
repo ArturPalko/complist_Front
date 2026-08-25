@@ -39,7 +39,11 @@ const BottomTableControls = () => {
   const isAddUsers = useSelector(addUsersModeSelected);
   const navigate = useNavigate()
   const phoneTypes = ["landline", "internal", "cisco"];
-
+  const description = (isDepartments && !activeDep)
+  ? `• Порядок департаментів визначає порядок їх відображення в меню «Телефони».
+• Світліші рядки — департаменти, які не представлені в цьому меню та не впливають на позначки розриву.
+• Для перерахунку позначок розриву після зміни порядку перейдіть на сторінку «Телефони».`
+  : "";
   const selectedPhoneType = phoneTypes.includes(mode)
     ? mode
     : "";
@@ -141,7 +145,8 @@ const openMode = (mode) => {
 
 return (
   <BottomTableControlsView
-
+    description={description}
+    
     showAddUsersToggle={showAddUsersToggle}
 
     isAddUsers={isAddUsers}

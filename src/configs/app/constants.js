@@ -16,3 +16,19 @@ export const PHONE_TYPES = [
   "internal",
   "cisco",
 ];
+
+
+export const PHONE_TYPES_LABELS = [
+  {
+    id: "landline",
+    label: "Міський",
+  },
+  {
+    id: "internal",
+    label: "Внутрішній",
+  },
+  {
+    id: "cisco",
+    label: "Cisco",
+  },
+];

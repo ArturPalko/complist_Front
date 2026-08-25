@@ -46,6 +46,7 @@ const {
   userPhones,
   phoneOptions,
   hasPhone,
+  hasAnyPhone,
   transferUsers,
 } = useBindPhonesToUserData({
   deprs,
@@ -80,7 +81,7 @@ useEffect(() => {
   scrollContainerToBottom(formRef.current);
 }, [selectedUserId, showTransfer]);
 
-const handleTransferInputFocus = () => {
+const handleScrollToBottom = () => {
   scrollContainerToBottom(formRef.current);
 };
 
@@ -138,7 +139,7 @@ const handleTransferInputFocus = () => {
     setPhoneValues({
       ...EMPTY_PHONE_VALUES,
     });
-
+    handleScrollToBottom();
     setStatus(
       "Усі телефони буде відв'язано після збереження."
     );
@@ -162,6 +163,8 @@ const handleSave = async () => {
 
 
   await onSubmit(data);
+
+    setStatus("");
 
   if (transferId) {
     setPhoneValues({
@@ -193,6 +196,7 @@ const handleSave = async () => {
       selectedUserId={selectedUserId}
       onSelectUser={handleSelectUser}
       hasPhone={hasPhone}
+      hasAnyPhone={hasAnyPhone}
       selectedUser={selectedUser}
       phoneOptions={phoneOptions}
       phoneValues={phoneValues}
@@ -203,7 +207,7 @@ const handleSave = async () => {
       transferUsers={transferUsers}
       transferId={transferId}
       onTransferUserChange={setTransferId}
-      onTransferInputFocus={handleTransferInputFocus}
+      onDropDownInputFocus={handleScrollToBottom}
       status={status}
       onUnbindAll={handleUnbindAll}
       onSave={handleSave}
@@ -211,3 +215,5 @@ const handleSave = async () => {
     />
   );
 }
+
+

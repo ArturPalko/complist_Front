@@ -26,6 +26,7 @@ import ModalRoot from "./Components/ModalWindows/ModalRoot";
 import { ModalWindowProvider } from "./redux/providers/ModalWindowProvider/provider";
 
 function App() {
+  
   useTrackLocation();
   useCheckAuth();
 
@@ -91,11 +92,7 @@ const { modal, closeModal } = useModal();
               </Routes>
 
 
-
-
-
-
-              
+  
             </div>
           </div>
         </div>

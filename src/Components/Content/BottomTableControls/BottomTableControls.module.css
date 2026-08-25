@@ -193,3 +193,20 @@
   transform: translate(-10px, -50%);
   border-color: #31b44b;
 }
+
+
+
+
+.description {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0 20px;
+
+  color: #8a8f98;
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: center;
+}

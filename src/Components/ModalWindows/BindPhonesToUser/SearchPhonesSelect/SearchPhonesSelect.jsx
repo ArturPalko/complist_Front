@@ -5,6 +5,7 @@ export default function SearchPhoneSelect({
   phones = [],
   value,
   onChange,
+  onFocus,
   placeholder = "НЕ ПРИЗНАЧЕНО",
 }) {
   const [query, setQuery] = useState("");
@@ -31,7 +32,6 @@ export default function SearchPhoneSelect({
     );
   }, [phones, query]);
 
-  // Закриваємо dropdown при кліку поза компонентом
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -56,7 +56,6 @@ export default function SearchPhoneSelect({
     };
   }, []);
 
-  // Якщо значення очистили ззовні
   useEffect(() => {
     if (!value) {
       setQuery("");
@@ -83,6 +82,8 @@ export default function SearchPhoneSelect({
   const handleFocus = () => {
     setOpened(true);
     setQuery("");
+
+    onFocus?.();
   };
 
   return (

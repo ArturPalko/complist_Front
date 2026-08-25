@@ -3,8 +3,9 @@ import s from "./AuthPanel.module.css";
 import { authUserName, isUserAuthed } from "../../../redux/selectors/selector";
 import { logoutUser } from "../../../dal/thunks/authThunks";
 import { useModal } from "../../../redux/hooks/useLoginModal";
-
-const AuthPanel = ({ userName, isAuth, logoutUser }) => {
+import { resetEditUiState } from "../../../redux/reducers/ui-reducer";
+import { resetDictionaries } from "../../../redux/reducers/data-reducer/data-reducer";
+const AuthPanel = ({ userName, isAuth, logoutUser, resetEditUiState, resetDictionaries }) => {
   const { openModal } = useModal();
 
   const handleLoginClick = () => {
@@ -13,6 +14,8 @@ const AuthPanel = ({ userName, isAuth, logoutUser }) => {
 
   const handleLogoutClick = () => {
     logoutUser();
+    resetEditUiState();
+    resetDictionaries();
   };
 
   if (!isAuth) {
@@ -40,6 +43,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   logoutUser,
+  resetEditUiState,
+  resetDictionaries
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AuthPanel);

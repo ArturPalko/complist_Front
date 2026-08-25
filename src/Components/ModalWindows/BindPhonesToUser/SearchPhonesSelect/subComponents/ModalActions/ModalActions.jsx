@@ -2,6 +2,7 @@ import styles from "./ModalActions.module.css";
 
 export default function ModalActions({
   selectedUser,
+  hasAnyPhone,
   onUnbindAll,
   onClose,
   onSave,
@@ -11,7 +12,10 @@ export default function ModalActions({
       <button
         className={styles.danger}
         style={{
-          visibility: selectedUser ? "visible" : "hidden",
+          visibility:
+            selectedUser && hasAnyPhone(selectedUser.id)
+              ? "visible"
+              : "hidden",
         }}
         onClick={onUnbindAll}
       >

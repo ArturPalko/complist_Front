@@ -1,25 +1,14 @@
 import styles from "./UserPhoneEditor.module.css";
 import SearchUserSelect from "../../../../../shared/components/forModal/SearchUsersSelect/SearchUserSelect";
 import SearchPhoneSelect from "../../../BindPhonesToUser/SearchPhonesSelect/SearchPhonesSelect";
+import { PHONE_TYPES_LABELS } from "../../../../../configs/app/constants";
 
-const PHONE_TYPES = [
-  {
-    id: "landline",
-    label: "Landline",
-  },
-  {
-    id: "internal",
-    label: "Internal",
-  },
-  {
-    id: "cisco",
-    label: "Cisco",
-  },
-];
+
 
 export default function UserPhoneEditor({
   selectedUser,
   selectedDepartment,
+  hasAnyPhone,
   phoneOptions,
   phoneValues,
   onPhoneChange,
@@ -29,7 +18,7 @@ export default function UserPhoneEditor({
   transferUsers,
   transferId,
   onTransferUserChange,
-  onTransferInputFocus,
+  onDropDownInputFocus,
   status,
 }) {
   if (!selectedUser) return null;
@@ -52,7 +41,7 @@ export default function UserPhoneEditor({
         Телефони
       </div>
 
-      {PHONE_TYPES.map((type) => (
+      {PHONE_TYPES_LABELS.map((type) => (
         <div
           className={styles.phoneRow}
           key={type.id}
@@ -67,6 +56,7 @@ export default function UserPhoneEditor({
             onChange={(value) =>
               onPhoneChange(type.id, value)
             }
+             onFocus={onDropDownInputFocus}
           />
 
           <button
@@ -84,35 +74,37 @@ export default function UserPhoneEditor({
         одного призначення цьому користувачу.
       </div>
 
-      <div className={styles.transfer}>
-        <div className={styles.transferTitle}>
-          Передати телефони
-        </div>
-
-        <button
-          type="button"
-          className={`${styles.secondary} ${
-            showTransfer
-              ? styles.secondaryActive
-              : ""
-          }`}
-          onClick={onToggleTransfer}
-        >
-          Передати іншому користувачу
-        </button>
-
-        {showTransfer && (
-          <div className={styles.transferBox}>
-            <SearchUserSelect
-              users={transferUsers}
-              value={transferId}
-              onChange={onTransferUserChange}
-              onFocus={onTransferInputFocus}
-              placeholder="Почніть вводити ПІБ..."
-            />
+      {hasAnyPhone(selectedUser.id) && (
+        <div className={styles.transfer}>
+          <div className={styles.transferTitle}>
+            Передати телефони
           </div>
-        )}
-      </div>
+
+          <button
+            type="button"
+            className={`${styles.secondary} ${
+              showTransfer
+                ? styles.secondaryActive
+                : ""
+            }`}
+            onClick={onToggleTransfer}
+          >
+            Передати іншому користувачу
+          </button>
+
+          {showTransfer && (
+            <div className={styles.transferBox}>
+              <SearchUserSelect
+                users={transferUsers}
+                value={transferId}
+                onChange={onTransferUserChange}
+                onFocus={onDropDownInputFocus}
+                placeholder="Почніть вводити ПІБ..."
+              />
+            </div>
+          )}
+        </div>
+      )}
 
       {status && (
         <div className={styles.status}>
@@ -122,5 +114,3 @@ export default function UserPhoneEditor({
     </div>
   );
 }
-
-

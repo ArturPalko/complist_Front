@@ -147,7 +147,17 @@ if (((activeDep && isDepartmentMode) || (activeSec && isSectionsMode)) && isAddU
     if (row.type !== "user") {
       const config = entityMap[row.type];
       const name = config ? row[config.name] : row.name;
-      const className = config?.className ? s[config.className] : "";
+      
+const className = config?.className
+  ? [
+      s[config.className],
+      row.type === "department" && !row.presentedOnPhonesPage
+        ? s.notPresentedOnPhonesPage
+        : "",
+    ]
+      .filter(Boolean)
+      .join(" ")
+  : "";
 
       const showBreak =
         row.type === "department"

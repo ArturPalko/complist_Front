@@ -4,7 +4,7 @@ import s from "./TopTableBar.module.css";
 import CheckboxToggle from "./subComponent/CheckboxToggle";
 import ActionsPanel from "./subComponent/ActionPanel/ActionPanel";
 import { useSelector } from "react-redux";
-import { activeMenu, getCurrentMode, isEditModeSelected } from "../../../redux/selectors/selector";
+import { activeMenu, getCurrentMode, isEditModeSelected, isUserAuthed } from "../../../redux/selectors/selector";
 
 const TopTableBar = React.forwardRef(({ title, pageName }, ref) => {
   const {
@@ -22,11 +22,11 @@ const TopTableBar = React.forwardRef(({ title, pageName }, ref) => {
     remove
   } = useTopTableBarLogic(pageName);
 
+  const isAuthed = useSelector(isUserAuthed);
   const moder = useSelector(isEditModeSelected)
   const menu = useSelector(activeMenu);
   const editMode = useSelector(getCurrentMode);
-  // const showEditPanel = moder && menu == "phones" && editMode
-  const showEditPanel = moder
+  const showEditPanel = isAuthed && moder ;
   return (
     <div ref={ref} className={s.headerPanel}>
       <h2>{title}</h2>

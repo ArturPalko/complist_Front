@@ -21,6 +21,8 @@ import {SearchToggleContext, PasswordsToggleContext, EditModeToggleContext} from
 import { redirectToPage } from "../../shared/functions/redirectToPage.js";
 import { fetchPasswordsByType, fetchDictionariesThunk } from "../../dal/api.js"; 
 import { toggleEditMode } from "../reducers/appMode-reducer.js";
+import { resetEditUiState } from "../reducers/ui-reducer.js";
+import { resetDictionaries } from "../reducers/data-reducer/data-reducer.js";
 
 
 // HOC
@@ -88,11 +90,14 @@ const handleToggleEditMode = (e) => {
   const checked = e?.target?.checked ?? false;
 
   props.toggleEditMode(checked);
-// //         
+
   if (checked) {
- //   //         
     props.fetchDictionariesThunk();
+    return;
   }
+
+  props.resetEditUiState();
+  props.resetDictionaries();
 };
 
     return (
@@ -150,7 +155,9 @@ const handleToggleEditMode = (e) => {
     toggleSearchField: toggleSearchFieldActionCreator,
     clearSearchFieldsAndFoundResults,
     toggleEditMode:toggleEditMode,
-    fetchDictionariesThunk
+    fetchDictionariesThunk,
+    resetEditUiState,
+    resetDictionaries
   };
 
   return connect(mapStateToProps, mapDispatchToProps)(HOC);

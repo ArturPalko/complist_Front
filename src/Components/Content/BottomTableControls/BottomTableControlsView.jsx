@@ -1,7 +1,7 @@
-import React from "react";
 import s from "./BottomTableControls.module.css";
 import arrangementIcon from "../../../assets/Img/arrange.png";
 import humanPng from "../../../assets/Img/human.png";
+import { PHONE_TYPES, PHONE_TYPES_LABELS } from "../../../configs/app/constants";
 
 const BottomTableControlsView = ({
   showAddUsersToggle,
@@ -14,6 +14,8 @@ const BottomTableControlsView = ({
 
   selectedPhoneType,
   unsavedOrder,
+
+  description,
 
   onToggleAddUsers,
   onOpenMode,
@@ -98,18 +100,23 @@ const BottomTableControlsView = ({
             — Тип телефона —
           </option>
 
-          <option value="landline">
-            Landline
-          </option>
+          {PHONE_TYPES.map((type) => {
+        const phoneType = PHONE_TYPES_LABELS.find(
+          (item) => item.id === type
+        );
 
-          <option value="internal">
-            Internal
+        return (
+          <option key={type} value={type}>
+            {phoneType?.label}
           </option>
-
-          <option value="cisco">
-            Cisco
-          </option>
+        );
+      })}
         </select>
+      </div>
+
+      {/* CENTER */}
+      <div className={s.description}>
+        {description}
       </div>
 
       {/* RIGHT */}

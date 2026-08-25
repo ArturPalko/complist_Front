@@ -8,6 +8,7 @@ import { rowsPerPage } from "../../../configs/app/constants.js";
 const ADD_DATA = "ADD_DATA";
 const SET_ORDER = "SET_ORDER";
 const SET_DICTIONARIES = "SET_DICTIONARIES";
+const RESET_DICTIONARIES = "RESET_DICTIONARIES";
 
 const initialState = {
   "Gov-ua": [],
@@ -68,6 +69,11 @@ debugger
   };
 }
 
+case RESET_DICTIONARIES:
+  return {
+    ...state,
+    dictionaries: initialState.dictionaries,
+  };
 
 case SET_ORDER: {
   const { key, pages, depId, currentMode } = action.payload;
@@ -167,6 +173,9 @@ export const setDictionaries = (payload) => ({
   payload,
 });
 
+export const resetDictionaries = () => ({
+  type: RESET_DICTIONARIES,
+});
 // =========================
 // THUNK
 // =========================

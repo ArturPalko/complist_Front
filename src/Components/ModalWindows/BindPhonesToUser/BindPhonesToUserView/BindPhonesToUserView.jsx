@@ -20,6 +20,7 @@ export default function BindPhonesToUserView({
   selectedUserId,
   onSelectUser,
   hasPhone,
+  hasAnyPhone,
 
   selectedUser,
   phoneOptions,
@@ -38,7 +39,7 @@ export default function BindPhonesToUserView({
   onUnbindAll,
   onSave,
   formRef,
- onTransferInputFocus
+ onDropDownInputFocus
 }) {
   return (
     <div  className={styles.overlay}>
@@ -81,13 +82,15 @@ export default function BindPhonesToUserView({
               transferId={transferId}
               onTransferUserChange={onTransferUserChange}
               status={status}
-              onTransferInputFocus={onTransferInputFocus}
+              onDropDownInputFocus={onDropDownInputFocus}
+              hasAnyPhone={hasAnyPhone}
             />
           )}
         </div>
 
         <ModalActions
           selectedUser={selectedUser}
+          hasAnyPhone={hasAnyPhone}
           onUnbindAll={onUnbindAll}
           onClose={onClose}
           onSave={onSave}

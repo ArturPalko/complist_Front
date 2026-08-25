@@ -28,10 +28,17 @@ export default function useBindPhonesToUserData({
   // DEPARTMENTS
   // ==============================
 
-  const departments = useMemo(
-    () => flattenPages(deprs),
-    [deprs]
-  );
+ const departments = useMemo(
+  () =>
+    [...flattenPages(deprs)].sort((a, b) =>
+      (a.departmentName ?? "").localeCompare(
+        b.departmentName ?? "",
+        "uk",
+        { sensitivity: "base" }
+      )
+    ),
+  [deprs]
+);
 
   const selectedDepartment = useMemo(
     () =>
@@ -47,19 +54,25 @@ export default function useBindPhonesToUserData({
   // SECTIONS
   // ==============================
 
-  const sectionsPages = useSelector(
-    selectSectionsById(
-      departmentId
-        ? Number(departmentId)
-        : null
+ const sectionsPages = useSelector(
+  selectSectionsById(
+    departmentId
+      ? Number(departmentId)
+      : null
+  )
+);
+
+const sections = useMemo(() => {
+  const flattened = flattenPages(sectionsPages);
+
+  return [...flattened].sort((a, b) =>
+    (a.sectionName ?? "").localeCompare(
+      b.sectionName ?? "",
+      "uk",
+      { sensitivity: "base" }
     )
   );
-
-  const sections = useMemo(
-    () => flattenPages(sectionsPages),
-    [sectionsPages]
-  );
-
+}, [sectionsPages]);
   // ==============================
   // USERS
   // ==============================
@@ -149,6 +162,15 @@ export default function useBindPhonesToUserData({
       phoneType
     );
 
+    const hasAnyPhone = (userId) =>
+  ["landline", "internal", "cisco"].some((phoneType) =>
+    hasPhoneForUser(
+      phoneOptions,
+      userId,
+      phoneType
+    )
+  );
+
   // ==============================
   // TRANSFER USERS
   // ==============================
@@ -182,6 +204,7 @@ export default function useBindPhonesToUserData({
 
     phoneOptions,
     hasPhone,
+    hasAnyPhone,
 
     transferUsers,
   };

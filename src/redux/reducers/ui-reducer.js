@@ -3,7 +3,7 @@
 ========================= */
 const SET_VIEW_MODE = "SET_VIEW_MODE";
 const TOGGLE_VIEW_MODE = "TOGGLE_VIEW_MODE";
-const RESET_PHONES_UI = "RESET_PHONES_UI";
+const RESET_UI = "RESET_UI";
 
 const SET_ACTIVE_DEPARTMENT = "SET_ACTIVE_DEPARTMENT";
 const SET_ACTIVE_SECTION = "SET_ACTIVE_SECTION";
@@ -109,7 +109,7 @@ case SET_VIEW_MODE:
        RESET UI
     ========================= */
 
-    case RESET_PHONES_UI:
+    case RESET_UI:
       return initialState;
 
     default:
@@ -134,8 +134,8 @@ export const togglePhonesViewMode = () => ({
   type: TOGGLE_VIEW_MODE,
 });
 
-export const resetPhonesUi = () => ({
-  type: RESET_PHONES_UI,
+export const resetEditUiState = () => ({
+  type: RESET_UI,
 });
 
 export const setActiveDepartment = (payload) => ({
