@@ -600,34 +600,14 @@ export const selectPaginationPagesCount =
       "cisco",
     ];
 
-    if (mode == "sections") {
-      return (
-        selectDictionaryByType("departments")(
-          state
-        ).length || 0
-      );
+    if (
+      dictionaryModes.includes(mode) ||
+      phonesSubmodes.includes(mode)
+    ) {
+      return getDictionaryData(state).length || 0;
     }
 
-    if (phonesSubmodes.includes(mode)) {
-      return (
-        selectDictionaryByType(
-          mode,
-          "phones"
-        )(state).length || 0
-      );
-    }
-
-    if (dictionaryModes.includes(mode)) {
-      return (
-        selectDictionaryByType(mode)(
-          state
-        ).length || 0
-      );
-    }
-
-    return (
-      getDataForMenu(state, menu).length || 0
-    );
+    return getDataForMenu(state, menu).length || 0;
   };
 
 export const isCurrentPageFoundResult =
