@@ -107,13 +107,30 @@ const PhonesTable = ({ columns, pageNumber, rowsPerPage }) => {
 
             {row.userTypeId !== 1 ? (
               <>
-                <td>{row.userName}</td>
+                <TdWrapper
+                  value={row.userName}
+                  tableUI={tableUI}
+                >
+                  {row.userName}
+                </TdWrapper>
+
                 <td />
               </>
             ) : (
               <>
-                <td>{row.userPosition}</td>
-                <td>{row.userName}</td>
+                <TdWrapper
+                  value={row.userPosition}
+                  tableUI={tableUI}
+                >
+                  {row.userPosition}
+                </TdWrapper>
+
+                <TdWrapper
+                  value={row.userName}
+                  tableUI={tableUI}
+                >
+                  {row.userName}
+                </TdWrapper>
               </>
             )}
 
@@ -124,10 +141,17 @@ const PhonesTable = ({ columns, pageNumber, rowsPerPage }) => {
                   (p) => p.phoneType === sub.label
                 );
 
+                const phoneValue =
+                  phone?.phoneName || "";
+
                 return (
-                  <td key={sub.key}>
-                    {phone?.phoneName || ""}
-                  </td>
+                  <TdWrapper
+                    key={sub.key}
+                    value={phoneValue}
+                    tableUI={tableUI}
+                  >
+                    {phoneValue}
+                  </TdWrapper>
                 );
               })}
           </>

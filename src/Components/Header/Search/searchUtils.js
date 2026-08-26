@@ -1,8 +1,6 @@
 import { excludedKeys } from "../../../configs/search/excludedKeys";
 import { Pages } from "../../../configs/app/constants";
 
-
-
 export const clearDictionarySearchResults = (
   currentMode,
   previousModeRef,
@@ -20,14 +18,9 @@ export const clearDictionarySearchResults = (
   previousModeRef.current = currentMode;
 };
 
-
-
-
-
-
-
 export const runSearch = ({ searchValue, searchTarget }) => {
   const query = searchValue.trim().toLowerCase();
+
   if (query.length < 3) return [];
 
   const foundResults = [];
@@ -38,7 +31,7 @@ export const runSearch = ({ searchValue, searchTarget }) => {
       department: row.departmentId,
       user: row.userId,
       position: row.id,
-      userType: row.id
+      userType: row.id,
     };
 
     return idMap[row.type];
@@ -46,15 +39,24 @@ export const runSearch = ({ searchValue, searchTarget }) => {
 
   const normalize = (val) => {
     if (val === null || val === undefined) return "";
-    return String(val).toLowerCase().trim();
+
+    return String(val)
+      .toLowerCase()
+      .trim();
   };
 
   for (const page of searchTarget) {
     const rows = page?.rows;
+
     if (!rows) continue;
 
-    for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
+    for (
+      let rowIndex = 0;
+      rowIndex < rows.length;
+      rowIndex++
+    ) {
       const row = rows[rowIndex];
+
       if (!row) continue;
 
       const index = rowIndex + 1;
@@ -76,7 +78,7 @@ export const runSearch = ({ searchValue, searchTarget }) => {
           dataKey: key,
           dataValue: value,
           currentPage: page.pageIndex,
-          index
+          index,
         });
 
         continue;
@@ -85,7 +87,10 @@ export const runSearch = ({ searchValue, searchTarget }) => {
       // 2. DEPSEC
       const depSec = row.depSec;
 
-      if (depSec && typeof depSec === "object") {
+      if (
+        depSec &&
+        typeof depSec === "object"
+      ) {
         for (const [key, value] of Object.entries(depSec)) {
           if (excludedKeys.includes(key)) continue;
 
@@ -95,7 +100,7 @@ export const runSearch = ({ searchValue, searchTarget }) => {
               dataKey: key,
               dataValue: value,
               currentPage: page.pageIndex,
-              index
+              index,
             });
           }
         }
@@ -106,13 +111,15 @@ export const runSearch = ({ searchValue, searchTarget }) => {
         for (const phone of row.phones) {
           const phoneName = phone?.phoneName;
 
-          if (normalize(phoneName).includes(query)) {
+          if (
+            normalize(phoneName).includes(query)
+          ) {
             foundResults.push({
               elementType: row.type,
               dataKey: "phoneName",
               dataValue: phoneName,
               currentPage: page.pageIndex,
-              index
+              index,
             });
           }
         }
@@ -123,13 +130,35 @@ export const runSearch = ({ searchValue, searchTarget }) => {
         for (const user of row.users) {
           const userName = user?.name;
 
-          if (normalize(userName).includes(query)) {
+          if (
+            normalize(userName).includes(query)
+          ) {
             foundResults.push({
               elementType: row.type,
               dataKey: "name",
               dataValue: userName,
               currentPage: page.pageIndex,
-              index
+              index,
+            });
+          }
+        }
+      }
+
+      // 5. RESPONSIBLE USERS
+      if (Array.isArray(row.responsibleUsers)) {
+        for (const user of row.responsibleUsers) {
+          const userName = user?.name;
+
+          if (
+            normalize(userName).includes(query)
+          ) {
+            foundResults.push({
+              id: row.id,
+              elementType: row.type,
+              dataKey: "responsibleUser",
+              dataValue: userName,
+              currentPage: page.pageIndex,
+              index,
             });
           }
         }

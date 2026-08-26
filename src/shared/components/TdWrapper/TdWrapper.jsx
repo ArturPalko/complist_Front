@@ -46,6 +46,7 @@ return (
       <img
         src={torn_pageImg}
         alt="Розрив"
+        title="Розрив, містить дані на наступній сторінці"
         className={s.breakImage}
       />
     )}

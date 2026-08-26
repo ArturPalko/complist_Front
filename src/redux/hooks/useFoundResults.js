@@ -21,7 +21,8 @@ export const useFoundResults = (
   const presentRows = dataToSearch.flatMap((item) =>
     item.rows.filter((row) =>
       foundResultsForCurrentMenu.some((result) => {
-        const samePage = item.pageIndex === result.currentPage;
+        const samePage =
+          item.pageIndex === result.currentPage;
 
         if (!samePage) return false;
 
@@ -30,7 +31,8 @@ export const useFoundResults = (
           .filter((v) => typeof v === "string")
           .some(
             (v) =>
-              normalize(v) === normalize(result.dataValue)
+              normalize(v) ===
+              normalize(result.dataValue)
           );
 
         // 2. phones
@@ -59,7 +61,21 @@ export const useFoundResults = (
             normalize(result.dataValue)
         );
 
-        return inRow || inPhones || inDepSec || inUsers;
+        // 5. responsibleUsers
+        const inResponsibleUsers =
+          row.responsibleUsers?.some(
+            (user) =>
+              normalize(user?.name) ===
+              normalize(result.dataValue)
+          );
+
+        return (
+          inRow ||
+          inPhones ||
+          inDepSec ||
+          inUsers ||
+          inResponsibleUsers
+        );
       })
     )
   );

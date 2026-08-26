@@ -182,10 +182,6 @@ export default function AddMail({
   // =========================
 
   useEffect(() => {
-    console.log(
-      "EDIT VALUE:",
-      editValue
-    );
 
     initializeEditForm(
       editValue,

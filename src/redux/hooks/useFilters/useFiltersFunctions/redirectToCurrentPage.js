@@ -1,28 +1,27 @@
 import { redirectToPage } from "../../../../shared/functions/redirectToPage";
 
-// Зберігаємо попереднє меню на рівні замикання модуля
 let prevMenu = null;
 
 export const redirectToCurrentPage = ({
   hasFilters,
   navigate,
   activeMenu,
+  viewMode,
   currentPage
 }) => {
-  // Якщо змінилося активне меню — пропускаємо редирект
   if (prevMenu !== null && prevMenu !== activeMenu) {
-    prevMenu = activeMenu; // оновлюємо значення
+    prevMenu = activeMenu;
     return;
   }
 
   prevMenu = activeMenu;
 
-
   const nextPage = hasFilters ? 1 : currentPage;
-  
+
   redirectToPage({
     navigate,
     currentPage: nextPage,
-    activeMenu
+    activeMenu,
+    viewMode
   });
 };

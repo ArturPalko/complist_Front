@@ -68,6 +68,8 @@ const config = pageConfigs[currentMenu];
 
 useEffect(() => {
 
+  debugger
+
     handleRedirectWhenModeCleared({
         previousMode: previousModeRef.current,
         currentMode,

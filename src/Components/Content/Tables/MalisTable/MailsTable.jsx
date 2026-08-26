@@ -94,7 +94,7 @@ const MailsTable = ({
                 key={col.key}
                 cellKey={col.key}
                 rowId={item.id}
-                value={item.sections}
+                value={item[col.key]}
                 tableUI={tableUI}
               >
                 <SectionsPreview

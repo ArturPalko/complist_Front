@@ -14,7 +14,7 @@ export const pageConfigs = {
   StatusDiagram: EllipsesForPhonesSVG,
   title: "Довідники",
   TableComponent: DictionaryTable,
-  basePath: "/dictionary/departments/",
+  basePath: "/dictionary/",
   pageFromURLIndex: 2,
   showSearchToggle: true,
 },

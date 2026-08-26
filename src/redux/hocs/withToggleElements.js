@@ -14,7 +14,8 @@ import {
   activeMenu,
   currentPageByMenu,
   isUserAuthed,
-  isEditModeSelected
+  isEditModeSelected,
+  getCurrentMode
 } from "../../redux/selectors/selector";
 import {SearchToggleContext, PasswordsToggleContext, EditModeToggleContext} from "../contexts/useConetxt.js"
 
@@ -33,7 +34,8 @@ const withToggleElements = (type) => (WrappedComponent) => {
     const {
       activeMenu: menuFromProps,
       currentPage,
-      isFilterApplied
+      isFilterApplied,
+      viewMode
     } = props;
       /* ===== RESET showPasswords якщо користувач не залогінений ===== */
   useEffect(() => {
@@ -51,11 +53,11 @@ const withToggleElements = (type) => (WrappedComponent) => {
       if (!checked) {
         props.clearSearchFieldsAndFoundResults();
 
-        // редірект тільки якщо були застосовані фільтри
         if (isFilterApplied) {
           redirectToPage({
             navigate,
             activeMenu: menuFromProps,
+            viewMode,
             currentPage
           });
         }
@@ -141,6 +143,7 @@ const handleToggleEditMode = (e) => {
 
     return {
       activeMenu: menu,
+      viewMode: getCurrentMode(state),
       currentPage: currentPageByMenu(state, menu),
       isPresentedSearchField: !!isPresentedSearchField(state),
       isPagesNavbarLinkElementOnCurrentPagePressed:

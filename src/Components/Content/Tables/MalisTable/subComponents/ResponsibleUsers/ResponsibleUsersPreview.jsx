@@ -13,18 +13,26 @@ const getResponsibleUserPreview = (
       : responsibleUsers[0]?.name ?? "";
 };
 
+const getResponsibleUsersCopyValue = (
+  userName,
+  responsibleUsers = []
+) => {
+  if (userName) {
+    return userName;
+  }
+
+  return responsibleUsers
+    .map((user) => user?.name)
+    .filter(Boolean)
+    .join(", ");
+};
+
 const ResponsibleUserPreview = ({
   item,
   col,
   tableUI,
 }) => {
   const users = item.responsibleUsers ?? [];
-  console.log("RESPONSIBLE USERS:", {
-  id: item.id,
-  userName: item.userName,
-  responsibleUsers: item.responsibleUsers,
-  users,
-});
 
   const {
     triggerRef,
@@ -34,6 +42,11 @@ const ResponsibleUserPreview = ({
   } = useTooltipPlacement();
 
   const preview = getResponsibleUserPreview(
+    item.userName,
+    users
+  );
+
+  const copyValue = getResponsibleUsersCopyValue(
     item.userName,
     users
   );
@@ -50,7 +63,7 @@ const ResponsibleUserPreview = ({
     <TdWrapper
       cellKey={col.key}
       rowId={item.id}
-      value={preview}
+      value={copyValue}
       tableUI={tableUI}
     >
       <div

@@ -69,12 +69,15 @@ return (
         <config.TableComponent {...sharedProps} />
       </PageContext.Provider>
     </div>
-<div className={s.bottomWrapper}>
-  {isEditMode
-    ? <BottomFilterContainer />
-    : <BottomTableControls />
-  }
-</div>
+    <div className={s.bottomWrapper}>
+      <div className={isEditMode ? s.visible : s.hidden}>
+        <BottomFilterContainer />
+      </div>
+
+      <div className={isEditMode ? s.hidden : s.visible}>
+        <BottomTableControls />
+      </div>
+    </div>
    
   </div>
 );

@@ -1,16 +1,27 @@
 import { pageConfigs } from "../../configs/app/pageConfig";
+import { Pages } from "../../configs/app/constants";
 
-
-export const redirectToPage = ({ navigate, activeMenu, currentPage = 1 }) => {
-  if (!activeMenu) {
+export const redirectToPage = ({
+  navigate,
+  activeMenu,
+  viewMode,
+  currentPage = 1
+}) => {
+  if (!activeMenu && !viewMode) {
     return;
   }
 
-  const config = pageConfigs[activeMenu];
+  const config = viewMode
+    ? pageConfigs[Pages.DICTIONARIES]
+    : pageConfigs[activeMenu];
 
+  if (!config) {
+    return;
+  }
 
-  const path = `${config.basePath}${currentPage}`;
+  const path = viewMode
+    ? `${config.basePath}${viewMode}/${currentPage}`
+    : `${config.basePath}${currentPage}`;
 
   navigate(path);
 };
-

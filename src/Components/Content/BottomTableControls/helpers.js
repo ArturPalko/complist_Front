@@ -8,6 +8,7 @@ export const handleRedirectWhenModeCleared = ({
     navigate,
 }) => {
 
+    debugger
     if (!previousMode || currentMode) {
         return;
     }

@@ -11,3 +11,12 @@
 .bottomWrapper {
   margin-top: auto;
 }
+
+
+.visible {
+  display: block;
+}
+
+.hidden {
+  display: none;
+}

@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { connect } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 import {
   activeMenu,
@@ -24,6 +25,7 @@ import { runSearch } from "./searchUtils.js";
 import { Pages } from "../../../configs/app/constants.js";
 import { clearDictionarySearchResults } from "./searchUtils.js";
 import { setSearchMode } from "../../../redux/reducers/ui-reducer.js";
+import { redirectToCurrentPage } from "../../../redux/hooks/useFilters/useFiltersFunctions/redirectToCurrentPage.js";
 
 const Search = ({
   activeMenu: activeMenuStr,
@@ -39,29 +41,10 @@ const Search = ({
   searchMode,
   setSearchMode
 }) => {
+  const navigate = useNavigate();
+
   const inputRef = useRef(null);
   const [showNotFound, setShowNotFound] = useState(false);
-
-  /*
-   * =====================================================
-   * КЛЮЧ SEARCH STATE
-   * =====================================================
-   *
-   * Звичайні меню:
-   *   Gov-ua
-   *   Lotus
-   *   phones
-   *
-   * Dictionary:
-   *   positions
-   *   departments
-   *   sections
-   *   userTypes
-   *
-   * Для всіх Dictionary mode використовуємо:
-   *
-   *   searchField.dictionary
-   */
 
   const searchKey = currentMode
     ? Pages.DICTIONARIES
@@ -76,12 +59,6 @@ const Search = ({
     ? "Не знайдено"
     : draftValue || searchValue || "";
 
-  /*
-   * =====================================================
-   * FOCUS SEARCH INPUT
-   * =====================================================
-   */
-
   useEffect(() => {
     if (!showNotFound && inputRef.current) {
       inputRef.current.focus();
@@ -92,22 +69,10 @@ const Search = ({
     currentMode,
   ]);
 
-  /*
-   * =====================================================
-   * FILTERED DATA
-   * =====================================================
-   */
-
   const {
     data: filteredPageData,
     isFilterApplied,
   } = useFilteredPageData(searchSource);
-
-  /*
-   * =====================================================
-   * EXECUTE SEARCH
-   * =====================================================
-   */
 
   const executeSearch = () => {
     const target = isFilterApplied
@@ -119,7 +84,6 @@ const Search = ({
       searchTarget: target,
     });
 
-
     if (!results.length) {
       setShowNotFound(true);
 
@@ -128,7 +92,6 @@ const Search = ({
       }, 1000);
     }
 
-
     addFoundItems(
       searchKey,
       draftValue.trim(),
@@ -136,20 +99,28 @@ const Search = ({
     );
   };
 
-  /*
-   * =====================================================
-   * RENDER
-   * =====================================================
-   */
-const previousModeRef = useRef(currentMode);
+  const previousModeRef = useRef(currentMode);
 
-useEffect(() => {
-  clearDictionarySearchResults(
-    currentMode,
-    previousModeRef,
-    clearSearchForm
-  );
-}, [currentMode, clearSearchForm]);
+  useEffect(() => {
+    clearDictionarySearchResults(
+      currentMode,
+      previousModeRef,
+      clearSearchForm
+    );
+  }, [currentMode, clearSearchForm]);
+
+  const handleSearchModeChange = (mode) => {
+    setSearchMode(mode);
+
+    if (mode === "filter") {
+      redirectToCurrentPage({
+        navigate,
+        activeMenu: activeMenuStr,
+        viewMode: currentMode || "filter",
+        currentPage: 1
+      });
+    }
+  };
 
   return (
     <SearchForm
@@ -159,10 +130,10 @@ useEffect(() => {
 
       inputValue={inputValue}
 
-      searchMode= {searchMode}
-      
-      onSearchModeChange={(mode) => setSearchMode(mode)}
-      
+      searchMode={searchMode}
+
+      onSearchModeChange={handleSearchModeChange}
+
       setInputValue={(value) =>
         value !== ""
           ? updateDraftValue(searchKey, value)
@@ -185,35 +156,17 @@ useEffect(() => {
       getCountOfFoundResults={() =>
         getCountOfFoundResults(searchKey)
       }
-      
     />
   );
 };
-
-
-// =====================================================
-// REDUX
-// =====================================================
 
 const mapStateToProps = (state) => {
   const menu = activeMenu(state);
   const currentMode = getCurrentMode(state);
 
-  /*
-   * Якщо відкритий будь-який Dictionary mode,
-   * search state буде:
-   *
-   *   searchField.dictionary
-   *
-   * Інакше:
-   *
-   *   searchField[activeMenu]
-   */
-
   const searchKey = currentMode
     ? Pages.DICTIONARIES
     : menu;
-
 
   return {
     activeMenu: menu,
@@ -223,25 +176,11 @@ const mapStateToProps = (state) => {
     isPresentedSearchField:
       isPresentedSearchField(state),
 
-    searchMode:getSearchMode(state),
-    /*
-     * Дані, по яких фактично виконується пошук.
-     *
-     * Тут залишається menu,
-     * тому що getDataForMenu сам визначає
-     * потрібні дані залежно від currentMode.
-     */
+    searchMode: getSearchMode(state),
+
     searchSource:
       getDataForMenu(state, menu),
 
-    /*
-     * СТАН ПОШУКУ.
-     *
-     * Dictionary -> dictionary
-     * Gov-ua     -> Gov-ua
-     * Lotus      -> Lotus
-     * phones     -> phones
-     */
     searchState:
       selectSearchStateByMenu(
         state,
@@ -251,24 +190,13 @@ const mapStateToProps = (state) => {
     getCountOfFoundResults: (m) =>
       getCountOfFoundResults(state, m),
 
-    /*
-     * Тут також використовуємо searchKey,
-     * щоб Dictionary не брав індекси
-     * з Gov-ua / Lotus / phones.
-     */
     getIndexesOfFiltredResults:
       getIndexesOfFiltredResults(
         state,
         searchKey
       ),
-      
   };
 };
-
-
-// =====================================================
-// DISPATCH
-// =====================================================
 
 const mapDispatchToProps = {
   addFoundItems,
@@ -276,11 +204,6 @@ const mapDispatchToProps = {
   updateDraftValue,
   setSearchMode
 };
-
-
-// =====================================================
-// CONNECT
-// =====================================================
 
 export default connect(
   mapStateToProps,
