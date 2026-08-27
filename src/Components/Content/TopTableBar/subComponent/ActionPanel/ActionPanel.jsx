@@ -12,6 +12,7 @@ export default function ActionsPanel({
   onAdd,
   onEdit,
   onDelete,
+  onTransfer,
   onAssignPhones,
   menu,
   editMode,
@@ -27,6 +28,9 @@ export default function ActionsPanel({
 
   const showAddEditButtons =
     editMode !== "users";
+
+  const showTransferButton =
+    editMode === "users";
 
   const disabled =
     isUserTypes ||
@@ -64,6 +68,15 @@ export default function ActionsPanel({
             ✏️ Редагувати
           </ActionButton>
         </>
+      )}
+
+      {showTransferButton && (
+        <ActionButton
+          disabled={disabled}
+          onClick={onAdd}
+        >
+          🔄 Перевести
+        </ActionButton>
       )}
 
       <ActionButton

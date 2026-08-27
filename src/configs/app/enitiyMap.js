@@ -43,8 +43,8 @@ export const entityMap = {
   },
 
   user: {
-    id: "id",
-    name: "name",
+    id: "userId",
+    name: "userName",
   },
 
   phone: {

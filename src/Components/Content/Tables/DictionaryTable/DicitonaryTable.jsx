@@ -321,10 +321,22 @@ const renderTd = (
     {value}
   </TdWrapper>
 );
-
+console.log("row:",row)
     // ===================================================
     // ADD USERS MODE
     // ===================================================
+    debugger
+    if (!row.type && activeDep) {
+      debugger
+  return (
+    <>
+      <td>{index + 1}</td>
+      {renderTd(row.name, `name-${row.id}`)}
+      {renderTd(row.positionName, `position-${row.id}`)}
+      {renderTd(row.userType, `type-${row.id}`)}
+    </>
+  );
+}
 if (row.type === "user") {
   const isRegularUser =
     row.userType === "Користувач";

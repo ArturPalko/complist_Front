@@ -20,6 +20,7 @@ import {
   getCurrentMode,
   getDataForMenu,
   addUsersModeSelected,
+  isUserMode,
 } from "../selectors/selector";
 
 export const useCrudModalActions = (modalType) => {
@@ -71,13 +72,16 @@ export const useCrudModalActions = (modalType) => {
   const isAddUsers = useSelector(addUsersModeSelected);
 
   const isDictionaryMode = Boolean(currentMode);
+  const isUsers = useSelector(isUserMode);
 
 const currentModalType =
   !isDictionaryMode && (menu === "Lotus" || menu === "Gov-ua")
     ? "mailsToUsers"
     : !isDictionaryMode && menu === "phones"
       ? "phonesToUsers"
-      : modalType;
+      : isUsers
+        ? "transferUser"
+        : modalType;
 
   const entityTypeMap = {
     positions: "position",
