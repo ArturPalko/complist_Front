@@ -123,6 +123,32 @@ export default function AddMail({
   const dispatch = useDispatch();
 
   // =========================
+  // Normalize users
+  // =========================
+  // Redux тепер зберігає users пагіновано:
+  //
+  // [
+  //   {
+  //     page: 1,
+  //     rows: [...]
+  //   },
+  //   {
+  //     page: 2,
+  //     rows: [...]
+  //   }
+  // ]
+  //
+  // AddMail працює з плоским масивом users.
+
+  const users = useMemo(
+    () =>
+      usersValues.flatMap(
+        page => page.rows ?? []
+      ),
+    [usersValues]
+  );
+
+  // =========================
   // Departments sorted
   // =========================
 
@@ -139,27 +165,31 @@ export default function AddMail({
   // =========================
 
   const filteredUsers = useMemo(() => {
-    return usersValues.filter((user) =>
-      user.name
+    const normalizedQuery =
+      query.toLowerCase();
+
+    return users.filter((user) =>
+      (user.name ?? "")
         .toLowerCase()
-        .includes(query.toLowerCase())
+        .includes(normalizedQuery)
     );
-  }, [usersValues, query]);
+  }, [users, query]);
 
   // =========================
   // Filter responsible users
   // =========================
 
   const filteredResponsibleUsers = useMemo(() => {
-    return usersValues.filter((user) =>
-      user.name
+    const normalizedQuery =
+      responsibleQuery.toLowerCase();
+
+    return users.filter((user) =>
+      (user.name ?? "")
         .toLowerCase()
-        .includes(
-          responsibleQuery.toLowerCase()
-        )
+        .includes(normalizedQuery)
     );
   }, [
-    usersValues,
+    users,
     responsibleQuery,
   ]);
 
@@ -172,17 +202,16 @@ export default function AddMail({
   const modalConfig =
     pageConfigs[menu].modalWindows.addMail;
 
-
-
-  const [ownerDisplayName, setOwnerDisplayName] =
-  useState("");
+  const [
+    ownerDisplayName,
+    setOwnerDisplayName,
+  ] = useState("");
 
   // =========================
   // Initialize edit form
   // =========================
 
   useEffect(() => {
-
     initializeEditForm(
       editValue,
       {
@@ -258,7 +287,10 @@ export default function AddMail({
 
         <OwnerSelector
           ownerDisplayName={ownerDisplayName}
-          setOwnerDisplayName={setOwnerDisplayName}
+          setOwnerDisplayName={
+            setOwnerDisplayName
+          }
+
           ownerType={ownerType}
 
           ownerId={ownerId}
@@ -275,7 +307,7 @@ export default function AddMail({
           query={query}
           opened={opened}
 
-          users={usersValues}
+          users={users}
           departments={departmentsValues}
           sections={sectionsValues}
 
@@ -301,7 +333,9 @@ export default function AddMail({
           showPassword={showPassword}
 
           setPassword={setPassword}
-          setPasswordKnown={setPasswordKnown}
+          setPasswordKnown={
+            setPasswordKnown
+          }
 
           handleShowPassword={() =>
             handleShowPassword({
@@ -326,7 +360,7 @@ export default function AddMail({
             <ResponsibleUsersSelector
               ownerType={ownerType}
 
-              users={usersValues}
+              users={users}
 
               responsibleUserIds={
                 responsibleUserIds
@@ -388,26 +422,26 @@ export default function AddMail({
           onCancel={onClose}
 
           onSave={() =>
-        handleSave({
-  autoUpdatePreviousName,
-  id,
-  menu,
-  mail,
-  previousName,
+            handleSave({
+              autoUpdatePreviousName,
+              id,
+              menu,
+              mail,
+              previousName,
 
-  ownerType,
-  ownerId,
-  ownerIds,
-  ownerDisplayName,
+              ownerType,
+              ownerId,
+              ownerIds,
+              ownerDisplayName,
 
-  passwordKnown,
-  password,
-  responsibleUserIds,
+              passwordKnown,
+              password,
+              responsibleUserIds,
 
-  onSubmit,
-  dispatch,
-  onClose,
-})
+              onSubmit,
+              dispatch,
+              onClose,
+            })
           }
 
           isEdit={!!editValue}

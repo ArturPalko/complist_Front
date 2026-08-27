@@ -65,10 +65,11 @@ export const GroupRowActions = ({
     <div className={s.groupRowActions}>
       <button
         className={s.addButton}
-        onClick={(e) => {
-          handleClick(e);
-          add();
-        }}
+       onClick={(e) => {
+  handleClick(e);
+    add({departmentId:row.departmentId});
+
+}}
       >
         + Додати
       </button>

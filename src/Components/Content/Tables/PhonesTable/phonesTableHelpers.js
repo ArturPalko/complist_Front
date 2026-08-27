@@ -127,6 +127,7 @@ export const handleOnOpenSectionsButtonClick =
       (isSections || isAddUsers) &&
       item?.type === "department"
     ) {
+      
       dispatch(
         setActiveDepartment({
           id: item.departmentId,

@@ -104,18 +104,21 @@ const currentModalType =
 
   // ---------------- ADD ----------------
 
-  const add = () => {
-    const data =
-      currentModalType === "sections"
-        ? { departmentId: activeDep }
-        : null;
-  
-    openModal({
-      type: currentModalType,
-      mode: "add",
-      data,
-    });
-  };
+const add = (data = null) => {
+  const modalData =
+    currentModalType === "sections"
+      ? {
+          departmentId:
+            data?.departmentId ?? activeDep,
+        }
+      : data;
+debugger
+  openModal({
+    type: currentModalType,
+    mode: "add",
+    data: modalData,
+  });
+};
 
   // ---------------- DELETE ----------------
 

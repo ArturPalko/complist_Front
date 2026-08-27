@@ -17,8 +17,8 @@ export function ModalWindowProvider({ children }) {
 
   // ---------------- OPEN MODAL ----------------
   const openModal = ({ type, mode = null, data = null }) => {
-    debugger
-       
+              
+      debugger
     if(type=="login") return;
              
     setModalType(type);
@@ -29,7 +29,7 @@ export function ModalWindowProvider({ children }) {
     // sync to URL
     const newQuery = new URLSearchParams(location.search);
     newQuery.set("modal", type);
-             
+                debugger
     navigate({ search: newQuery.toString() }, { replace: true });
   };
 

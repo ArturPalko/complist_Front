@@ -17,7 +17,7 @@ export const getDictionaryCount = (
     return { countOfCiscoPhones: count };
   }
 
-  if (currentMode === "positions" || currentMode === "userTypes") {
+  if (currentMode === "positions" || currentMode === "userTypes" || currentMode === "users") {
     return { countOfUsers: count };
   }
 

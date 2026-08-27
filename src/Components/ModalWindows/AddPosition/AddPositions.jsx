@@ -17,7 +17,7 @@ export default function EntityModal({
   editValue,
   title,
 }) {
-  debugger
+            
   const dispatch = useDispatch();
 
   const {
@@ -40,7 +40,8 @@ export default function EntityModal({
   }, [editValue, reset]);
 
   const submitHandler = async (data) => {
-    //         
+    //      
+                 
     try {
       //         
       await onSubmit({

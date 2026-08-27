@@ -82,6 +82,7 @@ const Search = ({
     const results = runSearch({
       searchValue: draftValue,
       searchTarget: target,
+      currentMode
     });
 
     if (!results.length) {

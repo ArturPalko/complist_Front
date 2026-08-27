@@ -43,7 +43,7 @@ export async function handleSubmit({
   menu,
   config,
 }) {
-  debugger
+            
   if (isBindPhonesModal) {
     return apiAssignPhonesToUser(data);
   }
@@ -72,7 +72,7 @@ export async function handleSubmit({
   const payload = isAdd
     ? config.mappers.add(data, modalData)
     : config.mappers.edit(data, modalData);
-
+          
   return isAdd
     ? apiAddEntity(config.endpoint, payload)
     : apiEditEntity(config.endpoint, payload);

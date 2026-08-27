@@ -9,6 +9,7 @@ const ADD_DATA = "ADD_DATA";
 const SET_ORDER = "SET_ORDER";
 const SET_DICTIONARIES = "SET_DICTIONARIES";
 const RESET_DICTIONARIES = "RESET_DICTIONARIES";
+const SORT_USERS = "SORT_USERS";
 
 const initialState = {
   "Gov-ua": [],
@@ -18,144 +19,299 @@ const initialState = {
   dictionaries: {
     positions: [],
     userTypes: [],
-    departments:[],
-    phones:{
-      landline:[],
-      internal:[],
-      cisco:[]
-    }
+    departments: [],
+    users: [],
+    sections: [],
+    deps: [],
+    phones: {
+      landline: [],
+      internal: [],
+      cisco: [],
+    },
   },
 };
 
 // Reducer
-export const dataReducer = (state = initialState, action) => {
+export const dataReducer = (
+  state = initialState,
+  action
+) => {
   switch (action.type) {
-
     // =========================
     // LOAD DATA
     // =========================
     case ADD_DATA: {
       const { key, data } = action.payload;
-// //
+
       return {
         ...state,
-        [key]: paginateData(data, key, rowsPerPage),
+        [key]: paginateData(
+          data,
+          key,
+          rowsPerPage
+        ),
       };
     }
 
-case SET_DICTIONARIES: {
-  const { positions, userTypes, departments, phones,users,sections, deps } = action.payload;
-     
-debugger
-  return {
-    ...state,
-    dictionaries: {
-      ...state.dictionaries,
+    // =========================
+    // SET DICTIONARIES
+    // =========================
+    case SET_DICTIONARIES: {
+      const {
+        positions,
+        userTypes,
+        departments,
+        phones,
+        users,
+        sections,
+        deps,
+      } = action.payload;
 
-      positions: paginateData(positions, "positions", rowsPerPage),
-      userTypes: paginateData(userTypes, "userTypes", rowsPerPage),
-      departments: paginateData(departments, "departments", rowsPerPage),
-      users: users,
-      sections :sections,
-      deps:deps,
+      return {
+        ...state,
+        dictionaries: {
+          ...state.dictionaries,
 
+          positions: paginateData(
+            positions,
+            "positions",
+            rowsPerPage
+          ),
 
-      phones: {
-        landline: paginateData(phones[0].phones || [], "landline", rowsPerPage),
-        internal: paginateData(phones[1].phones || [], "internal", rowsPerPage),
-        cisco: paginateData(phones[2].phones || [], "cisco", rowsPerPage),
+          userTypes: paginateData(
+            userTypes,
+            "userTypes",
+            rowsPerPage
+          ),
+
+          departments: paginateData(
+            departments,
+            "departments",
+            rowsPerPage
+          ),
+
+          users: paginateData(
+            users,
+            "users",
+            rowsPerPage - 3
+          ),
+
+          sections: sections,
+          deps: deps,
+
+          phones: {
+            landline: paginateData(
+              phones[0].phones || [],
+              "landline",
+              rowsPerPage
+            ),
+
+            internal: paginateData(
+              phones[1].phones || [],
+              "internal",
+              rowsPerPage
+            ),
+
+            cisco: paginateData(
+              phones[2].phones || [],
+              "cisco",
+              rowsPerPage
+            ),
+          },
+        },
+      };
+    }
+
+    // =========================
+    // SORT USERS
+    // =========================
+    case SORT_USERS: {
+      const {
+        key,
+        direction,
+      } = action.payload;
+
+      // Беремо users з УСІХ сторінок
+      const allUsers =
+        state.dictionaries.users.flatMap(
+          (page) => page.rows || []
+        );
+
+      // Сортуємо весь список
+      const sortedUsers = [
+        ...allUsers,
+      ].sort((a, b) => {
+        const aValue = a[key] ?? "";
+        const bValue = b[key] ?? "";
+
+        const result =
+          String(aValue).localeCompare(
+            String(bValue),
+            "uk",
+            {
+              sensitivity: "base",
+              numeric: true,
+            }
+          );
+
+        return direction === "asc"
+          ? result
+          : -result;
+      });
+
+      // Знову розбиваємо на сторінки
+      const sortedPages =
+        chunkIntoPages(
+          sortedUsers,
+          rowsPerPage - 3
+        );
+
+      return {
+        ...state,
+        dictionaries: {
+          ...state.dictionaries,
+          users: sortedPages,
+        },
+      };
+    }
+
+    // =========================
+    // RESET
+    // =========================
+    case RESET_DICTIONARIES:
+      return {
+        ...state,
+        dictionaries:
+          initialState.dictionaries,
+      };
+
+    // =========================
+    // SET ORDER
+    // =========================
+    case SET_ORDER: {
+      const {
+        key,
+        pages,
+        depId,
+        currentMode,
+      } = action.payload;
+
+      const {
+        reordered,
+        payload,
+      } = pages;
+
+      let newState = {
+        ...state,
+      };
+
+      // 📦 departments
+      if (currentMode === "departments") {
+        const newDepartments =
+          chunkIntoPages(
+            reordered,
+            rowsPerPage
+          );
+
+        return {
+          ...state,
+          dictionaries: {
+            ...state.dictionaries,
+            departments:
+              newDepartments,
+          },
+        };
       }
-    },
-  };
-}
 
-case RESET_DICTIONARIES:
-  return {
-    ...state,
-    dictionaries: initialState.dictionaries,
-  };
+      // 📚 sections
+      if (currentMode === "sections") {
+        const deptId =
+          reordered?.[0]?.departmentId;
 
-case SET_ORDER: {
-  const { key, pages, depId, currentMode } = action.payload;
-  const { reordered, payload } = pages;
+        newState.dictionaries = {
+          ...state.dictionaries,
 
-  let newState = { ...state };
+          departments:
+            state.dictionaries.departments.map(
+              (page) => ({
+                ...page,
 
-  // 📦 departments
-  if (currentMode === "departments") {
-    const newDepartments = chunkIntoPages(reordered, rowsPerPage);
+                rows: page.rows.map(
+                  (dep) =>
+                    dep.departmentId ===
+                    deptId
+                      ? {
+                          ...dep,
+                          sections:
+                            reordered,
+                        }
+                      : dep
+                ),
+              })
+            ),
+        };
 
-    return {
-      ...state,
-      dictionaries: {
-        ...state.dictionaries,
-        departments: newDepartments,
-      },
-    };
-  }
+        return newState;
+      }
 
-  // 📚 sections
-  if (currentMode === "sections") {
-    const deptId = reordered?.[0]?.departmentId;
+      // 📌 positions
+      if (currentMode === "positions") {
+        return {
+          ...state,
+          dictionaries: {
+            ...state.dictionaries,
+            positions:
+              chunkIntoPages(
+                reordered,
+                18
+              ),
+          },
+        };
+      }
 
-    newState.dictionaries = {
-      ...state.dictionaries,
-      departments: state.dictionaries.departments.map(page => ({
-        ...page,
-        rows: page.rows.map(dep =>
-          dep.departmentId === deptId
-            ? {
-                ...dep,
-                sections: reordered,
-              }
-            : dep
+      // 👤 user types
+      if (currentMode === "userTypes") {
+        return {
+          ...state,
+          dictionaries: {
+            ...state.dictionaries,
+            userTypes:
+              chunkIntoPages(
+                reordered,
+                18
+              ),
+          },
+        };
+      }
+
+      // 🔥 everything else
+      return {
+        ...state,
+        [key]: chunkIntoPages(
+          reordered,
+          rowsPerPage
         ),
-      })),
-    };
+      };
+    }
 
-    return newState;
+    default:
+      return state;
   }
-
-  // 📌 positions
-  if (currentMode === "positions") {
-    return {
-      ...state,
-      dictionaries: {
-        ...state.dictionaries,
-        positions: chunkIntoPages(reordered, 18),
-      },
-    };
-  }
-
-  // 👤 user types
-  if (currentMode === "userTypes") {
-    return {
-      ...state,
-      dictionaries: {
-        ...state.dictionaries,
-        userTypes: chunkIntoPages(reordered, 18),
-      },
-    };
-  }
-
-  // 🔥 everything else — simple pagination
-  return {
-    ...state,
-    [key]: chunkIntoPages(reordered, rowsPerPage),
-  };
-}
-
-default:
-  return state;
-}}
+};
 
 // =========================
 // ACTION CREATORS
 // =========================
 
-export const addDataActionCreator = (key, data) => ({
+export const addDataActionCreator = (
+  key,
+  data
+) => ({
   type: ADD_DATA,
-  payload: { key, data },
+  payload: {
+    key,
+    data,
+  },
 });
 
 export const setPagesActionCreator = (
@@ -165,10 +321,32 @@ export const setPagesActionCreator = (
   currentMode
 ) => ({
   type: SET_ORDER,
-  payload: { key, pages, deptId, currentMode },
+  payload: {
+    key,
+    pages,
+    deptId,
+    currentMode,
+  },
 });
 
-export const setDictionaries = (payload) => ({
+// =========================
+// SORT USERS ACTION
+// =========================
+
+export const sortUsersActionCreator = (
+  key,
+  direction
+) => ({
+  type: SORT_USERS,
+  payload: {
+    key,
+    direction,
+  },
+});
+
+export const setDictionaries = (
+  payload
+) => ({
   type: SET_DICTIONARIES,
   payload,
 });
@@ -176,10 +354,13 @@ export const setDictionaries = (payload) => ({
 export const resetDictionaries = () => ({
   type: RESET_DICTIONARIES,
 });
+
 // =========================
 // THUNK
 // =========================
 
 export const getDataByMenu = (key) =>
-  fetchDataThunk(addDataActionCreator, key);
-
+  fetchDataThunk(
+    addDataActionCreator,
+    key
+  );

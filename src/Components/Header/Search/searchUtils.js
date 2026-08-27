@@ -18,7 +18,7 @@ export const clearDictionarySearchResults = (
   previousModeRef.current = currentMode;
 };
 
-export const runSearch = ({ searchValue, searchTarget }) => {
+export const runSearch = ({ searchValue, searchTarget, currentMode }) => {
   const query = searchValue.trim().toLowerCase();
 
   if (query.length < 3) return [];
@@ -126,23 +126,26 @@ export const runSearch = ({ searchValue, searchTarget }) => {
       }
 
       // 4. USERS
-      if (Array.isArray(row.users)) {
-        for (const user of row.users) {
-          const userName = user?.name;
+    // 4. USERS
+if (
+  currentMode !== "departments" &&
+  currentMode !== "sections" &&
+  Array.isArray(row.users)
+) {
+  for (const user of row.users) {
+    const userName = user?.name;
 
-          if (
-            normalize(userName).includes(query)
-          ) {
-            foundResults.push({
-              elementType: row.type,
-              dataKey: "name",
-              dataValue: userName,
-              currentPage: page.pageIndex,
-              index,
-            });
-          }
-        }
-      }
+    if (normalize(userName).includes(query)) {
+      foundResults.push({
+        elementType: row.type,
+        dataKey: "name",
+        dataValue: userName,
+        currentPage: page.pageIndex,
+        index,
+      });
+    }
+  }
+}
 
       // 5. RESPONSIBLE USERS
       if (Array.isArray(row.responsibleUsers)) {

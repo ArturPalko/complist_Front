@@ -140,4 +140,19 @@ export const CRUD_CONFIG = {
       }),
     },
   },
+    users: {
+    title: "Користувачі",
+    endpoint: "users",
+    mappers: {
+      add: (data) => ({
+        name: data.name,
+      }),
+      edit: (data, modalData) => ({
+        id: modalData.id,
+        name: data.name,
+        priority: modalData.priority,
+      }),
+    },
+  },
 };
+

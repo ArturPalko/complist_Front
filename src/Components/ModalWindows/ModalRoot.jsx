@@ -152,7 +152,7 @@ export default function ModalRoot() {
   }
 
   if (isUsersContext && (isAdd || isEdit)) {
-    debugger
+              
     return (
       <AddUser
         {...commonProps}
@@ -174,7 +174,7 @@ const entity = entityMap[entityType];
 const editValue = isEdit
   ? modalData?.[entity?.name] ?? modalData?.name ?? ""
   : "";
-debugger
+          
   return (
     <EntityModal
       {...commonProps}

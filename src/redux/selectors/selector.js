@@ -96,6 +96,7 @@ export const getDictionaryData = (state) => {
   const isDepartments = isDepartmentsMode(state);
   const isPositions = isPositionsMode(state);
   const isUserTypes = isUserTypesMode(state);
+  const isUsers = isUserMode(state);
 
   const mode = state.ui.viewMode;
 
@@ -221,6 +222,19 @@ export const getDictionaryData = (state) => {
         rows: page.rows.map((row) => ({
           ...row,
           type: "userType",
+        })),
+      })
+    );
+  }
+
+   if (isUsers) {
+    return state.data.dictionaries.users.map(
+      (page) => ({
+        ...page,
+        type: "user",
+        rows: page.rows.map((row) => ({
+          ...row,
+          type: "user",
         })),
       })
     );
@@ -752,6 +766,9 @@ export const isUserTypesMode = (state) => {
   return state.ui.viewMode == "userTypes";
 };
 
+export const isUserMode = (state) => {
+  return state.ui.viewMode == "users";
+};
 
 // ============================================================
 // Active Department / Section

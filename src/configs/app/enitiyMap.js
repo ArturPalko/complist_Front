@@ -1,46 +1,54 @@
 export const entityMap = {
-   landline: {
+  landline: {
     id: "id",
     name: "number",
     className: "mainDepartment",
   },
+
   internal: {
     id: "id",
     name: "number",
     className: "mainDepartment",
   },
-   cisco: {
+
+  cisco: {
     id: "id",
     name: "number",
     className: "mainDepartment",
   },
+
   department: {
     id: "departmentId",
     name: "departmentName",
     className: "mainDepartment",
   },
+
   section: {
     id: "sectionId",
     name: "sectionName",
     className: "section",
-    extra: ["departmentId"], // 👈 додаткові поля
+    extra: ["departmentId"],
   },
+
   position: {
     id: "id",
     name: "positionName",
     className: "positionsAndUserTypes",
   },
+
   userType: {
     id: "id",
     name: "userType",
     className: "positionsAndUserTypes",
   },
-   user: {
-    id: "userId",
-    name: "userName"
+
+  user: {
+    id: "id",
+    name: "name",
   },
+
   phone: {
     id: "id",
-    name: "number"
+    name: "number",
   },
 };

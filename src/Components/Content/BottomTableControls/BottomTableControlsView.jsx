@@ -11,6 +11,7 @@ const BottomTableControlsView = ({
   isDepartments,
   isPosition,
   isUserTypes,
+  isUsers,
 
   selectedPhoneType,
   unsavedOrder,
@@ -112,6 +113,15 @@ const BottomTableControlsView = ({
         );
       })}
         </select>
+
+        <button
+        className={`${s.toggleBtn} ${
+          isUsers ? s.active : ""
+        }`}
+        onClick={() => onOpenMode("users")}
+      >
+        Користувачі
+      </button>
       </div>
 
       {/* CENTER */}

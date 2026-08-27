@@ -9,7 +9,7 @@ export const useBottomFilterLogic = () => {
   const departments = [...(depSec.departments || [])].sort((a, b) =>
   a.departmentName.localeCompare(b.departmentName)
 );
-  debugger
+            
   const selectedSubDepts = bookmarks.selectedSubDepts;
   const selectedOrder = bookmarks.selectedOrder;
 

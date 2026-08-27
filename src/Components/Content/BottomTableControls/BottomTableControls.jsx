@@ -10,7 +10,8 @@ import {
   selectAtiveDepartmentId,
   getDictionaryPages,
   getCurrentPageNumberByKey,
-  activeMenu
+  activeMenu,
+  isUserMode
 } from "../../../redux/selectors/selector";
 
 import {
@@ -37,6 +38,7 @@ const BottomTableControls = () => {
   const isUserTypes = useSelector(isUserTypesMode);
   const mode = useSelector(getCurrentMode);
   const isAddUsers = useSelector(addUsersModeSelected);
+  const isUsers = useSelector(isUserMode);
   const navigate = useNavigate()
   const phoneTypes = ["landline", "internal", "cisco"];
   const description = (isDepartments && !activeDep)
@@ -68,7 +70,7 @@ const config = pageConfigs[currentMenu];
 
 useEffect(() => {
 
-  debugger
+            
 
     handleRedirectWhenModeCleared({
         previousMode: previousModeRef.current,
@@ -107,7 +109,7 @@ useEffect(() => {
 
  const handleSave = async () => {
   if (!unsavedOrder) return;
-  debugger
+            
   try {
     await changeOrderOfDisplayElements(
       unsavedOrder.payload,
@@ -157,6 +159,7 @@ return (
     isDepartments={isDepartments}
     isPosition={isPosition}
     isUserTypes={isUserTypes}
+    isUsers={isUsers}
 
     selectedPhoneType={selectedPhoneType}
 

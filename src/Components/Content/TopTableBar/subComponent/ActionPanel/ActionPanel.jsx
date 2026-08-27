@@ -14,7 +14,7 @@ export default function ActionsPanel({
   onDelete,
   onAssignPhones,
   menu,
-  editMode
+  editMode,
 }) {
   const { selectedIds } = useDragContext();
 
@@ -22,17 +22,22 @@ export default function ActionsPanel({
   const isUserTypes = useSelector(isUserTypesMode);
   const activeDep = useSelector(selectAtiveDepartmentId);
 
-  const showBindPhonesButton = menu == "phones" && !editMode;
-  
+  const showBindPhonesButton =
+    menu === "phones" && !editMode;
+
+  const showAddEditButtons =
+    editMode !== "users";
 
   const disabled =
     isUserTypes ||
     (isSections && !activeDep);
 
-  
   if (showBindPhonesButton) {
     return (
-      <div className={s.panel} onClick={onAdd}>
+      <div
+        className={s.panel}
+        onClick={onAdd}
+      >
         <ActionButton>
           📱 Прив'язати телефони
         </ActionButton>
@@ -42,16 +47,24 @@ export default function ActionsPanel({
 
   return (
     <div className={s.panel}>
-      <ActionButton disabled={disabled} onClick={onAdd}>
-        ➕ Додати
-      </ActionButton>
 
-      <ActionButton
-        disabled={disabled}
-        onClick={() => onEdit(selectedIds)}
-      >
-        ✏️ Редагувати
-      </ActionButton>
+      {showAddEditButtons && (
+        <>
+          <ActionButton
+            disabled={disabled}
+            onClick={onAdd}
+          >
+            ➕ Додати
+          </ActionButton>
+
+          <ActionButton
+            disabled={disabled}
+            onClick={() => onEdit(selectedIds)}
+          >
+            ✏️ Редагувати
+          </ActionButton>
+        </>
+      )}
 
       <ActionButton
         disabled={disabled}
@@ -59,6 +72,7 @@ export default function ActionsPanel({
       >
         🗑 Видалити
       </ActionButton>
+
     </div>
   );
 }
