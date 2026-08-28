@@ -160,3 +160,7 @@ export const deleteMail = (ids) => {
 export const apiAssignPhonesToUser = (data) => {
   return apiPrivate.put(`/api/assignPhonesToUsers`, data);
 };
+
+export const transferUser = (data) => {
+  return apiPrivate.put(`api/users/transfer`, data)
+}

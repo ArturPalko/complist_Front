@@ -1,0 +1,52 @@
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #303640;
+}
+
+.subtitle {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #7a808a;
+}
+
+.close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 32px;
+  height: 32px;
+
+  padding: 0;
+
+  border: none;
+  border-radius: 6px;
+
+  background: transparent;
+
+  color: #6f7680;
+
+  font-size: 24px;
+  line-height: 1;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+
+.close:hover {
+  background-color: #f1f2f4;
+  color: #303640;
+}
+
