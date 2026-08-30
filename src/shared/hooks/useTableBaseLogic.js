@@ -264,7 +264,7 @@ export const useTableBaseLogic = ({
   // ================================
   // return
   // ================================
-   debugger       
+            
   return {
     data,
 

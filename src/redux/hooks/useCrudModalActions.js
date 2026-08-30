@@ -20,7 +20,6 @@ import {
   getCurrentMode,
   getDataForMenu,
   addUsersModeSelected,
-  isUserMode,
 } from "../selectors/selector";
 
 export const useCrudModalActions = (modalType) => {
@@ -33,7 +32,9 @@ export const useCrudModalActions = (modalType) => {
   const currentMode = useSelector(getCurrentMode);
   const menu = useSelector(activeMenu);
 
-  const positions = useSelector(selectPositionsDictionary);
+  const positions = useSelector(
+    selectPositionsDictionary
+  );
 
   const sections = useSelector(
     selectSectionsById(activeDep)
@@ -69,18 +70,23 @@ export const useCrudModalActions = (modalType) => {
       : selectUsersByDepartment(activeDep)
   );
 
-  const isAddUsers = useSelector(addUsersModeSelected);
+  const isAddUsers = useSelector(
+    addUsersModeSelected
+  );
 
   const isDictionaryMode = Boolean(currentMode);
-  const isUsers = useSelector(isUserMode);
 
-const currentModalType =
-  !isDictionaryMode && (menu === "Lotus" || menu === "Gov-ua")
-    ? "mailsToUsers"
-    : !isDictionaryMode && menu === "phones"
-      ? "phonesToUsers"
-      : isUsers
-        ? "transferUser"
+  // =========================
+  // Modal type
+  // =========================
+
+  const currentModalType =
+    !isDictionaryMode &&
+    (menu === "Lotus" || menu === "Gov-ua")
+      ? "mailsToUsers"
+      : !isDictionaryMode &&
+          menu === "phones"
+        ? "phonesToUsers"
         : modalType;
 
   const entityTypeMap = {
@@ -91,7 +97,8 @@ const currentModalType =
   };
 
   const entityType =
-    entityTypeMap[currentModalType] ?? currentModalType;
+    entityTypeMap[currentModalType] ??
+    currentModalType;
 
   const config = CRUD_CONFIG[currentModalType];
   const entity = entityMap[entityType];
@@ -106,25 +113,29 @@ const currentModalType =
     cisco: ciscos,
   };
 
-  // ---------------- ADD ----------------
+  // =========================
+  // ADD
+  // =========================
 
-const add = (data = null) => {
-  const modalData =
-    currentModalType === "sections"
-      ? {
-          departmentId:
-            data?.departmentId ?? activeDep,
-        }
-      : data;
-debugger
-  openModal({
-    type: currentModalType,
-    mode: "add",
-    data: modalData,
-  });
-};
+  const add = (data = null) => {
+    const modalData =
+      currentModalType === "sections"
+        ? {
+            departmentId:
+              data?.departmentId ?? activeDep,
+          }
+        : data;
 
-  // ---------------- DELETE ----------------
+    openModal({
+      type: currentModalType,
+      mode: "add",
+      data: modalData,
+    });
+  };
+
+  // =========================
+  // DELETE
+  // =========================
 
   const remove = () => {
     if (!selectedIds?.length) return;
@@ -136,30 +147,42 @@ debugger
     });
   };
 
-  // ---------------- EDIT ----------------
+  // =========================
+  // EDIT
+  // =========================
 
   const edit = () => {
     if (!selectedIds?.length) return;
 
     const id = selectedIds[0];
+
     let item;
 
     if (activeDep && isAddUsers) {
       item = users.find(
-        (user) => Number(user.id) === Number(id)
+        (user) =>
+          Number(user.id) === Number(id)
       );
-    } else if (currentModalType === "mailsToUsers") {
+    } else if (
+      currentModalType === "mailsToUsers"
+    ) {
       item = dataForMenu
-        .flatMap((page) => page.rows ?? [])
+        .flatMap(
+          (page) => page.rows ?? []
+        )
         .find(
-          (row) => Number(row.id) === Number(id)
+          (row) =>
+            Number(row.id) === Number(id)
         );
     } else {
       item = sources[currentModalType]
-        ?.flatMap((page) => page.rows ?? [])
+        ?.flatMap(
+          (page) => page.rows ?? []
+        )
         .find(
           (row) =>
-            Number(row?.[entity?.id]) === Number(id)
+            Number(row?.[entity?.id]) ===
+            Number(id)
         );
     }
 
@@ -170,9 +193,39 @@ debugger
     });
   };
 
+  // =========================
+  // TRANSFER USERS
+  // =========================
+
+  const transfer = () => {
+    if (!selectedIds?.length) return;
+
+    openModal({
+      type: "transferUser",
+      mode: "add",
+      data: selectedIds,
+    });
+  };
+
+  // =========================
+  // CHANGE USER STATUS
+  // =========================
+
+  const changeStatus = (data) => {
+    // if (!selectedIds?.length) return;
+debugger
+    openModal({
+      type: "userStatus",
+      mode: "add",
+      data: data,
+    });
+  };
+
   return {
     add,
     edit,
     remove,
+    transfer,
+    changeStatus,
   };
 };

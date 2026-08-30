@@ -187,65 +187,65 @@ const DictionaryTable = ({
     // USERS MODE
     // ===================================================
 
-    if (currentMode === "users") {
-      return (
-        <tr>
-          <th>№</th>
+  if (currentMode === "users") {
+  return (
+    <tr>
+      <th>№</th>
 
-          <th
-            className={s.sortableHeader}
-            onClick={() =>
-              handleUserSort("name")
-            }
-          >
-            <span>
-              Користувач{" "}
-              {renderSortArrow("name")}
-            </span>
-          </th>
+      <th
+        className={s.sortableHeader}
+        onClick={() =>
+          handleUserSort("name")
+        }
+      >
+        <span>
+          Користувач{" "}
+          {renderSortArrow("name")}
+        </span>
+      </th>
 
-          <th
-            className={s.sortableHeader}
-            onClick={() =>
-              handleUserSort("userType")
-            }
-          >
-            <span>
-              Тип користувача{" "}
-              {renderSortArrow(
-                "userType"
-              )}
-            </span>
-          </th>
+      <th
+        className={s.sortableHeader}
+        onClick={() =>
+          handleUserSort("userType")
+        }
+      >
+        <span>
+          Тип користувача{" "}
+          {renderSortArrow("userType")}
+        </span>
+      </th>
 
-          <th
-            className={s.sortableHeader}
-            onClick={() =>
-              handleUserSort("department")
-            }
-          >
-            <span>
-              Департамент{" "}
-              {renderSortArrow(
-                "department"
-              )}
-            </span>
-          </th>
+      <th
+        className={s.sortableHeader}
+        onClick={() =>
+          handleUserSort("department")
+        }
+      >
+        <span>
+          Департамент{" "}
+          {renderSortArrow("department")}
+        </span>
+      </th>
 
-          <th
-            className={s.sortableHeader}
-            onClick={() =>
-              handleUserSort("section")
-            }
-          >
-            <span>
-              Секція{" "}
-              {renderSortArrow("section")}
-            </span>
-          </th>
-        </tr>
-      );
-    }
+      <th
+        className={s.sortableHeader}
+        onClick={() =>
+          handleUserSort("section")
+        }
+      >
+        <span>
+          Секція{" "}
+          {renderSortArrow("section")}
+        </span>
+      </th>
+
+      <th>
+        Статус
+      </th>
+    </tr>
+  );
+}
 
     // ===================================================
     // OTHER DICTIONARY MODES
@@ -325,22 +325,20 @@ const renderTd = (
     // ===================================================
     // ADD USERS MODE
     // ===================================================
-    debugger
+      
     if (!row.type && activeDep) {
-      debugger
+        
   return (
     <>
       <td>{index + 1}</td>
       {renderTd(row.name, `name-${row.id}`)}
       {renderTd(row.positionName, `position-${row.id}`)}
       {renderTd(row.userType, `type-${row.id}`)}
+      
     </>
   );
 }
 if (row.type === "user") {
-  const isRegularUser =
-    row.userType === "Користувач";
-
   return (
     <>
       <td>
@@ -352,20 +350,12 @@ if (row.type === "user") {
 
       {renderTd(
         row.name,
-        `name-${row.id}`,
-        1,
-        isRegularUser
-          ? ""
-          : d.specialUserName
+        `name-${row.id}`
       )}
 
       {renderTd(
         row.userType,
-        `userType-${row.id}`,
-        1,
-        isRegularUser
-          ? ""
-          : d.specialUserType
+        `userType-${row.id}`
       )}
 
       {renderTd(
@@ -380,6 +370,13 @@ if (row.type === "user") {
         `section-${row.id}`,
         1,
         d.userSection
+      )}
+
+      {renderTd(
+        row.isActive
+          ? "Активний"
+          : "Неактивний",
+        `status-${row.id}`
       )}
     </>
   );

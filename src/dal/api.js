@@ -164,3 +164,7 @@ export const apiAssignPhonesToUser = (data) => {
 export const transferUser = (data) => {
   return apiPrivate.put(`api/users/transfer`, data)
 }
+
+export const changeStatus = (data) => {
+  return apiPrivate.put(`api/users/changeStatus`, data)
+}

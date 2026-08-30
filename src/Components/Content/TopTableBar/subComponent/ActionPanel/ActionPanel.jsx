@@ -1,7 +1,9 @@
 import ActionButton from "./ActionButton/ActionButton";
 import s from "./ActionPanel.module.css";
+
 import { useDragContext } from "../../../../../redux/contexts/useConetxt";
 import { useSelector } from "react-redux";
+
 import {
   isSectionsMode,
   isUserTypesMode,
@@ -13,6 +15,7 @@ export default function ActionsPanel({
   onEdit,
   onDelete,
   onTransfer,
+  onChangeStatus,
   onAssignPhones,
   menu,
   editMode,
@@ -29,7 +32,7 @@ export default function ActionsPanel({
   const showAddEditButtons =
     editMode !== "users";
 
-  const showTransferButton =
+  const showUserActions =
     editMode === "users";
 
   const disabled =
@@ -70,13 +73,22 @@ export default function ActionsPanel({
         </>
       )}
 
-      {showTransferButton && (
-        <ActionButton
-          disabled={disabled}
-          onClick={onAdd}
-        >
-          🔄 Перевести
-        </ActionButton>
+      {showUserActions && (
+        <>
+          <ActionButton
+            disabled={disabled}
+            onClick={() => onTransfer(selectedIds)}
+          >
+            🔄 Перевести
+          </ActionButton>
+
+          <ActionButton
+            disabled={disabled}
+            onClick={() => onChangeStatus(selectedIds)}
+          >
+            ⚡ Статус
+          </ActionButton>
+        </>
       )}
 
       <ActionButton
@@ -89,3 +101,4 @@ export default function ActionsPanel({
     </div>
   );
 }
+

@@ -1,0 +1,132 @@
+.wrapper {
+  width: 460px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 18px 20px;
+  border-bottom: 1px solid #e5e7ea;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #303640;
+}
+
+.subtitle {
+  margin-top: 5px;
+  font-size: 13px;
+  color: #7d858e;
+}
+
+.close {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+
+  border: none;
+  background: transparent;
+
+  color: #7d858e;
+  font-size: 26px;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+.close:hover {
+  color: #303640;
+}
+
+/* =========================
+   CONTENT
+========================= */
+
+.content {
+  padding: 24px 20px;
+}
+
+.question {
+  font-size: 15px;
+  color: #303640;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+
+  padding: 14px 20px;
+
+  border-top: 1px solid #e5e7ea;
+}
+
+.cancelButton,
+.confirmButton {
+  height: 38px;
+  padding: 0 17px;
+
+  border-radius: 6px;
+
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.cancelButton {
+  border: 1px solid #ccd1d6;
+  background: #fff;
+  color: #404750;
+}
+
+.cancelButton:hover {
+  background: #f5f6f7;
+}
+
+.confirmButton {
+  border: none;
+  background: #303640;
+  color: #fff;
+  font-weight: 600;
+}
+
+.confirmButton:hover {
+  background: #252a31;
+}
+
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: #0004;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 40px;
+  z-index: 1000;
+}
+
+.modal {
+  width: 720px;
+  height: 700px;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 18px 50px #0002;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}

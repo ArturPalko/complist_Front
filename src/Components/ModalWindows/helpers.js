@@ -5,7 +5,8 @@ import {
   apiEditEntity,
   addMail,
   editMail,
-  apiAssignPhonesToUser
+  apiAssignPhonesToUser,
+  changeStatus
 } from "../../dal/api";
 
 export async function handleDelete({
@@ -38,11 +39,17 @@ export async function handleSubmit({
   isMailModal,
   isUsersContext,
   isBindPhonesModal,
+  isChangeStatusModal,
   data,
   modalData,
   menu,
   config,
 }) {
+
+  if(isChangeStatusModal){
+    debugger
+     return changeStatus(modalData);
+  }
             
   if (isBindPhonesModal) {
     return apiAssignPhonesToUser(data);

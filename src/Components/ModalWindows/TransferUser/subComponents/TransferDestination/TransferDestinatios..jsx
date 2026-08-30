@@ -11,11 +11,16 @@ export default function TransferDestination({
   onDepartmentChange,
   onSectionChange,
 }) {
+    const truncateText = (text, maxLength = 45) =>
+  text.length > maxLength
+    ? `${text.slice(0, maxLength)}...`
+    : text;
   return (
     <>
       {/* =========================
           Transfer type
       ========================= */}
+      
 
       <div>
         <label className={form.label}>
@@ -60,7 +65,7 @@ export default function TransferDestination({
               key={department.id}
               value={department.id}
             >
-              {department.name}
+              {truncateText(department.name)}
             </option>
           ))}
         </select>

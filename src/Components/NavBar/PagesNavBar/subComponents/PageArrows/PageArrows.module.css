@@ -1,0 +1,53 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  width: 100%;
+  margin-top: 6px;
+}
+
+.hidden {
+  display: none;
+}
+
+.arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 34px;
+  height: 28px;
+
+  padding: 0;
+
+  border: 1px solid #d7dbe0;
+  border-radius: 6px;
+
+  background: #fff;
+  color: #303640;
+
+  font-size: 17px;
+  line-height: 1;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.arrow:hover:not(:disabled) {
+  background: #f3f5f7;
+  border-color: #bfc4ca;
+}
+
+.arrow:disabled {
+  background: #f7f8f9;
+  border-color: #e5e7ea;
+  color: #c5c9ce;
+  cursor: default;
+}
+

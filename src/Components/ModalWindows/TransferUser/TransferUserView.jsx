@@ -63,7 +63,7 @@ export default function TransferUserView({
 
         <div className={s.divider} />
 
-=
+
        <TransferOptions
         keepResponsibleForMails={keepResponsibleForMails}
         setKeepResponsibleForMails={

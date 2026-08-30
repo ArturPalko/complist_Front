@@ -19,7 +19,9 @@ const TopTableBar = React.forwardRef(({ title, pageName }, ref) => {
     showEditToggle,
     add,
     edit,
-    remove
+    remove,
+    transfer,
+    changeStatus
   } = useTopTableBarLogic(pageName);
 
   const isAuthed = useSelector(isUserAuthed);
@@ -30,7 +32,15 @@ const TopTableBar = React.forwardRef(({ title, pageName }, ref) => {
   return (
     <div ref={ref} className={s.headerPanel}>
       <h2>{title}</h2>
-      {showEditPanel && <ActionsPanel editMode={editMode} menu={menu} onAdd={add} onDelete={remove} onEdit={edit}/>}
+      {showEditPanel && <ActionsPanel 
+                          editMode={editMode} 
+                          menu={menu}
+                          onAdd={add}
+                          onDelete={remove}
+                          onEdit={edit}
+                          onTransfer={transfer}
+                          onChangeStatus={changeStatus}/>}
+                    
       <div className={s.buttonsBar}>
          {showEditToggle && (
           <CheckboxToggle

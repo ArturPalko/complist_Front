@@ -3,6 +3,8 @@ import { NavLink, useNavigate } from "react-router-dom";
 import s from "./PagesNavBarView.module.css";
 import { useDragContext } from "../../../../redux/contexts/useConetxt";
 
+import PageArrows from "../subComponents/PageArrows/PageArrows";
+
 const PagesNavBarView = ({
   editMode,
   basePath,
@@ -49,6 +51,7 @@ const PagesNavBarView = ({
       }`}
     >
       {/* FOUND RESULTS — ONLY NORMAL SEARCH MODE */}
+
       {!isSearchFilterMode &&
         (showFoundResultPage || isFoundResultsPage) &&
         !isDragActive && (
@@ -65,6 +68,7 @@ const PagesNavBarView = ({
         )}
 
       {/* PAGES */}
+
       {count > 0 &&
         Array.from({ length: count }, (_, i) => {
           const pageNumber = i + 1;
@@ -103,13 +107,25 @@ const PagesNavBarView = ({
                 {pageNumber}
 
                 {/* ARROW ONLY IN DRAG MODE */}
+
                 {isDragActive && (
-                  <span className={s.dragArrow}>›››</span>
+                  <span className={s.dragArrow}>
+                    ›››
+                  </span>
                 )}
               </NavLink>
             </div>
           );
         })}
+
+      {/* PAGE ARROWS — ONLY NORMAL MODE */}
+
+      {!isDragActive && count > 1 && (
+        <PageArrows
+          basePath={basePath}
+          count={count}
+        />
+      )}
     </div>
   );
 };

@@ -33,7 +33,7 @@ export const useTopTableBarLogic = (pageName) => {
   const isLoggedIn = useSelector(isUserAuthed);
 
   // 👉 вся CRUD логіка тепер тут
-  const { add, edit, remove } = useCrudModalActions(modalType);
+  const { add, edit, remove, changeStatus, transfer} = useCrudModalActions(modalType);
 
   const config = pageConfigs[pageName] || {};
 
@@ -56,5 +56,7 @@ export const useTopTableBarLogic = (pageName) => {
     add,
     edit,
     remove,
+    changeStatus,
+    transfer
   };
 };

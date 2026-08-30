@@ -26,6 +26,7 @@ import { PHONE_TYPES } from "../../configs/app/constants";
 import { handleDelete, handleSubmit } from "./helpers";
 import BindPhonesToUser from "./BindPhonesToUser/BindPhonesToUser";
 import { TransferUser } from "./TransferUser/TransferUser";
+import ChangeUserStatus from "./ChangeUserStatus/ChangeUserStatus";
 
 export default function ModalRoot() {
   const {
@@ -69,9 +70,12 @@ export default function ModalRoot() {
     (isSections && activeDep && activeSec) ||
     (isDep && activeDep && !activeSec);
 
+
+
   
   const isBindPhonesModal = isPhonesMenu && modalType == "phonesToUsers";
   const isTranferUserModal = modalType == "transferUser"
+  const isChangeStatusModal = modalType == "userStatus";
 
   const config = CRUD_CONFIG[modalType];
   
@@ -97,6 +101,7 @@ export default function ModalRoot() {
       isEdit,
       isPhoneModal,
       isBindPhonesModal,
+      isChangeStatusModal,
       isMailModal,
       isUsersContext,
       data,
@@ -133,6 +138,12 @@ export default function ModalRoot() {
   if(isBindPhonesModal){
     return (<BindPhonesToUser onSubmit={onSubmit} deprs={departments}  onClose={closeModal}/>)
   }
+  debugger
+
+  if(isChangeStatusModal){
+    return (<ChangeUserStatus onConfirm={onSubmit} onClose={closeModal}/>)
+  }
+
 
   if (isTranferUserModal) {
     return (
