@@ -10,7 +10,8 @@ export const TdWrapper = ({
   colSpan,
   isHeaderRow = false,
   showBreak = false,
-  text
+  text,
+  inactive = false,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
@@ -29,40 +30,43 @@ export const TdWrapper = ({
     }
   };
 
-return (
-  <td
-    colSpan={colSpan}
-    className={`${s.td} ${className}`}
-    style={isHeaderRow ? { padding: 5 } : undefined}
-    onMouseEnter={() => setIsHovered(true)}
-    onMouseLeave={() => setIsHovered(false)}
-  >
- 
-    
-   <div className= {s.block}> {children} </div>
+  return (
+    <td
+      colSpan={colSpan}
+      className={`${s.td} ${className} ${
+        inactive ? s.inactive : ""
+      }`}
+      style={isHeaderRow ? { padding: 5 } : undefined}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div className={s.block}>
+        {children}
+      </div>
 
-    {/* break як було раніше */}
-    {showBreak && (
-      <img
-        src={torn_pageImg}
-        alt="Розрив"
-        title="Розрив, містить дані на наступній сторінці"
-        className={s.breakImage}
-      />
-    )}
-    
+      {showBreak && (
+        <img
+          src={torn_pageImg}
+          alt="Розрив"
+          title="Розрив, містить дані на наступній сторінці"
+          className={s.breakImage}
+        />
+      )}
 
-    {isHovered && canCopy && (
-      <span className={s.copyIcon} onClick={handleCopy}>
-        📋
-      </span>
-    )}
+      {isHovered && canCopy && (
+        <span
+          className={s.copyIcon}
+          onClick={handleCopy}
+        >
+          📋
+        </span>
+      )}
 
-    {isCopied && (
-      <span className={s.copied}>
-        ✅
-      </span>
-    )}
-  </td>
-);
+      {isCopied && (
+        <span className={s.copied}>
+          ✅
+        </span>
+      )}
+    </td>
+  );
 };

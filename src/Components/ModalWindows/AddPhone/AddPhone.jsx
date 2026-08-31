@@ -1,14 +1,20 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
+
 import s from "./AddPhone.module.css";
 import form from "../../../shared/Css/form.module.css";
 
-import { activeMenu, selectDictionaryByType } from "../../../redux/selectors/selector";
+import {
+  activeMenu,
+  selectDictionaryByType,
+} from "../../../redux/selectors/selector";
+
 import { fetchDictionariesThunk } from "../../../dal/api";
 
 import ResponsibleUsers from "../AddMail/subComponents/ResponsibleUsersSelector/ResponsibleUsersSelector";
 import FormButtons from "../AddMail/subComponents/FormButtons/FormButtons";
+
 import { setDataIsLoadedActionCreator } from "../../../redux/reducers/app-reducer";
 
 export default function AddPhone({
@@ -17,14 +23,20 @@ export default function AddPhone({
   onSubmit,
   editValue = null,
 }) {
-  const users = useSelector(selectDictionaryByType("users"));
+  const users = useSelector(
+    selectDictionaryByType("users")
+  );
 
   const [phone, setPhone] = useState("");
   const [ownerIds, setOwnerIds] = useState([]);
+  const [error, setError] = useState("");
+
   const dispatch = useDispatch();
   const menu = useSelector(activeMenu);
 
   useEffect(() => {
+    setError("");
+
     if (!editValue) {
       setPhone("");
       setOwnerIds([]);
@@ -32,20 +44,29 @@ export default function AddPhone({
     }
 
     setPhone(editValue.number ?? "");
-    setOwnerIds(editValue.users?.map((user) => user.id) ?? []);
+
+    setOwnerIds(
+      editValue.users?.map(
+        (user) => user.id
+      ) ?? []
+    );
   }, [editValue]);
 
   const addOwner = (id) => {
     if (!id) return;
 
     setOwnerIds((prev) =>
-      prev.includes(id) ? prev : [...prev, id]
+      prev.includes(id)
+        ? prev
+        : [...prev, id]
     );
   };
 
   const removeOwner = (id) => {
     setOwnerIds((prev) =>
-      prev.filter((userId) => userId !== id)
+      prev.filter(
+        (userId) => userId !== id
+      )
     );
   };
 
@@ -54,6 +75,8 @@ export default function AddPhone({
   };
 
   const handleSave = async () => {
+    setError("");
+
     let type;
 
     switch (modalType) {
@@ -74,36 +97,74 @@ export default function AddPhone({
         break;
     }
 
-  await  onSubmit({
-      id: editValue?.id,
-      name: phone,
-      type,
-      assignedUsers: ownerIds,
-    });
+    try {
+      await onSubmit({
+        id: editValue?.id,
+        name: phone.trim(),
+        type,
+        assignedUsers: ownerIds,
+      });
 
-     dispatch(
-          setDataIsLoadedActionCreator(
-            false,
-            menu
-          )
+      dispatch(
+        setDataIsLoadedActionCreator(
+          false,
+          menu
+        )
+      );
+
+      dispatch(
+        fetchDictionariesThunk()
+      );
+
+      onClose();
+    } catch (err) {
+      console.error(
+        "AddPhone error:",
+        err
+      );
+
+      if (
+        err.response?.status === 409
+      ) {
+        setError(
+          err.response?.data?.message ||
+          "Телефон з таким номером уже існує."
         );
-         dispatch(fetchDictionariesThunk());
-  onClose();
+
+        return;
+      }
+
+      setError(
+        "Не вдалося зберегти телефон."
+      );
+    }
   };
 
   return (
     <div className={s.container}>
       <div className={s.modal}>
+
         <div className={form.field}>
-          <label className={form.label}>Номер телефону</label>
+          <label className={form.label}>
+            Номер телефону
+          </label>
 
           <input
             className={form.input}
             type="text"
             placeholder="Введіть номер телефону"
             value={phone}
-            onChange={(e) => setPhone(e.target.value)}
+            onChange={(e) => {
+              setPhone(e.target.value);
+              setError("");
+            }}
           />
+
+          {error && (
+            <p className={form.error}>
+              {error}
+            </p>
+          )}
         </div>
 
         <ResponsibleUsers
@@ -111,16 +172,19 @@ export default function AddPhone({
           responsibleUserIds={ownerIds}
           addResponsibleUser={addOwner}
           removeResponsibleUser={removeOwner}
-          removeAllResponsibleUsers={clearOwners}
+          removeAllResponsibleUsers={
+            clearOwners
+          }
         />
 
         <FormButtons
           onCancel={onClose}
           onSave={handleSave}
           isEdit={!!editValue}
-          
         />
+
       </div>
     </div>
   );
 }
+

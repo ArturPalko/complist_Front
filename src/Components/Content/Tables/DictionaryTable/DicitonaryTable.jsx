@@ -1,34 +1,27 @@
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 import s from "../PhonesTable/PhonesTable.module.css";
-import d from "./DicitonaryTable.module.css"
+import d from "./DicitonaryTable.module.css";
 
 import { GroupRowActions } from "../PhonesTable/GroupRowActions";
 import { usePhonesTableLogic } from "../../../../redux/hooks/usePhonesTableLogic";
 import { createTableComponent } from "../../../../shared/components/table/TableWrapper/tableFactory";
 
-import {
-  handleBack,
-} from "../PhonesTable/phonesTableHelpers";
+import { handleBack } from "../PhonesTable/phonesTableHelpers";
 
 import { TdWrapper } from "../../../../shared/components/TdWrapper/TdWrapper";
 import { entityMap } from "../../../../configs/app/enitiyMap";
-import { useCrudModalActions } from "../../../../redux/hooks/useCrudModalActions";
 
 import {
   addUsersModeSelected,
   getCurrentMode,
-  isDepartmentsMode,
   isEditModeSelected,
-  isSectionsMode,
   selectActiveSectionId,
   selectActiveSectionName,
   selectAtiveDepartmentId,
   selectAtiveDepartmentName,
 } from "../../../../redux/selectors/selector";
 
-import { sortUsersActionCreator } from "../../../../redux/reducers/data-reducer/data-reducer";
 import PhoneEditRow from "./subComponents/PhoneEditRow/PhoneEditRow";
 import NavigationHeader from "./subComponents/NavigationHeader/NavigationHeader";
 
@@ -38,6 +31,8 @@ import {
   PHONE_TYPES,
 } from "../../../../configs/app/constants";
 
+import { useUsersModeSorting } from "../../../../redux/hooks/useUsersModeSorting";
+
 const BasePhonesTable =
   createTableComponent(usePhonesTableLogic);
 
@@ -46,16 +41,19 @@ const DictionaryTable = ({
   rowsPerPage,
   isSections,
 }) => {
+  // =====================================================
+  // CONFIG
+  // =====================================================
+
   const columns =
     pageConfigs[Pages.PHONES].columns;
 
-  const modalType =
+  // =====================================================
+  // REDUX
+  // =====================================================
+
+  const currentMode =
     useSelector(getCurrentMode);
-
-  const { add } =
-    useCrudModalActions(modalType);
-
-  const dispatch = useDispatch();
 
   const viewMode = useSelector(
     (state) => state.ui.viewMode
@@ -73,13 +71,6 @@ const DictionaryTable = ({
     selectActiveSectionId
   );
 
-  const isDepartmentMode = useSelector(
-    isDepartmentsMode
-  );
-
-  const isPhoneEditMode =
-    PHONE_TYPES.includes(viewMode);
-
   const departmentNameForCapture =
     useSelector(
       selectAtiveDepartmentName
@@ -94,12 +85,29 @@ const DictionaryTable = ({
     isEditModeSelected
   );
 
-  const currentMode =
-    useSelector(getCurrentMode);
+  // =====================================================
+  // MODES
+  // =====================================================
+
+  const isPhoneEditMode =
+    PHONE_TYPES.includes(viewMode);
 
   const showNavigationHeader =
     activeDep != null ||
     activeSec != null;
+
+  // =====================================================
+  // USERS SORTING
+  // =====================================================
+
+  const {
+    handleUserSort,
+    renderSortArrow,
+  } = useUsersModeSorting(currentMode);
+
+  // =====================================================
+  // TABLE CONFIG
+  // =====================================================
 
   const totalColumns =
     1 +
@@ -111,67 +119,13 @@ const DictionaryTable = ({
     );
 
   // =====================================================
-  // USERS SORTING
-  // =====================================================
-
-  const [
-    sortConfig,
-    setSortConfig,
-  ] = useState({
-    key: null,
-    direction: "asc",
-  });
-
-  const handleUserSort = (key) => {
-    if (currentMode !== "users") {
-      return;
-    }
-
-    const direction =
-      sortConfig.key === key &&
-      sortConfig.direction === "asc"
-        ? "desc"
-        : "asc";
-
-    setSortConfig({
-      key,
-      direction,
-    });
-
-    dispatch(
-      sortUsersActionCreator(
-        key,
-        direction
-      )
-    );
-  };
-
-  // =====================================================
-  // SORT ARROW
-  // =====================================================
-
-  const renderSortArrow = (key) => {
-    if (sortConfig.key !== key) {
-      return null;
-    }
-
-    return (
-      <span className={s.sortArrow}>
-        {sortConfig.direction === "asc"
-          ? "↑"
-          : "↓"}
-      </span>
-    );
-  };
-
-  // =====================================================
   // HEADER
   // =====================================================
 
   const renderHeader = () => {
-    // ===================================================
+    // -----------------------------------------------------
     // PHONE EDIT MODE
-    // ===================================================
+    // -----------------------------------------------------
 
     if (isPhoneEditMode) {
       return (
@@ -183,73 +137,81 @@ const DictionaryTable = ({
       );
     }
 
-    // ===================================================
+    // -----------------------------------------------------
     // USERS MODE
-    // ===================================================
+    // -----------------------------------------------------
 
-  if (currentMode === "users") {
-  return (
-    <tr>
-      <th>№</th>
+    if (currentMode === "users") {
+      return (
+        <tr>
+          <th>№</th>
 
-      <th
-        className={s.sortableHeader}
-        onClick={() =>
-          handleUserSort("name")
-        }
-      >
-        <span>
-          Користувач{" "}
-          {renderSortArrow("name")}
-        </span>
-      </th>
+          <th
+            className={s.sortableHeader}
+            onClick={() =>
+              handleUserSort("name")
+            }
+          >
+            <span>
+              Користувач{" "}
+              {renderSortArrow("name")}
+            </span>
+          </th>
 
-      <th
-        className={s.sortableHeader}
-        onClick={() =>
-          handleUserSort("userType")
-        }
-      >
-        <span>
-          Тип користувача{" "}
-          {renderSortArrow("userType")}
-        </span>
-      </th>
+          <th
+            className={s.sortableHeader}
+            onClick={() =>
+              handleUserSort("userType")
+            }
+          >
+            <span>
+              Тип користувача{" "}
+              {renderSortArrow("userType")}
+            </span>
+          </th>
 
-      <th
-        className={s.sortableHeader}
-        onClick={() =>
-          handleUserSort("department")
-        }
-      >
-        <span>
-          Департамент{" "}
-          {renderSortArrow("department")}
-        </span>
-      </th>
+          <th
+            className={s.sortableHeader}
+            onClick={() =>
+              handleUserSort("department")
+            }
+          >
+            <span>
+              Департамент{" "}
+              {renderSortArrow("department")}
+            </span>
+          </th>
 
-      <th
-        className={s.sortableHeader}
-        onClick={() =>
-          handleUserSort("section")
-        }
-      >
-        <span>
-          Секція{" "}
-          {renderSortArrow("section")}
-        </span>
-      </th>
+          <th
+            className={s.sortableHeader}
+            onClick={() =>
+              handleUserSort("section")
+            }
+          >
+            <span>
+              Секція{" "}
+              {renderSortArrow("section")}
+            </span>
+          </th>
 
-      <th>
-        Статус
-      </th>
-    </tr>
-  );
-}
+          <th
+            className={s.sortableHeader}
+            onClick={() =>
+              handleUserSort("isActive")
+            }
+          >
+            <span>
+              Статус{" "}
+              {renderSortArrow("isActive")}
+            </span>
+          </th>
+        </tr>
+      );
+    }
 
-    // ===================================================
-    // OTHER DICTIONARY MODES
-    // ===================================================
+    // -----------------------------------------------------
+    // EDIT MODE
+    // -----------------------------------------------------
 
     if (
       currentMode &&
@@ -259,9 +221,9 @@ const DictionaryTable = ({
       return;
     }
 
-    // ===================================================
+    // -----------------------------------------------------
     // NAVIGATION HEADER
-    // ===================================================
+    // -----------------------------------------------------
 
     if (showNavigationHeader) {
       return (
@@ -279,7 +241,7 @@ const DictionaryTable = ({
             activeSec,
             isSections,
             isAddUsers,
-            dispatch,
+            dispatch: null,
           })}
         />
       );
@@ -287,7 +249,7 @@ const DictionaryTable = ({
   };
 
   // =====================================================
-  // ROWS
+  // ROW CELLS
   // =====================================================
 
   const renderRowCells = (
@@ -296,7 +258,8 @@ const DictionaryTable = ({
     tableLogic,
     tableUI
   ) => {
-    const config = entityMap[row.type];
+    const config =
+      entityMap[row.type];
 
     const id = config
       ? row[config.id]
@@ -305,82 +268,144 @@ const DictionaryTable = ({
     const dim =
       tableLogic.getRowDimClasses(id);
 
-const renderTd = (
-  value,
-  key = null,
-  colSpan = 1,
-  className = ""
-) => (
-  <TdWrapper
-    key={key}
-    value={value}
-    tableUI={tableUI}
-    colSpan={colSpan}
-    className={className}
-  >
-    {value}
-  </TdWrapper>
-);
-// console.log("row:",row)
+    // ===================================================
+    // TD HELPER
+    // ===================================================
+
+    const renderTd = (
+      value,
+      key = null,
+      colSpan = 1,
+      className = "",
+      inactive = false
+    ) => (
+      <TdWrapper
+        key={key}
+        value={value}
+        tableUI={tableUI}
+        colSpan={colSpan}
+        className={className}
+        inactive={inactive}
+      >
+        {value}
+      </TdWrapper>
+    );
+
     // ===================================================
     // ADD USERS MODE
     // ===================================================
-      
+
     if (!row.type && activeDep) {
-        
-  return (
-    <>
-      <td>{index + 1}</td>
-      {renderTd(row.name, `name-${row.id}`)}
-      {renderTd(row.positionName, `position-${row.id}`)}
-      {renderTd(row.userType, `type-${row.id}`)}
-      
-    </>
-  );
-}
-if (row.type === "user") {
-  return (
-    <>
-      <td>
-        {(pageNumber - 1) *
-          rowsPerPage +
-          index +
-          1}
-      </td>
+      const inactive = !row.isActive;
 
-      {renderTd(
-        row.name,
-        `name-${row.id}`
-      )}
+      return (
+        <>
+          <td
+            className={
+              inactive
+                ? s.inactive
+                : ""
+            }
+          >
+            {index + 1}
+          </td>
 
-      {renderTd(
-        row.userType,
-        `userType-${row.id}`
-      )}
+          {renderTd(
+            row.name,
+            `name-${row.id}`,
+            1,
+            "",
+            inactive
+          )}
 
-      {renderTd(
-        row.department,
-        `department-${row.id}`,
-        1,
-        d.userDepartment
-      )}
+          {renderTd(
+            row.positionName,
+            `position-${row.id}`,
+            1,
+            "",
+            inactive
+          )}
 
-      {renderTd(
-        row.section,
-        `section-${row.id}`,
-        1,
-        d.userSection
-      )}
+          {renderTd(
+            row.userType,
+            `type-${row.id}`,
+            1,
+            "",
+            inactive
+          )}
+        </>
+      );
+    }
 
-      {renderTd(
-        row.isActive
-          ? "Активний"
-          : "Неактивний",
-        `status-${row.id}`
-      )}
-    </>
-  );
-}
+    // ===================================================
+    // USER ROW
+    // ===================================================
+
+    if (row.type === "user") {
+      const inactive = !row.isActive;
+
+      return (
+        <>
+          <TdWrapper
+            value={
+              (pageNumber - 1) *
+                rowsPerPage +
+              index +
+              1
+            }
+            tableUI={tableUI}
+            inactive={inactive}
+          >
+            {(pageNumber - 1) *
+              rowsPerPage +
+              index +
+              1}
+          </TdWrapper>
+
+          {renderTd(
+            row.name,
+            `name-${row.id}`,
+            1,
+            "",
+            inactive
+          )}
+
+          {renderTd(
+            row.userType,
+            `userType-${row.id}`,
+            1,
+            "",
+            inactive
+          )}
+
+          {renderTd(
+            row.department,
+            `department-${row.id}`,
+            1,
+            d.userDepartment,
+            inactive
+          )}
+
+          {renderTd(
+            row.section,
+            `section-${row.id}`,
+            1,
+            d.userSection,
+            inactive
+          )}
+
+          {renderTd(
+            row.isActive
+              ? "Активний"
+              : "Неактивний",
+            `status-${row.id}`,
+            1,
+            "",
+            inactive
+          )}
+        </>
+      );
+    }
 
     // ===================================================
     // PHONE EDIT MODE
@@ -403,48 +428,7 @@ if (row.type === "user") {
     }
 
     // ===================================================
-    // USER ROWS
-    // ===================================================
-
-if (row.type === "user") {
-  return (
-    <>
-      <td>
-        {(pageNumber - 1) *
-          rowsPerPage +
-          index +
-          1}
-      </td>
-
-      {renderTd(
-        row.name,
-        `name-${row.id}`
-      )}
-
-      {renderTd(
-        row.userType,
-        `userType-${row.id}`
-      )}
-
-      {renderTd(
-        row.department,
-        `department-${row.id}`,
-        1,
-        d.userDepartment
-      )}
-
-      {renderTd(
-        row.section,
-        `section-${row.id}`,
-        1,
-        d.userSection
-      )}
-    </>
-  );
-}
-    // ===================================================
     // GROUP ROWS
-    // department / section / position / userType
     // ===================================================
 
     if (row.type !== "user") {
@@ -460,7 +444,8 @@ if (row.type === "user") {
           ? [
               s[config.className],
 
-              row.type === "department" &&
+              row.type ===
+                "department" &&
               !row.presentedOnPhonesPage
                 ? s.notPresentedOnPhonesPage
                 : "",
@@ -496,7 +481,9 @@ if (row.type === "user") {
           showBreak={showBreak}
           value={name}
           tableUI={tableUI}
-          colSpan={groupTotalColumns}
+          colSpan={
+            groupTotalColumns
+          }
           isHeaderRow={true}
           className={[
             className,

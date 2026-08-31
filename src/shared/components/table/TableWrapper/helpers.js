@@ -27,13 +27,13 @@ export const getDragClass = ({
   currentMode,
   menu,
   isSections,
-  itemType
+  itemType,
+  isDragDisabled1
 }) => {
-  const isPhonesBlocked =
-    menu === "phones" && !currentMode || isSections && itemType =="department" ;
 
   const isEditable =
-    editMode && !isPhonesBlocked;
+    editMode && !isDragDisabled1;
+    debugger
 
   return [
     isEditable ? "row-edit" : "row-edit-default",

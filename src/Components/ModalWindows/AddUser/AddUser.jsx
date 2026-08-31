@@ -1,6 +1,9 @@
+
 import { useState, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchDictionariesThunk, addUser } from "../../../dal/api";
+
+import { fetchDictionariesThunk } from "../../../dal/api";
+
 import s from "./AddUser.module.css";
 
 import {
@@ -14,126 +17,321 @@ export default function AddUser({
   onClose,
   mode,
   editValue,
-  onSubmit
+  onSubmit,
 }) {
   const dispatch = useDispatch();
 
-  const departmentId = useSelector(selectAtiveDepartmentId);
-  const sectionId = useSelector(selectActiveSectionId);
+  const departmentId = useSelector(
+    selectAtiveDepartmentId
+  );
+
+  const sectionId = useSelector(
+    selectActiveSectionId
+  );
 
   const [fullName, setFullName] = useState("");
   const [positionId, setPositionId] = useState("");
   const [userTypeId, setUserTypeId] = useState("");
 
-  const positions = useSelector(selectPositionsDictionary).flatMap(
+  const [error, setError] = useState("");
+
+  const positions = useSelector(
+    selectPositionsDictionary
+  ).flatMap(
     element => element.rows
   );
 
-  const userTypes = useSelector(selectDictionaryByType("userTypes")).flatMap(
+  const userTypes = useSelector(
+    selectDictionaryByType("userTypes")
+  ).flatMap(
     element => element.rows
   );
+
+  // ============================================
+  // DEFAULT USER TYPE
+  // ============================================
 
   const defaultUserType = useMemo(
-    () => userTypes.find(type => type.userType === "Користувач"),
+    () =>
+      userTypes.find(
+        type =>
+          type.userType === "Користувач"
+      ),
     [userTypes]
   );
 
-  // Значення за замовчуванням для Add
-  useEffect(() => {
-    if (mode === "add" && defaultUserType && userTypeId === "") {
-      setUserTypeId(defaultUserType.id);
-    }
-  }, [mode, defaultUserType, userTypeId]);
+  // ============================================
+  // SELECTED USER TYPE
+  // ============================================
 
-  // Автозаповнення для Edit
+  const selectedUserType = useMemo(
+    () =>
+      userTypes.find(
+        type =>
+          type.id === Number(userTypeId)
+      ),
+    [userTypes, userTypeId]
+  );
+
+  const isRegularUser =
+    selectedUserType?.userType ===
+    "Користувач";
+
+  // ============================================
+  // DEFAULT USER TYPE FOR ADD
+  // ============================================
+
+  useEffect(() => {
+    if (
+      mode === "add" &&
+      defaultUserType &&
+      userTypeId === ""
+    ) {
+      setUserTypeId(
+        defaultUserType.id
+      );
+    }
+  }, [
+    mode,
+    defaultUserType,
+    userTypeId,
+  ]);
+
+  // ============================================
+  // EDIT
+  // ============================================
+
   useEffect(() => {
     if (!editValue) return;
 
-    setFullName(editValue.name ?? "");
-    setPositionId(editValue.positionId ?? "");
-    setUserTypeId(editValue.userTypeId ?? "");
+    setFullName(
+      editValue.name ?? ""
+    );
+
+    setPositionId(
+      editValue.positionId ?? ""
+    );
+
+    setUserTypeId(
+      editValue.userTypeId ?? ""
+    );
+
+    setError("");
   }, [editValue]);
+
+  // ============================================
+  // CLEAR POSITION WHEN NOT REQUIRED
+  // ============================================
+
+  useEffect(() => {
+    if (
+      userTypeId &&
+      !isRegularUser
+    ) {
+      setPositionId("");
+    }
+  }, [
+    userTypeId,
+    isRegularUser,
+  ]);
+
+  // ============================================
+  // CANCEL
+  // ============================================
 
   const handleCancel = () => {
     setFullName("");
     setPositionId("");
-    setUserTypeId(defaultUserType?.id ?? "");
+
+    setUserTypeId(
+      defaultUserType?.id ?? ""
+    );
+
+    setError("");
+
     onClose?.();
   };
 
-const handleSave = async () => {
-            
-  const saveData = {
-    name: fullName.trim(),
-    positionId,
-    userTypeId,
-    departmentId,
-    sectionId,
+  // ============================================
+  // SAVE
+  // ============================================
+
+  const handleSave = async () => {
+    setError("");
+
+    // Посада обов'язкова тільки
+    // для звичайного користувача
+    if (
+      isRegularUser &&
+      !positionId
+    ) {
+      setError(
+        "Оберіть посаду користувача."
+      );
+
+      return;
+    }
+
+    const saveData = {
+      name: fullName.trim(),
+
+      // Для інших типів користувачів
+      // посада не передається
+      positionId:
+        isRegularUser
+          ? positionId
+          : null,
+
+      userTypeId,
+      departmentId,
+      sectionId,
+    };
+
+    try {
+      await onSubmit(saveData);
+
+      // Закриваємо тільки при успішному
+      // збереженні
+      onClose?.();
+
+    } catch (error) {
+      console.error(
+        "Помилка при збереженні користувача:",
+        error
+      );
+
+      const message =
+        error?.response?.data?.message ||
+        "Не вдалося зберегти користувача.";
+
+      setError(message);
+
+      return;
+
+    } finally {
+      dispatch(
+        fetchDictionariesThunk()
+      );
+    }
   };
 
-  try {
-       
-    await onSubmit(saveData);
-    onClose?.();
-  } finally {
-    dispatch(fetchDictionariesThunk());
-  }
-};
+  // ============================================
+  // RENDER
+  // ============================================
 
   return (
     <div className={s.overlay}>
       <div className={s.modal}>
-        <h2>{mode === "edit" ? "Редагувати користувача" : "Додати користувача"}</h2>
+
+        <h2>
+          {mode === "edit"
+            ? "Редагувати користувача"
+            : "Додати користувача"}
+        </h2>
+
+        {/* ПІБ */}
 
         <div className={s.field}>
-          <label className={s.label}>ПІБ</label>
+          <label className={s.label}>
+            ПІБ
+          </label>
 
           <input
             className={s.input}
             value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
+            onChange={(e) => {
+              setFullName(
+                e.target.value
+              );
+
+              setError("");
+            }}
           />
         </div>
 
-        <div className={s.field}>
-          <label className={s.label}>Посада</label>
+        {/* ПОСАДА */}
 
-          <select
-            className={s.input}
-            value={positionId}
-            onChange={(e) => setPositionId(Number(e.target.value))}
-          >
-            <option value="">Оберіть</option>
+        {isRegularUser && (
+          <div className={s.field}>
+            <label className={s.label}>
+              Посада
+            </label>
 
-            {positions.map(position => (
-              <option
-                key={position.id}
-                value={position.id}
-              >
-                {position.positionName}
+            <select
+              className={s.input}
+              value={positionId}
+              onChange={(e) => {
+                setPositionId(
+                  e.target.value
+                    ? Number(
+                        e.target.value
+                      )
+                    : ""
+                );
+
+                setError("");
+              }}
+            >
+              <option value="">
+                Оберіть
               </option>
-            ))}
-          </select>
-        </div>
+
+              {positions.map(
+                position => (
+                  <option
+                    key={position.id}
+                    value={position.id}
+                  >
+                    {
+                      position.positionName
+                    }
+                  </option>
+                )
+              )}
+            </select>
+          </div>
+        )}
+
+        {/* ТИП КОРИСТУВАЧА */}
 
         <div className={s.field}>
-          <label className={s.label}>Тип користувача</label>
+          <label className={s.label}>
+            Тип користувача
+          </label>
 
           <select
             className={s.input}
             value={userTypeId}
-            onChange={(e) => setUserTypeId(Number(e.target.value))}
+            onChange={(e) => {
+              setUserTypeId(
+                Number(e.target.value)
+              );
+
+              setError("");
+            }}
           >
-            {userTypes.map(type => (
-              <option
-                key={type.id}
-                value={type.id}
-              >
-                {type.userType}
-              </option>
-            ))}
+            {userTypes.map(
+              type => (
+                <option
+                  key={type.id}
+                  value={type.id}
+                >
+                  {type.userType}
+                </option>
+              )
+            )}
           </select>
         </div>
+
+        {/* ERROR */}
+
+        {error && (
+          <div className={s.error}>
+            {error}
+          </div>
+        )}
+
+        {/* BUTTONS */}
 
         <div className={s.buttons}>
           <button
@@ -147,10 +345,14 @@ const handleSave = async () => {
             className={s.save}
             onClick={handleSave}
           >
-            {mode === "edit" ? "Зберегти" : "Додати"}
+            {mode === "edit"
+              ? "Зберегти"
+              : "Додати"}
           </button>
         </div>
+
       </div>
     </div>
   );
 }
+

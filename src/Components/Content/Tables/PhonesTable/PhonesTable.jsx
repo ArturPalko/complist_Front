@@ -7,9 +7,14 @@ import {
 } from "./phonesTableHelpers";
 import { TdWrapper } from "../../../../shared/components/TdWrapper/TdWrapper";
 
-const BasePhonesTable = createTableComponent(usePhonesTableLogic);
+const BasePhonesTable =
+  createTableComponent(usePhonesTableLogic);
 
-const PhonesTable = ({ columns, pageNumber, rowsPerPage }) => {
+const PhonesTable = ({
+  columns,
+  pageNumber,
+  rowsPerPage,
+}) => {
   const renderHeader = () => (
     <>
       <tr>
@@ -17,11 +22,17 @@ const PhonesTable = ({ columns, pageNumber, rowsPerPage }) => {
 
         {columns.map((col) =>
           col.key === "phones" ? (
-            <th key={col.key} colSpan={col.subLabels.length}>
+            <th
+              key={col.key}
+              colSpan={col.subLabels.length}
+            >
               {col.label}
             </th>
           ) : (
-            <th key={col.key} rowSpan="2">
+            <th
+              key={col.key}
+              rowSpan="2"
+            >
               {col.label}
             </th>
           )
@@ -33,25 +44,37 @@ const PhonesTable = ({ columns, pageNumber, rowsPerPage }) => {
           .filter((c) => c.key === "phones")
           .flatMap((col) =>
             col.subLabels.map((sub) => (
-              <th key={sub.key}>{sub.label}</th>
+              <th key={sub.key}>
+                {sub.label}
+              </th>
             ))
           )}
       </tr>
     </>
   );
 
-  const renderRowCells = (row, index, tableLogic, tableUI) => {
-    const nonUserRowsBefore = countNonUserRowsBefore(
-      tableLogic.pageData,
-      index
-    );
+  const renderRowCells = (
+    row,
+    index,
+    tableLogic,
+    tableUI
+  ) => {
+    const nonUserRowsBefore =
+      countNonUserRowsBefore(
+        tableLogic.pageData,
+        index
+      );
 
-    const dim = tableLogic.getRowDimClasses(row.dimKey);
+    const dim =
+      tableLogic.getRowDimClasses(
+        row.dimKey
+      );
 
     switch (row.type) {
       case "department":
       case "section": {
-        const isDepartment = row.type === "department";
+        const isDepartment =
+          row.type === "department";
 
         const name = isDepartment
           ? row.departmentName
@@ -65,7 +88,9 @@ const PhonesTable = ({ columns, pageNumber, rowsPerPage }) => {
           ? tableLogic.dashedBlocks.departments.some(
               (d) => d === name
             )
-          : tableLogic.dashedBlocks.sections.includes(name);
+          : tableLogic.dashedBlocks.sections.includes(
+              name
+            );
 
         return (
           <TdWrapper
@@ -92,54 +117,73 @@ const PhonesTable = ({ columns, pageNumber, rowsPerPage }) => {
       }
 
       case "user": {
-        const userRowIndex = getUserRowIndex({
-          pageNumber,
-          rowsPerPage,
-          index,
-          nonUserRowsBefore,
-          indexDecrementFromPreviousPages:
-            tableLogic.indexDecrementFromPreviousPages,
-        });
+        const userRowIndex =
+          getUserRowIndex({
+            pageNumber,
+            rowsPerPage,
+            index,
+            nonUserRowsBefore,
+            indexDecrementFromPreviousPages:
+              tableLogic.indexDecrementFromPreviousPages,
+          });
+
+        const userName =
+          row.userName?.trim() || "";
+
+        const isRegularUser =
+          row.userType === "Користувач";
+
+        let displayPosition = "";
+        let displayName = "";
+
+        if (isRegularUser) {
+          // Звичайний користувач:
+          // Посада -> positionName
+          // Ім'я -> userName
+          displayPosition =
+            row.userPosition || "";
+
+          displayName = userName;
+        } else {
+          // Не "Користувач":
+          // Ім'я -> завжди порожнє
+          // Посада -> name, якщо він є,
+          //           інакше userType
+          displayName = "";
+
+          displayPosition =
+            userName || row.userType || "";
+        }
 
         return (
           <>
             <td>{userRowIndex}</td>
 
-            {row.userTypeId !== 1 ? (
-              <>
-                <TdWrapper
-                  value={row.userName}
-                  tableUI={tableUI}
-                >
-                  {row.userName}
-                </TdWrapper>
+            <TdWrapper
+              value={displayPosition}
+              tableUI={tableUI}
+            >
+              {displayPosition}
+            </TdWrapper>
 
-                <td />
-              </>
-            ) : (
-              <>
-                <TdWrapper
-                  value={row.userPosition}
-                  tableUI={tableUI}
-                >
-                  {row.userPosition}
-                </TdWrapper>
-
-                <TdWrapper
-                  value={row.userName}
-                  tableUI={tableUI}
-                >
-                  {row.userName}
-                </TdWrapper>
-              </>
-            )}
+            <TdWrapper
+              value={displayName}
+              tableUI={tableUI}
+            >
+              {displayName}
+            </TdWrapper>
 
             {columns
-              .find((c) => c.key === "phones")
+              .find(
+                (c) => c.key === "phones"
+              )
               ?.subLabels.map((sub) => {
-                const phone = row.phones?.find(
-                  (p) => p.phoneType === sub.label
-                );
+                const phone =
+                  row.phones?.find(
+                    (p) =>
+                      p.phoneType ===
+                      sub.label
+                  );
 
                 const phoneValue =
                   phone?.phoneName || "";

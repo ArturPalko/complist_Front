@@ -12,6 +12,7 @@ import ResponsibleUsersSelector from "./subComponents/ResponsibleUsersSelector/R
 import FormButtons from "./subComponents/FormButtons/FormButtons";
 import PasswordField from "./subComponents/PasswordField/PasswordField";
 import OwnerSelector from "./subComponents/OwnerSelector/OwnerSelector";
+import MailNameField from "./subComponents/MailNameField/MailNameField";
 
 import { initializeEditForm } from "./helpers/initializeEditForm";
 
@@ -24,7 +25,6 @@ import { handleSave } from "./helpers/handleSave";
 import { handleShowPassword } from "./helpers/handleShowPassword";
 
 import { pageConfigs } from "../../../configs/app/pageConfig";
-import MailNameField from "./subComponents/MailNameField/MailNameField";
 
 export default function AddMail({
   onClose,
@@ -42,6 +42,12 @@ export default function AddMail({
 
   const [mail, setMail] = useState("");
   const [previousName, setPreviousName] = useState("");
+
+  // =========================
+  // Validation error
+  // =========================
+
+  const [error, setError] = useState("");
 
   // =========================
   // Owner
@@ -67,7 +73,6 @@ export default function AddMail({
   // =========================
 
   const [id, setId] = useState("");
-
   const [passwordKnown, setPasswordKnown] =
     useState(false);
 
@@ -125,26 +130,19 @@ export default function AddMail({
   // =========================
   // Normalize users
   // =========================
-  // Redux тепер зберігає users пагіновано:
-  //
-  // [
-  //   {
-  //     page: 1,
-  //     rows: [...]
-  //   },
-  //   {
-  //     page: 2,
-  //     rows: [...]
-  //   }
-  // ]
-  //
-  // AddMail працює з плоским масивом users.
 
   const users = useMemo(
     () =>
-      usersValues.flatMap(
-        page => page.rows ?? []
-      ),
+      usersValues
+        .flatMap(
+          (page) => page.rows ?? []
+        )
+        .filter(
+          (user) =>
+            user.userType === "Користувач" &&
+            user.name?.trim() &&
+            !user.customName
+        ),
     [usersValues]
   );
 
@@ -179,19 +177,20 @@ export default function AddMail({
   // Filter responsible users
   // =========================
 
-  const filteredResponsibleUsers = useMemo(() => {
-    const normalizedQuery =
-      responsibleQuery.toLowerCase();
+  const filteredResponsibleUsers =
+    useMemo(() => {
+      const normalizedQuery =
+        responsibleQuery.toLowerCase();
 
-    return users.filter((user) =>
-      (user.name ?? "")
-        .toLowerCase()
-        .includes(normalizedQuery)
-    );
-  }, [
-    users,
-    responsibleQuery,
-  ]);
+      return users.filter((user) =>
+        (user.name ?? "")
+          .toLowerCase()
+          .includes(normalizedQuery)
+      );
+    }, [
+      users,
+      responsibleQuery,
+    ]);
 
   // =========================
   // Edit mode
@@ -217,30 +216,99 @@ export default function AddMail({
       {
         setMail,
         setPreviousName,
-
         setOwnerType,
         setOwnerId,
         setOwnerIds,
         setSectionDepartmentId,
-
         setId,
-
         setPasswordKnown,
-
         setResponsibleUserIds,
-
         setQuery,
         setOwnerDisplayName,
       },
       sectionsValues
     );
+
+    setError("");
   }, [
     editValue,
     sectionsValues,
   ]);
 
   // =========================
-  // Render
+  // SAVE / VALIDATION
+  // =========================
+
+  const handleFormSave = async () => {
+    setError("");
+
+    // -------------------------
+    // Mail name validation
+    // -------------------------
+
+    if (!mail.trim()) {
+      setError(
+        "Потрібно ввести назву скриньки."
+      );
+
+      return;
+    }
+
+    // -------------------------
+    // Owner validation
+    // -------------------------
+
+    const hasOwner =
+      ownerType === "section"
+        ? ownerIds.length > 0
+        : Boolean(ownerId);
+
+    if (!hasOwner) {
+      setError(
+        "Потрібно обрати власника скриньки."
+      );
+
+      return;
+    }
+
+    // -------------------------
+    // Save
+    // -------------------------
+
+    try {
+      await handleSave({
+        autoUpdatePreviousName,
+        id,
+        menu,
+        mail,
+        previousName,
+        ownerType,
+        ownerId,
+        ownerIds,
+        ownerDisplayName,
+        passwordKnown,
+        password,
+        responsibleUserIds,
+        onSubmit,
+        dispatch,
+        onClose,
+      });
+    } catch (error) {
+      console.error(
+        "Помилка при збереженні пошти:",
+        error
+      );
+
+      const message =
+        error?.response?.data?.message ||
+        "Не вдалося зберегти скриньку.";
+
+      setError(message);
+    }
+  };
+
+  // =========================
+  // RENDER
   // =========================
 
   return (
@@ -263,19 +331,18 @@ export default function AddMail({
 
         <MailNameField
           value={mail}
-          onChange={setMail}
-
+          onChange={(value) => {
+            setMail(value);
+            setError("");
+          }}
           oldValue={previousName}
           onOldChange={setPreviousName}
-
           showOldField={
             modalConfig.showOldMailName
           }
-
           autoUpdatePreviousName={
             autoUpdatePreviousName
           }
-
           setAutoUpdatePreviousName={
             setAutoUpdatePreviousName
           }
@@ -292,7 +359,6 @@ export default function AddMail({
           }
 
           ownerType={ownerType}
-
           ownerId={ownerId}
           ownerIds={ownerIds}
 
@@ -311,12 +377,23 @@ export default function AddMail({
           departments={departmentsValues}
           sections={sectionsValues}
 
-          setOwnerType={setOwnerType}
+          setOwnerType={(value) => {
+            setOwnerType(value);
+            setError("");
+          }}
 
-          setOwnerId={setOwnerId}
-          setOwnerIds={setOwnerIds}
+          setOwnerId={(value) => {
+            setOwnerId(value);
+            setError("");
+          }}
+
+          setOwnerIds={(value) => {
+            setOwnerIds(value);
+            setError("");
+          }}
 
           setQuery={setQuery}
+
           setOpened={setOpened}
         />
 
@@ -326,13 +403,12 @@ export default function AddMail({
 
         <PasswordField
           isEdit={isEdit}
-
           password={password}
           passwordKnown={passwordKnown}
-
           showPassword={showPassword}
 
           setPassword={setPassword}
+
           setPasswordKnown={
             setPasswordKnown
           }
@@ -341,11 +417,8 @@ export default function AddMail({
             handleShowPassword({
               showPassword,
               setShowPassword,
-
               setPassword,
-
               menu,
-
               id: editValue?.id,
             })
           }
@@ -389,13 +462,9 @@ export default function AddMail({
               addResponsibleUser={(userId) =>
                 addResponsibleUser({
                   userId,
-
                   responsibleUserIds,
-
                   setResponsibleUserIds,
-
                   setResponsibleQuery,
-
                   setResponsibleOpened,
                 })
               }
@@ -403,7 +472,6 @@ export default function AddMail({
               removeResponsibleUser={(userId) =>
                 removeResponsibleUser({
                   userId,
-
                   setResponsibleUserIds,
                 })
               }
@@ -415,35 +483,22 @@ export default function AddMail({
           )}
 
         {/* =========================
+            ERROR
+        ========================= */}
+
+        {error && (
+          <div className={s.error}>
+            {error}
+          </div>
+        )}
+
+        {/* =========================
             Form buttons
         ========================= */}
 
         <FormButtons
           onCancel={onClose}
-
-          onSave={() =>
-            handleSave({
-              autoUpdatePreviousName,
-              id,
-              menu,
-              mail,
-              previousName,
-
-              ownerType,
-              ownerId,
-              ownerIds,
-              ownerDisplayName,
-
-              passwordKnown,
-              password,
-              responsibleUserIds,
-
-              onSubmit,
-              dispatch,
-              onClose,
-            })
-          }
-
+          onSave={handleFormSave}
           isEdit={!!editValue}
         />
 

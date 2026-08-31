@@ -20,7 +20,7 @@ export default function UsersList({
   selectedUserId,
   onSelectUser,
   hasPhone,
-  formRef
+  formRef,
 }) {
   return (
     <div className={styles.usersBlock}>
@@ -35,49 +35,64 @@ export default function UsersList({
       </div>
 
       <div className={styles.users}>
-        {users.map((user) => (
-          <button
-            key={user.id}
-            className={`${styles.userRow} ${
-              Number(selectedUserId) === Number(user.id)
-                ? styles.active
-                : ""
-            }`}
-            onClick={() => onSelectUser(user)}
-          >
-            <div className={styles.userMain}>
-              <div className={styles.userName}>
-                {user.name}
+        {users.map((user) => {
+          const displayName =
+            user.name?.trim() ||
+            (user.userType !== "Користувач"
+              ? user.userType
+              : "");
+
+          const displayPosition =
+            user.name?.trim()
+              ? user.positionName
+              : "";
+
+          return (
+            <button
+              key={user.id}
+              className={`${styles.userRow} ${
+                Number(selectedUserId) === Number(user.id)
+                  ? styles.active
+                  : ""
+              }`}
+              onClick={() => onSelectUser(user)}
+            >
+              <div className={styles.userMain}>
+                <div className={styles.userName}>
+                  {displayName}
+                </div>
+
+                {displayPosition && (
+                  <div className={styles.userInfo}>
+                    {displayPosition}
+                  </div>
+                )}
               </div>
 
-              <div className={styles.userInfo}>
-                {user.positionName}
+              <div className={styles.phoneStatus}>
+                {PHONE_TYPES.map((type) => {
+                  const phoneAssigned = hasPhone(
+                    user.id,
+                    type.id
+                  );
+
+                  return (
+                    <span
+                      key={type.id}
+                      className={
+                        phoneAssigned
+                          ? `${styles.badge} ${styles.badgeActive}`
+                          : styles.badge
+                      }
+                    >
+                      {type.label}
+                    </span>
+                  );
+                })}
               </div>
-            </div>
-
-            <div className={styles.phoneStatus}>
-              {PHONE_TYPES.map((type) => {
-                const phoneAssigned = hasPhone(
-                  user.id,
-                  type.id
-                );
-
-                return (
-                  <span
-                    key={type.id}
-                    className={
-                      phoneAssigned
-                        ? `${styles.badge} ${styles.badgeActive}`
-                        : styles.badge
-                    }
-                  >
-                    {type.label}
-                  </span>
-                );
-              })}
-            </div>
-          </button>
-        ))}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

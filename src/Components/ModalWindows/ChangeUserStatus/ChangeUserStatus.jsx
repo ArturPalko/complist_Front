@@ -1,64 +1,33 @@
-import React from "react";
-import s from "./ChangeUserStatus.module.css";
-
+import React, { useCallback } from "react";
+import ChangeUserStatusView from "./ChangeUserStatusView/ChangeUserStatusView";
+import { Pages } from "../../../configs/app/constants";
+import { setDataIsLoadedActionCreator } from "../../../redux/reducers/app-reducer";
+import { useDispatch } from "react-redux";
+import { fetchDictionariesThunk } from "../../../dal/api";
 
 export default function ChangeUserStatus({
-  onConfirm,
+  selectedUserIds,
   onClose,
+  onSubmit
+  
 }) {
+const dispatch = useDispatch();
+
+
+const handleConfirm = async () => {
+  await onSubmit();
+
+  Object.values(Pages).forEach((page) => {
+    dispatch(setDataIsLoadedActionCreator(false, page));
+  });
+
+  dispatch(fetchDictionariesThunk());
+};
+
   return (
-    <div className={s.overlay}>
-      <div className={s.modal}>
-      {/* HEADER */}
-
-      <div className={s.header}>
-        <div>
-          <div className={s.title}>
-            Зміна статусу
-          </div>
-
-          <div className={s.subtitle}>
-            Керування статусом користувачів
-          </div>
-        </div>
-
-        <button
-          type="button"
-          className={s.close}
-          onClick={onClose}
-        >
-          ×
-        </button>
-      </div>
-
-      {/* CONTENT */}
-
-      <div className={s.content}>
-        <div className={s.question}>
-          Змінити статус вибраних користувачів?
-        </div>
-      </div>
-
-      {/* FOOTER */}
-
-      <div className={s.footer}>
-        <button
-          type="button"
-          className={s.cancelButton}
-          onClick={onClose}
-        >
-          Скасувати
-        </button>
-
-        <button
-          type="button"
-          className={s.confirmButton}
-          onClick={onConfirm}
-        >
-          Змінити статус
-        </button>
-      </div>
-      </div>
-    </div>
+    <ChangeUserStatusView
+      onConfirm={handleConfirm}
+      onClose={onClose}
+    />
   );
 }

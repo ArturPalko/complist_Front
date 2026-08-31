@@ -27,8 +27,10 @@ export const getClassName = ({
   currentMode,
   menu,
   isSections,
-  itemType
+  itemType,
+  isDragDisabled1
 }) => {
+
   const isCurrentDropTarget = dropTargetId === itemId;
 
   const isSelectedItem = selectedIds.includes(itemId);
@@ -53,7 +55,8 @@ export const getClassName = ({
       currentMode,
       menu,
       isSections,
-      itemType
+      itemType,
+      isDragDisabled1
     }),
 
     getDropPositionClass({
@@ -90,15 +93,28 @@ export const getDragProps = ({
   dispatch,
   isSections,
   menu,
-  currentMode
+  currentMode,
+  isDragDisabled1,
 }) => {
 
+  if (menu === "phones" && !currentMode) {
+    return {
+      onClick: (e) => {
+        toggleSelect(itemId, e);
+      },
+    };
+  }
+
   /* =========================
-     CLICK SELECT
+     CLICK — ЗАВЖДИ
   ========================= */
 
+  const baseProps = {
+    onClick: (e) => {
+      toggleSelect(itemId, e);
+    },
+  };
 
-if (menu == "phones" && !currentMode) return
   /* =========================
      DRAG DISABLED
   ========================= */
@@ -108,20 +124,15 @@ if (menu == "phones" && !currentMode) return
     (
       isSections &&
       item?.type === "department"
-    );
-
-  /* =========================
-     BASE PROPS
-  ========================= */
-
-
+    ) ||
+    isDragDisabled1;
 
   /* =========================
      NO DRAG
   ========================= */
 
   if (isDragDisabled) {
-    return 
+    return baseProps;
   }
 
   /* =========================
@@ -129,30 +140,25 @@ if (menu == "phones" && !currentMode) return
   ========================= */
 
   return {
+    ...baseProps,
 
     draggable: true,
 
-    /* =========================
-       DRAG START
-    ========================= */
-
     onDragStart: (e) => {
       startDrag(itemId);
-      //          
-
 
       const preview =
         createDragPreview(item, selectedIds);
 
-      e.dataTransfer.setDragImage(preview, 0, 0);
+      e.dataTransfer.setDragImage(
+        preview,
+        0,
+        0
+      );
 
-      e.currentTarget._dragPreview = preview;
-      //          
+      e.currentTarget._dragPreview =
+        preview;
     },
-
-    /* =========================
-       DRAG OVER
-    ========================= */
 
     onDragOver: (e) => {
       if (isOnFoundResultsPage) return;
@@ -166,19 +172,11 @@ if (menu == "phones" && !currentMode) return
       setDropTargetId?.(null);
     },
 
-    /* =========================
-       DROP
-    ========================= */
-
     onDrop: () => {
       setDropTargetId?.(null);
 
       handleDrop(index, page);
     },
-
-    /* =========================
-       DRAG END
-    ========================= */
 
     onDragEnd: (e) => {
       setDropTargetId?.(null);
@@ -193,15 +191,8 @@ if (menu == "phones" && !currentMode) return
 
       stopDrag?.();
     },
-    /* =========================
-       CLICK SELECT
-    ========================= */
-    onClick: (e) => {
-      toggleSelect(itemId, e);
-    },
   };
 };
-
 /* =========================
    DRAG PREVIEW
 ========================= */

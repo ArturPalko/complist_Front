@@ -110,18 +110,18 @@ const Search = ({
     );
   }, [currentMode, clearSearchForm]);
 
-  const handleSearchModeChange = (mode) => {
-    setSearchMode(mode);
+const handleSearchModeChange = (mode) => {
+  setSearchMode(mode);
 
-    if (mode === "filter") {
-      redirectToCurrentPage({
-        navigate,
-        activeMenu: activeMenuStr,
-        viewMode: currentMode || "filter",
-        currentPage: 1
-      });
-    }
-  };
+  if (mode === "filter") {
+    redirectToCurrentPage({
+      navigate,
+      activeMenu: activeMenuStr,
+      viewMode: currentMode,
+      currentPage: 1,
+    });
+  }
+};
 
   return (
     <SearchForm

@@ -141,7 +141,7 @@ export default function ModalRoot() {
   debugger
 
   if(isChangeStatusModal){
-    return (<ChangeUserStatus onConfirm={onSubmit} onClose={closeModal}/>)
+    return (<ChangeUserStatus onSubmit={onSubmit} onClose={closeModal}/>)
   }
 
 

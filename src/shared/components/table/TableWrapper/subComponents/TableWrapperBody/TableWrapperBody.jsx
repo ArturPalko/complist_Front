@@ -58,6 +58,7 @@ const TableWrapperBody = ({
     isOnFoundResultsPage,
     dropTargetId,
     setDropTargetId,
+    isDragDisabled1
   } = useDragContext();
    const { foundResults } = useFoundResults();
   useEffect(() => {
@@ -66,7 +67,7 @@ const TableWrapperBody = ({
   }, [foundResults, setFoundResults]);
 
 
-    
+  
   return (
     <tbody className={dragIds.length ? "dragging" : ""}>
 
@@ -106,6 +107,7 @@ const itemKey = `${item.type}-${itemId}`; // React
               isSections,
               menu,
               currentMode,
+              isDragDisabled1
             })}
             className={`
               ${getClassName({
@@ -124,6 +126,7 @@ const itemKey = `${item.type}-${itemId}`; // React
                 currentMode,
                 isSections,
                 itemType: item.type,
+                isDragDisabled1
               })}
 
               ${isFirst ? "edgeDropTop" : ""}

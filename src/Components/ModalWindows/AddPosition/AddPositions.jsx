@@ -1,15 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import s from "./AddPosition.module.css";
-import { addPosition } from "../../../dal/api";
 import { fetchDictionariesThunk } from "../../../dal/api";
 import { useDispatch } from "react-redux";
-
-
-
-
-
-
 
 export default function EntityModal({
   onClose,
@@ -17,8 +10,9 @@ export default function EntityModal({
   editValue,
   title,
 }) {
-            
   const dispatch = useDispatch();
+
+  const [serverError, setServerError] = useState("");
 
   const {
     register,
@@ -31,39 +25,64 @@ export default function EntityModal({
     },
   });
 
-  // підстановка значення для edit
+  // Підстановка значення для edit
   useEffect(() => {
-    //         
     reset({
       name: editValue || "",
     });
+
+    setServerError("");
   }, [editValue, reset]);
 
   const submitHandler = async (data) => {
-    //      
-                 
+    setServerError("");
+
     try {
-      //         
       await onSubmit({
         name: data.name.trim(),
       });
-      //         
-      reset({ name: "" });
+
+      reset({
+        name: "",
+      });
+
       onClose?.();
+
     } catch (err) {
-      console.error("EntityModal error:", err);
+      console.error(
+        "EntityModal error:",
+        err
+      );
+
+      const message =
+        err?.response?.data?.message ||
+        "Не вдалося зберегти запис.";
+
+      setServerError(message);
+
     } finally {
-      dispatch(fetchDictionariesThunk());
+      dispatch(
+        fetchDictionariesThunk()
+      );
     }
   };
 
   return (
     <div className={s.overlay}>
       <div className={s.modal}>
-        <h2 className={s.title}>{title}</h2>
 
-        <form onSubmit={handleSubmit(submitHandler)}>
-          <label className={s.label}>Назва</label>
+        <h2 className={s.title}>
+          {title}
+        </h2>
+
+        <form
+          onSubmit={handleSubmit(
+            submitHandler
+          )}
+        >
+          <label className={s.label}>
+            Назва
+          </label>
 
           <input
             className={s.input}
@@ -71,16 +90,29 @@ export default function EntityModal({
             placeholder="Введіть значення"
             autoFocus
             {...register("name", {
-              required: "Поле обовʼязкове",
+              required:
+                "Поле обовʼязкове",
+
               minLength: {
                 value: 2,
-                message: "Мінімум 2 символи",
+                message:
+                  "Мінімум 2 символи",
               },
             })}
           />
 
+          {/* Помилка валідації форми */}
           {errors.name && (
-            <p className={s.error}>{errors.name.message}</p>
+            <p className={s.error}>
+              {errors.name.message}
+            </p>
+          )}
+
+          {/* Помилка від backend */}
+          {serverError && (
+            <p className={s.error}>
+              {serverError}
+            </p>
           )}
 
           <div className={s.actions}>
@@ -97,11 +129,15 @@ export default function EntityModal({
               className={s.okButton}
               disabled={isSubmitting}
             >
-              {isSubmitting ? "..." : "Зберегти"}
+              {isSubmitting
+                ? "..."
+                : "Зберегти"}
             </button>
           </div>
         </form>
+
       </div>
     </div>
   );
 }
+

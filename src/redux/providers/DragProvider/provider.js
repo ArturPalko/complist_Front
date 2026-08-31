@@ -16,6 +16,7 @@ import {
   getCurrentMode,
   getDataForMenu,
   getLastVisitedPage,
+  selectActiveSectionId,
   selectAtiveDepartmentId,
   selectDictionaryDataForDrag
 } from "../../selectors/selector";
@@ -51,6 +52,7 @@ import {
 } from "./dragProvider-helpers/selectRange-helpers";
 import { changeOrderOfDisplayElements } from "../../../dal/api";
 import { entityMap } from "../../../configs/app/enitiyMap";
+import { PHONE_TYPES } from "../../../configs/app/constants";
 
 /* =========================
    PROVIDER
@@ -64,6 +66,8 @@ export const DragProvider = ({ children, rowsPerPage = 18 }) => {
   const [rangeStartId, setRangeStartId] = useState(null);
 
   const depId = useSelector(selectAtiveDepartmentId);
+  const activeDep = useSelector(selectAtiveDepartmentId);
+  const activeSec = useSelector(selectActiveSectionId);
 
   const [elementsBeforeSelectedIds, setElementsBeforeSelectedIds] = useState([]);
   const [elementsAfterSelectedIds, setElementsAfterSelectedIds] = useState([]);
@@ -85,6 +89,9 @@ export const DragProvider = ({ children, rowsPerPage = 18 }) => {
       : []
 ) ?? [];
 
+
+const isDragDisabled1 = (currentMode === "users") || (currentMode =="departments" && activeDep)
+|| (currentMode == "sections" && activeSec) || PHONE_TYPES.includes(currentMode);
   /* =========================
      FLAT DATA
   ========================= */
@@ -154,7 +161,7 @@ const fullData = useMemo(() => {
   const toggleSelect = useCallback(
     (id, e) => {
       const mode = getSelectMode(e);
-
+      
       if (mode === "RANGE") {
         if (!rangeStartId) {
           setRangeStartId(id);
@@ -327,7 +334,7 @@ const handleDrop = useCallback(
     depId,
     currentMode,
     dispatch,
-    endDrag,
+    endDrag
   ]
 );
 
@@ -360,7 +367,8 @@ const handleDrop = useCallback(
         isOnFoundResultsPage: lastPage === "foundResults",
         dropTargetId,
         setDropTargetId,
-        setSelectedIds
+        setSelectedIds,
+        isDragDisabled1
       }}
     >
       {children}
