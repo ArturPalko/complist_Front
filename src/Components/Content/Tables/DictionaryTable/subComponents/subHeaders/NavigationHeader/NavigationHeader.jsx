@@ -1,5 +1,4 @@
-import s from "../../../../PhonesTable/PhonesTable.module.css";
-
+import s from "./NavigationHeader.module.css"
 const NavigationHeader = ({
   departmentName,
   sectionName,

@@ -7,6 +7,7 @@ const AddUsersRow = ({
   tableUI,
 }) => {
   const inactive = !row.isActive;
+  debugger
 
   return (
     <>

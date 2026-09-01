@@ -92,7 +92,7 @@ export const createTableComponent = (useTableLogic) => {
       defaultIndexes:
         stablePageContext.indexesOfFoundResultsForCurrentPage,
     });
-// debugger
+//          
     // =========================
     // CORE TABLE LOGIC
     // =========================

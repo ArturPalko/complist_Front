@@ -16,22 +16,33 @@ export function ModalWindowProvider({ children }) {
   const [modalData, setModalData] = useState(null);
 
   // ---------------- OPEN MODAL ----------------
-  const openModal = ({ type, mode = null, data = null }) => {
-                
-        
-    if(type=="login") return;
-             
-    setModalType(type);
-    setMode(mode);
-    setModalData(data);
-             
-   
-    // sync to URL
-    const newQuery = new URLSearchParams(location.search);
-    newQuery.set("modal", type);
-                  
-    navigate({ search: newQuery.toString() }, { replace: true });
-  };
+ const openModal = ({ type, mode = null, data = null }) => {
+  if (type == "login") return;
+
+  setModalType(type);
+  setMode(mode);
+  setModalData(data);
+
+  const newQuery = new URLSearchParams(location.search);
+  newQuery.set("modal", type);
+
+  console.log("OPEN MODAL LOCATION:", location.href);
+  console.log("OPEN MODAL SEARCH:", location.search);
+
+           ;
+console.log("REACT LOCATION:", location);
+console.log("BROWSER LOCATION:", window.location.href);
+console.log("NEW SEARCH:", newQuery.toString());
+
+         ;
+navigate(
+  {
+    pathname: window.location.pathname,
+    search: newQuery.toString(),
+  },
+  { replace: true }
+);
+};
 
   // ---------------- CLOSE MODAL ----------------
   const closeModal = () => {

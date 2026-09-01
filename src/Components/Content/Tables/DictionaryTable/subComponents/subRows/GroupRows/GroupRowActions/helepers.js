@@ -40,9 +40,9 @@ export const handleOnOpenSectionsButtonClick =
           name: item.departmentName,
         })
       );
-debugger
+         
       navigate(`/dictionary/${currentMode || currentMenu}/1`);
-    debugger
+             
     }
   };
 

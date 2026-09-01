@@ -64,9 +64,9 @@ const selectSectionsByDepartmentId = (state, departmentId) => {
       )
   );
 
-  if (!matchedSections.length) {
-    return [];
-  }
+  // if (!matchedSections.length) {
+  //   return {pageIndex};
+  // }
 
   return [
     {
@@ -99,7 +99,7 @@ export const getDictionaryData = (state) => {
   const isUsers = isUserMode(state);
 
   const mode = state.ui.viewMode;
-
+         
   // ==========================
   // USERS
   // ==========================
@@ -617,8 +617,10 @@ export const selectPaginationPagesCount =
     if (
       dictionaryModes.includes(mode) ||
       phonesSubmodes.includes(mode)
-    ) {
-      return getDictionaryData(state).length || 0;
+    ) {         
+      let a =getDictionaryData(state).length || 0;
+               
+      return a;
     }
 
     return getDataForMenu(state, menu).length || 0;

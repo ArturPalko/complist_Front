@@ -33,7 +33,7 @@ export const useEditModeEffects = () => {
     // вже на першій сторінці — нічого не робимо
     const isAlreadyPage1 = pathParts.includes("1");
     if (isAlreadyPage1) return;
-
+             
     redirectToPage({
       navigate,
       currentPage: 1,

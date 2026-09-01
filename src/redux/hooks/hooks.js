@@ -228,7 +228,7 @@ export const useFoundResultsColNumbersLogic = ({
       }
     };
   }, [isPreviousPageWasFoundResult]);
-// debugger
+//          
   return {
     showDigitsFromPressed,
     shouldShowColNumbers,
