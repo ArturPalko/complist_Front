@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { selectIndexesFromCell, getLastVisitedPage, activeMenu } from "../selectors/selector";
+import {
+  selectIndexesFromCell,
+  getLastVisitedPage,
+  activeMenu,
+} from "../selectors/selector";
 import { addIndexesFromIndexCell } from "../../redux/reducers/toggledElements-reducer";
 
 export const useRedirectHighlight = ({
@@ -11,7 +15,8 @@ export const useRedirectHighlight = ({
 
   const indexesFromRedux = useSelector(selectIndexesFromCell);
   const menu = useSelector(activeMenu);
-  const lastVisitedPage = useSelector(state =>
+
+  const lastVisitedPage = useSelector((state) =>
     getLastVisitedPage(state, menu)
   );
 
@@ -35,8 +40,11 @@ export const useRedirectHighlight = ({
     }, 2000);
 
     return () => {
-      dispatch(addIndexesFromIndexCell([]));
       clearTimeout(timer);
+
+      // Dictionary може перезапускати effect під час
+      // первинної ініціалізації mode/page.
+      // Не очищаємо Redux у cleanup.
     };
   }, [indexesFromRedux, dispatch, lastVisitedPage, pageNumber]);
 

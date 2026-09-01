@@ -2,11 +2,9 @@ import { createTableComponent } from "../../../../shared/components/table/TableW
 
 import { useDictionaryTableLogic } from "../../../../redux/hooks/useDictionaryTableLogic";
 
-import { pageConfigs } from "../../../../configs/app/pageConfig";
-import { Pages } from "../../../../configs/app/constants";
 
-import { handleBack } from "../PhonesTable/phonesTableHelpers";
 
+import { handleBack } from "./subComponents/subRows/GroupRows/GroupRowActions/helepers";
 import { entityMap } from "../../../../configs/app/enitiyMap";
 
 import NavigationHeader from "./subComponents/subHeaders/NavigationHeader/NavigationHeader";
@@ -26,10 +24,8 @@ const BaseDictionaryTable =
 const DictionaryTable = ({
   pageNumber,
   rowsPerPage,
-  isSections,
 }) => {
-  const columns =
-    pageConfigs[Pages.PHONES].columns;
+
 
   // =====================================================
   // HEADER
@@ -193,7 +189,7 @@ const DictionaryTable = ({
           row={row}
           tableLogic={tableLogic}
           tableUI={tableUI}
-          columns={columns}
+      
           isSections={isSections}
           isAddUsers={isAddUsers}
           dim={dim}

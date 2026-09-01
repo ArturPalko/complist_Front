@@ -25,7 +25,7 @@ const GenericPage = ({
     
   const isSections = useSelector (isSectionsMode)
   
-
+debugger
   const config = pageConfigs[pageName];
   
 

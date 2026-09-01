@@ -1,13 +1,12 @@
-import s from "../../../../PhonesTable/PhonesTable.module.css"
+import s from "../../../../PhonesTable/PhonesTable.module.css";
 import { TdWrapper } from "../../../../../../../shared/components/TdWrapper/TdWrapper";
-import { GroupRowActions } from "../../../../PhonesTable/GroupRowActions";
+import { GroupRowActions } from "./GroupRowActions/GroupRowActions"
 import { entityMap } from "../../../../../../../configs/app/enitiyMap";
 
 const GroupRow = ({
   row,
   tableLogic,
   tableUI,
-  columns,
   isSections,
   isAddUsers,
   dim,
@@ -45,21 +44,12 @@ const GroupRow = ({
         ) &&
         !isAddUsers;
 
-  const groupTotalColumns =
-    1 +
-    columns.reduce(
-      (sum, col) =>
-        sum +
-        (col.subLabels?.length || 1),
-      0
-    );
-
   return (
     <TdWrapper
       showBreak={showBreak}
       value={name}
       tableUI={tableUI}
-      colSpan={groupTotalColumns}
+      colSpan={99999}
       isHeaderRow={true}
       className={[
         className,

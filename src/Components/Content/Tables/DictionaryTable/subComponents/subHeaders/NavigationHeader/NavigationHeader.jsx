@@ -1,4 +1,4 @@
-import s from "../../../../PhonesTable/PhonesTable.module.css"
+import s from "../../../../PhonesTable/PhonesTable.module.css";
 
 const NavigationHeader = ({
   departmentName,
@@ -9,6 +9,7 @@ const NavigationHeader = ({
   return (
     <tr>
       <th
+        colSpan={9999}
         className={s.navigationHeader}
       >
         <div className={s.navigationContent}>
@@ -44,3 +45,4 @@ const NavigationHeader = ({
 };
 
 export default NavigationHeader;
+

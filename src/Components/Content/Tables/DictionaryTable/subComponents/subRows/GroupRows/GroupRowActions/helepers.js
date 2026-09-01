@@ -1,0 +1,159 @@
+import { setActiveDepartment } from "../../../../../../../../redux/reducers/ui-reducer";
+import { setActiveSection } from "../../../../../../../../redux/reducers/ui-reducer";
+import { toggleaddUsersMode } from "../../../../../../../../redux/reducers/ui-reducer";
+
+
+export const handleOnOpenSectionsButtonClick =
+  ({
+    rowType,
+    isSections,
+    isAddUsers,
+    item,
+    dispatch,
+    navigate,
+    currentMenu,
+    currentMode,
+    
+  }) =>
+  (e) => {
+    if (rowType === "section") {
+      dispatch(
+        setActiveSection({
+          id: item.sectionId,
+          name: item.sectionName,
+        })
+      );
+
+      navigate(`/dictionary/${currentMode || currentMenu}/1`);
+
+      return;
+    }
+
+    if (
+      (isSections || isAddUsers) &&
+      item?.type === "department"
+    ) {
+      
+      dispatch(
+        setActiveDepartment({
+          id: item.departmentId,
+          name: item.departmentName,
+        })
+      );
+debugger
+      navigate(`/dictionary/${currentMode || currentMenu}/1`);
+    debugger
+    }
+  };
+
+export const handleBack =
+  ({
+    activeDep,
+    activeSec,
+    isSections,
+    isAddUsers,
+    dispatch,
+  }) =>
+  () => {
+
+    // Користувачі секції -> секції
+    if (activeSec != null) {
+      dispatch(
+        setActiveSection({
+          id: null,
+          name: null,
+        })
+      );
+
+      return;
+    }
+
+    // Секції департаменту -> департаменти
+    if (
+      activeDep != null &&
+      activeSec == null &&
+      isSections &&
+      isAddUsers
+    ) {
+
+      
+      dispatch(toggleaddUsersMode());
+
+      dispatch(
+        setActiveDepartment({
+          id: null,
+          name: null,
+        })
+      );
+
+      return;
+    }
+
+    // Секції -> департаменти
+    dispatch(
+      setActiveDepartment({
+        id: null,
+        name: null,
+      })
+    );
+
+    dispatch(
+      setActiveSection({
+        id: null,
+        name: null,
+      })
+    );
+  };
+
+
+
+
+
+  export const hasItems = (row, isAddUsers) => {
+  switch (row.type) {
+    case "department":
+      return isAddUsers
+        ? (row.users?.length ?? 0) > 0
+        : (row.sections?.length ?? 0) > 0;
+
+    case "section":
+      return (row.users?.length ?? 0) > 0;
+
+    default:
+      return false;
+  }
+};
+
+export const getItemsCount = (row, isAddUsers) => {
+  switch (row.type) {
+    case "department":
+      return isAddUsers
+        ? row.users?.length ?? 0
+        : row.sections?.length ?? 0;
+
+    case "section":
+      return isAddUsers
+        ? row.users?.length ?? 0
+        : 0;
+
+    default:
+      return 0;
+  }
+};
+
+export const shouldShowActionButton = (
+  row,
+  isSections,
+  isAddUsers
+) => {
+  switch (row.type) {
+    case "department":
+      return isSections || isAddUsers;
+
+    case "section":
+      return isAddUsers;
+
+    default:
+      return false;
+  }
+};
