@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useMemo } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { createSelector } from "@reduxjs/toolkit";
+import { useStore } from "react-redux";
 
 import { rememberPreviousLocationActionCreator } from "../reducers/pagesNavbar-reducer";
 
@@ -143,9 +144,15 @@ export const useIndexesForPage = (pageKey) => {
 // FILTERED PAGE DATA
 // =====================================================
 
+
 export const useFilteredPageData = (data) => {
-  const state = useSelector((state) => state);
-  const activeMenu = useSelector(activeMenuSelector);
+  const store = useStore();
+
+  const activeMenu = useSelector(
+    activeMenuSelector
+  );
+
+  const state = store.getState();
 
   return useMemo(
     () =>
@@ -157,6 +164,8 @@ export const useFilteredPageData = (data) => {
     [state, data, activeMenu]
   );
 };
+
+
 
 
 // =====================================================

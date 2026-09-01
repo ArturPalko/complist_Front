@@ -68,7 +68,7 @@ const handleClick = useCallback(() => {
         currentIndex,
         targetPage
       );
-
+     
       dispatch(addIndexesFromIndexCell(indexes));
     }
   } else {

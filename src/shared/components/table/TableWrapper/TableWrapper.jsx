@@ -32,11 +32,13 @@ const TableWrapper = ({ tableLogic, tableUI, tableDrag, tableHelpers, renderHead
       {shouldShowColNumbers && <ColNumbers pageData={pageData} colNumbersRef={colNumbersRef} />}
 
       <table>
-        <TableWrapperHead
-          headerRef={headerRef}
-          renderHeader={renderHeader}
-          shouldRenderIndexesHeader={shouldRenderIndexesHeader}
-        />
+      <TableWrapperHead
+        headerRef={headerRef}
+        renderHeader={renderHeader}
+        shouldRenderIndexesHeader={shouldRenderIndexesHeader}
+        tableLogic={tableLogic}
+        tableUI={tableUI}
+      />
         <TableWrapperBody
           pageData={pageData}
           rowRefs={rowRefs}

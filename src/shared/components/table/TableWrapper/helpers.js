@@ -33,7 +33,7 @@ export const getDragClass = ({
 
   const isEditable =
     editMode && !isDragDisabled1;
-    debugger
+      
 
   return [
     isEditable ? "row-edit" : "row-edit-default",

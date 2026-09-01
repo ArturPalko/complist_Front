@@ -1,255 +1,106 @@
-import { useSelector } from "react-redux";
-
-import s from "../PhonesTable/PhonesTable.module.css";
-import d from "./DicitonaryTable.module.css";
-
-import { GroupRowActions } from "../PhonesTable/GroupRowActions";
-import { usePhonesTableLogic } from "../../../../redux/hooks/usePhonesTableLogic";
 import { createTableComponent } from "../../../../shared/components/table/TableWrapper/tableFactory";
+
+import { useDictionaryTableLogic } from "../../../../redux/hooks/useDictionaryTableLogic";
+
+import { pageConfigs } from "../../../../configs/app/pageConfig";
+import { Pages } from "../../../../configs/app/constants";
 
 import { handleBack } from "../PhonesTable/phonesTableHelpers";
 
-import { TdWrapper } from "../../../../shared/components/TdWrapper/TdWrapper";
 import { entityMap } from "../../../../configs/app/enitiyMap";
 
-import {
-  addUsersModeSelected,
-  getCurrentMode,
-  isEditModeSelected,
-  selectActiveSectionId,
-  selectActiveSectionName,
-  selectAtiveDepartmentId,
-  selectAtiveDepartmentName,
-} from "../../../../redux/selectors/selector";
+import NavigationHeader from "./subComponents/subHeaders/NavigationHeader/NavigationHeader";
+import UsersTableHeader from "./subComponents/subHeaders/UsersTableHeader/UsersTableHeader";
+import PhoneEditHeader from "./subComponents/subHeaders/PhoneEditHeader/PhoneEditHeader";
 
-import PhoneEditRow from "./subComponents/PhoneEditRow/PhoneEditRow";
-import NavigationHeader from "./subComponents/NavigationHeader/NavigationHeader";
+import PhoneEditRow from "./subComponents/subRows/PhoneEditRow/PhoneEditRow";
+import AddUsersRow from "./subComponents/subRows/AddUserRow/AddUserRow";
+import UsersRow from "./subComponents/subRows/UsersRow/UserRow";
+import GroupRow from "./subComponents/subRows/GroupRows/GroupRows";
 
-import { pageConfigs } from "../../../../configs/app/pageConfig";
-import {
-  Pages,
-  PHONE_TYPES,
-} from "../../../../configs/app/constants";
-
-import { useUsersModeSorting } from "../../../../redux/hooks/useUsersModeSorting";
-
-const BasePhonesTable =
-  createTableComponent(usePhonesTableLogic);
+const BaseDictionaryTable =
+  createTableComponent(
+    useDictionaryTableLogic
+  );
 
 const DictionaryTable = ({
   pageNumber,
   rowsPerPage,
   isSections,
 }) => {
-  // =====================================================
-  // CONFIG
-  // =====================================================
-
   const columns =
     pageConfigs[Pages.PHONES].columns;
-
-  // =====================================================
-  // REDUX
-  // =====================================================
-
-  const currentMode =
-    useSelector(getCurrentMode);
-
-  const viewMode = useSelector(
-    (state) => state.ui.viewMode
-  );
-
-  const isAddUsers = useSelector(
-    addUsersModeSelected
-  );
-
-  const activeDep = useSelector(
-    selectAtiveDepartmentId
-  );
-
-  const activeSec = useSelector(
-    selectActiveSectionId
-  );
-
-  const departmentNameForCapture =
-    useSelector(
-      selectAtiveDepartmentName
-    );
-
-  const sectionNameForCapture =
-    useSelector(
-      selectActiveSectionName
-    );
-
-  const isEdit = useSelector(
-    isEditModeSelected
-  );
-
-  // =====================================================
-  // MODES
-  // =====================================================
-
-  const isPhoneEditMode =
-    PHONE_TYPES.includes(viewMode);
-
-  const showNavigationHeader =
-    activeDep != null ||
-    activeSec != null;
-
-  // =====================================================
-  // USERS SORTING
-  // =====================================================
-
-  const {
-    handleUserSort,
-    renderSortArrow,
-  } = useUsersModeSorting(currentMode);
-
-  // =====================================================
-  // TABLE CONFIG
-  // =====================================================
-
-  const totalColumns =
-    1 +
-    columns.reduce(
-      (sum, col) =>
-        sum +
-        (col.subLabels?.length || 1),
-      0
-    );
 
   // =====================================================
   // HEADER
   // =====================================================
 
-  const renderHeader = () => {
-    // -----------------------------------------------------
-    // PHONE EDIT MODE
-    // -----------------------------------------------------
+  const renderHeader = (
+    tableLogic,
+    tableUI
+  ) => {
+    const {
+      isPhoneEditMode,
+      currentMode,
+      isEdit,
+      activeDep,
+      activeSec,
+      departmentName,
+      sectionName,
+      showNavigationHeader,
+      sortConfig,
+      handleUserSort,
+      isAddUsers,
+    } = tableLogic;
+
+    const {
+      isSections,
+      dispatch,
+    } = tableUI;
 
     if (isPhoneEditMode) {
-      return (
-        <tr>
-          <th>№</th>
-          <th>Номер телефону</th>
-          <th>Абоненти</th>
-        </tr>
-      );
+      return <PhoneEditHeader />;
     }
-
-    // -----------------------------------------------------
-    // USERS MODE
-    // -----------------------------------------------------
 
     if (currentMode === "users") {
       return (
-        <tr>
-          <th>№</th>
-
-          <th
-            className={s.sortableHeader}
-            onClick={() =>
-              handleUserSort("name")
-            }
-          >
-            <span>
-              Користувач{" "}
-              {renderSortArrow("name")}
-            </span>
-          </th>
-
-          <th
-            className={s.sortableHeader}
-            onClick={() =>
-              handleUserSort("userType")
-            }
-          >
-            <span>
-              Тип користувача{" "}
-              {renderSortArrow("userType")}
-            </span>
-          </th>
-
-          <th
-            className={s.sortableHeader}
-            onClick={() =>
-              handleUserSort("department")
-            }
-          >
-            <span>
-              Департамент{" "}
-              {renderSortArrow("department")}
-            </span>
-          </th>
-
-          <th
-            className={s.sortableHeader}
-            onClick={() =>
-              handleUserSort("section")
-            }
-          >
-            <span>
-              Секція{" "}
-              {renderSortArrow("section")}
-            </span>
-          </th>
-
-          <th
-            className={s.sortableHeader}
-            onClick={() =>
-              handleUserSort("isActive")
-            }
-          >
-            <span>
-              Статус{" "}
-              {renderSortArrow("isActive")}
-            </span>
-          </th>
-        </tr>
+        <UsersTableHeader
+          sortConfig={sortConfig}
+          onSort={handleUserSort}
+        />
       );
     }
-
-    // -----------------------------------------------------
-    // EDIT MODE
-    // -----------------------------------------------------
 
     if (
       currentMode &&
       isEdit &&
       !activeDep
     ) {
-      return;
+      return null;
     }
-
-    // -----------------------------------------------------
-    // NAVIGATION HEADER
-    // -----------------------------------------------------
 
     if (showNavigationHeader) {
       return (
         <NavigationHeader
-          totalColumns={totalColumns}
-          departmentName={
-            departmentNameForCapture
-          }
-          sectionName={
-            sectionNameForCapture
-          }
+          departmentName={departmentName}
+          sectionName={sectionName}
           showSection={!!activeSec}
           onBack={handleBack({
             activeDep,
             activeSec,
             isSections,
             isAddUsers,
-            dispatch: null,
+            dispatch,
           })}
         />
       );
     }
+
+    return null;
   };
 
   // =====================================================
-  // ROW CELLS
+  // ROWS
   // =====================================================
 
   const renderRowCells = (
@@ -258,6 +109,16 @@ const DictionaryTable = ({
     tableLogic,
     tableUI
   ) => {
+    const {
+      isPhoneEditMode,
+      isAddUsers,
+      activeDep,
+    } = tableLogic;
+
+    const {
+      isSections,
+    } = tableUI;
+
     const config =
       entityMap[row.type];
 
@@ -268,148 +129,43 @@ const DictionaryTable = ({
     const dim =
       tableLogic.getRowDimClasses(id);
 
-    // ===================================================
-    // TD HELPER
-    // ===================================================
+    // -----------------------------------------------------
+    // ADD USERS
+    // -----------------------------------------------------
 
-    const renderTd = (
-      value,
-      key = null,
-      colSpan = 1,
-      className = "",
-      inactive = false
-    ) => (
-      <TdWrapper
-        key={key}
-        value={value}
-        tableUI={tableUI}
-        colSpan={colSpan}
-        className={className}
-        inactive={inactive}
-      >
-        {value}
-      </TdWrapper>
-    );
-
-    // ===================================================
-    // ADD USERS MODE
-    // ===================================================
-
-    if (!row.type && activeDep) {
-      const inactive = !row.isActive;
-
+    if (
+      !row.type &&
+      activeDep
+    ) {
       return (
-        <>
-          <td
-            className={
-              inactive
-                ? s.inactive
-                : ""
-            }
-          >
-            {index + 1}
-          </td>
-
-          {renderTd(
-            row.name,
-            `name-${row.id}`,
-            1,
-            "",
-            inactive
-          )}
-
-          {renderTd(
-            row.positionName,
-            `position-${row.id}`,
-            1,
-            "",
-            inactive
-          )}
-
-          {renderTd(
-            row.userType,
-            `type-${row.id}`,
-            1,
-            "",
-            inactive
-          )}
-        </>
+        <AddUsersRow
+          row={row}
+          index={index}
+          tableUI={tableUI}
+        />
       );
     }
 
-    // ===================================================
-    // USER ROW
-    // ===================================================
+    // -----------------------------------------------------
+    // USER
+    // -----------------------------------------------------
 
     if (row.type === "user") {
-      const inactive = !row.isActive;
-
       return (
-        <>
-          <TdWrapper
-            value={
-              (pageNumber - 1) *
-                rowsPerPage +
-              index +
-              1
-            }
-            tableUI={tableUI}
-            inactive={inactive}
-          >
-            {(pageNumber - 1) *
-              rowsPerPage +
-              index +
-              1}
-          </TdWrapper>
-
-          {renderTd(
-            row.name,
-            `name-${row.id}`,
-            1,
-            "",
-            inactive
-          )}
-
-          {renderTd(
-            row.userType,
-            `userType-${row.id}`,
-            1,
-            "",
-            inactive
-          )}
-
-          {renderTd(
-            row.department,
-            `department-${row.id}`,
-            1,
-            d.userDepartment,
-            inactive
-          )}
-
-          {renderTd(
-            row.section,
-            `section-${row.id}`,
-            1,
-            d.userSection,
-            inactive
-          )}
-
-          {renderTd(
-            row.isActive
-              ? "Активний"
-              : "Неактивний",
-            `status-${row.id}`,
-            1,
-            "",
-            inactive
-          )}
-        </>
+        <UsersRow
+          row={row}
+          index={index}
+          pageNumber={pageNumber}
+          rowsPerPage={rowsPerPage}
+          tableUI={tableUI}
+          dim={dim}
+        />
       );
     }
 
-    // ===================================================
-    // PHONE EDIT MODE
-    // ===================================================
+    // -----------------------------------------------------
+    // PHONE EDIT
+    // -----------------------------------------------------
 
     if (
       isPhoneEditMode &&
@@ -427,90 +183,21 @@ const DictionaryTable = ({
       );
     }
 
-    // ===================================================
-    // GROUP ROWS
-    // ===================================================
+    // -----------------------------------------------------
+    // GROUP ROW
+    // -----------------------------------------------------
 
     if (row.type !== "user") {
-      const config =
-        entityMap[row.type];
-
-      const name = config
-        ? row[config.name]
-        : row.name;
-
-      const className =
-        config?.className
-          ? [
-              s[config.className],
-
-              row.type ===
-                "department" &&
-              !row.presentedOnPhonesPage
-                ? s.notPresentedOnPhonesPage
-                : "",
-            ]
-              .filter(Boolean)
-              .join(" ")
-          : "";
-
-      const showBreak =
-        row.type === "department"
-          ? tableLogic.dashedBlocks.departments.includes(
-              name
-            ) &&
-            !isSections &&
-            !isAddUsers
-          : tableLogic.dashedBlocks.sections.includes(
-              name
-            ) &&
-            !isAddUsers;
-
-      const groupTotalColumns =
-        1 +
-        columns.reduce(
-          (sum, col) =>
-            sum +
-            (col.subLabels?.length ||
-              1),
-          0
-        );
-
       return (
-        <TdWrapper
-          showBreak={showBreak}
-          value={name}
+        <GroupRow
+          row={row}
+          tableLogic={tableLogic}
           tableUI={tableUI}
-          colSpan={
-            groupTotalColumns
-          }
-          isHeaderRow={true}
-          className={[
-            className,
-            dim.hidden
-              ? ""
-              : dim.dimAfterSearchNavigationClass,
-            dim.hidden
-              ? ""
-              : dim.dimAfterPageNumberPressedClass,
-          ]
-            .filter(Boolean)
-            .join(" ")}
-        >
-          <div
-            className={
-              s.groupRowContent
-            }
-          >
-            <span>{name}</span>
-
-            <GroupRowActions
-              row={row}
-              isSections={isSections}
-              isAddUsers={isAddUsers}
-            />
-          </div>
-        </TdWrapper>
+          columns={columns}
+          isSections={isSections}
+          isAddUsers={isAddUsers}
+          dim={dim}
+        />
       );
     }
 
@@ -522,7 +209,7 @@ const DictionaryTable = ({
   // =====================================================
 
   return (
-    <BasePhonesTable
+    <BaseDictionaryTable
       renderHeader={renderHeader}
       renderRowCells={renderRowCells}
     />

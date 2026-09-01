@@ -1,6 +1,7 @@
-import s from "../../../PhonesTable/PhonesTable.module.css"
-import { TdWrapper } from "../../../../../../shared/components/TdWrapper/TdWrapper";
-import { getUserRowIndex } from "../../../PhonesTable/phonesTableHelpers";
+import s from "../../../../PhonesTable/PhonesTable.module.css"
+import { TdWrapper } from "../../../../../../../shared/components/TdWrapper/TdWrapper";
+import { getUserRowIndex } from "../../../../PhonesTable/phonesTableHelpers";
+
 export const PhoneEditRow = ({
   row,
   index,

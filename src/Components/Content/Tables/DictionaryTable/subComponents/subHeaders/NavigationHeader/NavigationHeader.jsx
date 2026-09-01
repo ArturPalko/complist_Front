@@ -1,7 +1,6 @@
-import s from "../../../PhonesTable/PhonesTable.module.css"
+import s from "../../../../PhonesTable/PhonesTable.module.css"
 
 const NavigationHeader = ({
-  totalColumns,
   departmentName,
   sectionName,
   showSection,
@@ -10,7 +9,6 @@ const NavigationHeader = ({
   return (
     <tr>
       <th
-        colSpan={totalColumns}
         className={s.navigationHeader}
       >
         <div className={s.navigationContent}>

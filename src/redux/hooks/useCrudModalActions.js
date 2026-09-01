@@ -213,7 +213,7 @@ export const useCrudModalActions = (modalType) => {
 
   const changeStatus = (data) => {
     // if (!selectedIds?.length) return;
-debugger
+  
     openModal({
       type: "userStatus",
       mode: "add",

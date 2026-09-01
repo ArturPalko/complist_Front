@@ -47,7 +47,7 @@ export async function handleSubmit({
 }) {
 
   if(isChangeStatusModal){
-    debugger
+      
      return changeStatus(modalData);
   }
             

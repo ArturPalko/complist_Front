@@ -138,7 +138,7 @@ export default function ModalRoot() {
   if(isBindPhonesModal){
     return (<BindPhonesToUser onSubmit={onSubmit} deprs={departments}  onClose={closeModal}/>)
   }
-  debugger
+    
 
   if(isChangeStatusModal){
     return (<ChangeUserStatus onSubmit={onSubmit} onClose={closeModal}/>)

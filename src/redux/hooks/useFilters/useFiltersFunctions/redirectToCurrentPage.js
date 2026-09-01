@@ -17,7 +17,7 @@ export const redirectToCurrentPage = ({
   prevMenu = activeMenu;
 
   const nextPage = hasFilters ? 1 : currentPage;
-debugger
+  
   redirectToPage({
     navigate,
     currentPage: nextPage,
