@@ -1,55 +1,94 @@
-export const makeGetDepSecByMenu = (menuKey) => (state) => {
-  const menuData = state.data[menuKey];
+import { createSelector } from "@reduxjs/toolkit";
 
-  const depSecMap = {};
-  const secArr = [];
+import { Pages } from "../../../configs/app/constants";
 
-  if (!menuData) {
-    return { departments: [], sec: [] };
-  }
+const EMPTY_ARRAY = [];
 
-  menuData.forEach(element => {
-    if (menuKey === "phones") {
-      element.rows?.forEach(row => {
-        const { departmentName, sectionName, sections, type } = row;
-        if (!type) return;
-
-        if (type === "department" && departmentName) {
-          // 🔹 Очищаємо подвійний об’єкт
-          depSecMap[departmentName] =
-            sections?.map(s =>
-              // якщо s вже об’єкт з ключем sectionName, беремо рядок
-              s && typeof s.sectionName === "string" ? s.sectionName : s
-            ) || [];
-        }
-
-        if (type === "section" && sectionName) {
-          // sectionName має бути рядком
-          secArr.push({ sectionName: typeof sectionName === "string" ? sectionName : sectionName?.sectionName });
-        }
-      });
-    } else {
-      element.rows?.forEach(row => {
-        const dep = row.depSec?.department;
-        const sec = row.depSec?.section;
-
-        if (!dep) return;
-
-        if (!depSecMap[dep]) depSecMap[dep] = new Set();
-        if (sec) depSecMap[dep].add(sec);
-      });
-    }
-  });
-
-  const dep = Object.entries(depSecMap).map(([departmentName, sectionsArr]) => ({
-    departmentName,
-    sections: Array.isArray(sectionsArr)
-      ? sectionsArr.map(sectionName => ({ sectionName }))
-      : Array.from(sectionsArr).map(sectionName => ({ sectionName }))
-  }));
-
-  return {
-    departments: dep,
-    sec: menuKey === "phones" ? secArr : []
-  };
+const EMPTY_DEP_SEC = {
+  departments: EMPTY_ARRAY,
+  sec: EMPTY_ARRAY,
 };
+
+export const makeGetDepSecByMenu = (menuKey) =>
+  createSelector(
+    [(state) => state.data?.[menuKey]],
+    (menuData) => {
+      if (!menuData) {
+        return EMPTY_DEP_SEC;
+      }
+
+      const depSecMap = {};
+      const secArr = [];
+
+      menuData.forEach((element) => {
+        if (menuKey === Pages.PHONES) {
+          element.rows?.forEach((row) => {
+            const {
+              departmentName,
+              sectionName,
+              sections,
+              type,
+            } = row;
+
+            if (!type) return;
+
+            if (type === "department" && departmentName) {
+              depSecMap[departmentName] =
+                sections?.map((s) =>
+                  s && typeof s.sectionName === "string"
+                    ? s.sectionName
+                    : s
+                ) ?? EMPTY_ARRAY;
+            }
+
+            if (type === "section" && sectionName) {
+              secArr.push({
+                sectionName:
+                  typeof sectionName === "string"
+                    ? sectionName
+                    : sectionName?.sectionName,
+              });
+            }
+          });
+
+          return;
+        }
+
+        element.rows?.forEach((row) => {
+          const dep = row.depSec?.department;
+          const sec = row.depSec?.section;
+
+          if (!dep) return;
+
+          if (!depSecMap[dep]) {
+            depSecMap[dep] = new Set();
+          }
+
+          if (sec) {
+            depSecMap[dep].add(sec);
+          }
+        });
+      });
+
+      const departments = Object.entries(depSecMap).map(
+        ([departmentName, sectionsArr]) => ({
+          departmentName,
+          sections: Array.isArray(sectionsArr)
+            ? sectionsArr.map((sectionName) => ({
+                sectionName,
+              }))
+            : Array.from(sectionsArr).map((sectionName) => ({
+                sectionName,
+              })),
+        })
+      );
+
+      return {
+        departments,
+        sec:
+          menuKey === Pages.PHONES
+            ? secArr
+            : EMPTY_ARRAY,
+      };
+    }
+  );

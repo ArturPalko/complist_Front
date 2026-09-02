@@ -18,14 +18,17 @@ import {
   getLastVisitedPage,
   selectActiveSectionId,
   selectAtiveDepartmentId,
-  selectDictionaryDataForDrag
+  selectDictionaryDataForDrag,
 } from "../../selectors/selector";
 
 import { setPagesActionCreator } from "../../reducers/data-reducer/data-reducer";
 
 import { saveOrder } from "../../../dal/thunks/dataThunks";
 
-import { chunkIntoPages, moveItems } from "./dragProvider-helpers/commonFunctions";
+import {
+  chunkIntoPages,
+  moveItems,
+} from "./dragProvider-helpers/commonFunctions";
 
 import {
   getGlobalIndex,
@@ -50,9 +53,12 @@ import {
   getRangeIndexes,
   buildRangeIds,
 } from "./dragProvider-helpers/selectRange-helpers";
+
 import { changeOrderOfDisplayElements } from "../../../dal/api";
 import { entityMap } from "../../../configs/app/enitiyMap";
 import { PHONE_TYPES } from "../../../configs/app/constants";
+
+const EMPTY_ARRAY = [];
 
 /* =========================
    PROVIDER
@@ -69,8 +75,15 @@ export const DragProvider = ({ children, rowsPerPage = 18 }) => {
   const activeDep = useSelector(selectAtiveDepartmentId);
   const activeSec = useSelector(selectActiveSectionId);
 
-  const [elementsBeforeSelectedIds, setElementsBeforeSelectedIds] = useState([]);
-  const [elementsAfterSelectedIds, setElementsAfterSelectedIds] = useState([]);
+  const [
+    elementsBeforeSelectedIds,
+    setElementsBeforeSelectedIds,
+  ] = useState([]);
+
+  const [
+    elementsAfterSelectedIds,
+    setElementsAfterSelectedIds,
+  ] = useState([]);
 
   const dispatch = useDispatch();
 
@@ -81,35 +94,43 @@ export const DragProvider = ({ children, rowsPerPage = 18 }) => {
     getLastVisitedPage(state, menu)
   );
 
- const pages = useSelector((state) =>
-  currentMode
-    ? selectDictionaryDataForDrag(currentMode)(state)
-    : menu
-      ? getDataForMenu(state, menu)
-      : []
-) ?? [];
+  const pages =
+    useSelector((state) =>
+      currentMode
+        ? selectDictionaryDataForDrag(currentMode)(state)
+        : menu
+          ? getDataForMenu(state, menu)
+          : EMPTY_ARRAY
+    ) ?? EMPTY_ARRAY;
 
+  const isDragDisabled1 =
+    currentMode === "users" ||
+    (currentMode === "departments" && activeDep) ||
+    (currentMode === "sections" && activeSec) ||
+    PHONE_TYPES.includes(currentMode);
 
-const isDragDisabled1 = (currentMode === "users") || (currentMode =="departments" && activeDep)
-|| (currentMode == "sections" && activeSec) || PHONE_TYPES.includes(currentMode);
   /* =========================
      FLAT DATA
   ========================= */
 
-const fullData = useMemo(() => {
-  if (!Array.isArray(pages) || !pages.length) return [];
+  const fullData = useMemo(() => {
+    if (!Array.isArray(pages) || !pages.length) {
+      return EMPTY_ARRAY;
+    }
 
-  return pages
-    .flatMap((p) => p?.rows ?? [])
-    .filter((item) => !item?.type || entityMap[item.type])
-    .map((item) => ({
-      ...item,
-      id: item?.type
-        ? item?.[entityMap[item.type]?.id] ?? item.id
-        : item.id,
-    }))
-    .filter((item) => item.id != null);
-}, [pages]);
+    return pages
+      .flatMap((p) => p?.rows ?? EMPTY_ARRAY)
+      .filter(
+        (item) => !item?.type || entityMap[item.type]
+      )
+      .map((item) => ({
+        ...item,
+        id: item?.type
+          ? item?.[entityMap[item.type]?.id] ?? item.id
+          : item.id,
+      }))
+      .filter((item) => item.id != null);
+  }, [pages]);
 
   /* =========================
      ESC RESET
@@ -125,7 +146,9 @@ const fullData = useMemo(() => {
     };
 
     window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
+
+    return () =>
+      window.removeEventListener("keydown", handler);
   }, []);
 
   /* =========================
@@ -142,12 +165,20 @@ const fullData = useMemo(() => {
 
       if (!source?.length) return;
 
-      const indexes = getRangeIndexes(source, startId, endId);
-      
+      const indexes = getRangeIndexes(
+        source,
+        startId,
+        endId
+      );
+
       if (!indexes) return;
 
       const [from, to] = indexes;
-      const range = buildRangeIds(source, from, to);
+      const range = buildRangeIds(
+        source,
+        from,
+        to
+      );
 
       setSelectedIds(range);
     },
@@ -161,7 +192,7 @@ const fullData = useMemo(() => {
   const toggleSelect = useCallback(
     (id, e) => {
       const mode = getSelectMode(e);
-      
+
       if (mode === "RANGE") {
         if (!rangeStartId) {
           setRangeStartId(id);
@@ -169,13 +200,16 @@ const fullData = useMemo(() => {
         }
 
         selectRange(rangeStartId, id);
-        
+
         setRangeStartId(null);
         return;
       }
 
       if (mode === "TOGGLE") {
-        setSelectedIds((prev) => toggleInArray(prev, id));
+        setSelectedIds((prev) =>
+          toggleInArray(prev, id)
+        );
+
         setRangeStartId(null);
         return;
       }
@@ -191,24 +225,35 @@ const fullData = useMemo(() => {
 
   const startDrag = useCallback(
     (id) => {
-               
       if (!fullData.length) return;
 
       setRangeStartId(null);
 
-      const dragGroup = getDragGroup(id, selectedIds);
+      const dragGroup = getDragGroup(
+        id,
+        selectedIds
+      );
+
       setDragIds(dragGroup);
 
-      const indexes = getIndexes(dragGroup, fullData);
-      const anchorIndex = getAnchorIndex(indexes);
+      const indexes = getIndexes(
+        dragGroup,
+        fullData
+      );
+
+      const anchorIndex =
+        getAnchorIndex(indexes);
 
       if (anchorIndex === -1) return;
 
-      const { before, after } = splitBeforeAfter(fullData, anchorIndex);
+      const { before, after } =
+        splitBeforeAfter(
+          fullData,
+          anchorIndex
+        );
 
       setElementsBeforeSelectedIds(before);
       setElementsAfterSelectedIds(after);
-               
     },
     [selectedIds, fullData]
   );
@@ -224,7 +269,7 @@ const fullData = useMemo(() => {
   }, []);
 
   /* =========================
-     SAVE ORDER (CENTRAL LOGIC)
+     SAVE ORDER
   ========================= */
 
   const runSaveOrder = useCallback(
@@ -235,7 +280,7 @@ const fullData = useMemo(() => {
         depId,
         currentMode,
         payload,
-        getDataByMenu
+        getDataByMenu,
       });
     },
     [dispatch, menu, depId, currentMode]
@@ -245,32 +290,103 @@ const fullData = useMemo(() => {
      DROP
   ========================= */
 
-const handleDrop = useCallback(
-  (toIndex, page) => {
-    
-             
-    if (!dragIds.length || !fullData.length) return;
-         
-    //  SWAP CASE
-    if (fullData.length === 2) {
-      const reordered = [fullData[1], fullData[0]];
+  const handleDrop = useCallback(
+    (toIndex, page) => {
+      if (!dragIds.length || !fullData.length) {
+        return;
+      }
 
-      const payload = reordered.map((el, index) => ({
-        id: el.sectionId ?? el.departmentId ?? el.id,
-        priority: index + 1,
-      }));
- 
+      // SWAP CASE
+      if (fullData.length === 2) {
+        const reordered = [
+          fullData[1],
+          fullData[0],
+        ];
+
+        const payload = reordered.map(
+          (el, index) => ({
+            id:
+              el.sectionId ??
+              el.departmentId ??
+              el.id,
+            priority: index + 1,
+          })
+        );
+
+        dispatch(
+          setPagesActionCreator(
+            menu,
+            menu === "phones"
+              ? payload
+              : reordered,
+            depId,
+            currentMode
+          )
+        );
+
+        dispatch(
+          setUnsavedOrder({
+            menu,
+            currentMode,
+            depId,
+            payload,
+          })
+        );
+
+        endDrag();
+        return;
+      }
+
+      // NORMAL FLOW
+      const globalToIndex = getGlobalIndex(
+        page,
+        toIndex,
+        rowsPerPage
+      );
+
+      const bounds = getDragBounds(
+        dragIds,
+        fullData
+      );
+
+      if (
+        isDropInsideSelf(
+          globalToIndex,
+          bounds
+        )
+      ) {
+        endDrag();
+        return;
+      }
+
+      const reordered = moveItems(
+        fullData,
+        dragIds,
+        globalToIndex
+      );
+
+      const payload = reordered.map(
+        (el, index) => ({
+          id:
+            el.sectionId ??
+            el.departmentId ??
+            el.id,
+          priority: index + 1,
+        })
+      );
+
       dispatch(
         setPagesActionCreator(
           menu,
-          menu === "phones" ? payload : reordered,
+          {
+            reordered,
+            payload,
+          },
           depId,
           currentMode
         )
       );
 
-               
-      //  SAVE SNAPSHOT (NO API HERE)
       dispatch(
         setUnsavedOrder({
           menu,
@@ -281,61 +397,18 @@ const handleDrop = useCallback(
       );
 
       endDrag();
-      return;
-    }
-
-    //  NORMAL FLOW
-    const globalToIndex = getGlobalIndex(page, toIndex, rowsPerPage);
-
-    const bounds = getDragBounds(dragIds, fullData);
-
-    if (isDropInsideSelf(globalToIndex, bounds)) {
-      endDrag();
-      return;
-    }
-
-    const reordered = moveItems(fullData, dragIds, globalToIndex);
-
-    const payload = reordered.map((el, index) => ({
-      id: el.sectionId ?? el.departmentId ?? el.id,
-      priority: index + 1,
-    }));
-         
-    dispatch(
-      setPagesActionCreator(
-        menu,
-        {
-          reordered,
-          payload,
-        },
-        depId,
-        currentMode
-      )
-    );
-         
-    //  SAVE SNAPSHOT (NO API HERE)
-    dispatch(
-      setUnsavedOrder({
-        menu,
-        currentMode,
-        depId,
-        payload,
-      })
-    );
-         
-    endDrag();
-  },
-  [
-    dragIds,
-    fullData,
-    rowsPerPage,
-    menu,
-    depId,
-    currentMode,
-    dispatch,
-    endDrag
-  ]
-);
+    },
+    [
+      dragIds,
+      fullData,
+      rowsPerPage,
+      menu,
+      depId,
+      currentMode,
+      dispatch,
+      endDrag,
+    ]
+  );
 
   /* =========================
      PROVIDER
@@ -356,16 +429,15 @@ const handleDrop = useCallback(
         fullData,
         rangeStartId,
         setFoundResults,
-        isOnFoundResultsPage: lastPage === "foundResults",
+        isOnFoundResultsPage:
+          lastPage === "foundResults",
         dropTargetId,
         setDropTargetId,
         setSelectedIds,
-        isDragDisabled1
+        isDragDisabled1,
       }}
     >
       {children}
     </DragContext.Provider>
   );
 };
-
-
