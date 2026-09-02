@@ -5,7 +5,7 @@ import { ModalWindowContext, useDragContext } from "../../contexts/useConetxt";
 export function ModalWindowProvider({ children }) {
   const location = useLocation();
   const navigate = useNavigate();
-  const {selectedIds, setSelectedIds} = useDragContext();
+  const {setSelectedIds} = useDragContext();
 
 
   const query = new URLSearchParams(location.search);
@@ -25,15 +25,6 @@ export function ModalWindowProvider({ children }) {
 
   const newQuery = new URLSearchParams(location.search);
   newQuery.set("modal", type);
-
-  console.log("OPEN MODAL LOCATION:", location.href);
-  console.log("OPEN MODAL SEARCH:", location.search);
-
-           ;
-console.log("REACT LOCATION:", location);
-console.log("BROWSER LOCATION:", window.location.href);
-console.log("NEW SEARCH:", newQuery.toString());
-
          ;
 navigate(
   {

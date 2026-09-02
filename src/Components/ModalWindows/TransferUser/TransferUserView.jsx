@@ -1,7 +1,4 @@
-import React from "react";
-
 import s from "../AddPhone/AddPhone.module.css";
-import form from "../../../shared/Css/form.module.css"
 import TransferUserHeader from "./subComponents/TransferUserHeader/TransferUserHeader";
 import TransferDestination from "./subComponents/TransferDestination/TransferDestinatios.";
 import TransferOptions from "./subComponents/TransferOptions/TransferOptions";

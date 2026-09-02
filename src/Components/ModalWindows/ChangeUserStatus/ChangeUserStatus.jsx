@@ -1,4 +1,3 @@
-import React, { useCallback } from "react";
 import ChangeUserStatusView from "./ChangeUserStatusView/ChangeUserStatusView";
 import { Pages } from "../../../configs/app/constants";
 import { setDataIsLoadedActionCreator } from "../../../redux/reducers/app-reducer";

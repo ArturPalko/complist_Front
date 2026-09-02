@@ -17,7 +17,7 @@ export default function DeletePositionModal({ onClose, onConfirm, modalData }) {
     await onConfirm(modalData); // ids
 
       
-        if(modalType == "mailsToUsers" || modalType == "mailsToUsersGovua"){
+        if(modalType === "mailsToUsers" || modalType === "mailsToUsersGovua"){
             
          dispatch(setDataIsLoadedActionCreator(false, menu))
         }

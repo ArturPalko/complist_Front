@@ -41,7 +41,6 @@ export const GroupRowActions = ({
       navigate,
       currentMenu,
       currentMode: modalType,
-      isSections
     })(e);
   };
 

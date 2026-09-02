@@ -60,7 +60,7 @@ export default function ModalRoot() {
     (menu === "Lotus" || menu === "Gov-ua") &&
     !isDictionaryMode;
 
-  const isPhonesMenu = menu == "phones";
+  const isPhonesMenu = menu === "phones";
 
   const isMailModal =
     isMailMenu &&
@@ -73,9 +73,9 @@ export default function ModalRoot() {
 
 
   
-  const isBindPhonesModal = isPhonesMenu && modalType == "phonesToUsers";
-  const isTranferUserModal = modalType == "transferUser"
-  const isChangeStatusModal = modalType == "userStatus";
+  const isBindPhonesModal = isPhonesMenu && modalType === "phonesToUsers";
+  const isTranferUserModal = modalType === "transferUser"
+  const isChangeStatusModal = modalType === "userStatus";
 
   const config = CRUD_CONFIG[modalType];
   

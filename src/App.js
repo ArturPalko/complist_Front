@@ -10,7 +10,7 @@ import Phones from "./Components/Content/Pages/Phones/Phones";
 import RedirectToCurrentPage from "./shared/components/navigation/RedirectToCurrentPage/RedirectToCurrentPage";
 import Error from "./Components/UI/Error/Error";
 import FoundResults from "./Components/FoundResults/FoundResults";
-import Login from "./Components/ModalWindows/Login/Login";
+
 
 import { useTrackLocation } from "./redux/hooks/hooks";
 import { Pages } from "./configs/app/constants";
@@ -19,7 +19,7 @@ import { useModal } from "./redux/hooks/useLoginModal";
 import { useCheckAuth } from "./redux/hooks/hooks";
 import { useFiltersData } from "./redux/hooks/useFilters/useFiltersData";
 import { useFiltersEffects } from "./redux/hooks/useFilters/useFiltersEffects";
-import { FiltersContext, ModalWindowConext } from "./redux/contexts/useConetxt";
+import { FiltersContext } from "./redux/contexts/useConetxt";
 import { DragProvider } from "./redux/providers/DragProvider/provider";
 import { useEditModeEffects } from "./redux/hooks/useFilters/useEditModeEffects";
 import ModalRoot from "./Components/ModalWindows/ModalRoot";
@@ -30,7 +30,7 @@ function App() {
   useTrackLocation();
   useCheckAuth();
 
-const { modal, closeModal } = useModal();
+const { modal } = useModal();
   const filtersData = useFiltersData();
 
   useFiltersEffects(filtersData);

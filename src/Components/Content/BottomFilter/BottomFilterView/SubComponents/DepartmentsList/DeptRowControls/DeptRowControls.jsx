@@ -1,5 +1,4 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import s from "../DeptRowControls/DeptRowControls.module.css";
 import usersOutOfDepartmentImg from "../../../../../../../assets/Img/usersOutOfDepartment.png";
 import usersOutOfSectionImg from "../../../../../../../assets/Img/usersOutOfSection.png";

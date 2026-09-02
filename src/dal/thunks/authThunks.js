@@ -15,7 +15,7 @@ export const loginUser = (data) => async (dispatch) => {
 
 export const logoutUser = () => async (dispatch) => {
   try {
-    const response = await apiPrivate.post(logoutUrl);
+   await apiPrivate.post(logoutUrl);
     dispatch(logout());
   
   } catch (err) {

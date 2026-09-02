@@ -2,7 +2,6 @@
  * Рахує кількість НЕ-user рядків ДО поточного індексу
  * (department / section)
  */
-import { setActiveDepartment, setActiveSection, toggleaddUsersMode } from "../../../../redux/reducers/ui-reducer";
 
 export const getUserCells = (row) => {
   if (row.userTypeId !== 1) {

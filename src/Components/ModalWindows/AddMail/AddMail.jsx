@@ -26,6 +26,8 @@ import { handleShowPassword } from "./helpers/handleShowPassword";
 
 import { pageConfigs } from "../../../configs/app/pageConfig";
 
+
+
 export default function AddMail({
   onClose,
   editValue,
@@ -158,20 +160,7 @@ export default function AddMail({
     [departments]
   );
 
-  // =========================
-  // Filter users
-  // =========================
 
-  const filteredUsers = useMemo(() => {
-    const normalizedQuery =
-      query.toLowerCase();
-
-    return users.filter((user) =>
-      (user.name ?? "")
-        .toLowerCase()
-        .includes(normalizedQuery)
-    );
-  }, [users, query]);
 
   // =========================
   // Filter responsible users

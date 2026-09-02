@@ -55,7 +55,7 @@ const selectSectionsByDepartmentId = (state, departmentId) => {
         row.sections
           .filter(
             (section) =>
-              section.departmentId == departmentId
+              section.departmentId === departmentId
           )
           .map((section) => ({
             ...section,
@@ -753,23 +753,23 @@ export const getPhonesDepartmenstForOrder =
 // ============================================================
 
 export const isSectionsMode = (state) => {
-  return state.ui.viewMode == "sections";
+  return state.ui.viewMode === "sections";
 };
 
 export const isDepartmentsMode = (state) => {
-  return state.ui.viewMode == "departments";
+  return state.ui.viewMode === "departments";
 };
 
 export const isPositionsMode = (state) => {
-  return state.ui.viewMode == "positions";
+  return state.ui.viewMode === "positions";
 };
 
 export const isUserTypesMode = (state) => {
-  return state.ui.viewMode == "userTypes";
+  return state.ui.viewMode === "userTypes";
 };
 
 export const isUserMode = (state) => {
-  return state.ui.viewMode == "users";
+  return state.ui.viewMode === "users";
 };
 
 // ============================================================
@@ -878,7 +878,7 @@ export const selectUsersByDepartment =
 
     const department = rows.find(
       (dep) =>
-        dep.departmentId == departmentId
+        dep.departmentId === departmentId
     );
 
     const users = department?.users ?? [];
@@ -898,7 +898,7 @@ export const selectUsersBySection =
       .flatMap((d) => d.rows)
       .find(
         (dep) =>
-          dep.departmentId ==
+          dep.departmentId ===
           activeDepartmentId
       );
 
@@ -909,7 +909,7 @@ export const selectUsersBySection =
     const section =
       department.sections?.find(
         (sec) =>
-          sec.sectionId ==
+          sec.sectionId ===
           activeSectionId
       );
 
