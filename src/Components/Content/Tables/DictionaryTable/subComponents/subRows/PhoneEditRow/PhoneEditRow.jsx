@@ -1,4 +1,4 @@
-import s from "../../../../PhonesTable/PhonesTable.module.css"
+import s from "./PhoneEditRow.module.css"
 import { TdWrapper } from "../../../../../../../shared/components/TdWrapper/TdWrapper";
 import { getUserRowIndex } from "../../../../PhonesTable/phonesTableHelpers";
 

@@ -22,6 +22,8 @@ export default function UsersList({
   hasPhone,
   formRef,
 }) {
+  debugger;
+
   return (
     <div className={styles.usersBlock}>
       <div className={styles.usersHeader}>
@@ -36,20 +38,22 @@ export default function UsersList({
 
       <div className={styles.users}>
         {users.map((user) => {
-          const displayName =
-            user.name?.trim() ||
-            (user.userType !== "Користувач"
-              ? user.userType
-              : "");
+          const hasName = Boolean(user.name?.trim());
 
-          const displayPosition =
-            user.name?.trim()
-              ? user.positionName
+          const displayName = hasName
+            ? user.name.trim()
+            : user.userType !== "Користувач"
+              ? user.userType
               : "";
+
+          const displayPosition = hasName
+            ? user.positionName
+            : "";
 
           return (
             <button
               key={user.id}
+              type="button"
               className={`${styles.userRow} ${
                 Number(selectedUserId) === Number(user.id)
                   ? styles.active

@@ -1,4 +1,3 @@
-import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 
 import { IndexCell } from "../../../../cell/IndexCell/IndexCell";
@@ -9,24 +8,15 @@ import {
 } from "../../../../../../redux/contexts/useConetxt";
 
 import {
-  activeMenu,
-  isEditModeSelected,
-  currentPageByMenu,
-  isSectionsMode,
-  getCurrentMode,
-} from "../../../../../../redux/selectors/selector";
-
-import {
   getDragProps,
   createDragPreview,
   cleanupDragPreview,
+  getClassName,
 } from "./tableWrapperBody_helpers";
 
 import "./dragAndDrop.css";
 
-import { getClassName } from "./tableWrapperBody_helpers";
-
-import { rowsPerPage } from "../../../../../../configs/app/constants";
+import { DropZone } from "../DropZone/DropZone";
 
 import { withDropZones } from "../../../../../hooks/withDropedThones";
 import { entityMap } from "../../../../../../configs/app/enitiyMap";
@@ -42,9 +32,11 @@ const TableWrapperBody = ({
   page,
   dispatch,
   isSections,
-  currentMode
+  currentMode,
+  showDropZones,
+  onTopDrop,
+  onBottomDrop,
 }) => {
-  
   const {
     dragIds,
     selectedIds,
@@ -58,24 +50,31 @@ const TableWrapperBody = ({
     isOnFoundResultsPage,
     dropTargetId,
     setDropTargetId,
-    isDragDisabled1
+    isDragDisabled1,
   } = useDragContext();
-   const { foundResults } = useFoundResults();
+
+  const { foundResults } = useFoundResults();
+
   useEffect(() => {
     if (!setFoundResults) return;
+
     setFoundResults(foundResults);
   }, [foundResults, setFoundResults]);
 
-
-  
   return (
     <tbody className={dragIds.length ? "dragging" : ""}>
+      <DropZone
+        position="top"
+        onDrop={onTopDrop}
+        showDropZones={showDropZones}
+      />
 
       {pageData?.map((item, index) => {
-          
-      const itemId =
-      item?.[entityMap?.[item?.type]?.id] ?? item?.id;
-const itemKey = `${item.type}-${itemId}`; // React
+        const itemId =
+          item?.[entityMap?.[item?.type]?.id] ?? item?.id;
+
+        const itemKey = `${item.type}-${itemId}`;
+
         const isSelected = selectedIds.includes(itemId);
         const isDragging = dragIds.includes(itemId);
 
@@ -107,7 +106,7 @@ const itemKey = `${item.type}-${itemId}`; // React
               isSections,
               menu,
               currentMode,
-              isDragDisabled1
+              isDragDisabled1,
             })}
             className={`
               ${getClassName({
@@ -126,7 +125,7 @@ const itemKey = `${item.type}-${itemId}`; // React
                 currentMode,
                 isSections,
                 itemType: item.type,
-                isDragDisabled1
+                isDragDisabled1,
               })}
 
               ${isFirst ? "edgeDropTop" : ""}
@@ -152,6 +151,11 @@ const itemKey = `${item.type}-${itemId}`; // React
         );
       })}
 
+      <DropZone
+        position="bottom"
+        onDrop={onBottomDrop}
+        showDropZones={showDropZones}
+      />
     </tbody>
   );
 };

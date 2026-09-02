@@ -57,6 +57,7 @@ const RedirectToCurrentPage = ({ redirectMenu }) => {
  
   if (!page) return null;
 
+
   return <Navigate to={`${config.basePath}${page}`} replace />;
 };
 

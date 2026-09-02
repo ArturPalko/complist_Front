@@ -27,6 +27,7 @@ import { useRef, useEffect } from "react";
 import { pageConfigs } from "../../../configs/app/pageConfig";
 import { handleRedirectWhenModeCleared } from "./helpers";
 import BottomTableControlsView from "./BottomTableControlsView";
+import { setLastVisitedPage } from "../../../redux/reducers/pagesNavbar-reducer";
 
 const BottomTableControls = () => {
   const dispatch = useDispatch();
@@ -140,8 +141,21 @@ useEffect(() => {
 const openMode = (mode) => {
     dispatch(setPhonesViewMode(mode));
 
-    const page =
+    let page =
         dictionaryPages?.[mode]?.lastVisitedPage ?? 1;
+
+    if (page === "foundResults") {
+        page =
+            dictionaryPages?.[mode]?.digitPage ?? 1;
+
+        dispatch(
+            setLastVisitedPage(
+                "dictionary",
+                page,
+                mode
+            )
+        );
+    }
 
     navigate(`/dictionary/${mode}/${page}`);
 };

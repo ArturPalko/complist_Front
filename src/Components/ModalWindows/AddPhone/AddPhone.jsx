@@ -23,9 +23,15 @@ export default function AddPhone({
   onSubmit,
   editValue = null,
 }) {
-  const users = useSelector(
-    selectDictionaryByType("users")
-  );
+const userPages = useSelector(
+  selectDictionaryByType("users")
+);
+
+const users = userPages.flatMap(
+  (page) => page.rows ?? []
+);
+
+console.log("users:", users)
 
   const [phone, setPhone] = useState("");
   const [ownerIds, setOwnerIds] = useState([]);
@@ -139,6 +145,7 @@ export default function AddPhone({
       );
     }
   };
+  debugger
 
   return (
     <div className={s.container}>
@@ -166,7 +173,7 @@ export default function AddPhone({
             </p>
           )}
         </div>
-
+      
         <ResponsibleUsers
           users={users}
           responsibleUserIds={ownerIds}

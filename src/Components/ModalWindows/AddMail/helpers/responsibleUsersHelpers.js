@@ -6,7 +6,7 @@ export const addResponsibleUser = ({
   setResponsibleOpened,
 }) => {
 
-  if(!userId)
+   if (!userId) return;
   if (responsibleUserIds.includes(userId)) {
     return;
   }

@@ -1,37 +1,60 @@
-
-
 .wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
+  width: 100%;
 }
 
+.tagsHeader {
+  display: flex;
+  justify-content: flex-end;
+  min-height: 24px;
+  margin-top: 4px;
+}
+
+.clearButton {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  padding: 2px 6px;
+}
+
+.tagsContainer {
+  max-height: 140px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 4px 4px 4px 0;
+  border: 1px solid #e1e5e9;
+  border-radius: 6px;
+}
 
 .tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 10px;
+  gap: 6px;
 }
 
 .tag {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 6px;
-
-  padding: 4px 10px;
-
-  border-radius: 14px;
-
-  background: #eef4ff;
-
-  font-size: 13px;
+  max-width: 100%;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: #f1f3f5;
 }
 
-.tag button {
+.tagName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.removeButton {
+  flex-shrink: 0;
   border: none;
   background: transparent;
   cursor: pointer;
-
-  font-size: 14px;
+  padding: 0;
+  line-height: 1;
 }
