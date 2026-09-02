@@ -21,45 +21,51 @@ export default function ResponsibleUsers({
         onChange={addResponsibleUser}
       />
 
-      <div className={s.tagsHeader}>
-        {responsibleUserIds.length > 1 && (
-          <button
-            type="button"
-            className={s.clearButton}
-            onClick={removeAllResponsibleUsers}
-            title="Видалити всіх відповідальних"
-          >
-            ✕
-          </button>
-        )}
-      </div>
+      {responsibleUserIds.length > 0 && (
+        <>
+          <div className={s.tagsHeader}>
+            {responsibleUserIds.length > 1 && (
+              <button
+                type="button"
+                className={s.clearButton}
+                onClick={removeAllResponsibleUsers}
+                title="Видалити всіх відповідальних"
+              >
+                ✕
+              </button>
+            )}
+          </div>
 
-      <div className={s.tagsContainer}>
-        <div className={s.tags}>
-          {responsibleUserIds.map((id) => {
-            const user = users.find(
-              (u) => Number(u.id) === Number(id)
-            );
+          <div className={s.tagsContainer}>
+            <div className={s.tags}>
+              {responsibleUserIds.map((id) => {
+                const user = users.find(
+                  (u) => Number(u.id) === Number(id)
+                );
 
-            return (
-              <div key={id} className={s.tag}>
-                <span className={s.tagName}>
-                  {user?.name}
-                </span>
+                return (
+                  <div key={id} className={s.tag}>
+                    <span className={s.tagName}>
+                      {user?.name}
+                    </span>
 
-                <button
-                  type="button"
-                  className={s.removeButton}
-                  onClick={() => removeResponsibleUser(id)}
-                  title="Видалити користувача"
-                >
-                  ✕
-                </button>
-              </div>
-            );
-          })}
-        </div>
-      </div>
+                    <button
+                      type="button"
+                      className={s.removeButton}
+                      onClick={() =>
+                        removeResponsibleUser(id)
+                      }
+                      title="Видалити користувача"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

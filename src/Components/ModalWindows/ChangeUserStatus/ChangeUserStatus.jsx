@@ -1,32 +1,48 @@
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+
 import ChangeUserStatusView from "./ChangeUserStatusView/ChangeUserStatusView";
 import { Pages } from "../../../configs/app/constants";
 import { setDataIsLoadedActionCreator } from "../../../redux/reducers/app-reducer";
-import { useDispatch } from "react-redux";
 import { fetchDictionariesThunk } from "../../../dal/api";
 
 export default function ChangeUserStatus({
   selectedUserIds,
   onClose,
-  onSubmit
-  
+  onSubmit,
 }) {
-const dispatch = useDispatch();
+  const dispatch = useDispatch();
+  const [error, setError] = useState("");
 
+  const handleConfirm = async () => {
+    setError("");
 
-const handleConfirm = async () => {
-  await onSubmit();
+    try {
+      await onSubmit();
 
-  Object.values(Pages).forEach((page) => {
-    dispatch(setDataIsLoadedActionCreator(false, page));
-  });
+      Object.values(Pages).forEach((page) => {
+        dispatch(
+          setDataIsLoadedActionCreator(false, page)
+        );
+      });
 
-  dispatch(fetchDictionariesThunk());
-};
+      dispatch(fetchDictionariesThunk());
+      onClose();
+    } catch (error) {
+      console.error("ChangeUserStatus error:", error);
+
+      setError(
+        error?.response?.data?.message ||
+        "Не вдалося змінити статус користувачів."
+      );
+    }
+  };
 
   return (
     <ChangeUserStatusView
       onConfirm={handleConfirm}
       onClose={onClose}
+      error={error}
     />
   );
 }

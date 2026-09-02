@@ -4,7 +4,7 @@ import { useModalWindowContext } from "../../redux/contexts/useConetxt";
 
 import Login from "../ModalWindows/Login/Login";
 import DeletePositionModal from "./DeletePosition/DeletePosition";
-import EntityModal from "./AddPosition/AddPositions";
+import OneFieldFormForBaseEntities from "./OneFieldFormForBaseEntities/OneFieldFormForBaseEntities";
 import AddUser from "./AddUser/AddUser";
 import AddMail from "./AddMail/AddMail";
 import AddPhone from "./AddPhone/AddPhone";
@@ -201,7 +201,7 @@ const editValue = isEdit
   : "";
           
   return (
-    <EntityModal
+    <OneFieldFormForBaseEntities
       {...commonProps}
       title={config.title}
       editValue={editValue}

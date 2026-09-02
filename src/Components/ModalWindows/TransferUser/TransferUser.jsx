@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 
 import {
@@ -7,14 +7,9 @@ import {
 
 import TransferUserView from "./TransferUserView";
 import { useDragContext } from "../../../redux/contexts/useConetxt";
-
 import { transferUser } from "../../../dal/api";
 
 export function TransferUser({ onClose }) {
-  // =========================
-  // Redux dictionaries
-  // =========================
-
   const departments = useSelector(
     selectDictionaryByType("deps")
   );
@@ -22,10 +17,6 @@ export function TransferUser({ onClose }) {
   const sections = useSelector(
     selectDictionaryByType("sections")
   );
-
-  // =========================
-  // Form state
-  // =========================
 
   const [transferType, setTransferType] =
     useState("department");
@@ -51,10 +42,9 @@ export function TransferUser({ onClose }) {
     setTransferPhones,
   ] = useState(false);
 
-      const {selectedIds} = useDragContext();
-  // =========================
-  // Departments
-  // =========================
+  const [error, setError] = useState("");
+
+  const { selectedIds } = useDragContext();
 
   const departmentsValues = useMemo(
     () =>
@@ -63,10 +53,6 @@ export function TransferUser({ onClose }) {
       ),
     [departments]
   );
-
-  // =========================
-  // Sections
-  // =========================
 
   const filteredSections = useMemo(() => {
     if (departmentId === "") {
@@ -87,22 +73,12 @@ export function TransferUser({ onClose }) {
   const hasSections =
     filteredSections.length > 0;
 
-  // =========================
-  // Transfer type
-  // =========================
-
   const handleTransferTypeChange = (e) => {
-    const value = e.target.value;
-
-    setTransferType(value);
-
+    setTransferType(e.target.value);
     setDepartmentId("");
     setSectionId("");
+    setError("");
   };
-
-  // =========================
-  // Department
-  // =========================
 
   const handleDepartmentChange = (e) => {
     const value = e.target.value;
@@ -110,13 +86,9 @@ export function TransferUser({ onClose }) {
     setDepartmentId(
       value === "" ? "" : Number(value)
     );
-
     setSectionId("");
+    setError("");
   };
-
-  // =========================
-  // Section
-  // =========================
 
   const handleSectionChange = (e) => {
     const value = e.target.value;
@@ -124,11 +96,8 @@ export function TransferUser({ onClose }) {
     setSectionId(
       value === "" ? "" : Number(value)
     );
+    setError("");
   };
-
-  // =========================
-  // Transfer availability
-  // =========================
 
   const canTransfer =
     departmentId !== "" &&
@@ -141,90 +110,65 @@ export function TransferUser({ onClose }) {
       )
     );
 
-  // =========================
-  // Transfer
-  // =========================
+  const handleTransfer = async () => {
+    setError("");
 
-  const handleTransfer = () => {
     if (!canTransfer) {
       return;
     }
 
-const userIds = selectedIds;
     const data = {
-      // userIds: [101, 102, 103],
-      userIds,
+      userIds: selectedIds,
       transferType,
-
       departmentId,
-
       sectionId:
         transferType === "section"
           ? sectionId
           : null,
-
       keepResponsibleForMails,
       keepPhonesByPosition,
       transferPhones,
     };
 
-    console.log(
-      "TRANSFER USER:",
-      data
-    );
-     transferUser(data);
+    console.log("TRANSFER USER:", data);
 
-    // alert(
-    //   JSON.stringify(
-    //     data,
-    //     null,
-    //     2
-    //   )
-    // );
+    try {
+      await transferUser(data);
+      onClose();
+    } catch (err) {
+      console.error("TransferUser error:", err);
+
+      setError(
+        err?.response?.data?.message ||
+        "Не вдалося перевести користувачів."
+      );
+    }
   };
 
   return (
     <TransferUserView
       onClose={onClose}
-
+      error={error}
       transferType={transferType}
-      onTransferTypeChange={
-        handleTransferTypeChange
-      }
-
+      onTransferTypeChange={handleTransferTypeChange}
       departmentId={departmentId}
       departments={departmentsValues}
-      onDepartmentChange={
-        handleDepartmentChange
-      }
-
+      onDepartmentChange={handleDepartmentChange}
       sectionId={sectionId}
       sections={filteredSections}
-      onSectionChange={
-        handleSectionChange
-      }
-
+      onSectionChange={handleSectionChange}
       canTransfer={canTransfer}
       onTransfer={handleTransfer}
-
-      keepResponsibleForMails={
-        keepResponsibleForMails
-      }
+      keepResponsibleForMails={keepResponsibleForMails}
       setKeepResponsibleForMails={
         setKeepResponsibleForMails
       }
-
-      keepPhonesByPosition={
-        keepPhonesByPosition
-      }
+      keepPhonesByPosition={keepPhonesByPosition}
       setKeepPhonesByPosition={
         setKeepPhonesByPosition
       }
-
       transferPhones={transferPhones}
-      setTransferPhones={
-        setTransferPhones
-      }
+      setTransferPhones={setTransferPhones}
     />
   );
 }

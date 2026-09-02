@@ -16,9 +16,14 @@ export default function TransferOptions({
         </div>
 
         <div className={styles.subtitle}>
-          Налаштуйте, що потрібно зберегти під час
-          переведення
+          Налаштуйте, що потрібно зберегти під час переведення
         </div>
+      </div>
+
+      <div className={styles.notice}>
+        За замовчуванням після переведення користувач втрачає
+        всі поточні залежності що були у нього у 
+        попередньому підрозділі.
       </div>
 
       <div className={styles.options}>
@@ -27,9 +32,7 @@ export default function TransferOptions({
             type="checkbox"
             checked={keepResponsibleForMails}
             onChange={(e) =>
-              setKeepResponsibleForMails(
-                e.target.checked
-              )
+              setKeepResponsibleForMails(e.target.checked)
             }
           />
 
@@ -39,8 +42,7 @@ export default function TransferOptions({
             </span>
 
             <span className={styles.description}>
-              Користувач залишиться відповідальним за
-              свої колишні скриньки
+              Користувач залишиться відповідальним за свої колишні скриньки
             </span>
           </span>
         </label>
@@ -50,9 +52,7 @@ export default function TransferOptions({
             type="checkbox"
             checked={keepPhonesByPosition}
             onChange={(e) =>
-              setKeepPhonesByPosition(
-                e.target.checked
-              )
+              setKeepPhonesByPosition(e.target.checked)
             }
           />
 
@@ -62,8 +62,7 @@ export default function TransferOptions({
             </span>
 
             <span className={styles.description}>
-              Телефони залишаться у старому підрозділі
-              за допомогою технічного користувача
+              Телефони залишаться у старому підрозділі за допомогою технічного користувача
             </span>
           </span>
         </label>
@@ -73,9 +72,7 @@ export default function TransferOptions({
             type="checkbox"
             checked={transferPhones}
             onChange={(e) =>
-              setTransferPhones(
-                e.target.checked
-              )
+              setTransferPhones(e.target.checked)
             }
           />
 
@@ -85,8 +82,7 @@ export default function TransferOptions({
             </span>
 
             <span className={styles.description}>
-              Зберегти телефони за користувачем після
-              переведення
+              Зберегти телефони за користувачем після переведення
             </span>
           </span>
         </label>

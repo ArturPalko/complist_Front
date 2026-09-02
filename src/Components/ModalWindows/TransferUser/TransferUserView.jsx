@@ -1,10 +1,13 @@
-import s from "../AddPhone/AddPhone.module.css";
+import form from "../../../shared/Css/form.module.css";
+import s from "./TransferUser.module.css";
+
 import TransferUserHeader from "./subComponents/TransferUserHeader/TransferUserHeader";
 import TransferDestination from "./subComponents/TransferDestination/TransferDestinatios.";
 import TransferOptions from "./subComponents/TransferOptions/TransferOptions";
 
 export default function TransferUserView({
   onClose,
+  error,
 
   transferType,
   onTransferTypeChange,
@@ -30,52 +33,37 @@ export default function TransferUserView({
   setTransferPhones,
 }) {
   return (
-    <div className={s.container}>
-      <div className={s.modal}>
-
-        {/* =========================
-            Header
-        ========================= */}
-
+    <div className={form.modalOverlay}>
+      <div className={form.modal}>
         <TransferUserHeader onClose={onClose} />
 
-        {/* =========================
-            Transfer type
-        ========================= */}
-
-      <TransferDestination
-        transferType={transferType}
-        departmentId={departmentId}
-        sectionId={sectionId}
-        departments={departments}
-        sections={sections}
-        onTransferTypeChange={onTransferTypeChange}
-        onDepartmentChange={onDepartmentChange}
-        onSectionChange={onSectionChange}
+        <TransferDestination
+          transferType={transferType}
+          departmentId={departmentId}
+          sectionId={sectionId}
+          departments={departments}
+          sections={sections}
+          onTransferTypeChange={onTransferTypeChange}
+          onDepartmentChange={onDepartmentChange}
+          onSectionChange={onSectionChange}
         />
-
-        {/* =========================
-            Divider
-        ========================= */}
 
         <div className={s.divider} />
 
-
-       <TransferOptions
-        keepResponsibleForMails={keepResponsibleForMails}
-        setKeepResponsibleForMails={
-            setKeepResponsibleForMails
-        }
-        keepPhonesByPosition={keepPhonesByPosition}
-        setKeepPhonesByPosition={
-            setKeepPhonesByPosition
-        }
-        transferPhones={transferPhones}
-        setTransferPhones={setTransferPhones}
+        <TransferOptions
+          keepResponsibleForMails={keepResponsibleForMails}
+          setKeepResponsibleForMails={setKeepResponsibleForMails}
+          keepPhonesByPosition={keepPhonesByPosition}
+          setKeepPhonesByPosition={setKeepPhonesByPosition}
+          transferPhones={transferPhones}
+          setTransferPhones={setTransferPhones}
         />
-        {/* =========================
-            Transfer button
-        ========================= */}
+
+        {error && (
+          <div className={form.error}>
+            {error}
+          </div>
+        )}
 
         <button
           type="button"
@@ -85,7 +73,6 @@ export default function TransferUserView({
         >
           Перевести
         </button>
-
       </div>
     </div>
   );

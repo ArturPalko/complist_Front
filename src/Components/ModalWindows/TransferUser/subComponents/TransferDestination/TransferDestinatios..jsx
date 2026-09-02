@@ -1,4 +1,3 @@
-import s from "../../../AddMail/AddMail.module.css"
 import form from "../../../../../shared/Css/form.module.css";
 
 export default function TransferDestination({
@@ -11,16 +10,16 @@ export default function TransferDestination({
   onDepartmentChange,
   onSectionChange,
 }) {
-    const truncateText = (text, maxLength = 45) =>
-  text.length > maxLength
-    ? `${text.slice(0, maxLength)}...`
-    : text;
+  const truncateText = (text, maxLength = 45) =>
+    text.length > maxLength
+      ? `${text.slice(0, maxLength)}...`
+      : text;
+
   return (
     <>
       {/* =========================
           Transfer type
       ========================= */}
-      
 
       <div>
         <label className={form.label}>
@@ -28,7 +27,7 @@ export default function TransferDestination({
         </label>
 
         <select
-          className={`${form.select} ${form.focusBlue}`}
+          className={`${form.select} ${form.focusGray}`}
           value={transferType}
           onChange={onTransferTypeChange}
         >
@@ -52,7 +51,7 @@ export default function TransferDestination({
         </label>
 
         <select
-          className={`${form.select} ${form.focusBlue}`}
+          className={`${form.select} ${form.focusGray}`}
           value={departmentId}
           onChange={onDepartmentChange}
         >
@@ -82,7 +81,7 @@ export default function TransferDestination({
           </label>
 
           <select
-            className={`${form.select} ${form.focusBlue}`}
+            className={`${form.select} ${form.focusGray}`}
             value={sectionId}
             onChange={onSectionChange}
             disabled={
@@ -108,15 +107,12 @@ export default function TransferDestination({
             ))}
           </select>
 
-          {departmentId !== "" &&
-            sections.length === 0 && (
-              <div className={s.error}>
-                Обраний департамент не має
-                секцій. Оберіть інший департамент
-                або тип переведення
-                «Департамент».
-              </div>
-            )}
+          {departmentId !== "" && sections.length === 0 && (
+            <div className={form.error}>
+              Обраний департамент не має секцій. Оберіть інший департамент
+              або тип переведення «Департамент».
+            </div>
+          )}
         </div>
       )}
     </>

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import s from "./AddPosition.module.css";
+import s from "./OneFieldFormForBaseEntities.module.css";
 import { fetchDictionariesThunk } from "../../../dal/api";
 import { useDispatch } from "react-redux";
 
-export default function EntityModal({
+export default function OneFieldFormForBaseEntities({
   onClose,
   onSubmit,
   editValue,

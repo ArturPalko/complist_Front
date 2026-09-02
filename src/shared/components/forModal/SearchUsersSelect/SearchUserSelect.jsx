@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import s from "./SearchUserSelect.module.css";
 
 export default function SearchUserSelect({
@@ -10,6 +10,28 @@ export default function SearchUserSelect({
 }) {
   const [query, setQuery] = useState("");
   const [opened, setOpened] = useState(false);
+
+  const wrapperRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target)
+      ) {
+        setOpened(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      );
+    };
+  }, []);
 
   const filteredUsers = useMemo(() => {
     const search = (query ?? "").toLowerCase();
@@ -24,7 +46,10 @@ export default function SearchUserSelect({
   );
 
   return (
-    <div className={s.wrapper}>
+    <div
+      ref={wrapperRef}
+      className={s.wrapper}
+    >
       <input
         className={s.input}
         value={selectedUser?.name ?? query}
