@@ -4,11 +4,17 @@ export const getBottomTableDescription = ({
   currentMenu,
   currentMode,
   activeDep,
+  isFoundResultsPage,
 }) => {
-  if (
+  const canDrag =
     (currentMenu === "Gov-ua" || currentMenu === "Lotus") &&
-    !currentMode
-  ) {
+    !currentMode;
+
+  if (canDrag) {
+    if (isFoundResultsPage) {
+      return "Можна перетягнути елемент на потрібну сторінку. Переміщення елементів між собою на цій сторінці недоступне.";
+    }
+
     return "Доступна зміна порядку елементів через перетягування.";
   }
 
@@ -24,22 +30,32 @@ export const getBottomTableDescription = ({
     currentMode === "departments" &&
     !activeDep
   ) {
+    if (isFoundResultsPage) {
+      return "Можна перетягнути елемент на потрібну сторінку. Переміщення елементів між собою на цій сторінці недоступне.";
+    }
+
     return `• Порядок департаментів визначає порядок їх відображення в меню «Телефони».
 • Світліші рядки — департаменти, які не представлені в цьому меню та не впливають на позначки розриву.
 • Після зміни порядку перейдіть на сторінку «Телефони», щоб оновити позначки розриву.`;
   }
 
-if (
-  currentMode === "users" ||
-  PHONE_TYPES.includes(currentMode)
-) {
-  return "Тут можна відсортувати за заголовками стовпців.";
-}
   if (
+    currentMode === "users" ||
+    PHONE_TYPES.includes(currentMode)
+  ) {
+    return "Тут можна відсортувати за заголовками стовпців.";
+  }
+
+  const canDragInMode =
     currentMode === "userTypes" ||
     currentMode === "positions" ||
-    (currentMode === "sections" && activeDep)
-  ) {
+    (currentMode === "sections" && activeDep);
+
+  if (canDragInMode) {
+    if (isFoundResultsPage) {
+      return "Можна перетягнути елемент на потрібну сторінку. Переміщення елементів між собою на цій сторінці недоступне.";
+    }
+
     return "Доступна зміна порядку елементів через перетягування.";
   }
 

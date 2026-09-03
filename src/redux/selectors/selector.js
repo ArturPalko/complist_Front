@@ -567,11 +567,21 @@ export const selectPaginationPagesCount =
   };
 
 export const isCurrentPageFoundResult =
-  (menu) => (state) =>
-    selectPageNumberState(
-      state,
-      menu
-    )?.lastVisitedPage === "foundResults";
+  (menu, currentMode) => (state) => {
+    if (currentMode) {
+      return (
+        state.currentPageNumber.dictionary[currentMode]?.lastVisitedPage ===
+        "foundResults"
+      );
+    }
+
+    return (
+      selectPageNumberState(
+        state,
+        menu
+      )?.lastVisitedPage === "foundResults"
+    );
+  };
 
 export const selectIndexesFromCell = (state) =>
   state.toggledElements.indexesFromIndexCell ||
