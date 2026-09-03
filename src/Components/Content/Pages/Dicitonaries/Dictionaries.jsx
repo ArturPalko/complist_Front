@@ -18,6 +18,9 @@ const DictionaryPage = createPageBase(Pages.DICTIONARIES);
 
 const Dictionaries = () => {
   const data = useSelector(getDictionaryData);
+    
+
+  
 
   const foundResultsContext = useContext(FoundResultsContext);
 

@@ -1,4 +1,6 @@
-import React, { useState, useRef } from "react";
+// BottomFilterContainer.jsx
+
+import React, { useState, useRef, useEffect } from "react";
 import { BottomFilterView } from "./BottomFilterView/BottomFilterView";
 import { useBottomFilterLogic } from "../../../redux/hooks/useBottomFilterLogic";
 import { useDispatch } from "react-redux";
@@ -17,8 +19,9 @@ import { pageConfigs } from "../../../configs/app/pageConfig";
 
 export const BottomFilterContainer = () => {
   const dispatch = useDispatch();
-  const refs = useRef({});
 
+  const refs = useRef({});
+  const containerRef = useRef(null);
 
   const [isOpen, setIsOpen] = useState(false);
   const [expandedDept, setExpandedDept] = useState(null);
@@ -37,8 +40,32 @@ export const BottomFilterContainer = () => {
   const selectedText =
     selectedOrder.length
       ? selectedOrder.slice(0, 3).join(", ") +
-        (selectedOrder.length > 3 ? ` +${selectedOrder.length - 3} ще` : "")
+        (selectedOrder.length > 3
+          ? ` +${selectedOrder.length - 3} ще`
+          : "")
       : "Обрати підрозділи";
+
+  // ----------------------------
+  // CLOSE ON OUTSIDE CLICK
+  // ----------------------------
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        isOpen &&
+        containerRef.current &&
+        !containerRef.current.contains(event.target)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
 
   // ----------------------------
   // MULTIPLE SELECT LOGIC
@@ -55,13 +82,23 @@ export const BottomFilterContainer = () => {
 
   // ----------------------------
   // SINGLE SELECT LOGIC
-  // --------------------------
+  // ----------------------------
+
   const onToggleSubDept = (dept, sub) =>
     dispatch(toggleSubDeptAction(activeMenu, dept, sub));
 
   const onToggleDept = (deptName) => {
-    const dept = departments.find(d => d.departmentName === deptName);
-    dispatch(toggleDeptAction(activeMenu, deptName, dept?.sections || []));
+    const dept = departments.find(
+      (d) => d.departmentName === deptName
+    );
+
+    dispatch(
+      toggleDeptAction(
+        activeMenu,
+        deptName,
+        dept?.sections || []
+      )
+    );
   };
 
   // ----------------------------
@@ -75,7 +112,7 @@ export const BottomFilterContainer = () => {
     dispatch(toggleHideSectionsAction(activeMenu, deptName));
 
   const toggleExpand = (deptName) => {
-    setExpandedDept(prev =>
+    setExpandedDept((prev) =>
       prev === deptName ? null : deptName
     );
   };
@@ -84,6 +121,8 @@ export const BottomFilterContainer = () => {
 
   return (
     <BottomFilterView
+      containerRef={containerRef}
+
       isOpen={isOpen}
       toggleOpen={() => setIsOpen(!isOpen)}
 

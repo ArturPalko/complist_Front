@@ -133,28 +133,8 @@
   line-height: 1.55;
 }
 
-/* Місце для зображення розриву сторінки */
 
-.imagePlaceholder {
-  width: 100%;
-  margin-top: 14px;
-  min-height: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px dashed #cfd4d9;
-  border-radius: 8px;
-  background: #fff;
-}
-
-.imagePlaceholder img {
-  display: block;
-  max-width: 100%;
-  height: auto;
-}
-
-
-/* Режими пошуку */
+/* Заголовок + зображення */
 
 .sectionTitle {
   display: flex;
@@ -166,20 +146,41 @@
   margin: 1px 0 14px;
 }
 
-.searchModesImage {
+
+/* Спільний компактний блок для обох зображень */
+
+.helpImage {
   display: flex;
   align-items: center;
-  margin-bottom: 14px;
+  justify-content: center;
+  flex-shrink: 0;
+
+  width: 180px;
+  height: 55px;
+
+  margin-bottom: 13px;
+  padding: 5px 10px;
+
+  border: 1px dashed #cfd4d9;
+  border-radius: 8px;
+
+  background: #fff;
 }
 
-.searchModesImage img {
+.helpImage img {
   display: block;
-  max-width: 250px;
+
+  max-width: 100%;
   max-height: 45px;
+
   width: auto;
   height: auto;
+
   object-fit: contain;
 }
+
+
+/* Режими пошуку */
 
 .searchModeBlock {
   margin-top: 10px;
@@ -203,13 +204,18 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+
   width: 21px;
   height: 21px;
+
   border-radius: 5px;
+
   background: #303640;
   color: #fff;
+
   font-size: 12px;
   font-weight: bold;
+
   vertical-align: middle;
 }
 
@@ -220,6 +226,7 @@
 
 
 @media (max-width: 600px) {
+
   .overlay {
     padding: 10px;
   }
@@ -242,8 +249,14 @@
     gap: 10px;
   }
 
-  .searchModesImage img {
-    max-width: 200px;
+  .helpImage {
+    width: 160px;
+    height: 50px;
+  }
+
+  .helpImage img {
+    max-width: 100%;
+    max-height: 40px;
   }
 }
 

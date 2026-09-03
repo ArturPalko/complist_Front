@@ -263,7 +263,7 @@ export const dataReducer = (
             positions:
               chunkIntoPages(
                 reordered,
-                18
+                rowsPerPage
               ),
           },
         };
@@ -278,7 +278,7 @@ export const dataReducer = (
             userTypes:
               chunkIntoPages(
                 reordered,
-                18
+                rowsPerPage
               ),
           },
         };

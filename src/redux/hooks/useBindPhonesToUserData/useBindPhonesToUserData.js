@@ -28,17 +28,17 @@ export default function useBindPhonesToUserData({
   // DEPARTMENTS
   // ==============================
 
- const departments = useMemo(
-  () =>
-    [...flattenPages(deprs)].sort((a, b) =>
-      (a.departmentName ?? "").localeCompare(
-        b.departmentName ?? "",
-        "uk",
-        { sensitivity: "base" }
-      )
-    ),
-  [deprs]
-);
+  const departments = useMemo(
+    () =>
+      [...flattenPages(deprs)].sort((a, b) =>
+        (a.departmentName ?? "").localeCompare(
+          b.departmentName ?? "",
+          "uk",
+          { sensitivity: "base" }
+        )
+      ),
+    [deprs]
+  );
 
   const selectedDepartment = useMemo(
     () =>
@@ -54,30 +54,31 @@ export default function useBindPhonesToUserData({
   // SECTIONS
   // ==============================
 
- const sectionsPages = useSelector(
-  selectSectionsById(
-    departmentId
-      ? Number(departmentId)
-      : null
-  )
-);
-
-const sections = useMemo(() => {
-  const flattened = flattenPages(sectionsPages);
-
-  return [...flattened].sort((a, b) =>
-    (a.sectionName ?? "").localeCompare(
-      b.sectionName ?? "",
-      "uk",
-      { sensitivity: "base" }
+  const sectionsPages = useSelector(
+    selectSectionsById(
+      departmentId
+        ? Number(departmentId)
+        : null
     )
   );
-}, [sectionsPages]);
+
+  const sections = useMemo(() => {
+    const flattened = flattenPages(sectionsPages);
+
+    return [...flattened].sort((a, b) =>
+      (a.sectionName ?? "").localeCompare(
+        b.sectionName ?? "",
+        "uk",
+        { sensitivity: "base" }
+      )
+    );
+  }, [sectionsPages]);
+
   // ==============================
   // USERS
   // ==============================
 
-  const users = useSelector(
+  const usersPages = useSelector(
     sectionId !== "all"
       ? selectUsersBySection(
           Number(departmentId),
@@ -86,6 +87,14 @@ const sections = useMemo(() => {
       : selectUsersByDepartment(
           Number(departmentId)
         )
+  );
+
+  const users = useMemo(
+    () =>
+      usersPages.flatMap(
+        (page) => page?.rows ?? []
+      ),
+    [usersPages]
   );
 
   const allUsers = useSelector(selectAllUsers);
@@ -162,14 +171,15 @@ const sections = useMemo(() => {
       phoneType
     );
 
-    const hasAnyPhone = (userId) =>
-  ["landline", "internal", "cisco"].some((phoneType) =>
-    hasPhoneForUser(
-      phoneOptions,
-      userId,
-      phoneType
-    )
-  );
+  const hasAnyPhone = (userId) =>
+    ["landline", "internal", "cisco"].some(
+      (phoneType) =>
+        hasPhoneForUser(
+          phoneOptions,
+          userId,
+          phoneType
+        )
+    );
 
   // ==============================
   // TRANSFER USERS

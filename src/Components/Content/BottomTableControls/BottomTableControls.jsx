@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
+import { getBottomTableDescription } from "./getBottomTableDesctiption";
 
 import {
   isSectionsMode,
@@ -42,11 +43,7 @@ const BottomTableControls = () => {
   const isUsers = useSelector(isUserMode);
   const navigate = useNavigate()
   const phoneTypes = ["landline", "internal", "cisco"];
-  const description = (isDepartments && !activeDep)
-  ? `• Порядок департаментів визначає порядок їх відображення в меню «Телефони».
-• Світліші рядки — департаменти, які не представлені в цьому меню та не впливають на позначки розриву.
-• Для перерахунку позначок розриву після зміни порядку перейдіть на сторінку «Телефони».`
-  : "";
+
   const selectedPhoneType = phoneTypes.includes(mode)
     ? mode
     : "";
@@ -67,7 +64,11 @@ const currentPage = useSelector(getCurrentPageNumberByKey(currentMenu));
 const previousModeRef = useRef(currentMode);
 
 const config = pageConfigs[currentMenu];
-
+const description = getBottomTableDescription({
+  currentMenu,
+  currentMode,
+  activeDep,
+});
 
 useEffect(() => {
 

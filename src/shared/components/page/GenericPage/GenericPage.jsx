@@ -30,7 +30,7 @@ const GenericPage = ({
   
 
 
-  // 🔹 memo для sharedProps → TableComponent і PageContext отримують однакові об’єкти
+  // memo для sharedProps → TableComponent і PageContext отримують однакові об’єкти
   const sharedProps = useMemo(() => ({
     titleRef,
     columns: config.columns,
@@ -53,7 +53,7 @@ const GenericPage = ({
     isSections
   ]);
 
-  // 🔹 memo для PageContext
+  //  memo для PageContext
   const pageContextValue = useMemo(() => ({
     ...sharedProps,
     indexesOfFoundResultsForCurrentPage: indexes

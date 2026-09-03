@@ -2,7 +2,7 @@
 
 import { createSelector } from "@reduxjs/toolkit";
 
-import { Pages } from "../../configs/app/constants";
+import { Pages, rowsPerPage } from "../../configs/app/constants";
 
 import { createCurrentPageSelector } from "./selectorFabrics/createCurrentPageSelector";
 import { makeGetCountByMenu } from "./selectorFabrics/makeGetCountForMenu";
@@ -19,6 +19,7 @@ import { processFoundResults } from "./helpFunctions/processFoundResults";
 import { findDashedBlocks } from "./helpFunctions/findDashedBlocks";
 import { getDictionaryCount } from "./helpFunctions/getDictionaryCount";
 import { countDictionaryRows } from "./helpFunctions/countDictionaryRows";
+import { chunkIntoPages } from "../providers/DragProvider/dragProvider-helpers/commonFunctions";
 
 const EMPTY_ARRAY = [];
 const EMPTY_OBJECT = {};
@@ -83,8 +84,7 @@ const selectSectionsByDepartmentId = createSelector(
             row.sections
               .filter(
                 (section) =>
-                  section.departmentId ===
-                  departmentId
+                  section.departmentId === departmentId
               )
               .map((section) => ({
                 ...section,
@@ -93,12 +93,14 @@ const selectSectionsByDepartmentId = createSelector(
           )
     );
 
-    return [
-      {
-        pageIndex: 1,
-        rows: matchedSections,
-      },
-    ];
+    const result = chunkIntoPages(
+      matchedSections,
+      rowsPerPage
+    );
+
+      ;
+
+    return result;
   }
 );
 
@@ -125,39 +127,29 @@ export const getDictionaryData = createSelector(
 
     const mode = state.ui.viewMode;
 
-    if (
-      edit &&
-      isAddUsers &&
-      activeDepartmentId &&
-      !isSection
-    ) {
-      return [
-        {
-          pageIndex: 1,
-          rows: selectUsersByDepartment(
-            activeDepartmentId
-          )(state),
-        },
-      ];
-    }
+if (
+  edit &&
+  isAddUsers &&
+  activeDepartmentId &&
+  !isSection
+) {
+  return selectUsersByDepartment(
+    activeDepartmentId
+  )(state);
+}
 
-    if (
-      edit &&
-      isAddUsers &&
-      isSection &&
-      activeDepartmentId != null &&
-      activeSectionId != null
-    ) {
-      return [
-        {
-          pageIndex: 1,
-          rows: selectUsersBySection(
-            activeDepartmentId,
-            activeSectionId
-          )(state),
-        },
-      ];
-    }
+if (
+  edit &&
+  isAddUsers &&
+  isSection &&
+  activeDepartmentId != null &&
+  activeSectionId != null
+) {
+  return selectUsersBySection(
+    activeDepartmentId,
+    activeSectionId
+  )(state);
+}
 
     if (
       edit &&
@@ -243,7 +235,6 @@ export const getDictionaryData = createSelector(
     return EMPTY_ARRAY;
   }
 );
-
 export const getLoadedForMenu = (state, menu) =>
   Boolean(state.dataState?.[menu]?.dataIsLoaded);
 
@@ -787,7 +778,9 @@ export const selectUsersByDepartment =
         dep.departmentId === departmentId
     );
 
-    return department?.users ?? EMPTY_ARRAY;
+    const users = department?.users ?? EMPTY_ARRAY;
+
+    return chunkIntoPages(users, rowsPerPage);
   };
 
 export const selectUsersBySection =
@@ -824,7 +817,11 @@ export const selectUsersBySection =
       return EMPTY_ARRAY;
     }
 
-    return section.users ?? EMPTY_ARRAY;
+    const users =
+      section.users ?? EMPTY_ARRAY;
+    let a = chunkIntoPages(users, 18);
+      
+    return a
   };
 
 export const selectPhonesByUserId = (userId) =>

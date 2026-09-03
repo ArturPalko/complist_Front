@@ -1,8 +1,9 @@
 import s from "./SearchHelpModal.module.css";
 import torn_pageImg from "../../../assets/Img/torn_page(big).png";
 import searchModeToglerImg from "../../../assets/Img/serachModeTogler.png";
+import copyToClipBoardImg from "../../../assets/Img/copyToClipBoardExample.png";
 
-const SearchHelpModal = ({ onClose }) => {
+const HelpModal = ({ onClose }) => {
   return (
     <div
       className={s.overlay}
@@ -33,41 +34,46 @@ const SearchHelpModal = ({ onClose }) => {
 
         <div className={s.content}>
 
-          {/* РОЗРИВ СТОРІНКИ */}
+          {/* КОПІЮВАННЯ ДАНИХ */}
           <div className={s.card}>
-            <div className={s.cardIcon}>↪</div>
+            <div className={s.cardIcon}>📋</div>
 
             <div className={s.cardContent}>
-              <h3>Розрив сторінки</h3>
 
-              <p>
-                У меню <strong>«Телефони»</strong> підрозділ може
-                продовжуватися на наступній сторінці.
-              </p>
+              <div className={s.sectionTitle}>
+                <h3>Копіювання даних</h3>
 
-              <p>
-                Позначка зліва на кольоровому рядку означає,
-                що <strong>контакти цього підрозділу є також
-                на наступній сторінці</strong>.
-              </p>
-
-              <p>
-                Тому, якщо бачите таку позначку,
-                <strong> перегорніть на наступну сторінку</strong>,
-                щоб переглянути всі контакти підрозділу.
-              </p>
-
-              {/* МІСЦЕ ДЛЯ ЗОБРАЖЕННЯ */}
-              <div className={s.imagePlaceholder}>
-                <img
-                  src={torn_pageImg}
-                  alt="Приклад розриву сторінки"
-                />
+                {/* МІСЦЕ ДЛЯ ЗОБРАЖЕННЯ */}
+                <div className={s.helpImage}>
+                  <img
+                    src={copyToClipBoardImg}
+                    alt="Приклад копіювання даних"
+                  />
+                </div>
               </div>
+
+              <p>
+                Дані можна скопіювати лише безпосередньо з потрібної
+                клітинки таблиці.
+              </p>
+
+              <p>
+                У правому верхньому куті клітинки з'являється
+                піктограма копіювання. Натисніть на неї, щоб
+                скопіювати дані в буфер обміну.
+              </p>
+
+              <p>
+                Після успішного копіювання піктограма змінюється
+                на <strong>зелений квадрат із галочкою</strong>.
+                Це означає, що дані успішно скопійовано
+                в буфер обміну.
+              </p>
+
             </div>
           </div>
 
-
+        
           {/* РЕЖИМИ ПОШУКУ */}
           <div className={s.card}>
             <div className={s.cardIcon}>🔎</div>
@@ -77,8 +83,7 @@ const SearchHelpModal = ({ onClose }) => {
               <div className={s.sectionTitle}>
                 <h3>Режими пошуку</h3>
 
-                {/* МІСЦЕ ДЛЯ ЗОБРАЖЕННЯ */}
-                <div className={s.searchModesImage}>
+                <div className={s.helpImage}>
                   <img
                     src={searchModeToglerImg}
                     alt="Перемикання режимів пошуку"
@@ -125,7 +130,6 @@ const SearchHelpModal = ({ onClose }) => {
                 </p>
               </div>
 
-
               <div className={s.searchModeBlock}>
                 <h4>«Фільтр»</h4>
 
@@ -142,6 +146,44 @@ const SearchHelpModal = ({ onClose }) => {
 
             </div>
           </div>
+
+          {/* РОЗРИВ СТОРІНКИ */}
+          <div className={s.card}>
+            <div className={s.cardIcon}>↪</div>
+
+            <div className={s.cardContent}>
+
+              <div className={s.sectionTitle}>
+                <h3>Розрив сторінки</h3>
+
+                <div className={s.helpImage}>
+                  <img
+                    src={torn_pageImg}
+                    alt="Приклад розриву сторінки"
+                  />
+                </div>
+              </div>
+
+              <p>
+                У меню <strong>«Телефони»</strong> підрозділ може
+                продовжуватися на наступній сторінці.
+              </p>
+
+              <p>
+                Позначка зліва на кольоровому рядку означає,
+                що <strong>контакти цього підрозділу є також
+                на наступній сторінці</strong>.
+              </p>
+
+              <p>
+                Тому, якщо бачите таку позначку,
+                <strong> перегорніть на наступну сторінку</strong>,
+                щоб переглянути всі контакти підрозділу.
+              </p>
+
+            </div>
+          </div>
+
 
 
           {/* ДОДАТКОВІ ФІЛЬТРИ */}
@@ -179,5 +221,4 @@ const SearchHelpModal = ({ onClose }) => {
   );
 };
 
-export default SearchHelpModal;
-
+export default HelpModal;

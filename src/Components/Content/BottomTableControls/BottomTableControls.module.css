@@ -3,7 +3,7 @@
 
   display: flex;
   align-items: center;
-  justify-content: space-between; /* 🔥 ключ */
+  justify-content: space-between; 
 
   gap: 12px;
 }
@@ -202,11 +202,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-
   padding: 0 20px;
-
   color: #8a8f98;
   font-size: 12px;
   line-height: 1.4;
   text-align: center;
+}
+
+@media (max-width: 1200px) {
+  .description {
+    display: none;
+  }
 }

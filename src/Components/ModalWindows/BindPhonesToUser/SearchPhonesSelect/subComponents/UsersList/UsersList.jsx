@@ -1,19 +1,6 @@
+import { PHONE_TYPES_LABELS } from "../../../../../../configs/app/constants";
 import styles from "./UsersList.module.css";
 
-const PHONE_TYPES = [
-  {
-    id: "landline",
-    label: "Міський",
-  },
-  {
-    id: "internal",
-    label: "Внутрішній",
-  },
-  {
-    id: "cisco",
-    label: "Cisco",
-  },
-];
 
 export default function UsersList({
   users,
@@ -22,8 +9,6 @@ export default function UsersList({
   hasPhone,
   formRef,
 }) {
-  debugger;
-
   return (
     <div className={styles.usersBlock}>
       <div className={styles.usersHeader}>
@@ -39,16 +24,28 @@ export default function UsersList({
       <div className={styles.users}>
         {users.map((user) => {
           const hasName = Boolean(user.name?.trim());
+          const isRegularUser = user.userType === "Користувач";
 
-          const displayName = hasName
-            ? user.name.trim()
-            : user.userType !== "Користувач"
-              ? user.userType
-              : "";
+          let displayName = "";
+          let displayPosition = "";
 
-          const displayPosition = hasName
-            ? user.positionName
-            : "";
+          if (isRegularUser) {
+            // Звичайний користувач
+            if (hasName) {
+              displayName = user.name.trim();
+            }
+
+            displayPosition = user.positionName;
+          } else {
+            // Інший тип користувача
+            if (hasName) {
+              displayName = user.name.trim();
+              displayPosition = user.userType;
+            } else {
+              // Немає імені — тип показуємо як посаду
+              displayPosition = user.userType;
+            }
+          }
 
           return (
             <button
@@ -62,9 +59,11 @@ export default function UsersList({
               onClick={() => onSelectUser(user)}
             >
               <div className={styles.userMain}>
-                <div className={styles.userName}>
-                  {displayName}
-                </div>
+                {displayName && (
+                  <div className={styles.userName}>
+                    {displayName}
+                  </div>
+                )}
 
                 {displayPosition && (
                   <div className={styles.userInfo}>
@@ -74,7 +73,7 @@ export default function UsersList({
               </div>
 
               <div className={styles.phoneStatus}>
-                {PHONE_TYPES.map((type) => {
+                {PHONE_TYPES_LABELS.map((type) => {
                   const phoneAssigned = hasPhone(
                     user.id,
                     type.id
@@ -101,3 +100,4 @@ export default function UsersList({
     </div>
   );
 }
+

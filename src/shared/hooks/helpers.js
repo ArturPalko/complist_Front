@@ -1,3 +1,5 @@
+import { rowsPerPage } from "../../configs/app/constants";
+
 export const makeGetDepartmentsByMenu = (menuKey) => (state) => {
   const menuData = state.data[menuKey];
 
@@ -34,7 +36,7 @@ export const makeGetDepartmentsByMenu = (menuKey) => (state) => {
   // 3. SPLIT INTO PAGES (18 items)
   // =========================
   const pages = [];
-  const pageSize = 18;
+  const pageSize = rowsPerPage;
 
   for (let i = 0; i < sorted.length; i += pageSize) {
     pages.push({

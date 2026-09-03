@@ -1,3 +1,5 @@
+import { rowsPerPage } from "../../../configs/app/constants";
+
 export const makeGetPhonesSort = (menuKey) => (state) => {
   const menuData = state.data[menuKey];
 
@@ -32,7 +34,7 @@ export const makeGetPhonesSort = (menuKey) => (state) => {
   // =========================
   // 3. SPLIT INTO PAGES (18 rows)
   // =========================
-  const pageSize = 18;
+  const pageSize = rowsPerPage;
 
   const pages = [];
 

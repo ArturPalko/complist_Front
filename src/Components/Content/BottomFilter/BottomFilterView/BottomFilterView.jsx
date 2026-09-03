@@ -4,8 +4,8 @@ import { BottomFilterHeader } from "./SubComponents/BottomFilterHeader/BottomFil
 import { DepartmentsList } from "./SubComponents/DepartmentsList/DepartmentList";
 import { SectionsPanel } from "./SubComponents/SectionPanel/SectionPanel";
 
-
 export const BottomFilterView = ({
+  containerRef,
   isOpen,
   toggleOpen,
   departments,
@@ -24,11 +24,13 @@ export const BottomFilterView = ({
   onToggleDept,
   onToggleSubDept,
   showExtraToggles
-
 }) => {
   return (
-    <div className={s.container}>
-      {/*кнопка відкриття */}
+    <div
+      ref={containerRef}
+      className={s.container}
+    >
+      {/* кнопка відкриття */}
       <button
         className={s.button}
         onClick={toggleOpen}
@@ -37,15 +39,15 @@ export const BottomFilterView = ({
         {selectedText}
       </button>
 
-      {/*dropdown */}
+      {/* dropdown */}
       {isOpen && (
         <div className={s.dropdown}>
-          {/*ліва частина */}
+          {/* ліва частина */}
           <div className={s.box}>
             <BottomFilterHeader
               bookmarks={bookmarks}
               departments={departments}
-              onToggleSelectALL ={onToggleSelectAll}
+              onToggleSelectALL={onToggleSelectAll}
               onAutoToggleHideUsers={onAutoToggleHideUsers}
               onAutoToggleHideSections={onAutoToggleHideSections}
               showExtraToggles={showExtraToggles}
@@ -62,7 +64,6 @@ export const BottomFilterView = ({
               showExtraToggles={showExtraToggles}
               onToggleHideSections={onToggleHideSections}
               onToggleHideUsers={onToggleHideUsers}
-            
             />
           </div>
 
@@ -79,4 +80,3 @@ export const BottomFilterView = ({
     </div>
   );
 };
-
