@@ -25,7 +25,6 @@ export default function OneFieldFormForBaseEntities({
     },
   });
 
-  // Підстановка значення для edit
   useEffect(() => {
     reset({
       name: editValue || "",
@@ -101,14 +100,12 @@ export default function OneFieldFormForBaseEntities({
             })}
           />
 
-          {/* Помилка валідації форми */}
           {errors.name && (
             <p className={s.error}>
               {errors.name.message}
             </p>
           )}
 
-          {/* Помилка від backend */}
           {serverError && (
             <p className={s.error}>
               {serverError}
@@ -120,6 +117,7 @@ export default function OneFieldFormForBaseEntities({
               type="button"
               className={s.cancelButton}
               onClick={onClose}
+              disabled={isSubmitting}
             >
               Скасувати
             </button>
@@ -130,7 +128,7 @@ export default function OneFieldFormForBaseEntities({
               disabled={isSubmitting}
             >
               {isSubmitting
-                ? "..."
+                ? "Збереження..."
                 : "Зберегти"}
             </button>
           </div>

@@ -16,6 +16,7 @@ import { useTrackLocation } from "./redux/hooks/hooks";
 import { Pages } from "./configs/app/constants";
 
 import { useModal } from "./redux/hooks/useLoginModal";
+import { useRedirectOnDictionaryReload } from "./redux/hooks/useRedirectOnDictionaryReload";
 import { useCheckAuth } from "./redux/hooks/hooks";
 import { useFiltersData } from "./redux/hooks/useFilters/useFiltersData";
 import { useFiltersEffects } from "./redux/hooks/useFilters/useFiltersEffects";
@@ -29,6 +30,8 @@ function App() {
   
   useTrackLocation();
   useCheckAuth();
+
+  useRedirectOnDictionaryReload();
 
 const { modal } = useModal();
   const filtersData = useFiltersData();

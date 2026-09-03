@@ -11,8 +11,6 @@ import { setDataIsLoadedActionCreator } from "../../../redux/reducers/app-reduce
 
 import AddPhoneView from "./AddPhoneView/AddPhoneView";
 
-
-
 export default function AddPhone({
   modalType,
   onClose,
@@ -30,6 +28,7 @@ export default function AddPhone({
   const [phone, setPhone] = useState("");
   const [ownerIds, setOwnerIds] = useState([]);
   const [error, setError] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
 
   const dispatch = useDispatch();
   const menu = useSelector(activeMenu);
@@ -71,7 +70,10 @@ export default function AddPhone({
   };
 
   const handleSave = async () => {
+    if (isSaving) return;
+
     setError("");
+    setIsSaving(true);
 
     let type;
 
@@ -120,6 +122,8 @@ export default function AddPhone({
       }
 
       setError("Не вдалося зберегти телефон.");
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -139,6 +143,8 @@ export default function AddPhone({
       editValue={editValue}
       onClose={onClose}
       onSave={handleSave}
+      isSaving={isSaving}
     />
   );
 }
+

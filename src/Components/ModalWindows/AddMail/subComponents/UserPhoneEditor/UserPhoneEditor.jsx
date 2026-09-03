@@ -1,9 +1,10 @@
 import styles from "./UserPhoneEditor.module.css";
+import formStyles from "../../../../../shared/Css/form.module.css";
+
 import SearchUserSelect from "../../../../../shared/components/forModal/SearchUsersSelect/SearchUserSelect";
 import SearchPhoneSelect from "../../../BindPhonesToUser/SearchPhonesSelect/SearchPhonesSelect";
+
 import { PHONE_TYPES_LABELS } from "../../../../../configs/app/constants";
-
-
 
 export default function UserPhoneEditor({
   selectedUser,
@@ -20,6 +21,7 @@ export default function UserPhoneEditor({
   onTransferUserChange,
   onDropDownInputFocus,
   status,
+  error,
 }) {
   if (!selectedUser) return null;
 
@@ -56,7 +58,7 @@ export default function UserPhoneEditor({
             onChange={(value) =>
               onPhoneChange(type.id, value)
             }
-             onFocus={onDropDownInputFocus}
+            onFocus={onDropDownInputFocus}
           />
 
           <button
@@ -109,6 +111,12 @@ export default function UserPhoneEditor({
       {status && (
         <div className={styles.status}>
           {status}
+        </div>
+      )}
+
+      {error && (
+        <div className={formStyles.error}>
+          {error}
         </div>
       )}
     </div>

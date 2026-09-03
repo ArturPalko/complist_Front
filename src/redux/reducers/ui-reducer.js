@@ -125,7 +125,7 @@ export const toggleaddUsersMode = () => ({
   type: TOGGLE_ADD_USERS_MODE,
 });
 
-export const setPhonesViewMode = (mode) => ({
+export const setDictionaryViewMode = (mode) => ({
   type: SET_VIEW_MODE,
   mode,
 });

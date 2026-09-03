@@ -1,3 +1,4 @@
+import SaveCancelButtons from "../../../../../../shared/components/forModal/SaveCancelButtons/SaveCancelButtons";
 import styles from "./ModalActions.module.css";
 
 export default function ModalActions({
@@ -6,6 +7,7 @@ export default function ModalActions({
   onUnbindAll,
   onClose,
   onSave,
+  isSaving,
 }) {
   return (
     <div className={styles.actions}>
@@ -22,22 +24,12 @@ export default function ModalActions({
         Відв'язати всі телефони
       </button>
 
-      <div className={styles.actionRight}>
-        <button
-          className={styles.secondary}
-          onClick={onClose}
-        >
-          Скасувати
-        </button>
-
-        <button
-          className={styles.primary}
-          disabled={!selectedUser}
-          onClick={onSave}
-        >
-          Зберегти
-        </button>
-      </div>
+      <SaveCancelButtons
+        onCancel={onClose}
+        onSave={onSave}
+        isEdit={true}
+        isSaving={isSaving}
+      />
     </div>
   );
 }

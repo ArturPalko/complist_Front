@@ -12,16 +12,12 @@ export const handleShowPassword = async ({
     return;
   }
 
-  try {
-    const password = await fetchPasswordById(
-      menu,
-      id
-    );
+  const password = await fetchPasswordById(
+    menu,
+    id
+  );
 
-    setPassword(password);
-    setShowPassword(true);
-
-  } catch (error) {
-    console.error(error);
-  }
+  setPassword(password);
+  setShowPassword(true);
 };
+

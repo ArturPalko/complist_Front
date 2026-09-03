@@ -1,9 +1,10 @@
-import styles from './BindPhonesToUserView.module.css'
+import styles from "./BindPhonesToUserView.module.css";
+
 import DepartmentSectionSelect from "../SearchPhonesSelect/subComponents/DepartmentSectionSelect/DepartmentSectionSelect";
 import UserPhoneEditor from "../../AddMail/subComponents/UserPhoneEditor/UserPhoneEditor";
-import UsersList from '../SearchPhonesSelect/subComponents/UsersList/UsersList';
-import ModalActions from '../SearchPhonesSelect/subComponents/ModalActions/ModalActions';
-import BindPhonesToUserHeader from '../SearchPhonesSelect/subComponents/BindPhonesToUserHeadr/BindPhonesToUserHeader';
+import UsersList from "../SearchPhonesSelect/subComponents/UsersList/UsersList";
+import ModalActions from "../SearchPhonesSelect/subComponents/ModalActions/ModalActions";
+import BindPhonesToUserHeader from "../SearchPhonesSelect/subComponents/BindPhonesToUserHeadr/BindPhonesToUserHeader";
 
 export default function BindPhonesToUserView({
   onClose,
@@ -35,20 +36,25 @@ export default function BindPhonesToUserView({
   onTransferUserChange,
 
   status,
+  error,
 
   onUnbindAll,
   onSave,
   formRef,
- onDropDownInputFocus
+  onDropDownInputFocus,
+  isSaving
 }) {
   return (
-    <div  className={styles.overlay}>
-      <div  className={styles.modal}>
+    <div className={styles.overlay}>
+      <div className={styles.modal}>
         <BindPhonesToUserHeader
           onClose={onClose}
         />
 
-        <div ref={formRef} className={styles.content}>
+        <div
+          ref={formRef}
+          className={styles.content}
+        >
           <DepartmentSectionSelect
             departments={departments}
             departmentId={departmentId}
@@ -82,6 +88,7 @@ export default function BindPhonesToUserView({
               transferId={transferId}
               onTransferUserChange={onTransferUserChange}
               status={status}
+              error={error}
               onDropDownInputFocus={onDropDownInputFocus}
               hasAnyPhone={hasAnyPhone}
             />
@@ -94,10 +101,9 @@ export default function BindPhonesToUserView({
           onUnbindAll={onUnbindAll}
           onClose={onClose}
           onSave={onSave}
+          isSaving={isSaving}
         />
       </div>
     </div>
   );
 }
-
-

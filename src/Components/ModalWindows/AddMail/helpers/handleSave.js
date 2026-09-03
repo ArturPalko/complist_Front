@@ -20,37 +20,33 @@ export const handleSave = async ({
   dispatch,
   onClose,
 }) => {
-  try {
-    const data = {
-      autoUpdatePreviousName,
-      id,
-      menu,
-      mail,
-      previousName,
+  const data = {
+    autoUpdatePreviousName,
+    id,
+    menu,
+    mail,
+    previousName,
 
-      ownerType,
-      ownerId,
-      ownerIds,
-      ownerDisplayName,
+    ownerType,
+    ownerId,
+    ownerIds,
+    ownerDisplayName,
 
-      passwordKnown,
-      password,
-      responsibleUserIds,
-    };
+    passwordKnown,
+    password,
+    responsibleUserIds,
+  };
 
-    console.log("SAVE DATA:", data);
+  console.log("SAVE DATA:", data);
 
-    await onSubmit(data);
+  await onSubmit(data);
 
-    dispatch(
-      setDataIsLoadedActionCreator(
-        false,
-        menu
-      )
-    );
+  dispatch(
+    setDataIsLoadedActionCreator(
+      false,
+      menu
+    )
+  );
 
-    onClose();
-  } catch (error) {
-    console.error(error);
-  }
+  onClose();
 };

@@ -39,6 +39,10 @@ export default function ActionsPanel({
     isUserTypes ||
     (isSections && !activeDep);
 
+  const editDisabled =
+    disabled ||
+    selectedIds.length > 1;
+
   if (showBindPhonesButton) {
     return (
       <div
@@ -65,7 +69,7 @@ export default function ActionsPanel({
           </ActionButton>
 
           <ActionButton
-            disabled={disabled}
+            disabled={editDisabled}
             onClick={() => onEdit(selectedIds)}
           >
             ✏️ Редагувати
@@ -101,4 +105,3 @@ export default function ActionsPanel({
     </div>
   );
 }
-

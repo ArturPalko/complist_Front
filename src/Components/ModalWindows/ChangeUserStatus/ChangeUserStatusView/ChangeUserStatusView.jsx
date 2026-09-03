@@ -5,6 +5,7 @@ export default function ChangeUserStatusView({
   onConfirm,
   onClose,
   error,
+  isSaving,
 }) {
   return (
     <div className={s.overlay}>
@@ -24,6 +25,7 @@ export default function ChangeUserStatusView({
             type="button"
             className={s.close}
             onClick={onClose}
+            disabled={isSaving}
           >
             ×
           </button>
@@ -72,6 +74,7 @@ export default function ChangeUserStatusView({
             type="button"
             className={s.cancelButton}
             onClick={onClose}
+            disabled={isSaving}
           >
             Скасувати
           </button>
@@ -80,8 +83,9 @@ export default function ChangeUserStatusView({
             type="button"
             className={s.confirmButton}
             onClick={onConfirm}
+            disabled={isSaving}
           >
-            Змінити статус
+            {isSaving ? "Збереження..." : "Змінити статус"}
           </button>
         </div>
       </div>

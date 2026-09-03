@@ -11,8 +11,6 @@ import {
 
 import { fetchDictionariesThunk } from "../../../dal/api";
 
-
-
 import { EMPTY_PHONE_VALUES } from "../../../redux/hooks/useBindPhonesToUserData/helpers";
 import useBindPhonesToUserData from "../../../redux/hooks/useBindPhonesToUserData/useBindPhonesToUserData";
 import { scrollContainerToBottom } from "./helpers";
@@ -27,7 +25,11 @@ export default function BindPhonesToUser({
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [showTransfer, setShowTransfer] = useState(false);
   const [transferId, setTransferId] = useState("");
+
+  const [isSaving, setIsSaving] = useState(false);
   const [status, setStatus] = useState("");
+  const [error, setError] = useState("");
+
   const [phoneValues, setPhoneValues] = useState({
     ...EMPTY_PHONE_VALUES,
   });
@@ -37,23 +39,24 @@ export default function BindPhonesToUser({
   const dispatch = useDispatch();
   const menu = useSelector(activeMenu);
 
-const {
-  departments,
-  selectedDepartment,
-  sections,
-  users,
-  selectedUser,
-  userPhones,
-  phoneOptions,
-  hasPhone,
-  hasAnyPhone,
-  transferUsers,
-} = useBindPhonesToUserData({
-  deprs,
-  departmentId,
-  sectionId,
-  selectedUserId,
-});
+  const {
+    departments,
+    selectedDepartment,
+    sections,
+    users,
+    selectedUser,
+    userPhones,
+    phoneOptions,
+    hasPhone,
+    hasAnyPhone,
+    transferUsers,
+  } = useBindPhonesToUserData({
+    deprs,
+    departmentId,
+    sectionId,
+    selectedUserId,
+  });
+
   // LOAD USER PHONES
   // userPhones intentionally not in dependencies,
   // so local phone changes are not overwritten by Redux.
@@ -73,23 +76,34 @@ const {
   }, [selectedUserId]);
 
   // COMMON SCROLL
-useEffect(() => {
-  if (!selectedUserId && !showTransfer) {
-    return;
-  }
+  useEffect(() => {
+    if (!selectedUserId && !showTransfer) {
+      return;
+    }
 
-  scrollContainerToBottom(formRef.current);
-}, [selectedUserId, showTransfer]);
+    scrollContainerToBottom(formRef.current);
+  }, [selectedUserId, showTransfer]);
 
-const handleScrollToBottom = () => {
-  scrollContainerToBottom(formRef.current);
-};
+  // SCROLL WHEN STATUS OR ERROR APPEARS
+  useEffect(() => {
+    if (!status && !error) return;
+
+    setTimeout(() => {
+      scrollContainerToBottom(formRef.current);
+    }, 0);
+  }, [status, error]);
+
+  const handleScrollToBottom = () => {
+    scrollContainerToBottom(formRef.current);
+  };
 
   const resetSelection = () => {
     setSelectedUserId(null);
     setShowTransfer(false);
     setTransferId("");
     setStatus("");
+    setError("");
+
     setPhoneValues({
       ...EMPTY_PHONE_VALUES,
     });
@@ -111,6 +125,7 @@ const handleScrollToBottom = () => {
     setShowTransfer(false);
     setTransferId("");
     setStatus("");
+    setError("");
   };
 
   const handlePhoneChange = (type, value) => {
@@ -120,6 +135,7 @@ const handleScrollToBottom = () => {
     }));
 
     setStatus("");
+    setError("");
   };
 
   const handleClearPhone = (type) => {
@@ -127,6 +143,8 @@ const handleScrollToBottom = () => {
       ...prev,
       [type]: "",
     }));
+
+    setError("");
 
     setStatus(
       `Значення ${type} буде очищено після збереження.`
@@ -139,7 +157,9 @@ const handleScrollToBottom = () => {
     setPhoneValues({
       ...EMPTY_PHONE_VALUES,
     });
-    handleScrollToBottom();
+
+    setError("");
+
     setStatus(
       "Усі телефони буде відв'язано після збереження."
     );
@@ -148,38 +168,55 @@ const handleScrollToBottom = () => {
   const handleToggleTransfer = () => {
     setShowTransfer((value) => !value);
     setTransferId("");
+    setError("");
+    setStatus("");
   };
-
-
 
 const handleSave = async () => {
   if (!selectedUser) return;
 
-  const data = {
-    userId: selectedUser.id,
-    phones: phoneValues,
-    transferId: transferId || null,
-  };
+  setIsSaving(true);
+  setError("");
 
+  try {
+    const data = {
+      userId: selectedUser.id,
+      phones: phoneValues,
+      transferId: transferId || null,
+    };
 
-  await onSubmit(data);
+    await onSubmit(data);
 
     setStatus("");
 
-  if (transferId) {
-    setPhoneValues({
-      ...EMPTY_PHONE_VALUES,
-    });
+    if (transferId) {
+      setPhoneValues({
+        ...EMPTY_PHONE_VALUES,
+      });
 
-    setTransferId("");
-    setShowTransfer(false);
+      setTransferId("");
+      setShowTransfer(false);
+    }
+
+    dispatch(
+      setDataIsLoadedActionCreator(false, menu)
+    );
+
+    dispatch(fetchDictionariesThunk());
+
+  } catch (error) {
+    console.error("Помилка збереження:", error);
+
+    setStatus("");
+
+    setError(
+      error?.response?.data?.message ||
+      "Не вдалося зберегти зміни."
+    );
+
+  } finally {
+    setIsSaving(false);
   }
-
-  dispatch(
-    setDataIsLoadedActionCreator(false, menu)
-  );
-
-  dispatch(fetchDictionariesThunk());
 };
 
   return (
@@ -209,11 +246,12 @@ const handleSave = async () => {
       onTransferUserChange={setTransferId}
       onDropDownInputFocus={handleScrollToBottom}
       status={status}
+      error={error}
       onUnbindAll={handleUnbindAll}
       onSave={handleSave}
       formRef={formRef}
+      isSaving={isSaving}
     />
   );
 }
-
 

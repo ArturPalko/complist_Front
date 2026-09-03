@@ -1,5 +1,6 @@
 import s from "./PasswordField.module.css";
-import form from "../../../../../shared/Css/form.module.css"
+import form from "../../../../../shared/Css/form.module.css";
+
 export default function PasswordField({
   isEdit,
   password,
@@ -8,6 +9,8 @@ export default function PasswordField({
   setPassword,
   setPasswordKnown,
   handleShowPassword,
+  error,
+  isLoadingPassword,
 }) {
   return (
     <div className={s.wrapper}>
@@ -25,7 +28,6 @@ export default function PasswordField({
                 setPasswordKnown(e.target.checked)
               }
             />
-
             Пароль відомий
           </label>
 
@@ -54,10 +56,15 @@ export default function PasswordField({
             <button
               type="button"
               onClick={handleShowPassword}
+              disabled={
+                isLoadingPassword || !passwordKnown
+              }
             >
-              {showPassword
-                ? "Сховати"
-                : "Показати"}
+              {isLoadingPassword
+                ? "Завантаження..."
+                : showPassword
+                  ? "Сховати"
+                  : "Показати"}
             </button>
           </div>
 
@@ -72,7 +79,13 @@ export default function PasswordField({
           )}
         </>
       )}
-      </div>
-   
+
+      {error && (
+        <div className={form.error}>
+          {error}
+        </div>
+      )}
+    </div>
   );
 }
+

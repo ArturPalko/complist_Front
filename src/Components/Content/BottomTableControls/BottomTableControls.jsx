@@ -15,9 +15,9 @@ import {
 } from "../../../redux/selectors/selector";
 
 import {
-  setPhonesViewMode,
   clearUnsavedOrder,
-  toggleaddUsersMode
+  toggleaddUsersMode,
+  setDictionaryViewMode
 } from "../../../redux/reducers/ui-reducer";
 
 import { changeOrderOfDisplayElements } from "../../../dal/api";
@@ -139,7 +139,7 @@ useEffect(() => {
 
 
 const openMode = (mode) => {
-    dispatch(setPhonesViewMode(mode));
+    dispatch(setDictionaryViewMode(mode));
 
     let page =
         dictionaryPages?.[mode]?.lastVisitedPage ?? 1;

@@ -1,11 +1,10 @@
-
-import form from "../../../../shared/Css/form.module.css"
+import form from "../../../../shared/Css/form.module.css";
 
 import ResponsibleUsersSelector from "../subComponents/ResponsibleUsersSelector/ResponsibleUsersSelector";
-import FormButtons from "../subComponents/FormButtons/FormButtons";
 import PasswordField from "../subComponents/PasswordField/PasswordField";
 import OwnerSelector from "../subComponents/OwnerSelector/OwnerSelector";
 import MailNameField from "../subComponents/MailNameField/MailNameField";
+import SaveCancelButtons from "../../../../shared/components/forModal/SaveCancelButtons/SaveCancelButtons";
 
 export default function AddMailView({
   editValue,
@@ -40,6 +39,7 @@ export default function AddMailView({
   setPassword,
   setPasswordKnown,
   handleShowPassword,
+  passwordError,
   showResponsibleUsers,
   responsibleUserIds,
   responsibleQuery,
@@ -53,6 +53,8 @@ export default function AddMailView({
   error,
   onClose,
   onSave,
+  isSaving,
+  isLoadingPassword
 }) {
   return (
     <div className={form.modalOverlay}>
@@ -70,17 +72,25 @@ export default function AddMailView({
           onOldChange={setPreviousName}
           showOldField={modalConfig.showOldMailName}
           autoUpdatePreviousName={autoUpdatePreviousName}
-          setAutoUpdatePreviousName={setAutoUpdatePreviousName}
+          setAutoUpdatePreviousName={
+            setAutoUpdatePreviousName
+          }
         />
 
         <OwnerSelector
           ownerDisplayName={ownerDisplayName}
-          setOwnerDisplayName={setOwnerDisplayName}
+          setOwnerDisplayName={
+            setOwnerDisplayName
+          }
           ownerType={ownerType}
           ownerId={ownerId}
           ownerIds={ownerIds}
-          sectionDepartmentId={sectionDepartmentId}
-          setSectionDepartmentId={setSectionDepartmentId}
+          sectionDepartmentId={
+            sectionDepartmentId
+          }
+          setSectionDepartmentId={
+            setSectionDepartmentId
+          }
           query={query}
           opened={opened}
           users={users}
@@ -101,32 +111,59 @@ export default function AddMailView({
           setPassword={setPassword}
           setPasswordKnown={setPasswordKnown}
           handleShowPassword={handleShowPassword}
+          error={passwordError}
+          isLoadingPassword={isLoadingPassword}
         />
 
-        {showResponsibleUsers && ownerType !== "user" && (
-          <ResponsibleUsersSelector
-            ownerType={ownerType}
-            users={users}
-            responsibleUserIds={responsibleUserIds}
-            responsibleQuery={responsibleQuery}
-            responsibleOpened={responsibleOpened}
-            filteredResponsibleUsers={filteredResponsibleUsers}
-            setResponsibleQuery={setResponsibleQuery}
-            setResponsibleOpened={setResponsibleOpened}
-            addResponsibleUser={addResponsibleUser}
-            removeResponsibleUser={removeResponsibleUser}
-            removeAllResponsibleUsers={removeAllResponsibleUsers}
-          />
+        {showResponsibleUsers &&
+          ownerType !== "user" && (
+            <ResponsibleUsersSelector
+              ownerType={ownerType}
+              users={users}
+              responsibleUserIds={
+                responsibleUserIds
+              }
+              responsibleQuery={
+                responsibleQuery
+              }
+              responsibleOpened={
+                responsibleOpened
+              }
+              filteredResponsibleUsers={
+                filteredResponsibleUsers
+              }
+              setResponsibleQuery={
+                setResponsibleQuery
+              }
+              setResponsibleOpened={
+                setResponsibleOpened
+              }
+              addResponsibleUser={
+                addResponsibleUser
+              }
+              removeResponsibleUser={
+                removeResponsibleUser
+              }
+              removeAllResponsibleUsers={
+                removeAllResponsibleUsers
+              }
+            />
+          )}
+
+        {error && (
+          <div className={form.error}>
+            {error}
+          </div>
         )}
 
-        {error && <div className={form.error}>{error}</div>}
-
-        <FormButtons
+        <SaveCancelButtons
           onCancel={onClose}
           onSave={onSave}
           isEdit={!!editValue}
+          isSaving={isSaving}
         />
       </div>
     </div>
   );
 }
+

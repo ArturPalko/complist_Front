@@ -12,10 +12,15 @@ export default function ChangeUserStatus({
   onSubmit,
 }) {
   const dispatch = useDispatch();
+
   const [error, setError] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
 
   const handleConfirm = async () => {
+    if (isSaving) return;
+
     setError("");
+    setIsSaving(true);
 
     try {
       await onSubmit();
@@ -27,6 +32,7 @@ export default function ChangeUserStatus({
       });
 
       dispatch(fetchDictionariesThunk());
+
       onClose();
     } catch (error) {
       console.error("ChangeUserStatus error:", error);
@@ -35,6 +41,8 @@ export default function ChangeUserStatus({
         error?.response?.data?.message ||
         "Не вдалося змінити статус користувачів."
       );
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -43,6 +51,8 @@ export default function ChangeUserStatus({
       onConfirm={handleConfirm}
       onClose={onClose}
       error={error}
+      isSaving={isSaving}
     />
   );
 }
+

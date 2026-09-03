@@ -114,6 +114,25 @@ export const useCrudModalActions = (modalType) => {
   };
 
   // =========================
+  // Selected rows check
+  // =========================
+
+  const checkSelectedRows = () => {
+    if (selectedIds?.length) return true;
+
+    alert(
+  "Спочатку обери рядок.\n\n" +
+  "Одиничний вибір — Ctrl + Left Click.\n\n" +
+  "Вибір діапазону — Alt + Left Click по двох рядках " +
+  "на одній сторінці.\n\n" +
+  "Щоб скасувати весь вибір — натисни Escape.\n\n" +
+  "Щоб скасувати окремий вибір — повторно обери вже активний рядок."
+);
+
+    return false;
+  };
+
+  // =========================
   // ADD
   // =========================
 
@@ -138,7 +157,7 @@ export const useCrudModalActions = (modalType) => {
   // =========================
 
   const remove = () => {
-    if (!selectedIds?.length) return;
+    if (!checkSelectedRows()) return;
 
     openModal({
       type: currentModalType,
@@ -152,7 +171,7 @@ export const useCrudModalActions = (modalType) => {
   // =========================
 
   const edit = () => {
-    if (!selectedIds?.length) return;
+    if (!checkSelectedRows()) return;
 
     const id = selectedIds[0];
 
@@ -198,7 +217,7 @@ export const useCrudModalActions = (modalType) => {
   // =========================
 
   const transfer = () => {
-    if (!selectedIds?.length) return;
+    if (!checkSelectedRows()) return;
 
     openModal({
       type: "transferUser",
@@ -212,8 +231,8 @@ export const useCrudModalActions = (modalType) => {
   // =========================
 
   const changeStatus = (data) => {
-    // if (!selectedIds?.length) return;
-  
+    if (!checkSelectedRows()) return;
+
     openModal({
       type: "userStatus",
       mode: "add",
@@ -229,3 +248,4 @@ export const useCrudModalActions = (modalType) => {
     changeStatus,
   };
 };
+

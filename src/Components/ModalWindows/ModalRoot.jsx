@@ -27,6 +27,7 @@ import { handleDelete, handleSubmit } from "./helpers";
 import BindPhonesToUser from "./BindPhonesToUser/BindPhonesToUser";
 import { TransferUser } from "./TransferUser/TransferUser";
 import ChangeUserStatus from "./ChangeUserStatus/ChangeUserStatus";
+import SearchHelpModal from "./SearchHelpmodal/SearchHelpModal";
 
 export default function ModalRoot() {
   const {
@@ -76,6 +77,7 @@ export default function ModalRoot() {
   const isBindPhonesModal = isPhonesMenu && modalType === "phonesToUsers";
   const isTranferUserModal = modalType === "transferUser"
   const isChangeStatusModal = modalType === "userStatus";
+  const isSearchHelpModal = modalType === "searchHelp";
 
   const config = CRUD_CONFIG[modalType];
   
@@ -113,6 +115,10 @@ export default function ModalRoot() {
   if (!modalType) {
     return null;
   }
+
+  if (isSearchHelpModal) {
+  return <SearchHelpModal onClose={closeModal} />;
+}
 
   if (modalType === "login") {
     return <Login onClose={closeModal} />;

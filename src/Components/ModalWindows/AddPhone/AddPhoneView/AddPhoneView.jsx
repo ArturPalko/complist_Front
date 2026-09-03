@@ -2,7 +2,7 @@ import s from "./AddPhoneView.module.css"
 import form from "../../../../shared/Css/form.module.css"
 
 import ResponsibleUsers from "../../AddMail/subComponents/ResponsibleUsersSelector/ResponsibleUsersSelector";
-import FormButtons from "../../AddMail/subComponents/FormButtons/FormButtons";
+import SaveCancelButtons from "../../../../shared/components/forModal/SaveCancelButtons/SaveCancelButtons";
 
 export default function AddPhoneView({
   phone,
@@ -16,6 +16,7 @@ export default function AddPhoneView({
   editValue,
   onClose,
   onSave,
+  isSaving
 }) {
   return (
     <div className={s.container}>
@@ -48,10 +49,11 @@ export default function AddPhoneView({
           removeAllResponsibleUsers={clearOwners}
         />
 
-        <FormButtons
+        <SaveCancelButtons
           onCancel={onClose}
           onSave={onSave}
           isEdit={!!editValue}
+          isSaving={isSaving}
         />
       </div>
     </div>
