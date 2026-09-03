@@ -37,7 +37,6 @@ export const handleSave = async ({
     responsibleUserIds,
   };
 
-  console.log("SAVE DATA:", data);
 
   await onSubmit(data);
 

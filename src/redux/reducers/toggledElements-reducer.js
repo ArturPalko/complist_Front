@@ -49,7 +49,7 @@ export const toggledElemetsReducer = (state = initialState, action) => {
 
     case ADD_INDEXES_FROM_INDEXCELL:
     //          
-    console.log("INEXES:", action.indexes)
+
       return {
         ...state,
         indexesFromIndexCell: action.indexes,

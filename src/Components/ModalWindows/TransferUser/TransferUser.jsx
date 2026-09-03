@@ -130,7 +130,7 @@ export function TransferUser({ onClose }) {
       transferPhones,
     };
 
-    console.log("TRANSFER USER:", data);
+  
 
     try {
       await transferUser(data);
