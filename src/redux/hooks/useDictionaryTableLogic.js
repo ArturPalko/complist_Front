@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { usePhonesTableLogic } from "./usePhonesTableLogic";
+import { usePhonesModeSorting } from "./usePhonesModeSorting";
 
 import {
   addUsersModeSelected,
@@ -67,6 +68,15 @@ export const useDictionaryTableLogic = (props) => {
 
   const isPhoneEditMode =
     PHONE_TYPES.includes(viewMode);
+
+  // =====================================================
+  // PHONE SORTING
+  // =====================================================
+
+  const {
+    sortConfig: phoneSortConfig,
+    handlePhoneSort,
+  } = usePhonesModeSorting(viewMode);
 
   // =====================================================
   // NAVIGATION
@@ -139,5 +149,9 @@ export const useDictionaryTableLogic = (props) => {
     // Users sorting
     sortConfig,
     handleUserSort,
+
+    // Phones sorting
+    phoneSortConfig,
+    handlePhoneSort,
   };
 };

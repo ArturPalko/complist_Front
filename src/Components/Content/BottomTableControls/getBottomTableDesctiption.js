@@ -1,3 +1,5 @@
+import { PHONE_TYPES } from "../../../configs/app/constants";
+
 export const getBottomTableDescription = ({
   currentMenu,
   currentMode,
@@ -27,6 +29,12 @@ export const getBottomTableDescription = ({
 • Після зміни порядку перейдіть на сторінку «Телефони», щоб оновити позначки розриву.`;
   }
 
+if (
+  currentMode === "users" ||
+  PHONE_TYPES.includes(currentMode)
+) {
+  return "Тут можна відсортувати за заголовками стовпців.";
+}
   if (
     currentMode === "userTypes" ||
     currentMode === "positions" ||

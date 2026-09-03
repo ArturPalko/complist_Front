@@ -1,15 +1,28 @@
 import { fetchDataThunk } from "../../../dal/thunks/dataThunks.js";
+
 import { paginateData } from "./data-reducerFunctions/pagination.js";
-import { applyPhonesReorder } from "./data-reducerFunctions/applyPhonesReorder.js";
-import { chunkIntoPages } from "../../providers/DragProvider/dragProvider-helpers/commonFunctions.js";
+import { sortData } from "./data-reducerFunctions/sorting.js";
+
+import {
+  chunkIntoPages,
+} from "../../providers/DragProvider/dragProvider-helpers/commonFunctions.js";
+
 import { rowsPerPage } from "../../../configs/app/constants.js";
 
-// Action types
+// =====================================================
+// ACTION TYPES
+// =====================================================
+
 const ADD_DATA = "ADD_DATA";
 const SET_ORDER = "SET_ORDER";
 const SET_DICTIONARIES = "SET_DICTIONARIES";
 const RESET_DICTIONARIES = "RESET_DICTIONARIES";
 const SORT_USERS = "SORT_USERS";
+const SORT_PHONES = "SORT_PHONES";
+
+// =====================================================
+// INITIAL STATE
+// =====================================================
 
 const initialState = {
   "Gov-ua": [],
@@ -23,6 +36,7 @@ const initialState = {
     users: [],
     sections: [],
     deps: [],
+
     phones: {
       landline: [],
       internal: [],
@@ -31,20 +45,29 @@ const initialState = {
   },
 };
 
-// Reducer
+// =====================================================
+// REDUCER
+// =====================================================
+
 export const dataReducer = (
   state = initialState,
   action
 ) => {
   switch (action.type) {
-    // =========================
+
+    // ===================================================
     // LOAD DATA
-    // =========================
+    // ===================================================
+
     case ADD_DATA: {
-      const { key, data } = action.payload;
+      const {
+        key,
+        data,
+      } = action.payload;
 
       return {
         ...state,
+
         [key]: paginateData(
           data,
           key,
@@ -53,9 +76,10 @@ export const dataReducer = (
       };
     }
 
-    // =========================
+    // ===================================================
     // SET DICTIONARIES
-    // =========================
+    // ===================================================
+
     case SET_DICTIONARIES: {
       const {
         positions,
@@ -69,6 +93,7 @@ export const dataReducer = (
 
       return {
         ...state,
+
         dictionaries: {
           ...state.dictionaries,
 
@@ -96,8 +121,9 @@ export const dataReducer = (
             rowsPerPage - 3
           ),
 
-          sections: sections,
-          deps: deps,
+          sections,
+
+          deps,
 
           phones: {
             landline: paginateData(
@@ -122,42 +148,29 @@ export const dataReducer = (
       };
     }
 
-    // =========================
+    // ===================================================
     // SORT USERS
-    // =========================
+    // ===================================================
+
     case SORT_USERS: {
       const {
         key,
         direction,
       } = action.payload;
 
-      // Беремо users з УСІХ сторінок
+      // Беремо users з усіх сторінок
       const allUsers =
         state.dictionaries.users.flatMap(
           (page) => page.rows || []
         );
 
-      // Сортуємо весь список
-      const sortedUsers = [
-        ...allUsers,
-      ].sort((a, b) => {
-        const aValue = a[key] ?? "";
-        const bValue = b[key] ?? "";
-
-        const result =
-          String(aValue).localeCompare(
-            String(bValue),
-            "uk",
-            {
-              sensitivity: "base",
-              numeric: true,
-            }
-          );
-
-        return direction === "asc"
-          ? result
-          : -result;
-      });
+      // Сортуємо
+      const sortedUsers =
+        sortData(
+          allUsers,
+          key,
+          direction
+        );
 
       // Знову розбиваємо на сторінки
       const sortedPages =
@@ -168,26 +181,80 @@ export const dataReducer = (
 
       return {
         ...state,
+
         dictionaries: {
           ...state.dictionaries,
+
           users: sortedPages,
         },
       };
     }
 
-    // =========================
+    // ===================================================
+    // SORT PHONES
+    // ===================================================
+
+    case SORT_PHONES: {
+      const {
+        phoneType,
+        key,
+        direction,
+      } = action.payload;
+
+      // Беремо телефони з усіх сторінок
+      const allPhones =
+        state.dictionaries.phones[
+          phoneType
+        ].flatMap(
+          (page) => page.rows || []
+        );
+
+      // Сортуємо
+      const sortedPhones =
+        sortData(
+          allPhones,
+          key,
+          direction
+        );
+
+      // Знову розбиваємо на сторінки
+      const sortedPages =
+        chunkIntoPages(
+          sortedPhones,
+          rowsPerPage
+        );
+
+      return {
+        ...state,
+
+        dictionaries: {
+          ...state.dictionaries,
+
+          phones: {
+            ...state.dictionaries.phones,
+
+            [phoneType]: sortedPages,
+          },
+        },
+      };
+    }
+
+    // ===================================================
     // RESET
-    // =========================
+    // ===================================================
+
     case RESET_DICTIONARIES:
       return {
         ...state,
+
         dictionaries:
           initialState.dictionaries,
       };
 
-    // =========================
+    // ===================================================
     // SET ORDER
-    // =========================
+    // ===================================================
+
     case SET_ORDER: {
       const {
         key,
@@ -205,8 +272,13 @@ export const dataReducer = (
         ...state,
       };
 
-      // 📦 departments
-      if (currentMode === "departments") {
+      // -------------------------------------------------
+      // DEPARTMENTS
+      // -------------------------------------------------
+
+      if (
+        currentMode === "departments"
+      ) {
         const newDepartments =
           chunkIntoPages(
             reordered,
@@ -215,16 +287,23 @@ export const dataReducer = (
 
         return {
           ...state,
+
           dictionaries: {
             ...state.dictionaries,
+
             departments:
               newDepartments,
           },
         };
       }
 
-      // 📚 sections
-      if (currentMode === "sections") {
+      // -------------------------------------------------
+      // SECTIONS
+      // -------------------------------------------------
+
+      if (
+        currentMode === "sections"
+      ) {
         const deptId =
           reordered?.[0]?.departmentId;
 
@@ -242,6 +321,7 @@ export const dataReducer = (
                     deptId
                       ? {
                           ...dep,
+
                           sections:
                             reordered,
                         }
@@ -254,12 +334,19 @@ export const dataReducer = (
         return newState;
       }
 
-      // 📌 positions
-      if (currentMode === "positions") {
+      // -------------------------------------------------
+      // POSITIONS
+      // -------------------------------------------------
+
+      if (
+        currentMode === "positions"
+      ) {
         return {
           ...state,
+
           dictionaries: {
             ...state.dictionaries,
+
             positions:
               chunkIntoPages(
                 reordered,
@@ -269,12 +356,19 @@ export const dataReducer = (
         };
       }
 
-      // 👤 user types
-      if (currentMode === "userTypes") {
+      // -------------------------------------------------
+      // USER TYPES
+      // -------------------------------------------------
+
+      if (
+        currentMode === "userTypes"
+      ) {
         return {
           ...state,
+
           dictionaries: {
             ...state.dictionaries,
+
             userTypes:
               chunkIntoPages(
                 reordered,
@@ -284,9 +378,13 @@ export const dataReducer = (
         };
       }
 
-      // 🔥 everything else
+      // -------------------------------------------------
+      // EVERYTHING ELSE
+      // -------------------------------------------------
+
       return {
         ...state,
+
         [key]: chunkIntoPages(
           reordered,
           rowsPerPage
@@ -294,25 +392,38 @@ export const dataReducer = (
       };
     }
 
+    // ===================================================
+    // DEFAULT
+    // ===================================================
+
     default:
       return state;
   }
 };
 
-// =========================
+// =====================================================
 // ACTION CREATORS
-// =========================
+// =====================================================
+
+// -----------------------------------------------------
+// ADD DATA
+// -----------------------------------------------------
 
 export const addDataActionCreator = (
   key,
   data
 ) => ({
   type: ADD_DATA,
+
   payload: {
     key,
     data,
   },
 });
+
+// -----------------------------------------------------
+// SET PAGES / ORDER
+// -----------------------------------------------------
 
 export const setPagesActionCreator = (
   key,
@@ -321,6 +432,7 @@ export const setPagesActionCreator = (
   currentMode
 ) => ({
   type: SET_ORDER,
+
   payload: {
     key,
     pages,
@@ -329,20 +441,43 @@ export const setPagesActionCreator = (
   },
 });
 
-// =========================
-// SORT USERS ACTION
-// =========================
+// -----------------------------------------------------
+// SORT USERS
+// -----------------------------------------------------
 
 export const sortUsersActionCreator = (
   key,
   direction
 ) => ({
   type: SORT_USERS,
+
   payload: {
     key,
     direction,
   },
 });
+
+// -----------------------------------------------------
+// SORT PHONES
+// -----------------------------------------------------
+
+export const sortPhonesActionCreator = (
+  phoneType,
+  key,
+  direction
+) => ({
+  type: SORT_PHONES,
+
+  payload: {
+    phoneType,
+    key,
+    direction,
+  },
+});
+
+// -----------------------------------------------------
+// SET DICTIONARIES
+// -----------------------------------------------------
 
 export const setDictionaries = (
   payload
@@ -351,15 +486,21 @@ export const setDictionaries = (
   payload,
 });
 
+// -----------------------------------------------------
+// RESET DICTIONARIES
+// -----------------------------------------------------
+
 export const resetDictionaries = () => ({
   type: RESET_DICTIONARIES,
 });
 
-// =========================
+// =====================================================
 // THUNK
-// =========================
+// =====================================================
 
-export const getDataByMenu = (key) =>
+export const getDataByMenu = (
+  key
+) =>
   fetchDataThunk(
     addDataActionCreator,
     key

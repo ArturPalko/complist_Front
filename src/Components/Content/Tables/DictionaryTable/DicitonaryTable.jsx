@@ -45,7 +45,9 @@ const DictionaryTable = ({
       sectionName,
       showNavigationHeader,
       sortConfig,
+      phoneSortConfig,
       handleUserSort,
+      handlePhoneSort,
       isAddUsers,
     } = tableLogic;
 
@@ -54,9 +56,14 @@ const DictionaryTable = ({
       dispatch,
     } = tableUI;
 
-    if (isPhoneEditMode) {
-      return <PhoneEditHeader />;
-    }
+ if (isPhoneEditMode) {
+  return (
+    <PhoneEditHeader
+      sortConfig={phoneSortConfig}
+      onSort={handlePhoneSort}
+    />
+  );
+}
 
     if (currentMode === "users") {
       return (
