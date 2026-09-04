@@ -17,6 +17,8 @@ import {
   activeMenu,
   isUserMode,
   isCurrentPageFoundResult,
+  getSearchMode,
+  hasSearchFoundResults
 } from "../../../redux/selectors/selector";
 
 import {
@@ -45,7 +47,7 @@ const BottomTableControls = () => {
 
   const currentMenu = useSelector(activeMenu);
   const currentMode = useSelector(getCurrentMode);
-
+  const searchMode = useSelector(getSearchMode)
   // =====================================================
   // MODES
   // =====================================================
@@ -95,7 +97,12 @@ const BottomTableControls = () => {
   const isFoundResultsPage = useSelector(
     isCurrentPageFoundResult(currentMenu,currentMode)
   );
-
+const hasSearchResults = useSelector(
+  hasSearchFoundResults(
+    currentMenu,
+    currentMode
+  )
+);
   // =====================================================
   // REDIRECT LOGIC
   // =====================================================
@@ -117,6 +124,8 @@ debugger
       currentMode,
       activeDep,
       isFoundResultsPage,
+      searchMode,
+      hasSearchResults 
     });
 
   // =====================================================

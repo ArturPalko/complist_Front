@@ -19,6 +19,8 @@ import {
   selectActiveSectionId,
   selectAtiveDepartmentId,
   selectDictionaryDataForDrag,
+  getSearchMode,
+  hasSearchFoundResults
 } from "../../selectors/selector";
 
 import { setPagesActionCreator } from "../../reducers/data-reducer/data-reducer";
@@ -26,7 +28,6 @@ import { setPagesActionCreator } from "../../reducers/data-reducer/data-reducer"
 import { saveOrder } from "../../../dal/thunks/dataThunks";
 
 import {
-  chunkIntoPages,
   moveItems,
 } from "./dragProvider-helpers/commonFunctions";
 
@@ -54,7 +55,6 @@ import {
   buildRangeIds,
 } from "./dragProvider-helpers/selectRange-helpers";
 
-import { changeOrderOfDisplayElements } from "../../../dal/api";
 import { entityMap } from "../../../configs/app/enitiyMap";
 import { PHONE_TYPES } from "../../../configs/app/constants";
 
@@ -74,6 +74,7 @@ export const DragProvider = ({ children, rowsPerPage = 18 }) => {
   const depId = useSelector(selectAtiveDepartmentId);
   const activeDep = useSelector(selectAtiveDepartmentId);
   const activeSec = useSelector(selectActiveSectionId);
+  const searchMode = useSelector(getSearchMode);
 
   const [
     elementsBeforeSelectedIds,
@@ -102,13 +103,15 @@ export const DragProvider = ({ children, rowsPerPage = 18 }) => {
           ? getDataForMenu(state, menu)
           : EMPTY_ARRAY
     ) ?? EMPTY_ARRAY;
-
-  const isDragDisabled1 =
-    currentMode === "users" ||
-    (currentMode === "departments" && activeDep) ||
-    (currentMode === "sections" && activeSec) ||
-    PHONE_TYPES.includes(currentMode);
-
+const hasSearchResults = useSelector(
+  hasSearchFoundResults(menu, currentMode)
+);
+const isDragDisabled1 =
+  (searchMode === "filter" && hasSearchResults) ||
+  currentMode === "users" ||
+  (currentMode === "departments" && activeDep) ||
+  (currentMode === "sections" && activeSec) ||
+  PHONE_TYPES.includes(currentMode);
   /* =========================
      FLAT DATA
   ========================= */

@@ -1,4 +1,4 @@
-import s from "./PhoneEditRow.module.css"
+import s from "./PhoneEditRow.module.css";
 import { TdWrapper } from "../../../../../../../shared/components/TdWrapper/TdWrapper";
 import { getUserRowIndex } from "../../../../PhonesTable/phonesTableHelpers";
 
@@ -19,28 +19,48 @@ export const PhoneEditRow = ({
       tableLogic.indexDecrementFromPreviousPages,
   });
 
-  const renderTd = (value, key = null, colSpan = 1) => (
+  const renderTd = (
+    content,
+    copyValue = content,
+    key = null,
+    colSpan = 1
+  ) => (
     <TdWrapper
       key={key}
-      value={value}
+      value={copyValue}
       tableUI={tableUI}
       colSpan={colSpan}
     >
-      {value}
+      {content}
     </TdWrapper>
   );
+
+  const usersCopyValue =
+    row.users?.map((u) => u.name).join(", ") || "";
 
   return (
     <>
       <td>{phoneRowIndex}</td>
 
-      {renderTd(row.number, `phone-num-${row.id}`)}
+      {renderTd(
+        row.number,
+        row.number,
+        `phone-num-${row.id}`
+      )}
 
       {renderTd(
         <div className={s.usersInline}>
           {row.users?.length ? (
             row.users.map((u) => (
-              <span key={u.id} className={s.userChip}>
+              <span
+                key={u.id}
+                className={s.userChip}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  tableUI.copyToClipboard(u.name);
+                }}
+                title="Копіювати"
+              >
                 {u.name}
               </span>
             ))
@@ -48,6 +68,7 @@ export const PhoneEditRow = ({
             <span className={s.emptyUsers}>—</span>
           )}
         </div>,
+        usersCopyValue,
         `users-${row.id}`,
         4
       )}
@@ -56,3 +77,4 @@ export const PhoneEditRow = ({
 };
 
 export default PhoneEditRow;
+

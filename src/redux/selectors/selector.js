@@ -46,7 +46,17 @@ const EMPTY_DEP_SEC = {
   dep: EMPTY_ARRAY,
   sec: EMPTY_ARRAY,
 };
+export const hasSearchFoundResults =
+  (menu, currentMode) => (state) => {
+    const searchPage = currentMode
+      ? "dictionary"
+      : menu;
 
+    return Boolean(
+      state.toggledElements.searchField?.[searchPage]
+        ?.foundResults?.length
+    );
+  };
 const selectPageNumberState = (state, menu) =>
   state.currentPageNumber[menu];
 

@@ -225,7 +225,7 @@ export default function OwnerSelector({
             onChange={(e) =>
               setOwnerDisplayName(e.target.value)
             }
-            placeholder="Наприклад: Автомобільний МП «Львів»"
+            placeholder="Наприклад: Автомобільний МП «Дністер»"
           />
         </div>
       )}
