@@ -84,3 +84,9 @@
   color: #c62828;
   font-size: 13px;
 }
+
+.hint {
+  font-size: 12px;
+  line-height: 1.4;
+  color: #6b7280;
+}

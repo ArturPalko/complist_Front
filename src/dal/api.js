@@ -3,32 +3,33 @@ import axiosRetry from "axios-retry";
 import { dictionariesUrl, passwordUrls, changeOrderUrl } from "./urls";
 import { setDictionaries } from "../redux/reducers/data-reducer/data-reducer";
 
-export const api = axios.create({
-  baseURL: "http://localhost:5114",
-  timeout: 40000
-});
+const BASE_URL = `http://${window.location.hostname}:5114`;
 
-export const apiPrivate = axios.create({
-  baseURL: "http://localhost:5114",
-  timeout: 40000,
+export const api = axios.create({
+  baseURL: BASE_URL,
+  timeout: 1000,
   withCredentials: true
 });
 
-axiosRetry(api, {
-  retries: 3,
-  retryDelay: (retryCount) => retryCount * 500,
-  retryCondition: (error) => {
-    return axiosRetry.isNetworkOrIdempotentRequestError(error);
-  }
+export const apiPrivate = axios.create({
+  baseURL: BASE_URL,
+  timeout: 1000,
+  withCredentials: true
 });
 
-axiosRetry(apiPrivate, {
-  retries: 3,
-  retryDelay: (retryCount) => retryCount * 500,
+const retryOptions = {
+  retries: 5,
+  retryDelay: () => 1000,
   retryCondition: (error) => {
-    return axiosRetry.isNetworkOrIdempotentRequestError(error);
+    return (
+      axiosRetry.isNetworkOrIdempotentRequestError(error) ||
+      error.code === "ECONNABORTED"
+    );
   }
-});
+};
+
+axiosRetry(api, retryOptions);
+axiosRetry(apiPrivate, retryOptions);
 
 api.interceptors.response.use(
   response => response,
@@ -119,8 +120,6 @@ export const changeOrderOfDisplayElements = async (
   return apiPrivate.post(sendUrl, payload);
 };
 
-// ---------------- GENERIC CRUD ----------------
-
 export const apiAddEntity = (endpoint, payload) => {
   return apiPrivate.post(`/api/${endpoint}`, payload);
 };
@@ -133,8 +132,6 @@ export const apiDeleteEntity = (endpoint, ids) => {
   return apiPrivate.post(`/api/${endpoint}/delete`, ids);
 };
 
-// ---------------- MAILS ----------------
-
 export const addMail = (data, mailType) => {
   return apiPrivate.post(`/api/mails/${mailType}`, data);
 };
@@ -144,7 +141,6 @@ export const editMail = ({
   menu,
   ...data
 }) => {
-  
   return apiPrivate.put(
     `/api/mails/${menu}/${id}`,
     data
@@ -155,16 +151,14 @@ export const deleteMail = (ids) => {
   return apiDeleteEntity("mails", ids);
 };
 
-// ---------------- ASSIGN PHONES ----------------
-
 export const apiAssignPhonesToUser = (data) => {
   return apiPrivate.put(`/api/assignPhonesToUsers`, data);
 };
 
 export const transferUser = (data) => {
-  return apiPrivate.put(`api/users/transfer`, data)
-}
+  return apiPrivate.put(`/api/users/transfer`, data);
+};
 
 export const changeStatus = (data) => {
-  return apiPrivate.put(`api/users/changeStatus`, data)
-}
+  return apiPrivate.put(`/api/users/changeStatus`, data);
+};

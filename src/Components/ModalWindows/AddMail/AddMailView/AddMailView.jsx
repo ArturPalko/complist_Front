@@ -60,7 +60,7 @@ export default function AddMailView({
     <div className={form.modalOverlay}>
       <div className={form.modal}>
         <h2 className={form.title}>
-          {editValue
+          {isEdit
             ? `Редагувати ${modalConfig.title} пошту`
             : `Додати ${modalConfig.title} пошту`}
         </h2>

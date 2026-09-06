@@ -216,9 +216,14 @@ export const useTableBaseLogic = ({
   // ================================
 
   const {
-    showDigitsFromPressed,
-    shouldShowColNumbers,
-    showPreviousPageHighlight,
+    showDigitsFromPressed:
+      foundResultsShowDigitsFromPressed,
+
+    shouldShowColNumbers:
+      foundResultsShouldShowColNumbers,
+
+    showPreviousPageHighlight:
+      foundResultsShowPreviousPageHighlight,
   } = useFoundResultsColNumbersLogic({
     isLastVisitedPageWasFoundResults,
 
@@ -229,6 +234,28 @@ export const useTableBaseLogic = ({
 
     isPreviousPageWasFoundResult,
   });
+
+  /*
+   * ==========================================
+   * DISABLE FOUND RESULTS COLUMN LOGIC
+   * ==========================================
+   *
+   * У SEARCH FILTER MODE не повинна працювати
+   * логіка нумерації / підсвітки колонок,
+   * яка залишилась від старого FOUND RESULTS MODE.
+   */
+
+  const showDigitsFromPressed =
+    !isSearchFilterMode &&
+    foundResultsShowDigitsFromPressed;
+
+  const shouldShowColNumbers =
+    !isSearchFilterMode &&
+    foundResultsShouldShowColNumbers;
+
+  const showPreviousPageHighlight =
+    !isSearchFilterMode &&
+    foundResultsShowPreviousPageHighlight;
 
   // ================================
   // sync row heights
@@ -264,7 +291,7 @@ export const useTableBaseLogic = ({
   // ================================
   // return
   // ================================
-            
+
   return {
     data,
 

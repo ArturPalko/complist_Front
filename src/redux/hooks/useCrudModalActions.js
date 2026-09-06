@@ -121,13 +121,13 @@ export const useCrudModalActions = (modalType) => {
     if (selectedIds?.length) return true;
 
     alert(
-  "Спочатку обери рядок.\n\n" +
-  "Одиничний вибір — Ctrl + Left Click.\n\n" +
-  "Вибір діапазону — Alt + Left Click по двох рядках " +
-  "на одній сторінці.\n\n" +
-  "Щоб скасувати весь вибір — натисни Escape.\n\n" +
-  "Щоб скасувати окремий вибір — повторно обери вже активний рядок."
-);
+      "Спочатку обери рядок.\n\n" +
+      "Одиничний вибір — Ctrl + Left Click.\n\n" +
+      "Вибір діапазону — Alt + Left Click по двох рядках " +
+      "на одній сторінці.\n\n" +
+      "Щоб скасувати весь вибір — натисни Escape.\n\n" +
+      "Щоб скасувати окремий вибір — повторно обери вже активний рядок."
+    );
 
     return false;
   };
@@ -178,10 +178,14 @@ export const useCrudModalActions = (modalType) => {
     let item;
 
     if (activeDep && isAddUsers) {
-      item = users.find(
-        (user) =>
-          Number(user.id) === Number(id)
-      );
+      item = users
+        ?.flatMap(
+          (page) => page.rows ?? []
+        )
+        .find(
+          (user) =>
+            Number(user.id) === Number(id)
+        );
     } else if (
       currentModalType === "mailsToUsers"
     ) {

@@ -19,6 +19,11 @@ export default function OwnerSelector({
   ownerDisplayName,
   setOwnerDisplayName,
 }) {
+  const shortenName = (name) =>
+    name.length > 45
+      ? `${name.slice(0, 45)}...`
+      : name;
+
   const handleOwnerTypeChange = (value) => {
     setOwnerType(value);
     setOwnerId("");
@@ -88,7 +93,7 @@ export default function OwnerSelector({
         >
           <optgroup label="Власник">
             <option value="department">
-              Підрозділ
+              Департамент
             </option>
             <option value="section">
               Секція
@@ -132,7 +137,7 @@ export default function OwnerSelector({
                 key={item.id}
                 value={item.id}
               >
-                {item.name}
+                {shortenName(item.name)}
               </option>
             ))}
           </select>
@@ -160,7 +165,7 @@ export default function OwnerSelector({
                   key={item.id}
                   value={item.id}
                 >
-                  {item.name}
+                  {shortenName(item.name)}
                 </option>
               ))}
             </select>
