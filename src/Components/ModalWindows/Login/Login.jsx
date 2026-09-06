@@ -20,10 +20,9 @@ const Login = ({ message, loginUser, onClose }) => {
 
   const [showPassword, setShowPassword] = useState(false);
 
-  // Налаштування поведінки модалки (клік за ESC тощо)
   useEffect(() => {
     const cleanup = setupModalBehavior(onClose);
-    return cleanup; // викликається при розмонтуванні
+    return cleanup;
   }, [onClose]);
 
   const onSubmit = async (data) => {
@@ -35,6 +34,8 @@ const Login = ({ message, loginUser, onClose }) => {
   };
 
   const togglePassword = () => setShowPassword((prev) => !prev);
+
+  const isLoginSuccessful = message === "Logged in successfully";
 
   return (
     <div className={s.loginOverlay} onClick={handleOverlayClick}>
@@ -49,6 +50,14 @@ const Login = ({ message, loginUser, onClose }) => {
           onSubmit={onSubmit}
           formMessage={message}
         />
+
+        {isLoginSuccessful && (
+          <div className={s.authDescription}>
+            Авторизація не має обмеження в часі. Після завершення роботи
+            рекомендується вийти з додатку.
+          </div>
+        )}
+
         <button className={s.closeButton} onClick={onClose}>
           Закрити
         </button>
@@ -66,3 +75,4 @@ const mapDispatchToProps = {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
+

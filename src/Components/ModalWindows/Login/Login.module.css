@@ -50,3 +50,12 @@
   background-color: #0056b3;
 }
 
+
+.authDescription {
+  margin: 12px 20px 4px;
+  font-size: 12px;
+  line-height: 1.45;
+  text-align: center;
+  color: #6b7280;
+}
+
