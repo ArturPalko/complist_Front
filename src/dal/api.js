@@ -1,20 +1,26 @@
 import axios from "axios";
 import axiosRetry from "axios-retry";
-import { dictionariesUrl, passwordUrls, changeOrderUrl } from "./urls";
-import { setDictionaries } from "../redux/reducers/data-reducer/data-reducer";
+import {
+  dictionariesUrl,
+  passwordUrls,
+  changeOrderUrl,
+} from "./urls";
+import {
+  setDictionaries,
+} from "../redux/reducers/data-reducer/data-reducer";
 
 const BASE_URL = `http://${window.location.hostname}:5114`;
 
 export const api = axios.create({
   baseURL: BASE_URL,
-  timeout: 1000,
-  withCredentials: true
+  timeout: 10000,
+  withCredentials: true,
 });
 
 export const apiPrivate = axios.create({
   baseURL: BASE_URL,
-  timeout: 1000,
-  withCredentials: true
+  timeout: 10000,
+  withCredentials: true,
 });
 
 const retryOptions = {
@@ -25,15 +31,15 @@ const retryOptions = {
       axiosRetry.isNetworkOrIdempotentRequestError(error) ||
       error.code === "ECONNABORTED"
     );
-  }
+  },
 };
 
 axiosRetry(api, retryOptions);
 axiosRetry(apiPrivate, retryOptions);
 
 api.interceptors.response.use(
-  response => response,
-  err => {
+  (response) => response,
+  (err) => {
     console.error("URL:", err.config?.url);
     console.error("METHOD:", err.config?.method);
     console.error("STATUS:", err.response?.status);
@@ -43,8 +49,8 @@ api.interceptors.response.use(
 );
 
 apiPrivate.interceptors.response.use(
-  response => response,
-  err => {
+  (response) => response,
+  (err) => {
     console.error("PRIVATE API URL:", err.config?.url);
     console.error("PRIVATE API METHOD:", err.config?.method);
     console.error("PRIVATE API STATUS:", err.response?.status);
@@ -57,7 +63,9 @@ export const fetchPasswordsByType = async (type) => {
   const endpoint = passwordUrls[type];
 
   if (!endpoint) {
-    throw new Error(`No password URL defined for menu "${type}"`);
+    throw new Error(
+      `No password URL defined for menu "${type}"`
+    );
   }
 
   const { data } = await apiPrivate.get(endpoint);
@@ -71,26 +79,35 @@ export const fetchPasswordsByType = async (type) => {
 export const fetchPasswordById = async (type, id) => {
   const endpoint = passwordUrls[type];
 
-  const { data } = await apiPrivate.get(`${endpoint}/${id}`);
+  const { data } = await apiPrivate.get(
+    `${endpoint}/${id}`
+  );
 
   return data?.password ?? "";
 };
 
 export const fetchDictionariesThunk = () => async (dispatch) => {
   try {
-    const { data } = await apiPrivate.get(dictionariesUrl);
-          
-    dispatch(setDictionaries({
-      positions: data.positions,
-      userTypes: data.userTypes,
-      departments: data.departments,
-      phones: data.phonesResult,
-      users: data.users,
-      sections: data.sections,
-      deps: data.deps
-    }));
+    const { data } = await apiPrivate.get(
+      dictionariesUrl
+    );
+
+    dispatch(
+      setDictionaries({
+        positions: data.positions,
+        userTypes: data.userTypes,
+        departments: data.departments,
+        phones: data.phonesResult,
+        users: data.users,
+        sections: data.sections,
+        deps: data.deps,
+      })
+    );
   } catch (err) {
-    console.error("Dictionaries error:", err.message);
+    console.error(
+      "Dictionaries error:",
+      err.message
+    );
     throw err;
   }
 };
@@ -121,19 +138,34 @@ export const changeOrderOfDisplayElements = async (
 };
 
 export const apiAddEntity = (endpoint, payload) => {
-  return apiPrivate.post(`/api/${endpoint}`, payload);
+  return apiPrivate.post(
+    `/api/${endpoint}`,
+    payload
+  );
 };
 
-export const apiEditEntity = (endpoint, { id, ...data }) => {
-  return apiPrivate.put(`/api/${endpoint}/${id}`, data);
+export const apiEditEntity = (
+  endpoint,
+  { id, ...data }
+) => {
+  return apiPrivate.put(
+    `/api/${endpoint}/${id}`,
+    data
+  );
 };
 
 export const apiDeleteEntity = (endpoint, ids) => {
-  return apiPrivate.post(`/api/${endpoint}/delete`, ids);
+  return apiPrivate.post(
+    `/api/${endpoint}/delete`,
+    ids
+  );
 };
 
 export const addMail = (data, mailType) => {
-  return apiPrivate.post(`/api/mails/${mailType}`, data);
+  return apiPrivate.post(
+    `/api/mails/${mailType}`,
+    data
+  );
 };
 
 export const editMail = ({
@@ -152,13 +184,23 @@ export const deleteMail = (ids) => {
 };
 
 export const apiAssignPhonesToUser = (data) => {
-  return apiPrivate.put(`/api/assignPhonesToUsers`, data);
+  return apiPrivate.put(
+    `/api/assignPhonesToUsers`,
+    data
+  );
 };
 
 export const transferUser = (data) => {
-  return apiPrivate.put(`/api/users/transfer`, data);
+  return apiPrivate.put(
+    `/api/users/transfer`,
+    data
+  );
 };
 
 export const changeStatus = (data) => {
-  return apiPrivate.put(`/api/users/changeStatus`, data);
+  return apiPrivate.put(
+    `/api/users/changeStatus`,
+    data
+  );
 };
+
