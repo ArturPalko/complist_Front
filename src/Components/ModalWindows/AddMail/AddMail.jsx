@@ -8,10 +8,12 @@ import {
 
 import AddMailView from "./AddMailView/AddMailView";
 import { initializeEditForm } from "./helpers/initializeEditForm";
+
 import {
   addResponsibleUser,
   removeResponsibleUser,
 } from "./helpers/responsibleUsersHelpers";
+
 import { handleSave } from "./helpers/handleSave";
 import { handleShowPassword } from "./helpers/handleShowPassword";
 
@@ -149,7 +151,7 @@ export default function AddMail({
         ? ownerIds.length > 0
         : Boolean(ownerId);
 
-    if (!hasOwner) {
+    if (!hasOwner && ownerType !== "none") {
       setError(
         "Потрібно обрати власника скриньки."
       );
@@ -330,6 +332,7 @@ export default function AddMail({
       removeResponsibleUser={(userId) =>
         removeResponsibleUser({
           userId,
+          responsibleUserIds,
           setResponsibleUserIds,
         })
       }
@@ -347,4 +350,3 @@ export default function AddMail({
     />
   );
 }
-

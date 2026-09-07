@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import {
   selectDictionaryByType,
@@ -7,7 +7,14 @@ import {
 
 import TransferUserView from "./TransferUserView";
 import { useDragContext } from "../../../redux/contexts/useConetxt";
+import { Pages } from "../../../configs/app/constants";
+import {
+  setDataIsLoadedActionCreator,
+} from "../../../redux/reducers/app-reducer";
+
+import { fetchDictionariesThunk } from "../../../dal/api";
 import { transferUser } from "../../../dal/api";
+
 
 export function TransferUser({ onClose }) {
   const departments = useSelector(
@@ -17,6 +24,8 @@ export function TransferUser({ onClose }) {
   const sections = useSelector(
     selectDictionaryByType("sections")
   );
+
+  const dispatch = useDispatch();
 
   const [transferType, setTransferType] =
     useState("department");
@@ -86,6 +95,7 @@ export function TransferUser({ onClose }) {
     setDepartmentId(
       value === "" ? "" : Number(value)
     );
+
     setSectionId("");
     setError("");
   };
@@ -96,6 +106,7 @@ export function TransferUser({ onClose }) {
     setSectionId(
       value === "" ? "" : Number(value)
     );
+
     setError("");
   };
 
@@ -130,13 +141,30 @@ export function TransferUser({ onClose }) {
       transferPhones,
     };
 
-  
-
     try {
       await transferUser(data);
+
+      const pagesToReload = Object.values(Pages).filter(
+        (page) => page !== Pages.DICTIONARIES
+      );
+
+      pagesToReload.forEach((page) => {
+        dispatch(
+          setDataIsLoadedActionCreator(
+            false,
+            page
+          )
+        );
+      });
+
+      dispatch(fetchDictionariesThunk());
+
       onClose();
     } catch (err) {
-      console.error("TransferUser error:", err);
+      console.error(
+        "TransferUser error:",
+        err
+      );
 
       setError(
         err?.response?.data?.message ||
@@ -150,20 +178,30 @@ export function TransferUser({ onClose }) {
       onClose={onClose}
       error={error}
       transferType={transferType}
-      onTransferTypeChange={handleTransferTypeChange}
+      onTransferTypeChange={
+        handleTransferTypeChange
+      }
       departmentId={departmentId}
       departments={departmentsValues}
-      onDepartmentChange={handleDepartmentChange}
+      onDepartmentChange={
+        handleDepartmentChange
+      }
       sectionId={sectionId}
       sections={filteredSections}
-      onSectionChange={handleSectionChange}
+      onSectionChange={
+        handleSectionChange
+      }
       canTransfer={canTransfer}
       onTransfer={handleTransfer}
-      keepResponsibleForMails={keepResponsibleForMails}
+      keepResponsibleForMails={
+        keepResponsibleForMails
+      }
       setKeepResponsibleForMails={
         setKeepResponsibleForMails
       }
-      keepPhonesByPosition={keepPhonesByPosition}
+      keepPhonesByPosition={
+        keepPhonesByPosition
+      }
       setKeepPhonesByPosition={
         setKeepPhonesByPosition
       }
