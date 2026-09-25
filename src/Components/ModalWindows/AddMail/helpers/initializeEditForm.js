@@ -1,3 +1,4 @@
+
 export const initializeEditForm = (
   editValue,
   setters,
@@ -32,13 +33,15 @@ export const initializeEditForm = (
   );
 
   const ownerType =
-    editValue.ownerType?.toLowerCase() ??
-    "department";
+    editValue.ownerType?.trim().toLowerCase() ||
+    "none";
 
   setOwnerType(ownerType);
 
   setOwnerId(
-    editValue.ownerId ?? ""
+    editValue.ownerId && editValue.ownerId !== 0
+      ? editValue.ownerId
+      : ""
   );
 
   const ownerIds =
@@ -50,12 +53,18 @@ export const initializeEditForm = (
     editValue.ownerDisplayName ?? ""
   );
 
+  // Очищаємо залежне значення перед
+  // визначенням департаменту для секції.
+  setSectionDepartmentId("");
+
+  setQuery("");
+
   if (
     ownerType === "section" &&
     ownerIds.length > 0
   ) {
     const firstSection = sections.find(
-      section =>
+      (section) =>
         Number(section.id) ===
         Number(ownerIds[0])
     );
@@ -65,6 +74,12 @@ export const initializeEditForm = (
         firstSection.departmentId
       );
     }
+  }
+
+  if (ownerType === "user") {
+    setQuery(
+      editValue.owner ?? ""
+    );
   }
 
   setId(
@@ -77,13 +92,8 @@ export const initializeEditForm = (
 
   setResponsibleUserIds(
     editValue.responsibleUsers?.map(
-      user => user.id
+      (user) => user.id
     ) ?? []
   );
-
-  if (ownerType === "user") {
-    setQuery(
-      editValue.owner ?? ""
-    );
-  }
 };
+

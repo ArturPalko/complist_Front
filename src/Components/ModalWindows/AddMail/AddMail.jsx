@@ -136,63 +136,74 @@ export default function AddMail({
     setPasswordError("");
   }, [editValue, sectionsValues]);
 
-  const handleFormSave = async () => {
-    setError("");
+ const handleFormSave = async () => {
+  setError("");
 
+  const isLotus = menu === "Lotus";
+
+  if (isLotus) {
+    if (!previousName.trim() && !mail.trim()) {
+      setError(
+        "Потрібно ввести попередню або нову назву скриньки."
+      );
+      return;
+    }
+  } else {
     if (!mail.trim()) {
       setError(
         "Потрібно ввести назву скриньки."
       );
       return;
     }
+  }
 
-    const hasOwner =
-      ownerType === "section"
-        ? ownerIds.length > 0
-        : Boolean(ownerId);
+  const hasOwner =
+    ownerType === "section"
+      ? ownerIds.length > 0
+      : Boolean(ownerId);
 
-    if (!hasOwner && ownerType !== "none") {
-      setError(
-        "Потрібно обрати власника скриньки."
-      );
-      return;
-    }
+  if (!hasOwner && ownerType !== "none") {
+    setError(
+      "Потрібно обрати власника скриньки."
+    );
+    return;
+  }
 
-    setIsSaving(true);
+  setIsSaving(true);
 
-    try {
-      await handleSave({
-        autoUpdatePreviousName,
-        id,
-        menu,
-        mail,
-        previousName,
-        ownerType,
-        ownerId,
-        ownerIds,
-        ownerDisplayName,
-        passwordKnown,
-        password,
-        responsibleUserIds,
-        onSubmit,
-        dispatch,
-        onClose,
-      });
-    } catch (error) {
-      console.error(
-        "Помилка при збереженні пошти:",
-        error
-      );
+  try {
+    await handleSave({
+      autoUpdatePreviousName,
+      id,
+      menu,
+      mail,
+      previousName,
+      ownerType,
+      ownerId,
+      ownerIds,
+      ownerDisplayName,
+      passwordKnown,
+      password,
+      responsibleUserIds,
+      onSubmit,
+      dispatch,
+      onClose,
+    });
+  } catch (error) {
+    console.error(
+      "Помилка при збереженні пошти:",
+      error
+    );
 
-      const message =
-        error?.response?.data?.message ||
-        "Не вдалося зберегти скриньку.";
+    const message =
+      error?.response?.data?.message ||
+      "Не вдалося зберегти скриньку.";
 
-      setError(message);
-    } finally {
-      setIsSaving(false);
-    }
-  };
+    setError(message);
+  } finally {
+    setIsSaving(false);
+  }
+};
 
   return (
     <AddMailView
